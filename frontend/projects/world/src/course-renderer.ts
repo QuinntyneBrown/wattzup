@@ -1,3 +1,4 @@
+import type { marinaPromenade } from './marina-promenade';
 import type { MarinaBoats } from './marina-boats';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
@@ -202,6 +203,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private promenade: Awaited<ReturnType<typeof marinaPromenade>> | null = null;
   private boats: MarinaBoats | null = null;
   private disposed = false;
   private readonly scene = new Scene();
@@ -366,6 +368,16 @@ export class CourseRenderer implements WorldRenderer {
         if (this.disposed) return false;
         this.boats = new MarinaBoats(this.course, this.scene);
         this.disposables.push(this.boats);
+        const { marinaPromenade } = await import('./marina-promenade');
+        if (this.disposed) return false;
+        const promenade = await marinaPromenade(this.course);
+        if (this.disposed) {
+          promenade.dispose();
+          return false;
+        }
+        this.promenade = promenade;
+        this.scene.add(promenade.group);
+        this.disposables.push(promenade);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -430,6 +442,8 @@ export class CourseRenderer implements WorldRenderer {
     const standing = this.ride(you, metres, 0);
     // Every wheel on the road turns with the rider's: the riders keep much the same pace.
     this.kit?.roll(metres);
+    this.boats?.follow(metres);
+    this.promenade?.follow(metres, frame.reducedMotion ? 0 : frame.time);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
@@ -491,6 +505,7 @@ export class CourseRenderer implements WorldRenderer {
     this.riderBatch = null;
     this.rain = null;
     this.boats = null;
+    this.promenade = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -898,8 +913,10 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const distance = this.boats ? 4.65 : CAMERA_BACK;
+    const behind = distance + (CLOSE_BACK - distance) * close;
+    const eye = this.boats ? 2.55 : CAMERA_UP;
+    const up = eye + (CLOSE_UP - eye) * close;
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);

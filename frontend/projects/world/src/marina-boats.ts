@@ -21,7 +21,9 @@ import type { Course } from './course';
 import { cayanTower } from './world-dubai';
 import { seeded, Yachts } from './world-kit';
 
-type Resource = { dispose(): void };
+interface Resource {
+  dispose(): void;
+}
 
 function dhowGeometry() {
   const xyz: number[] = [],
@@ -109,25 +111,30 @@ export class MarinaBoats {
   readonly dhow = new Group();
   readonly wheel = new Group();
   private readonly resources: Resource[] = [];
-  constructor(course: Course, scene: Scene) {
+  private readonly moorings: { boat: Group; metres: number }[] = [];
+  private lastMetres = -Infinity;
+  constructor(
+    private readonly course: Course,
+    scene: Scene,
+  ) {
     const track = <T extends Texture>(t: T) => {
       this.resources.push(t);
       return t;
     };
     const tower = cayanTower(track, this.resources, new Color(0x807881));
-    const landmark = course.place(1150, 77);
+    const landmark = course.place(1320, -105);
     tower.position.set(landmark.x, 0, landmark.z);
     this.group.add(tower);
     const kit = new Yachts(this.resources, [0xf5f3e8, 0xe1ded6, 0x364357]);
     const boats = Array.from({ length: 4 }, (_, i) =>
-      batchYacht(kit.make(i, 17 + i * 3, seeded(317 + i)), this.resources),
+      batchYacht(kit.make(i, 21 + i * 4, seeded(317 + i)), this.resources),
     );
     for (let d = 40, i = 0; d < course.length; d += 86, i++) {
       const where = course.place(d + (i % 3) * 3, -(21 + (i % 4) * 2)),
         boat = boats[i % 4]!.clone();
       boat.position.set(where.x, 0.44, where.z);
       boat.rotation.y = where.heading + 0.18;
-      this.group.add(boat);
+      this.moorings.push({ boat, metres: d });
     }
     const hull = dhowGeometry(),
       wood = new MeshLambertMaterial({ vertexColors: true, side: DoubleSide });
@@ -160,7 +167,7 @@ export class MarinaBoats {
     this.dhow.position.set(berth.x, 0.48, berth.z);
     this.dhow.rotation.y = berth.heading + Math.PI / 2;
     this.group.add(this.dhow);
-    const hub = course.place(8000, -173);
+    const hub = course.place(8190, -85);
     const support = new Group();
     const rim = new TorusGeometry(88, 1.65, 6, 96);
     this.resources.push(rim);
@@ -192,6 +199,17 @@ export class MarinaBoats {
     support.position.set(hub.x, 0.35, hub.z);
     this.group.add(support);
     scene.add(this.group);
+    this.follow(0);
+  }
+  follow(metres: number) {
+    if (Math.abs(metres - this.lastMetres) < 18) return;
+    this.lastMetres = metres;
+    for (const { boat, metres: berth } of this.moorings) {
+      const delta = Math.abs(berth - metres);
+      if (Math.min(delta, this.course.length - delta) < 280) {
+        if (!boat.parent) this.group.add(boat);
+      } else if (boat.parent) boat.removeFromParent();
+    }
   }
   at(time: number) {
     this.dhow.rotation.z = 0.026 * Math.sin(0.76 * time);
@@ -203,5 +221,6 @@ export class MarinaBoats {
     this.group.clear();
     for (const r of this.resources) r.dispose();
     this.resources.length = 0;
+    this.moorings.length = 0;
   }
 }

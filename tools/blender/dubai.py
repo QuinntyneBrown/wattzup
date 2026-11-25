@@ -16,19 +16,34 @@ def lay(course,theme,bc):
     stages=bc.stages(course['plan'])
     length=stages[-1]['to']
     # An elongated basin with broad sweeping ends. Set its perimeter from the class.
-    a,b=340,1920
-    perimeter=sum(math.hypot(a*math.sin(i*math.tau/4096),b*math.cos(i*math.tau/4096)) for i in range(4096))*math.tau/4096
-    a*=length/perimeter;b*=length/perimeter
-    start=-.63
-    def speed(t):return math.hypot(a*math.sin(t),b*math.cos(t))
-    t=start-bc.LEAD_IN/speed(start)
+    # Long straight pontoons alternate with shallow incurving public quays. Arc length
+    # is sampled once so corners and straights both take the same metres per pedal turn.
+    from bisect import bisect_right
+    count=8192
+    def plan(t):
+        coast=math.cos(t)
+        return (340*coast+coast**3*(51*math.sin(15*t)+26*math.sin(8*t+.4)),1920*math.sin(t))
+    outline=[plan(-.63+i*math.tau/count) for i in range(count+1)]
+    dist=[0.0]
+    for a,b in zip(outline,outline[1:]):
+        dist.append(dist[-1]+math.dist(a,b))
+    scale=length/dist[-1]
+    def sample(d):
+        at=(d%length)/scale
+        j=min(count-1,bisect_right(dist,at)-1)
+        fraction=(at-dist[j])/(dist[j+1]-dist[j])
+        a,b=outline[j:j+2]
+        return tuple((a[q]+fraction*(b[q]-a[q]))*scale for q in range(2))
+    def direction(d):
+        a,b=sample(d-1),sample(d+1)
+        return math.atan2(b[1]-a[1],b[0]-a[0])
     rows=[]
     for i in range(math.ceil((length+bc.LEAD_IN+bc.RUN_OUT)/bc.STEP)+1):
         d=i*bc.STEP-bc.LEAD_IN
-        heading=math.atan2(b*math.cos(t),-a*math.sin(t))
-        rows.append(dict(x=a*math.cos(t),y=b*math.sin(t),z=elevation(d),d=d,h=heading,
-                         k=(a*b)/(speed(t)**3),g=100*(elevation(d+.5)-elevation(d-.5))))
-        t+=bc.STEP/speed(t+bc.STEP/(2*speed(t)))
+        x,y=sample(d)
+        bend=direction(d+.5)-direction(d-.5)
+        rows.append(dict(x=x,y=y,z=elevation(d),d=d,h=direction(d),
+                         k=math.atan2(math.sin(bend),math.cos(bend)),g=100*(elevation(d+.5)-elevation(d-.5))))
     return rows,stages,length,sum((s['to']-s['from'])*s['level'] for s in stages)/length,0
 
 
@@ -37,11 +52,11 @@ def walkway(r,stages,length,col,bc):
     for i in range(len(r.s)-1):
         for j,(left,right) in enumerate(((11.8,10.7),(10.7,5.7),(5.7,5.37),(5.37,-5.37),(-5.37,-5.7),(-5.7,-18.8))):
             tint=(0xb29c82,0xc1ae9a,0x795e4d,0xd1bb9d,0x795e4d,0xb8a28f)[j]
-            pts=[r.at(q,l,.02) for q,l in ((i,right),(i,left),(i+1,left),(i+1,right))]
+            pts=[r.at(q,l,.02) for q,l in ((i,left),(i,right),(i+1,right),(i+1,left))]
             stone.faces.append(tuple(stone.v(p) for p in pts))
             stone.colours.extend([lin(tint)]*4)
         for left,right in ((10.65,5.72),(5.34,-5.34),(-5.72,-18.8)):
-            pts=[r.pos(r.s[i]['d']+dt,l,.032) for dt,l in ((0,right),(0,left),(.037,left),(.037,right))]
+            pts=[r.pos(r.s[i]['d']+dt,l,.032) for dt,l in ((0,left),(0,right),(.037,right),(.037,left))]
             stone.faces.append(tuple(stone.v(p) for p in pts));stone.colours.extend([lin(0xa69380)]*4)
     stone.build(col)
 
@@ -111,6 +126,29 @@ def scenery(k):
         for l in (16,27,39):
             box(d,l,-2.16,.28,.28,.82,0x56505a)
             k.B['bulb'].box(r.pos(d,l,-1.36),(.18,.18,.17),k.s[i]['h'])
+    # Slender shared-use crossings connect the two banks. The side trusses rise above a
+    # level deck and repeat in finite bays, with the marina left visible between the rails.
+    for station in (2195,5695,7450):
+        near=r.index(station);a=r.at(near,12.1)
+        _,far,_=r.tree.find((-a[0],a[1],0))
+        b=r.at(far,12.1)
+        dx,dy=b[0]-a[0],b[1]-a[1];span=math.hypot(dx,dy)
+        if span<70:continue
+        ux,uy=dx/span,dy/span;yaw=math.atan2(dy,dx);count=math.ceil(span/11)
+        def point(t,side,up):
+            return (a[0]+dx*t-uy*side,a[1]+dy*t+ux*side,8+up)
+        for j in range(count):
+            t=(j+.5)/count
+            art.box(point(t,0,-.72),(span/count+.16,6.8,.78),yaw,lin(0x707c87))
+            for side in (-3.18,3.18):
+                h=1.3+5*math.sin(math.pi*t)
+                art.box(point(t,side,h),(span/count+.12,.17,.27),yaw,lin(0xbac3bd))
+                art.box(point(j/count,side,0),(.22,.22,h+.12),yaw,lin(0x879da6))
+                k.B['bulb'].box(point(t,side,h+.19),(.81,.19,.13),yaw)
+            if j%7==2:
+                for side in (-2.8,2.8):
+                    x,y,_=point(t,side,0)
+                    k.prism(k.B['stone'],(x,y,-.3),.8,7.62,10,1.2)
     return {'efforts':0}
 
 
