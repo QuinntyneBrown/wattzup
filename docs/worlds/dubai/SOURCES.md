@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [IntroImage_v2](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2022/12/IntroImage_v2.png) (g0903) | © MyWhoosh |
 | game-04.jpg | MyWhoosh: [feature__racing](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/05/feature__racing-1.jpg) (g0849) | © MyWhoosh |
 | game-05.jpg | MyWhoosh: [FREE RIDE](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/03/FREE-RIDE.png) (g0861) | © MyWhoosh |
+
+The promenade spectators are an original generated two-by-four atlas of cheering family and visitor groups in Dubai at dusk, wearing kanduras, ghutras, abayas and summer clothes. Small UAE flags and the green, white, red and black bunting preserve the earlier class palette. Game 02 and 04 informed their scale by the barriers.
+
+The limestone albedo and four café elevations are original generated textures. The paving prompt specified staggered cream travertine with narrow joints, seen from directly above. The façade prompt specified four front-on Marina Walk cafés with sandstone arches, glazing, hanging lamps and podium balconies at dusk. Real 01, 08–13 and game 05 informed their placement and scale.

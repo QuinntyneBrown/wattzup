@@ -12,6 +12,8 @@ import type { DeathValleyStreet } from './world-deathvalley';
 import type { diwaliPromenade } from './diwali-promenade';
 import type { DiwaliFestival } from './diwali-festival';
 import type { gardenaForest } from './gardena-forest';
+import type { marinaPromenade } from './marina-promenade';
+import type { MarinaBoats } from './marina-boats';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -294,6 +296,8 @@ export class CourseRenderer implements WorldRenderer {
   private festival: DiwaliFestival | null = null;
   private quay: DocklandsQuay | null = null;
   private forest: Awaited<ReturnType<typeof gardenaForest>> | null = null;
+  private marinaTrees: Awaited<ReturnType<typeof marinaPromenade>> | null = null;
+  private marinaBoats: MarinaBoats | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -354,6 +358,8 @@ export class CourseRenderer implements WorldRenderer {
     ferryRoll: null as number | null,
     walkerZ: null as number | null,
     cabinHeight: null as number | null,
+    dhowRoll: null as null | number,
+    wheelAngle: null as null | number,
     tier: 0 as number,
     pushCarPosition: undefined as number | undefined,
     mirageHeight: undefined as number | undefined,
@@ -1043,6 +1049,23 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(forest.group);
         this.disposables.push(forest);
       }
+      if (this.course.file.id === 'dubai') {
+        this.camera.setViewOffset(1, 1, 0, 0.045, 1, 1);
+        const { MarinaBoats } = await import('./marina-boats');
+        if (this.disposed) return false;
+        this.marinaBoats = new MarinaBoats(this.course, this.scene);
+        this.disposables.push(this.marinaBoats);
+        const { marinaPromenade } = await import('./marina-promenade');
+        if (this.disposed) return false;
+        const promenade = await marinaPromenade(this.course);
+        if (this.disposed) {
+          promenade.dispose();
+          return false;
+        }
+        this.marinaTrees = promenade;
+        this.scene.add(promenade.group);
+        this.disposables.push(promenade);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1235,6 +1258,8 @@ export class CourseRenderer implements WorldRenderer {
     const standing = this.ride(you, metres, 0);
     // Every wheel on the road turns with the rider's: the riders keep much the same pace.
     this.kit?.roll(metres);
+    this.marinaBoats?.follow(metres);
+    this.marinaTrees?.follow(metres, frame.reducedMotion ? 0 : frame.time);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.basin?.update(frame.reducedMotion ? 0 : frame.time);
     this.railway?.update(frame.reducedMotion ? 0 : frame.time);
@@ -1269,7 +1294,7 @@ export class CourseRenderer implements WorldRenderer {
     this.shore?.place(metres, frame.reducedMotion ? 0 : frame.time);
     this.geology?.follow(metres);
     this.basin?.followBasin(course, metres, frame.reducedMotion ? 0 : frame.time);
-    this.promenade?.follow(metres, frame.reducedMotion ? 0 : frame.time);
+    this.marinaTrees?.follow(metres, frame.reducedMotion ? 0 : frame.time);
     this.festival?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
@@ -1473,6 +1498,8 @@ export class CourseRenderer implements WorldRenderer {
     this.champsParade = null;
     this.rain = null;
     this.forest = null;
+    this.marinaBoats = null;
+    this.marinaTrees = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -1992,8 +2019,10 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : this.commuters ? 4.1 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : this.commuters ? 2.0 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const distance = this.marinaBoats ? 4.65 : CAMERA_BACK;
+    const eye = this.marinaBoats ? 2.55 : CAMERA_UP;
+    const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : this.commuters ? 4.1 : distance + (CLOSE_BACK - distance) * close;
+    const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : this.commuters ? 2.0 : eye + (CLOSE_UP - eye) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
     const back = course.place(metres - behind, sway, this.here);
     const rim = this.plaza ? Math.max(0, 1 - Math.abs(metres - 3180) / 105) : 0;
@@ -2202,6 +2231,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.rain?.at(time);
     this.quay?.at(time);
+    this.marinaBoats?.at(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
       confetti.rotation.y = 0.012 * Math.sin(time * 0.9);
@@ -2434,6 +2464,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.ferryRoll = this.quay?.ferry.rotation.z ?? null;
     drawn.walkerZ = this.quay?.walkerZ ?? null;
     drawn.cabinHeight = this.funivia?.holder.position.y ?? null;
+    drawn.dhowRoll = this.marinaBoats?.dhow.rotation.z ?? null;
+    drawn.wheelAngle = this.marinaBoats?.wheel.rotation.z ?? null;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;

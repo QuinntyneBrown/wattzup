@@ -933,3 +933,18 @@ Map Select loads the seeded Dolomites map after two stars on Cliffside Coast. Ra
 | 32.60 km | Behind Selva’s Tyrolean hotels, the plateau of the Sella closes the valley head. | Real 03, 07, 08 and 13, games 03–04 |
 
 Follow Caribana’s separation of foreground batches from fixed skyline geometry. Work in the course coordinate system, build the three village groups at their own chainages, and share repeating balcony, stone-wall and tree materials. Use the existing course cableway and ride clock for a moving cabin. Dispose of scene geometry and textures on leaving the race. Measure real submissions near Ortisei and Santa Cristina with the HUD visible, and compare the matched views against the existing ride. See the performance budget design and ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Dubai Marina (#2115)
+
+The class uses DubaiStreet with shared Yachts, Crowd and Ribbons, a 75-storey twisting Cayan Tower, UAE flags, window textures and lit water. Feedback #923 ranks its ride alongside Ibiza, Sa Calobra and Amsterdam. Keep the pale promenade, boat silhouettes, terraced podiums, dusk palette and glass reflections. The current race catalogue has no Dubai Marina entry. Add the historical 14-stage GCN Training class Sprint Into the Effort through Map Select and use the source timings to drive the native course. Its 20:00 ride covers 8.600 km and the low approach to the pedestrian bridge adds 3 m.
+
+| Rider viewpoint | Composition on Low | Reference IDs |
+| --- | --- | --- |
+| 0.08 km | Amber promenade lamps and brushed rails lead into the blue hour. | Real 01–03 and games 01, 05 |
+| 0.78 km | Cayan Tower twists through a quarter turn above the far bank. | Real 03, 06, 14–15 and games 01–02 |
+| 1.65 km | Stern-to yachts and a timber dhow are moored against the lit pontoons. | Real 04–05, 07 and 13, games 02 and 04 |
+| 3.43 km | Palm planters, café terraces and spectators line the sprint barriers. | Real 08–09, 11–12 and games 02 and 05 |
+| 5.64 km | A low bridge crosses the canal and its warm underside reflects in the water. | Real 01, 08–10 and game 04 |
+| 7.76 km | Ain Dubai’s illuminated rim rises beyond the marina mouth. | Real 03 and 14 for skyline scale, game 03 for the observation wheel |
+
+Place Cayan Tower, pedestrian bridges and Ain Dubai in fixed world coordinates. Group the static pontoons, cafés, balcony bands and palms into visibility sections. Reuse the class’s yacht and figure proportions and wardrobing. Use ride time for the bobbing dhow and rippling reflections. Share their surfaces across both rendering backends, and dispose of geometries, materials and texture maps on exit. Caribana’s tapered landmark and near-to-far parallax inform the tower, the boats alongside and the distant skyline. Consult ADRs 0021, 0023, 0030, 0034, 0035 and the performance budget design. Capture the six matched race views and measure two one-minute Low rides.

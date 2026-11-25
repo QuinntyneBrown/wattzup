@@ -437,6 +437,15 @@ export class WorldRideProbe {
     );
   }
 
+  async marinaMotion(part: 'dhowRoll' | 'wheelAngle'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async report(): Promise<WorldRideReport | null> {
     return this.page.evaluate(
       () =>

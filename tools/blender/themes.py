@@ -1412,3 +1412,8 @@ import diwali as _diwali  # noqa: E402
 
 THEMES['diwali'] = _diwali.THEME
 SCENERY['diwali'] = _diwali.scenery
+
+import dubai as _dubai
+
+THEMES["dubai"] = _dubai.THEME
+SCENERY["dubai"] = _dubai.scenery

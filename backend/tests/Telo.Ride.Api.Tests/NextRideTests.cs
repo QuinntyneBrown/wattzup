@@ -43,7 +43,7 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
         {
             var progress = MapProgress.Start(riderId, mapId);
             progress.Restore(stars, null);
-            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez" or "amsterdam-canals" or "els-angels" or "angkor-temples" or "alto-angliru" or "antwerp-port-sprint" or "arenberg-forest" or "philadelphia-art-museum" or "atacama-desert" or "atlantic-ocean-road" or "col-aubisque" or "sixth-street-austin" or "bathsheba-barbados" or "bay-of-islands" or "beach-road-melbourne" or "bealach-na-ba" or "big-sur" or "blackpool-illuminations" or "blue-mountains-jamaica" or "blue-ridge-parkway" or "bondi-to-bronte" or "bonneville-salt-flats" or "indianapolis-brickyard" or "brighton-pride" or "brooklyn-bridge-commute" or "the-bund-shanghai" or "sa-calobra-mallorca" or "passo-campolongo" or "cabot-trail" or "caribana-parade" or "central-park-loop" or "cherry-blossom-festival-dc" or "champs-elysees-finale" or "chicago-loop-crit" or "chichen-itza" or "lake-como" or "comuna-13-medellin" or "coney-island-boardwalk" or "copacabana-promenade" or "copenhagen-cycle-superhighway" or "cornish-harbour" or "cypress-mountain" or "yorkshire-dales" or "daytona-beach-sand" or "death-valley" or "diwali-marine-drive"))
+            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez" or "amsterdam-canals" or "els-angels" or "angkor-temples" or "alto-angliru" or "antwerp-port-sprint" or "arenberg-forest" or "philadelphia-art-museum" or "atacama-desert" or "atlantic-ocean-road" or "col-aubisque" or "sixth-street-austin" or "bathsheba-barbados" or "bay-of-islands" or "beach-road-melbourne" or "bealach-na-ba" or "big-sur" or "blackpool-illuminations" or "blue-mountains-jamaica" or "blue-ridge-parkway" or "bondi-to-bronte" or "bonneville-salt-flats" or "indianapolis-brickyard" or "brighton-pride" or "brooklyn-bridge-commute" or "the-bund-shanghai" or "sa-calobra-mallorca" or "passo-campolongo" or "cabot-trail" or "caribana-parade" or "central-park-loop" or "cherry-blossom-festival-dc" or "champs-elysees-finale" or "chicago-loop-crit" or "chichen-itza" or "lake-como" or "comuna-13-medellin" or "coney-island-boardwalk" or "copacabana-promenade" or "copenhagen-cycle-superhighway" or "cornish-harbour" or "cypress-mountain" or "yorkshire-dales" or "daytona-beach-sand" or "death-valley" or "diwali-marine-drive" or "dubai-marina"))
             {
                 api.Clock.Advance(TimeSpan.FromHours(1));
                 progress.Open(api.Clock.GetUtcNow());
@@ -165,7 +165,8 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
             ("yorkshire-dales", MapStar.All),
             ("daytona-beach-sand", MapStar.All),
             ("death-valley", MapStar.All),
-            ("diwali-marine-drive", MapStar.All));
+            ("diwali-marine-drive", MapStar.All),
+            ("dubai-marina", MapStar.All));
 
         Assert.StartsWith("""nextRideMapId="dolomites";""", await Home(browser));
     }

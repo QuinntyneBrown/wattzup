@@ -60,6 +60,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Daytona Beach Sand (`daytona`) | Drag Race (GCN Training, 20:00) | 8.375 km | 0 m | `public/courses/daytona.glb` ([ride views](screenshots/daytona-beach-sand/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Death Valley (`deathvalley`) | Sufferfest 20 Minute Session (GCN, 23:00) | 9.781 km | 40 m | `public/courses/deathvalley.glb` ([ride views](screenshots/death-valley/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Diwali, Marine Drive (`diwali`) | 25 Minute High Intensity Intervals (GCN, 25:05) | 10.163 km | 4 m | `public/courses/diwali.glb` ([ride views](screenshots/diwali-marine-drive/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Dubai Marina (`dubai`) | Sprint Into the Effort (GCN Training, 20:00) | 8.600 km | 3 m | `public/courses/dubai.glb` ([ride views](screenshots/dubai-marina/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
