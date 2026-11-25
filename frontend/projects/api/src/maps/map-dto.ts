@@ -48,4 +48,6 @@ export interface RealPlace {
 export interface MapTerrain {
   readonly grade: Readonly<Record<SegmentKind, number>>;
   readonly roll: number;
+  /** Baked road heights at equal distances from start to finish, in metres. */
+  readonly elevation?: readonly number[] | null;
 }
