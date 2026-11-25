@@ -1247,3 +1247,8 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import angkor as _angkor  # noqa: E402
+
+THEMES["angkor"] = _angkor.THEME
+SCENERY["angkor"] = _angkor.scenery
