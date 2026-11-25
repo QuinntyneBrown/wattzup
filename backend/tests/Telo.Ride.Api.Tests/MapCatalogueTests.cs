@@ -12,6 +12,59 @@ namespace Telo.Ride.Api.Tests;
 public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<TeloRideApiFactory>
 {
     [Fact]
+    public async Task Aubisque_keeps_the_original_thirty_seven_torque_intervals_and_recoveries()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "col-aubisque");
+        Assert.Equal("aubisque", map.World);
+        Assert.Equal(12.6, map.DistanceKm);
+        Assert.Equal(361, map.ClimbingM);
+        var heights = Assert.IsAssignableFrom<IReadOnlyList<double>>(map.Terrain.Elevation);
+        Assert.InRange(heights.Min(), -110, -100);
+        Assert.InRange(heights[^1], 250, 252);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 14, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 80, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 200, 11, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 80, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 80, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("cool-down", 260, 11, 80)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task The_catalogue_lists_its_maps_in_unlock_order_without_a_session()
     {
         var maps = await ReadMaps();
@@ -29,6 +82,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Sella Ronda", 11.7, 357, "Hard", "Over/Under Intervals on the Passo Sella", "Four Dolomite passes circling the Sella massif"),
                 new Listed("Cinque Terre", 17.1, 335, "Hard", "3 Mins On, 2 Mins Off", "The corniche above the Ligurian Sea"),
                 new Listed("Haleakalā", 15.8, 923, "Brutal", "Maximum Intensity Hill Climb Efforts", "The summit road from the Pacific coast to the crater rim"),
+                new Listed("Col d'Aubisque", 12.6, 361, "Hard", "Cirque du Litor", "Pyrénées-Atlantiques, France"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -51,6 +105,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("sella-ronda", null),
                 ("cinqueterre", null),
                 ("haleakala", null),
+                ("col-aubisque", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -73,6 +128,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("sella-ronda", null),
                 ("cinqueterre", null),
                 ("haleakala", null),
+                ("col-aubisque", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -83,7 +139,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            [null, null, null, null, null, 10, null, null, null, null, null],
+            [null, null, null, null, null, 10, null, null, null, null, null, null],
             maps.Select(m => m.UnlockLevel));
     }
 
@@ -96,7 +152,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "col-aubisque" => 1980, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -115,7 +171,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "aubisque"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
@@ -189,5 +245,5 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
 
     private sealed record Segment(string Kind, int Duration, int Level, int CadenceAim);
 
-    private sealed record CatalogueTerrain(IReadOnlyDictionary<string, double> Grade, double Roll);
+    private sealed record CatalogueTerrain(IReadOnlyDictionary<string, double> Grade, double Roll, IReadOnlyList<double>? Elevation);
 }
