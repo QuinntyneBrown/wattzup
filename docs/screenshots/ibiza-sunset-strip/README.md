@@ -19,8 +19,8 @@ Headed Chromium 159.0.8154.6 on Apple M5 Pro, 1024 × 768 at DPR 1, Low/WebGL 2,
 
 | Section | Scene offset | HUD distance | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak calls |
 | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| Sunset strip opening | 0 m | 0.12 km to 0.96 km | 120.61 | 120.00 | 9.6 ms | 18.4 ms | 58 |
-| Final clubs, DJ terrace and finish | 7820 m | 0.12 km to 0.95 km | 120.52 | 119.99 | 9.6 ms | 22.6 ms | 49 |
+| Sunset strip opening | 0 m | 0.12 km to 0.95 km | 119.20 | 119.09 | 10.2 ms | 92.6 ms | 58 |
+| Final clubs, DJ terrace and finish | 7820 m | 0.12 km to 0.95 km | 120.30 | 120.00 | 9.8 ms | 14.1 ms | 49 |
 
 Reproduce from the frontend workspace with `npm run perf -- ibiza-strip-tablet --headed`.
 
