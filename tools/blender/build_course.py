@@ -1796,7 +1796,7 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         "durationSeconds": sum(s["duration"] for s in st),
         "step": STEP,
         "startIndex": int(LEAD_IN / STEP),
-        "roadHalfWidth": ROAD_HALF,
+        "roadHalfWidth": theme.get("road_half_width", ROAD_HALF) if theme else ROAD_HALF,
         "meanLevel": round(mean, 2),
         "gradePerLevel": per_level,
         # The direction the light comes from, as a unit vector in the glb's axes.
@@ -2205,7 +2205,10 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
-    build_road(road, st, length, col, theme)
+    if (theme or {}).get("road_builder"):
+        theme["road_builder"](road, st, length, col, sys.modules[__name__])
+    else:
+        build_road(road, st, length, col, theme)
     if (theme or {}).get("builder") == "sellaronda":
         _, height_at = sellaronda.build_terrain(road, col, Builder)
         facts = sellaronda.build_scenery(road, st, length, height_at, course, col, Builder, build_sky)
