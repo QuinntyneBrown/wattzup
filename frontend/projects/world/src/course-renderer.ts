@@ -7,6 +7,8 @@ import type { blossomFestival } from './blossom-festival';
 import type { ChicagoRailway } from './chicago-railway';
 import type { chichenPlaza } from './chichen-plaza';
 import type { ConeyBoardwalk } from './coney-boardwalk';
+import type { copacabanaPromenade } from './copacabana-promenade';
+import type { CopacabanaBeach } from './copacabana-beach';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -249,6 +251,8 @@ function jerseyColour(element: Element, jersey: string): Color {
 
 export class CourseRenderer implements WorldRenderer {
   private boardwalk: ConeyBoardwalk | null = null;
+  private promenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
+  private copacabana: CopacabanaBeach | null = null;
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -809,6 +813,24 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.boardwalk.group);
         this.camera.setViewOffset(1, 1, 0, 0.025, 1, 1);
       }
+      if (this.course.file.id === 'copacabana') {
+        const [{ CopacabanaBeach }, { copacabanaPromenade }] = await Promise.all([
+          import('./copacabana-beach'),
+          import('./copacabana-promenade'),
+        ]);
+        if (this.disposed) return false;
+        const promenade = await copacabanaPromenade(this.course);
+        if (this.disposed) {
+          promenade.dispose();
+          return false;
+        }
+        this.promenade = promenade;
+        this.scene.add(promenade.root);
+        this.disposables.push(promenade);
+        this.camera.setViewOffset(1, 1, 0, 0.07, 1, 1);
+        this.copacabana = new CopacabanaBeach(this.course, this.scene);
+        this.disposables.push(this.copacabana);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1015,6 +1037,8 @@ export class CourseRenderer implements WorldRenderer {
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.champsParade?.update(frame.time, metres, frame.reducedMotion);
     this.riderBatch?.follow();
+    this.promenade?.follow(metres);
+    this.copacabana?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
@@ -1121,6 +1145,9 @@ export class CourseRenderer implements WorldRenderer {
     });
     this.boardwalk?.group.removeFromParent();
     this.boardwalk = null;
+    this.promenade?.root.removeFromParent();
+    this.promenade = null;
+    this.copacabana = null;
     this.map = null;
     // The chunks were taken out of the map: their geometry is released here.
     for (const { mesh } of this.chunks) mesh.geometry.dispose();
@@ -1709,8 +1736,8 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = calobra ? 2.1 : this.boardwalk ? 2.35 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
+    const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
     const back = course.place(metres - behind, sway, this.here);
     const rim = this.plaza ? Math.max(0, 1 - Math.abs(metres - 3180) / 105) : 0;
@@ -2129,6 +2156,12 @@ export class CourseRenderer implements WorldRenderer {
       Object.assign(drawn, {
         carRadius: this.boardwalk.street.carRadius,
         trainX: this.boardwalk.street.trainX,
+      });
+    }
+    if (this.copacabana) {
+      Object.assign(drawn, {
+        volleyballY: this.copacabana.volleyballY,
+        breakerX: this.copacabana.breakerX,
       });
     }
     hook['course'] = drawn;

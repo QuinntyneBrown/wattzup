@@ -183,6 +183,8 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
 
     private sealed record Me(Guid Id);
 
+    private sealed record Me(Guid Id);
+
     private sealed record Found(string? Code, string? SessionId, DateTimeOffset? StartsAt, int? Seat);
 
     private sealed record RaceStandings(string SessionId, IReadOnlyList<Row> Rows);

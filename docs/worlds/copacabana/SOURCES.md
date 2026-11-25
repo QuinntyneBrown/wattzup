@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [feature__daily-group-rides](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2022/10/feature__daily-group-rides.jpg) (g0914) | © MyWhoosh |
 | game-04.jpg | Zwift: [“Coastal Crown Loop” Route Details (Watopia)](https://zwiftinsider.com/route/coastal-crown-loop/) (g0022) | © Zwift |
 | game-05.jpg | Zwift: [“Island Hopper” Route Details (Makuri Islands)](https://zwiftinsider.com/route/island-hopper/) (g0069) | © Zwift |
+
+The promenade visitors use cutouts adapted from Telo Ride’s Caribana crowd art. The coconut palm and tropical almond are original transparent portraits generated for this course. The Blender palms, Palace, kiosks, granite domes, Portuguese stone joints and volleyball players are original course assets.

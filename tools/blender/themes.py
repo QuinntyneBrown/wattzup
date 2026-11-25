@@ -1402,3 +1402,8 @@ import coney as _coney  # noqa: E402
 
 THEMES["coney"] = _coney.THEME
 SCENERY["coney"] = _coney.scenery
+
+import copacabana as _copacabana  # noqa: E402
+
+THEMES['copacabana'] = _copacabana.THEME
+SCENERY['copacabana'] = _copacabana.scenery
