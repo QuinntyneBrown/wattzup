@@ -215,3 +215,13 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+## Grand Canyon South Rim (#2130)
+
+Map Select binds Desert View Drive to the 32-stage VO2 Max Booster programme. The 13.425 km centreline gives the rider, course panel and chase camera the same physical grade. Ride east through ponderosas and pinyon-juniper. Open the treeline for Grandview, Moran, Lipan and Navajo Points. Place the Watchtower and its round observation building at Desert View, visible before reaching the finish.
+
+Model the rim as a pale overhanging limestone cap, followed by alternating stair-step benches and steep bands with original weathered strata. Cut tributary ravines through these layers. Keep the Colorado River far below in the eastern overlooks. Give individual temples and buttes distinct profiles against successive hazed ridges. Bake light from the west and darker recesses on the eastern faces. Build the mortared terraces, tubular rails, visitor groups and parked cars at the turnouts. Share geometry across the pines and keep the forest on the inland side of each open view.
+
+Move a shuttle and passing cloud shadows from the ride clock. Batch repeated props by course section, retain the distant canyon skyline on Low and release the buffers and materials on exit. Verify six matched rider views, pause and resume, original stage fidelity, and two one-minute headed tablet samples.
+
+[forest](../../../mocks/pages/race/grandcanyon-forest.html) · [grandview](../../../mocks/pages/race/grandcanyon-grandview.html) · [moran](../../../mocks/pages/race/grandcanyon-moran.html) · [lipan](../../../mocks/pages/race/grandcanyon-lipan.html) · [navajo](../../../mocks/pages/race/grandcanyon-navajo.html) · [tower](../../../mocks/pages/race/grandcanyon-tower.html)
