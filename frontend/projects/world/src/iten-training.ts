@@ -167,7 +167,7 @@ export class ItenTraining {
       this.box(0.21, 1.21, 0.2 * side, 0.51, 0.1, 0.12, 0x9b8345, -0.38);
     }
     for (const [mesh, metres, lane, lift] of [
-      [this.signs[0]!, 8759, -8.5, 2.20],
+      [this.signs[0]!, 8759, -8.5, 2.2],
       [this.signs[1]!, 12865, -8.0, 2.83],
     ] as const) {
       const p = course.place(metres, lane);
