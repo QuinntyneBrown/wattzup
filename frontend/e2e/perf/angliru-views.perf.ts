@@ -28,6 +28,7 @@ test('Angliru from the Asturian pasture through Cueña les Cabres to the summit'
     ['horreo', 0.28],
     ['crowd', 14.22],
     ['crux', 14.89],
+    ['wall', 14.94],
     ['summit', 17.59],
   ] as const) {
     while (parseFloat((await race.distance.textContent())!) < km) {
