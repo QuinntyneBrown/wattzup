@@ -355,6 +355,11 @@ export class CourseRenderer implements WorldRenderer {
       this.course = new Course(parseCourse(file));
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
+      if (this.course.file.id === 'atacama') {
+        // The summit is thirty kilometres away across the salt basin at the start.
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+      }
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
 

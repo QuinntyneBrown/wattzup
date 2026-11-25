@@ -149,3 +149,35 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const atacamaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'atacama-desert',
+  name: 'Atacama Desert',
+  routeName: 'The salar road',
+  place: 'Antofagasta, Chile',
+  world: 'atacama',
+  distanceKm: 21.275,
+  climbingM: 15,
+  rating: 'Hard',
+  terrain: { grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 }, roll: 0 },
+  thumbnailUrl: 'maps/atacama-desert.jpg',
+  photoUrl: 'maps/atacama-desert-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 450, 14, 84),
+      seg('work', 195, 19, 80),
+      seg('recover', 165, 18, 100),
+      seg('work', 195, 19, 80),
+      seg('recover', 165, 18, 100),
+      seg('work', 195, 19, 80),
+      seg('recover', 165, 18, 100),
+      seg('work', 195, 19, 80),
+      seg('recover', 165, 18, 100),
+      seg('work', 195, 19, 80),
+      seg('recover', 315, 18, 100),
+      seg('work', 300, 19, 60),
+      seg('cool-down', 300, 13, 80),
+    ],
+  },
+};
