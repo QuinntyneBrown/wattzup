@@ -1319,3 +1319,8 @@ import atacama as _atacama
 
 THEMES["atacama"] = _atacama.THEME
 SCENERY["atacama"] = _atacama.scenery
+
+import atlanticroad as _atlanticroad
+
+THEMES["atlanticroad"] = _atlanticroad.THEME
+SCENERY["atlanticroad"] = _atlanticroad.scenery

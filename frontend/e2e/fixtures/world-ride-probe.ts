@@ -235,4 +235,18 @@ export class WorldRideProbe {
           .__wzWorldRide?.course?.vicunaHeadHeight ?? null,
     );
   }
+  /** Start at a physical viewpoint after Map Select is open and before the course loads. */
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+  /** Height of a breaking plume at the Storseisundet approach. */
+  async sprayHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { sprayHeight?: number } } })
+          .__wzWorldRide?.course?.sprayHeight ?? null,
+    );
+  }
 }

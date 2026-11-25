@@ -95,6 +95,8 @@ import { heldFps } from './held-fps';
 import type { SalarMirage } from './atacama-salt';
 import type { AtacamaWildlife } from './atacama-wildlife';
 import { heldFps } from './held-fps';
+import type { AtlanticSwell } from './atlantic-swell';
+import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -261,6 +263,7 @@ export class CourseRenderer implements WorldRenderer {
     joggerHeight: null as number | null,
     vicunaHeadHeight: null as number | null,
     flamingoBillHeight: null as number | null,
+    sprayHeight: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -282,6 +285,7 @@ export class CourseRenderer implements WorldRenderer {
   private mirage: SalarMirage | null = null;
   private salt: Material | null = null;
   private wildlife: AtacamaWildlife | null = null;
+  private swell: AtlanticSwell | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -487,6 +491,13 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.wildlife.mesh);
         this.disposables.push(this.wildlife);
       }
+      if (this.course.file.id === 'atlanticroad') {
+        const { AtlanticSwell } = await import('./atlantic-swell');
+        if (this.disposed) return false;
+        this.swell = new AtlanticSwell(this.course);
+        this.scene.add(this.swell.group);
+        this.disposables.push(this.swell);
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -564,6 +575,7 @@ export class CourseRenderer implements WorldRenderer {
       frame.reducedMotion ? 0 : frame.time,
     );
     this.wildlife?.update(you.group.position.x, frame.reducedMotion ? 0 : frame.time);
+    this.swell?.update(metres, frame.reducedMotion ? 0 : frame.time, this.camera.quaternion);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -643,6 +655,7 @@ export class CourseRenderer implements WorldRenderer {
     this.wildlife = null;
     this.salt = null;
     this.mirage = null;
+    this.swell = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -997,7 +1010,12 @@ export class CourseRenderer implements WorldRenderer {
       this.scene.add(carried);
     } else {
       const dome = new SphereGeometry(9000, 24, 12);
-      const sky = skyMaterial(look, this.course!.file.sun, detail);
+      const sky = skyMaterial(
+        look,
+        this.course!.file.sun,
+        detail,
+        this.course!.file.id === 'atlanticroad',
+      );
       this.skyClock = sky.at;
       this.sky = new Mesh(dome, sky.material);
       this.sky.renderOrder = -1;
@@ -1491,6 +1509,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.joggerHeight = this.joggers?.height ?? null;
     drawn.vicunaHeadHeight = this.wildlife?.headHeight ?? null;
     drawn.flamingoBillHeight = this.wildlife?.billHeight ?? null;
+    drawn.sprayHeight = this.swell?.height ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

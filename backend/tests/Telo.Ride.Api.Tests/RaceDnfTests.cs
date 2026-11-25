@@ -32,9 +32,8 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
         var lena = await Rider("lena.k");
         var marco = await Rider("MarcoVelo");
         var race = await Find(lena);
-        await Find(marco);
         var lenaHears = Listen(lena);
-        await Start(lena, race);
+        await Start(lena, marco, race);
         await Report(marco, race.SessionId!, 40, 300);
         api.Clock.Advance(TimeSpan.FromSeconds(1));
         await lenaHears.Await(s => s.Rows.Any(row => row.Name == "MarcoVelo" && row.DistanceMetres == 40), Wait);
@@ -52,9 +51,8 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
         var priya = await Rider("priya_spins");
         var ollie = await Rider("Ollie R.");
         var race = await Find(priya);
-        await Find(ollie);
         var heard = Listen(priya);
-        await Start(priya, race);
+        await Start(priya, ollie, race);
         await Report(ollie, race.SessionId!, 8, 250);
 
         RaceStandings? standings = null;
@@ -76,9 +74,8 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
         var kenji = await Rider("kenji.cyc");
         var ana = await Rider("ana_rides");
         var race = await Find(kenji);
-        await Find(ana);
         var heard = Listen(kenji);
-        await Start(kenji, race);
+        await Start(kenji, ana, race);
         var cookie = cookies[ana];
         await ana.StopAsync(Cancel);
 
@@ -103,13 +100,15 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
     }
 
     /// <summary>Takes the clock to the bot fill, awaits it, then to one second after the start, and awaits the first standings (L164).</summary>
-    private async Task Start(HubConnection hub, Found race)
+    private async Task Start(HubConnection hub, HubConnection secondRider, Found race)
     {
-        var seats = new EventProbe<object>(_ => "seats");
-        hub.On<object>("SeatsChanged", seats.Record);
+        var seats = new EventProbe<Grid>(grid => $"{grid.SessionId}: {string.Join(", ", grid.Seats.Select(seat => seat.Kind))}");
+        using var subscription = hub.On<Grid>("SeatsChanged", seats.Record);
         var standings = Listen(hub);
+        Assert.Equal(race.SessionId, (await Find(secondRider)).SessionId);
+        await seats.Await(grid => grid.SessionId == race.SessionId && grid.Seats.Count(seat => seat.Kind == "rider") == 2, Wait);
         api.Clock.Advance(race.StartsAt!.Value.AddSeconds(-10) - api.Clock.GetUtcNow());
-        await seats.Await(_ => true, Wait);
+        await seats.Await(grid => grid.SessionId == race.SessionId && grid.Seats.Any(seat => seat.Kind == "bot"), Wait);
         api.Clock.Advance(race.StartsAt.Value.AddSeconds(1) - api.Clock.GetUtcNow());
         await standings.Await(s => s.SessionId == race.SessionId, Wait);
     }
@@ -159,6 +158,10 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
         await hub.StartAsync(Cancel);
         return hub;
     }
+
+    private sealed record Grid(string SessionId, IReadOnlyList<Seat> Seats);
+
+    private sealed record Seat(string Kind);
 
     private sealed record Found(string? Code, string? SessionId, DateTimeOffset? StartsAt, int? Seat);
 

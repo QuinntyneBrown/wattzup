@@ -174,6 +174,30 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     }
 
     [Fact]
+    public async Task Atlantic_road_keeps_the_nine_stages_of_FTP_HIIT_booster()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "atlantic-ocean-road");
+        Assert.Equal("atlanticroad", map.World);
+        Assert.Equal(13.125, map.DistanceKm);
+        Assert.Equal(65, map.ClimbingM);
+        var heights = Assert.IsAssignableFrom<IReadOnlyList<double>>(map.Terrain.Elevation);
+        Assert.InRange(heights[1320 / 5], 25, 28);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 13, 80),
+                new Segment("work", 60, 16, 85),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 300, 21, 90),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 420, 21, 90),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 600, 21, 90),
+                new Segment("cool-down", 120, 11, 80)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task The_catalogue_lists_its_maps_in_unlock_order_without_a_session()
     {
         var maps = await ReadMaps();
@@ -203,6 +227,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Arenberg Forest", 10.725, 34, "Hard", "Trouée d’Arenberg", "Wallers, Hauts-de-France"),
                 new Listed("Philadelphia Art Museum Steps", 8.175, 86, "Hard", "Benjamin Franklin Parkway", "Philadelphia, Pennsylvania"),
                 new Listed("Atacama Desert", 21.275, 15, "Hard", "The salar road", "Antofagasta, Chile"),
+                new Listed("Atlantic Ocean Road", 13.125, 65, "Hard", "Storseisundet Bridge", "Møre og Romsdal, Norway"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -237,6 +262,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("arenberg-forest", null),
                 ("philadelphia-art-museum", null),
                 ("atacama-desert", null),
+                ("atlantic-ocean-road", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -271,6 +297,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("arenberg-forest", null),
                 ("philadelphia-art-museum", null),
                 ("atacama-desert", null),
+                ("atlantic-ocean-road", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -313,7 +340,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));

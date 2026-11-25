@@ -2273,7 +2273,10 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
-    if theme and theme.get("road_builder"):
+    if (theme or {}).get("road_builder"):
+        theme["road_builder"](road, st, length, col, sys.modules[__name__])
+    else:
+        if theme and theme.get("road_builder"):
         theme["road_builder"](road, st, length, col, sys.modules[__name__])
     else:
         (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
