@@ -1247,3 +1247,10 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import gardena as _gardena
+
+for name in ("gardena-pasture", "gardena-scree", "gardena-tarmac"):
+    MATERIALS[name] = {"color": 0x818378, "rough": 1.0, "vertex": True}
+THEMES["gardena"] = _gardena.THEME
+SCENERY["gardena"] = _gardena.scenery

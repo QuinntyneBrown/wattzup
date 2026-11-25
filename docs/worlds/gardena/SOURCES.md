@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Power to the Tower” Route Details (Watopia)](https://zwiftinsider.com/route/power-to-the-tower/) (g0121) | © Zwift |
 | game-04.jpg | Zwift: [“Mountain Route” Route Details (Watopia)](https://zwiftinsider.com/route/mountain-route/) (g0104) | © Zwift |
 | game-05.jpg | Zwift: [“Mountain Mash” Route Details (Watopia)](https://zwiftinsider.com/route/mountain-mash/) (g0102) | © Zwift |
+
+## Race artwork
+
+The three mountain profiles are original generated interpretations of Sella (real 02, 04, 09–11 and 15), Cir (real 05–06 and 12–14), and Sassolungo (real 03, 06 and 14). The summer larch, spruce and stone pine atlas follows real 07, 10, 12 and 14. The barn and rifugio facades are original artwork informed by real 01, 07–09 and 13. The peloton uses the repository’s Ride One cyclist kit with its bundled licence. The asphalt is the original Galibier course surface and the cloud uses the original Fuji course artwork. The rider-view evidence identifies the game references for rider scale and sightlines at each location.

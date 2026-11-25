@@ -1,0 +1,79 @@
+{
+  "id": "gardena",
+  "name": "Passo Gardena",
+  "world": "gardena",
+  "theme": "gardena",
+  "seed": 2124,
+  "layout": 0,
+  "class": {
+    "id": "progressive-efforts-on-the-passo-gardena",
+    "title": "Progressive Efforts on the Passo Gardena",
+    "channel": "GCN",
+    "videoId": "SZRk3OY2RAY",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 360,
+        "level": 12,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 18,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 20,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "cool-down",
+        "duration": 90,
+        "level": 10,
+        "cadenceAim": 85
+      }
+    ]
+  }
+}
