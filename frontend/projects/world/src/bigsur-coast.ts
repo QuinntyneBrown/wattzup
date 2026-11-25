@@ -57,7 +57,7 @@ export class BigSurCoast {
       [93, 39, 19],
     ] as const) {
       const fade = g.createRadialGradient(x, y, 0, x, y, r);
-      fade.addColorStop(0, 'rgba(220,229,228,.72)');
+      fade.addColorStop(0, 'rgba(220,229,228,.44)');
       fade.addColorStop(0.55, 'rgba(232,247,244,.55)');
       fade.addColorStop(1, 'rgba(255,255,250,0)');
       g.fillStyle = fade;
@@ -76,6 +76,22 @@ export class BigSurCoast {
   ];
   private readonly at: CoursePlace = { x: 0, y: 0, z: 0, heading: 0, pitch: 0 };
   private readonly part = new Object3D();
+  private readonly cascadeTexture = canvasTexture(32, 128, (g) => {
+    const across = g.createLinearGradient(0, 0, 32, 0);
+    across.addColorStop(0, 'rgba(236,247,244,0)');
+    across.addColorStop(0.32, 'rgba(234,247,244,.78)');
+    across.addColorStop(0.67, 'rgba(249,252,248,.91)');
+    across.addColorStop(1, 'rgba(231,244,240,0)');
+    g.fillStyle = across;
+    g.fillRect(0, 0, 32, 128);
+  });
+  private readonly cascadeMaterial = new MeshBasicMaterial({
+    map: this.cascadeTexture,
+    transparent: true,
+    depthWrite: false,
+    side: DoubleSide,
+  });
+  private readonly cascade = new InstancedMesh(this.geometry, this.cascadeMaterial, 1);
   private readonly spray = new InstancedMesh(this.geometry, this.material, 40);
   private readonly fallsAnchor: CoursePlace = { x: 0, y: 0, z: 0, heading: 0, pitch: 0 };
   fallHeight: number | null = null;
@@ -83,9 +99,9 @@ export class BigSurCoast {
 
   constructor(private readonly course: Course) {
     this.waves.frustumCulled = this.pools.frustumCulled = false;
-    this.spray.frustumCulled = false;
-    this.course.place(5845, 73, this.fallsAnchor);
-    this.group.add(this.pools, this.waves, this.spray, ...this.banks);
+    this.spray.frustumCulled = this.cascade.frustumCulled = false;
+    this.course.place(5844.6, 73, this.fallsAnchor);
+    this.group.add(this.pools, this.waves, this.spray, this.cascade, ...this.banks);
     this.update(0, 0);
   }
 
@@ -125,9 +141,20 @@ export class BigSurCoast {
     }
     this.waves.instanceMatrix.needsUpdate = this.pools.instanceMatrix.needsUpdate = true;
     this.spray.visible = Math.abs(metres - 5845) < 530;
+    this.cascade.visible = this.spray.visible;
     this.fallHeight = null;
     if (this.spray.visible) {
       const lip = this.fallsAnchor;
+      this.part.position.set(
+        lip.x + Math.sin(lip.heading) * 1.7,
+        14,
+        lip.z + Math.cos(lip.heading) * 1.7,
+      );
+      this.part.rotation.set(0.1, lip.heading, 0, 'YXZ');
+      this.part.scale.set(2.05, 24, 1);
+      this.part.updateMatrix();
+      this.cascade.setMatrixAt(0, this.part.matrix);
+      this.cascade.instanceMatrix.needsUpdate = true;
       for (let i = 0; i < 40; i++) {
         const f = (time * 0.52 + i / 40) % 1;
         const height = 2 + 24 * (1 - f * f);
@@ -153,7 +180,7 @@ export class BigSurCoast {
       const bank = this.banks[i]!;
       this.course.place(d, 122 + 53 * Math.sin(time * 0.046 + i), this.at);
       const fade = Math.max(0, Math.min(1, (372 - Math.abs(d - metres)) / 100));
-      bank.position.set(this.at.x, this.at.y + 9 + 8 * Math.sin(time * 0.045 + i), this.at.z);
+      bank.position.set(this.at.x, this.at.y + 24 + 8 * Math.sin(time * 0.045 + i), this.at.z);
       bank.scale.set((181 + i * 73) * fade, (23 + i * 3) * fade, 1);
     }
   }
@@ -161,6 +188,9 @@ export class BigSurCoast {
   dispose(): void {
     this.group.removeFromParent();
     for (const resource of [
+      this.cascade,
+      this.cascadeMaterial,
+      this.cascadeTexture,
       this.spray,
       this.waves,
       this.pools,

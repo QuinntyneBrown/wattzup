@@ -17,14 +17,22 @@ def heading(d):
     for mid,half,span,rise,z in BRIDGES:
         blend = 1-smooth(half-1,half+95,abs(d-mid))
         heading += blend*(.50-heading)
-    return heading
+    # Across the Bixby mouth the road hooks inland, then doubles back over the canyon.
+    # The chord from the turnout to the main arch crosses open water on the outside of the bend.
+    overlook = .07 + 1.25*smooth(1090,1190,d) - 1.96*smooth(1230,1350,d)
+    weight = smooth(760,948,d)*(1-smooth(1610,1830,d))
+    heading += (overlook-heading)*weight
+    cove_weight=smooth(5400,5550,d)*(1-smooth(6060,6190,d))
+    cove=-.77+1.18*smooth(5742,5810,d)
+    return heading+(cove-heading)*cove_weight
 
 
 def height(d):
     base=53+19*math.sin(d/810)+11*math.sin(d/335)+7*math.sin(d/171)
     for mid,half,span,rise,z in BRIDGES:
         blend=1-smooth(half,half+240,abs(d-mid));base+=blend*(z-base)
-    return base
+    base-=41*math.exp(-((d-5730)/305)**4)
+    return base+28*math.exp(-((d-1090)/184)**2)*(1-smooth(1240,1340,d))
 
 
 def route(course,theme,bc):
@@ -44,8 +52,11 @@ def terrain(d,l):
     elif l < -5:
         v=-l-5
         toe=61+18*math.sin(d/289)+13*math.sin(d/106)
+        cove=smooth(5650,5730,d)*(1-smooth(5860,5930,d))
+        toe+=(33-toe)*cove
         z+=(1.8-z)*smooth(0,toe,v)
-        z-=max(0,v-toe)*.23
+        z-=max(0,v-toe)*(.23-.205*cove)
+        if cove: z-=max(0,v-91)*.21*cove
     for mid,half,span,rise,deck in BRIDGES:
         # The ravine cuts across Highway 1 and opens out towards the Pacific.
         canyon=1-smooth(half*.20,half+21+max(0,-l)*.34,abs(d-mid+l*.22))
@@ -207,10 +218,39 @@ def scenery(k):
     for d in range(40,14030,91):
         l=-rng.uniform(70,140);x,y,_=k.road.pos(d,l)
         r=rng.uniform(7,18);sea_stack(art,x,y,r,r*rng.uniform(.50,.92),r*rng.uniform(.72,1.55),rng.uniform(0,7))
-    # A side canyon opens onto a pale pocket beach below McWay Falls.
-    for j in range(33):
-        d=5760+j*3.8;l=-49-15*math.sin(j*math.pi/33);x,y,_=k.road.pos(d,l)
-        sea_stack(art,x,y,6.7,5.1,7.4+8.6*abs(math.cos(j*.16)),j*.42)
+    # The slate ledge feeds a 24 m ribbon of fresh water onto the cove beach.
+    # Joints and lichen break the exposed seaward face; the lip stays in register with the falling water.
+    for j in range(16):
+        d=5845+j*1.9
+        def section(s):
+            wave=math.sin(s*.72)
+            height=26+2.4*math.sin(s*.21)+.59*math.sin(s*1.41)
+            bank=-73.6-5.4*math.sin(s*.14)
+            pts=[]
+            for offset,frac in ((4.6,0),(3.2,.13),(1.4,.29),(1.7,.34),(.15,.66),(.7,.73),(-.35,.91),(-.64,1)):
+                x,y,_=k.road.pos(5845+s*1.9,bank-offset-.42*wave)
+                pts.append((x,y,.8+frac*height))
+            return pts
+        here,nxt=section(j),section(j+1)
+        for h in range(len(here)-1):
+            f=(here[h],nxt[h],nxt[h+1],here[h+1])
+            tint=(0xA69D87,0x8E8879,0xB2AB92,0x8A8678,0xABA48A,0x8B8B74,0x85916C)[h]
+            co=lin(tint);art.face(f, (co,)*4);art.face(f[::-1],(co,)*4)
+        x,y,_=k.road.pos(d,-61)
+        xx,yy,_=k.road.pos(d+1.9,-61)
+        a=(x,y,here[-1][2]-.8);b=(xx,yy,nxt[-1][2]-.8)
+        art.face((here[-1],nxt[-1],b,a),(lin(0x7D8B66),)*4)
+        if j==0:
+            for h in range(len(here)-1):
+                u,v=here[h],here[h+1];t=(x,y,u[2]);w=(x,y,v[2])
+                co=lin((0x8F8779,0xACA28B,0x8C8777)[h%3]);art.face((u,t,w,v),(co,)*4);art.face((v,w,t,u),(co,)*4)
+    for j in range(24):
+        d=5859+j*1.9;l=-70+4*math.sin(j*.21)
+        x,y,_=k.road.pos(d,l)
+        sea_stack(art,x,y,7.2,6.4,25.5+2.1*math.sin(j*.29),j*.24)
+    for j in range(18):
+        d=5870+j*5;l=-83-12*math.sin(j*math.pi/18)
+        x,y,_=k.road.pos(d,l);sea_stack(art,x,y,6.7,5.1,7.4+7*math.cos(j*.22),j*.42)
     ridge=Painted(k,'peaks')
     for row in range(2):
         previous=None

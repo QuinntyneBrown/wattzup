@@ -159,7 +159,7 @@ export const bigSurCourseMap = {
   place: 'California, USA',
   world: 'bigsur',
   distanceKm: 14.075,
-  climbingM: 240,
+  climbingM: 286,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
