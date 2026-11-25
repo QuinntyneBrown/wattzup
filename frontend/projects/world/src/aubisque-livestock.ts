@@ -8,7 +8,7 @@ import {
   Vector3,
 } from 'three/webgpu';
 
-import { Course } from './course';
+import type { Course } from './course';
 
 const herds = [158, 3170, 8160, 12412];
 /** Nearby livestock share a single instanced draw. Each hoof follows the local road height. */
