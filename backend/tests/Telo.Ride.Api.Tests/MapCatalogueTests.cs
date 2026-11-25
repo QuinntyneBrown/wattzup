@@ -12,6 +12,35 @@ namespace Telo.Ride.Api.Tests;
 public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<TeloRideApiFactory>
 {
     [Fact]
+    public async Task Iceland_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "iceland-ring-road");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("work", 30, 21, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("recover", 60, 16, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 16, 80),
+                new Segment("work", 120, 22, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 120, 22, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 120, 22, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 24, 80),
+                new Segment("cool-down", 90, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task Angliru_rides_all_twenty_one_stages_of_five_gruelling_minutes()
     {
         var map = Assert.Single(await ReadMaps(), m => m.Id == "alto-angliru");
@@ -830,6 +859,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Sa Calobra, Mallorca", 11.851, 671, "Hard", "The Sa Calobra climb", "Mallorca, Spain"),
                 new Listed("Passo Campolongo", 8.235, 307, "Hard", "The road from Corvara", "Alta Badia, Italy"),
                 new Listed("Cabot Trail", 25.075, 584, "Hard", "The Cabot Trail", "Cape Breton, Nova Scotia"),
+                new Listed("Iceland Ring Road", 12, 91, "Moderate", "Route 1", "The South Coast from Seljalandsfoss to Jökulsárlón"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -884,6 +914,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("sa-calobra-mallorca", null),
                 ("passo-campolongo", null),
                 ("cabot-trail", null),
+                ("iceland-ring-road", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -938,6 +969,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("sa-calobra-mallorca", null),
                 ("passo-campolongo", null),
                 ("cabot-trail", null),
+                ("iceland-ring-road", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -980,7 +1012,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "iceland"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
