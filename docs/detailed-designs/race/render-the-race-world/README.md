@@ -948,3 +948,18 @@ The class uses DubaiStreet with shared Yachts, Crowd and Ribbons, a 75-storey tw
 | 7.76 km | Ain Dubai’s illuminated rim rises beyond the marina mouth. | Real 03 and 14 for skyline scale, game 03 for the observation wheel |
 
 Place Cayan Tower, pedestrian bridges and Ain Dubai in fixed world coordinates. Group the static pontoons, cafés, balcony bands and palms into visibility sections. Reuse the class’s yacht and figure proportions and wardrobing. Use ride time for the bobbing dhow and rippling reflections. Share their surfaces across both rendering backends, and dispose of geometries, materials and texture maps on exit. Caribana’s tapered landmark and near-to-far parallax inform the tower, the boats alongside and the distant skyline. Consult ADRs 0021, 0023, 0030, 0034, 0035 and the performance budget design. Capture the six matched race views and measure two one-minute Low rides.
+
+## Edinburgh Fringe (#2116)
+
+EdinburghStreet already animates a juggling cascade, with stone façades, crowds and Fringe posters. Rider feedback #911 asks to keep its look and feel. The race catalogue has no Edinburgh entry. Use the original 17 stages of GCN Training’s 20 Minute HIIT to make its 20:00, 8.655 km race accessible from Map Select. The climbing route condenses the lower Canongate, High Street, Lawnmarket and Castlehill into a sequence sized to the workout. Bends and changing rooflines reveal the church spires before the Esplanade opens out.
+
+| Viewpoint | Rider-height target | Sources |
+| --- | --- | --- |
+| 0.08 km | Granite setts rise between tall stone lands and narrow closes. | Real 01–02, 06 and 15, games 01 and 05 |
+| 1.34 km | The Tron Kirk spire marks the entrance to the High Street. | Real 02, 06–07 and 13, games 02 and 03 |
+| 2.57 km | A juggler and a fire performer draw separate audience circles on the setts. | Real 01–05 and 12, games 03 and 05 |
+| 4.68 km | Four open Gothic ribs support the crown above St Giles’ Cathedral. | Real 08–11, games 02 and 04 |
+| 5.41 km | The Heart of Midlothian is picked out in the paving by the west door. | Real 08–11 and game 01 for the scale of the paving |
+| 8.39 km | The street opens onto the Esplanade below the Castle on its rock. | Real 13–15, games 04 and 05 |
+
+Give the Castle, St Giles and Tron Kirk separate fixed silhouettes, following Caribana’s landmark parallax. Batch the setts, stone surrounds and street furniture, retain the juggling cascade, and add fire and damp-stone highlights on ride time. Keep temporary stages, flyering queues and the Heritage Heart clear of the racing line. Group spectators and posters by visible section and release every owned texture, material and geometry on exit. Consult the performance budget design and ADRs 0021, 0023, 0030, 0034 and 0035. Measure the opened race with the six matched views and two minute-long tablet runs.

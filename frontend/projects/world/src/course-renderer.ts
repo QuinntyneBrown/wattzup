@@ -14,6 +14,8 @@ import type { DiwaliFestival } from './diwali-festival';
 import type { gardenaForest } from './gardena-forest';
 import type { marinaPromenade } from './marina-promenade';
 import type { MarinaBoats } from './marina-boats';
+import type { fringeStreet } from './fringe-street';
+import type { FringePerformers } from './fringe-performers';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -298,6 +300,8 @@ export class CourseRenderer implements WorldRenderer {
   private forest: Awaited<ReturnType<typeof gardenaForest>> | null = null;
   private marinaTrees: Awaited<ReturnType<typeof marinaPromenade>> | null = null;
   private marinaBoats: MarinaBoats | null = null;
+  private street: Awaited<ReturnType<typeof fringeStreet>> | null = null;
+  private fringe: FringePerformers | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -360,6 +364,9 @@ export class CourseRenderer implements WorldRenderer {
     cabinHeight: null as number | null,
     dhowRoll: null as null | number,
     wheelAngle: null as null | number,
+    clubY: null as null | number,
+    spectatorSections: 0,
+    torchAngle: null as null | number,
     tier: 0 as number,
     pushCarPosition: undefined as number | undefined,
     mirageHeight: undefined as number | undefined,
@@ -1066,6 +1073,24 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(promenade.group);
         this.disposables.push(promenade);
       }
+      if (this.course.file.id === 'edinburgh') {
+        this.camera.setViewOffset(1, 1, 0, 0.02, 1, 1);
+        const { FringePerformers } = await import('./fringe-performers');
+        if (this.disposed) return false;
+        this.fringe = new FringePerformers(this.course, this.scene);
+        this.disposables.push(this.fringe);
+        const { fringeStreet } = await import('./fringe-street');
+        if (this.disposed) return false;
+        const street = await fringeStreet(this.course);
+        if (this.disposed) {
+          street.dispose();
+          return false;
+        }
+        this.street = street;
+        this.scene.add(street.group);
+        this.disposables.push(street);
+        street.at(0);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1352,6 +1377,7 @@ export class CourseRenderer implements WorldRenderer {
     this.cruise?.update(frame.reducedMotion ? 0 : frame.time);
     this.lifts?.update(frame.reducedMotion ? 0 : frame.time);
     this.cabotWildlife?.update(frame.reducedMotion ? 0 : frame.time);
+    this.street?.at(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -1365,7 +1391,8 @@ export class CourseRenderer implements WorldRenderer {
     this.ferries?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.barrio?.follow(metres);
     this.crews?.update(frame.reducedMotion ? 0 : frame.time, metres);
-    if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
+    if (this.rain)
+      this.rain.mesh.visible = !frame.reducedMotion && (!this.street || frame.time % 95 < 34);
     if (this.canalTraffic.length)
       this.placeCanalTraffic(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.templeTraffic.length)
@@ -1500,6 +1527,8 @@ export class CourseRenderer implements WorldRenderer {
     this.forest = null;
     this.marinaBoats = null;
     this.marinaTrees = null;
+    this.fringe = null;
+    this.street = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -2019,8 +2048,8 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const distance = this.marinaBoats ? 4.65 : CAMERA_BACK;
-    const eye = this.marinaBoats ? 2.55 : CAMERA_UP;
+    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : CAMERA_BACK;
+    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : CAMERA_UP;
     const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : this.commuters ? 4.1 : distance + (CLOSE_BACK - distance) * close;
     const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : this.commuters ? 2.0 : eye + (CLOSE_UP - eye) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
@@ -2148,6 +2177,7 @@ export class CourseRenderer implements WorldRenderer {
     this.parkTraffic?.update(0, metres);
     this.riderBatch?.follow();
     this.aim(metres);
+    this.street?.at(metres);
     this.render();
   }
 
@@ -2232,6 +2262,7 @@ export class CourseRenderer implements WorldRenderer {
     this.rain?.at(time);
     this.quay?.at(time);
     this.marinaBoats?.at(time);
+    this.fringe?.at(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
       confetti.rotation.y = 0.012 * Math.sin(time * 0.9);
@@ -2466,6 +2497,9 @@ export class CourseRenderer implements WorldRenderer {
     drawn.cabinHeight = this.funivia?.holder.position.y ?? null;
     drawn.dhowRoll = this.marinaBoats?.dhow.rotation.z ?? null;
     drawn.wheelAngle = this.marinaBoats?.wheel.rotation.z ?? null;
+    drawn.spectatorSections = this.street?.spectatorSections ?? 0;
+    drawn.clubY = this.fringe?.clubY ?? null;
+    drawn.torchAngle = this.fringe?.torchAngle ?? null;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;

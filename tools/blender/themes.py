@@ -1417,3 +1417,8 @@ import dubai as _dubai
 
 THEMES["dubai"] = _dubai.THEME
 SCENERY["dubai"] = _dubai.scenery
+
+import edinburgh as _edinburgh
+
+THEMES["edinburgh"] = _edinburgh.THEME
+SCENERY["edinburgh"] = _edinburgh.scenery
