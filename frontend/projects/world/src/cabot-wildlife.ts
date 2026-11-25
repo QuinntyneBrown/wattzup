@@ -1,7 +1,7 @@
+import type { BufferGeometry } from 'three/webgpu';
 import {
   BoxGeometry,
   BufferAttribute,
-  BufferGeometry,
   Color,
   Group,
   Mesh,
