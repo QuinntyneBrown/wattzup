@@ -149,3 +149,34 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const alpeCourseMap = {
+  ...ibizaCourseMap,
+  id: 'alpe-dhuez',
+  name: "Alpe d'Huez",
+  routeName: 'The 21 hairpins',
+  place: 'The 21 bends above Bourg-d’Oisans',
+  world: 'alpe',
+  distanceKm: 7.4,
+  climbingM: 328,
+  photoUrl: 'maps/alpe-dhuez-photo.jpg',
+  thumbnailUrl: 'maps/alpe-dhuez.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 30, 18, 100),
+      seg('work', 60, 19, 100),
+      seg('recover', 120, 13, 80),
+      seg('work', 120, 19, 60),
+      seg('work', 60, 21, 60),
+      seg('recover', 60, 11, 90),
+      seg('work', 120, 19, 60),
+      seg('work', 60, 21, 60),
+      seg('recover', 60, 11, 90),
+      seg('work', 120, 19, 60),
+      seg('work', 120, 21, 75),
+      seg('cool-down', 90, 11, 80),
+    ],
+  },
+};

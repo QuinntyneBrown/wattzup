@@ -5,6 +5,7 @@ import type { WorldId } from '@telo/api';
 
 export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   ibiza: 'courses/ibiza',
+  alpe: 'courses/alpe',
   cinqueterre: 'courses/cinqueterre',
   haleakala: 'courses/haleakala',
   prairie: 'courses/prairie',
