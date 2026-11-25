@@ -1512,3 +1512,8 @@ import north_face as _north_face
 
 THEMES["granite"].update(lay=_north_face.lay, land_builder=_north_face.land, road_builder=_north_face.road_surface)
 SCENERY["granite"] = _north_face.scenery
+
+import greatocean as _greatocean
+
+THEMES['greatocean']=_greatocean.THEME
+SCENERY['greatocean']=_greatocean.scenery

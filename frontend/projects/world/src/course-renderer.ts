@@ -169,6 +169,7 @@ import type { BlueMountainsYard } from './blue-mountains-yard';
 import type { MabryMill } from './mabry-mill';
 import type { BondiSurf } from './bondi-surf';
 import type { northFace } from './north-face';
+import type { shipwreckCoast } from './shipwreck-coast';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -196,6 +197,10 @@ const SHADOW_WIDTH = 0.8;
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   NorthFace: 5200,
+  SouthernOcean: 4400,
+  PortLimestone: 2300,
+  Apostle: 2300,
+  LondonArch: 2300,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -329,6 +334,7 @@ export class CourseRenderer implements WorldRenderer {
   private lakes: Awaited<ReturnType<typeof engadinLakes>> | null = null;
   private etna: Awaited<ReturnType<typeof etnaAscent>> | null = null;
   private northFace: ReturnType<typeof northFace> | null = null;
+  private coastline: ReturnType<typeof shipwreckCoast> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -930,6 +936,12 @@ export class CourseRenderer implements WorldRenderer {
         this.northFace = northFace(this.course);
         this.scene.add(this.northFace.group);
         this.disposables.push(this.northFace);
+      }
+      if (this.course.file.id === 'greatocean') {
+        const { shipwreckCoast } = await import('./shipwreck-coast');
+        if (this.disposed) return false;
+        this.coastline = shipwreckCoast();
+        this.disposables.push(this.coastline);
       }
       this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material, gizaMaterials);
       if (this.course.file.id === 'aguascalientes') {
@@ -1700,6 +1712,7 @@ export class CourseRenderer implements WorldRenderer {
       if (this.joggers.mesh.visible) this.joggers.update(frame.reducedMotion ? 0 : frame.time);
     }
     this.northFace?.update(frame.reducedMotion ? 0 : frame.time);
+    this.coastline?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -2037,6 +2050,7 @@ export class CourseRenderer implements WorldRenderer {
       sunDisc.color.setHex(0xfff6df);
     }
     if (this.northFace) Object.assign(materials, this.northFace.materials);
+    if (this.coastline) Object.assign(materials, this.coastline.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     Object.assign(materials, localMaterials);
     if (this.championship) {
@@ -2052,6 +2066,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
       if (group === 'Smoke' && !materials[group]) {
@@ -2899,6 +2914,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.park) Object.assign(drawn, this.park.measure(this.camera));
     if (this.canyon) Object.assign(drawn, this.canyon.measure(this.camera));
     if (this.northFace) Object.assign(drawn, this.northFace.report(this.camera));
+    if (this.coastline) Object.assign(drawn, this.coastline.report(this.camera));
     hook['course'] = drawn;
   }
 
