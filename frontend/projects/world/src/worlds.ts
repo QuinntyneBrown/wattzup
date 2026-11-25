@@ -78,9 +78,9 @@ export const WORLDS: readonly World[] = [
     effortName: 'Mas band surge',
     description:
       "Lake Shore Boulevard closes for the Toronto Caribbean Carnival's Grand Parade on a hot August afternoon, crowds packed behind the barricades waving island flags under bunting and hanging baskets, as mas bands in feathered backpieces wine up the lanes behind a steel orchestra, its engine room and a towering King, with moko jumbies striding over them and the CN Tower rising ahead past the Gardiner and the Sunnyside Pavilion. The warm-up rolls in behind the steel orchestra, and each one-minute surge races between the bands, under the footbridge and the judging gantry, before the recoveries chip along with the parade.",
-    grade: { 'warm-up': 0.5, work: 3, recover: -0.5, 'cool-down': 0, steady: 0.5 },
-    roll: 0.4,
-    bend: { angle: 6, length: 220 },
+    grade: { 'warm-up': 0.5, work: 3, recover: -0.5, 'cool-down': 0, steady: 0 },
+    roll: 2.85,
+    bend: { angle: 24, length: 360 },
   },
   {
     id: 'westminster',
@@ -1994,5 +1994,14 @@ export function worldById(id: WorldId): World {
 
 /** The gradient, in percent, the scene asks for at `s` metres in a segment of `kind` (L2-101 AC2). */
 export function targetGrade(world: World, kind: SegmentKind, s: number): number {
+  if (world.id === 'caribana') {
+    const frequency = (2 * Math.PI) / world.bend.length;
+    const phase = s * frequency;
+    // Percent gradient of the two rolling rises authored in the Blender course.
+    return (
+      world.grade[kind] +
+      100 * frequency * (world.roll * Math.cos(phase - 0.62) + Math.cos(2 * phase - 0.15))
+    );
+  }
   return world.grade[kind] + world.roll * Math.sin(s / 310) * Math.cos(s / 870 + 1);
 }
