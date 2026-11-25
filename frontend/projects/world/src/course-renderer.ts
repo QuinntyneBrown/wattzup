@@ -1,3 +1,4 @@
+import type { DaytonaBoardwalk } from './daytona-boardwalk';
 import type { DaytonaTideLine } from './daytona-tide-line';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
@@ -201,6 +202,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
+  private boardwalk: DaytonaBoardwalk | null = null;
   private shore: DaytonaTideLine | null = null;
   private course: Course | null = null;
   private disposed = false;
@@ -241,6 +243,8 @@ export class CourseRenderer implements WorldRenderer {
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
+    pickupZ: null as number | null,
+    gondolaY: null as number | null,
     groups: {} as Record<string, number>,
   };
   private readonly chosenAt = new Vector3();
@@ -360,8 +364,13 @@ export class CourseRenderer implements WorldRenderer {
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
       if (this.path === 'courses/daytona') {
-        const { DaytonaTideLine } = await import('./daytona-tide-line');
+        const [{ DaytonaTideLine }, { DaytonaBoardwalk }] = await Promise.all([
+          import('./daytona-tide-line'),
+          import('./daytona-boardwalk'),
+        ]);
         if (this.disposed) return false;
+        this.boardwalk = new DaytonaBoardwalk(this.scene);
+        this.disposables.push(this.boardwalk);
         this.shore = new DaytonaTideLine(this.course, this.disposables);
         this.scene.add(this.shore.group);
         this.camera.setViewOffset(1, 1, 0, 0.053, 1, 1);
@@ -431,6 +440,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    this.boardwalk?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.shore?.place(metres, frame.reducedMotion ? 0 : frame.time);
     this.lampShadows?.end();
     this.riderBatch?.follow();
@@ -1115,6 +1125,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.pickupZ = this.boardwalk?.pickupZ ?? null;
+    drawn.gondolaY = this.boardwalk?.gondolaY ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
