@@ -215,3 +215,18 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+## Col du Galibier (#2123)
+
+The existing class repeats 360 metres of snow banks, Tour road paint, fans and flags. It already models the monument and La Meije. Preserve those subjects, the early-summer light and the moving crowd. A single ride from Map Select needs a continuous route, a tunnel branch and a legible summit sign. The 26.05 km route joins sections of both sides of the pass to fit the 60-minute workout. The high road stays open past the tunnel mouth.
+
+| Rider viewpoint | Composition and reference |
+| --- | --- |
+| Lachat, 0.08 km | Timber chalets and the river mark the Plan Lachat valley approach. Real 09–12 and 14, games 02 and 04. |
+| Switchbacks, 6.72 km | White edge dashes, shale, low walls and chevrons lead around the exposed hairpins. Real 02–04, 08 and 11, games 02–03. |
+| Tour, 11.52 km | Painted riders’ names lead past flags and fans on a narrow shoulder. Real 02–03 and 08, games 01 and 04. |
+| Tunnel, 18.42 km | The stone portal takes the lower branch while the rider climbs between cut snow banks. Real 01 and 06–07, games 03 and 05. |
+| Desgrange, 22.36 km | The carved granite memorial stands above the southern approach with La Meije across the valley. Real 05, 10 and 13, games 02 and 04. |
+| Summit, 25.82 km | A rough stone plinth carries the altitude and both departmental signs. Real 03, 07, 13 and 15, games 01 and 05. |
+
+The map catalogue supplies the original 20 class stages. CourseRenderer loads the Blender road, elevation samples and tier-appropriate scenery only when the rider enters the course. Use short terrain sections around the summit fork and retaining walls. Give the nearby stone arch and engraved memorial physical depth, with the fixed glaciated skyline beyond the valley. Share repeatable road and slate textures with the class where practical. Use instancing for cycling fans, ride-clock flag movement and clouds. Release their materials, textures and geometry on exit. ADRs 0021, 0023, 0030, 0034 and 0035 govern rendering and quality. Follow the performance design for two headed simulated-tablet rides, measuring actual submissions after nine seconds of warm-up.
