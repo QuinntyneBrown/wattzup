@@ -215,6 +215,7 @@ export class CourseRenderer implements WorldRenderer {
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
+  private speedWeek: import('./speed-week').SpeedWeek | null = null;
   private saltRoad: Material | null = null;
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
@@ -237,6 +238,8 @@ export class CourseRenderer implements WorldRenderer {
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
     tier: 0 as number,
+    pushCarPosition: undefined as number | undefined,
+    mirageHeight: undefined as number | undefined,
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
@@ -365,6 +368,13 @@ export class CourseRenderer implements WorldRenderer {
         this.disposables.push(...surface.textures);
       }
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'bonneville') {
+        const { SpeedWeek } = await import('./speed-week');
+        if (this.disposed) return false;
+        this.speedWeek = new SpeedWeek(this.course);
+        this.scene.add(this.speedWeek.root);
+        this.disposables.push(this.speedWeek);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -433,6 +443,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.speedWeek?.update(frame.reducedMotion ? 0 : frame.time, metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -486,6 +497,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampGlow = null;
     this.sunGlow = null;
     this.groundEye = null;
+    this.speedWeek = null;
     this.saltRoad = null;
     this.riderBatch = null;
     this.rain = null;
@@ -1115,6 +1127,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.pushCarPosition = this.speedWeek?.pushCar.position.x;
+    drawn.mirageHeight = this.speedWeek?.mirage.scale.y;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
