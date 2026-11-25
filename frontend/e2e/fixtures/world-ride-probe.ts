@@ -19,6 +19,8 @@ export interface WorldRideReport {
   frames: number[];
   /** GPU time of each frame, in ms, from timer queries; null where the browser offers none. */
   gpuMs: number[] | null;
+  /** Longitudinal displacement of the first marching band from its roadside section. */
+  paradeMetres?: number;
   /** Draw calls in the latest frame, every pass included. */
   drawCalls: number;
   /** Shader programs alive. */
