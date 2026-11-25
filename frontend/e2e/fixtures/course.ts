@@ -149,3 +149,38 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const antwerpCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'antwerp-port-sprint',
+  name: 'Antwerp Port Sprint',
+  routeName: 'Scheldt Quays',
+  place: 'Eilandje and the port of Antwerp',
+  world: 'antwerp',
+  distanceKm: 20.9,
+  climbingM: 18,
+  rating: 'Hard',
+  thumbnailUrl: 'maps/antwerp-port-sprint.jpg',
+  photoUrl: 'maps/antwerp-port-sprint-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 360, 13, 80),
+      seg('work', 120, 16, 80),
+      seg('recover', 60, 10, 80),
+      seg('work', 240, 21, 100),
+      seg('recover', 180, 10, 80),
+      seg('work', 240, 18, 80),
+      seg('work', 180, 21, 100),
+      seg('recover', 180, 10, 80),
+      seg('work', 240, 18, 80),
+      seg('work', 180, 19, 80),
+      seg('work', 90, 22, 100),
+      seg('recover', 180, 10, 80),
+      seg('work', 240, 18, 80),
+      seg('work', 180, 19, 80),
+      seg('work', 90, 21, 80),
+      seg('recover', 30, 24, 100),
+      seg('cool-down', 210, 10, 80),
+    ],
+  },
+};

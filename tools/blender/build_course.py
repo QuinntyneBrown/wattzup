@@ -844,6 +844,14 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         strip(sand, i, -(kerb + 2.4), 0.0, -(kerb + 7.0), -1.6)
 
     for i in range(n - 1):
+        if edge == 'scheldt':
+            strip(asphalt,i,4.9,0,-4.9,0)
+            strip(prom,i,11,-.05,4.9,0)
+            strip(prom,i,-4.9,0,-9,-.04)
+            # Two flanged rails embedded in concrete on the dock side.
+            for offset in (3.0,4.435):
+                strip(wall,i,offset+.053,.012,offset-.053,.012)
+            continue
         strip(asphalt, i, ROAD_HALF, 0.0, -ROAD_HALF, 0.0)
         # The double yellow line down the middle and a white line inside each edge.
         if white_centre:
@@ -888,7 +896,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     # Chevrons up every effort: the road itself says "push".
     for stage in st:
-        if stage["kind"] != "work":
+        if edge == "scheldt" or stage["kind"] != "work":
             continue
         d = stage["from"] + 12
         while d < stage["to"] - 6:
