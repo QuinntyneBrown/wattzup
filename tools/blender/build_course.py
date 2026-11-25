@@ -54,7 +54,8 @@ METRES_PER_TURN = 5.0  # as the scene driver's: a road bike in a middle gear
 GRADE_PER_LEVEL = 1.0  # percent of gradient for each level above the course's mean
 LEAD_IN = 80.0  # road before the start line
 RUN_OUT = 200.0  # road after the finish line
-ROAD_HALF = 5.0
+DEFAULT_ROAD_HALF = 5.0
+ROAD_HALF = DEFAULT_ROAD_HALF
 CLEAR = 46.0  # the road keeps this far from an earlier stretch of itself
 SEA_CLEARANCE = 4.0  # the road's lowest point above the sea
 BRIDGE_BED = -9.0  # the land's height under a bridge: below the sea
@@ -580,6 +581,8 @@ def group_of(mat: str) -> tuple[str, bool]:
     if mat in WHOLE:
         return WHOLE[mat], False
     spec = MATERIALS[mat]
+    if mat in ("canal-front", "elm-leaves"):
+        return ("Facades" if mat == "canal-front" else "Elms"), True
     if mat == "confetti":
         return "Confetti", True
     if mat == "terrain":
@@ -685,7 +688,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos"):
+                if group in ("Windows", "Fences", "Halos", "Facades", "Elms"):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -696,7 +699,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences", "Halos"):
+                    if group in ("Windows", "Fences", "Halos", "Facades", "Elms"):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
@@ -813,8 +816,8 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
                 wall.box((mid[0], mid[1], -9.0), (2.4, 2 * walk - 1.0, mid[2] + 9.0 + deep), s[i]["h"])
             return
         if edge == "gracht":
-            strip(prom, i, 7.2, 0.05, kerb, 0.05)
-            strip(prom, i, -kerb, 0.08, -10.6, 0.08)
+            strip(prom, i, 5.2, 0.035, kerb, 0.035)
+            strip(prom, i, -kerb, 0.08, -8.6, 0.08)
             return
         if edge == "verge":
             strip(sand, i, kerb + 8.0, -0.25, kerb, 0.12)
@@ -2175,6 +2178,7 @@ def stage_video(path: Path, road: Road, st: list[dict], length: float, seconds: 
 
 
 def main(argv: list[str] | None = None) -> dict:
+    global ROAD_HALF
     if argv is None:
         argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else sys.argv[1:]
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
@@ -2190,6 +2194,7 @@ def main(argv: list[str] | None = None) -> dict:
     theme = themes.THEMES.get(course.get("theme", ""))
     # A theme whose land and scenery are its own (Ibiza's) is a theme in everything else.
     themed = bool(theme) and not theme.get("own")
+    ROAD_HALF = (theme or {}).get("road_half_width", DEFAULT_ROAD_HALF)
     if theme:
         for name, colour in theme.get("palette", {}).items():
             MATERIALS[name] = {**MATERIALS[name], "color": colour}

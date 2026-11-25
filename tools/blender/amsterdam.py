@@ -1,6 +1,6 @@
 """The Herengracht from the saddle. Place façades and the canal relative to the same quay."""
 import math
-from worldkit import Painted, lin
+from worldkit import Painted, lin, smooth
 
 BRIDGE_SPACING = 400
 FIRST_BRIDGE = 132
@@ -14,9 +14,15 @@ def centre_line(course, theme, bc):
     n = math.ceil((bc.LEAD_IN+length+bc.RUN_OUT)/bc.STEP)+1
     samples = []
     x, y = -bc.LEAD_IN, 0
+    def bearing(d):
+        local=(d-FIRST_BRIDGE+BRIDGE_SPACING/2)%BRIDGE_SPACING-BRIDGE_SPACING/2
+        # At cross canals the quay first turns toward the water, then turns inland
+        # over the crown. Riders see the arch and its opening on approach.
+        return (.3*math.sin(d/275)+.1*math.sin(d/106)
+                +.68*smooth(-180,-48,local)-.90*smooth(-40,10,local)+.22*smooth(20,105,local))
     for i in range(n):
         d = i*bc.STEP-bc.LEAD_IN
-        heading = .3*math.sin(d/275)+.1*math.sin(d/106)
+        heading = bearing(d)
         delta = (d-FIRST_BRIDGE+BRIDGE_SPACING/2)%BRIDGE_SPACING-BRIDGE_SPACING/2
         stage = bc.stage_at(stages,min(length-.01,max(0,d-delta)))
         lift = 1.05+(stage["level"]-12)*.105
@@ -25,7 +31,7 @@ def centre_line(course, theme, bc):
         grade = -100*lift*math.pi/62*math.sin(math.pi*t)*math.copysign(1,delta)
         x += bc.STEP*math.cos(heading)
         y += bc.STEP*math.sin(heading)
-        samples.append(dict(x=x,y=y,z=z,d=d,h=heading,k=.3/275*math.cos(d/275)+.1/106*math.cos(d/106),g=grade))
+        samples.append(dict(x=x,y=y,z=z,d=d,h=heading,k=(bearing(d+1)-bearing(d-1))/2,g=grade))
     return samples,stages,length,mean,.105
 
 
@@ -38,9 +44,17 @@ def quay_land(road,col,theme,bc):
     # The water is level, including below each brick arch.
     for i in range(0,len(road.s)-1,3):
         j=min(i+3,len(road.s)-1)
-        for a,az,c,cz,tint in [(7.2,.05,7.2,WATER-.2,0x815F4C),(7.2,WATER,35,WATER,0x39594E),
+        # A floating glint and the neighbouring bank's dark green reflection
+        # give the level water a sense of depth at low detail.
+        for pos in range(8):
+            u=9+pos*3.15+.45*math.sin(i*.89+pos)
+            if (i+pos)%3==0:
+                pts=(point(i,u,WATER+.015),point(min(i+1,j),u+.11,WATER+.015),
+                     point(min(i+1,j),u+.16,WATER+.015),point(i,u+.08,WATER+.015))
+                b.faces.append(tuple(b.v(p) for p in pts));b.colours.extend([lin(0x79978C)]*4)
+        for a,az,c,cz,tint in [(5.2,.035,5.2,WATER-.2,0x815F4C),(5.2,WATER,35,WATER,0x39594E),
                                (35,WATER-.2,35,.32,0x765540),(35,.32,80,.32,0x928C7E),
-                               (-6.2,.08,-65,.08,0x9F9688)]:
+                               (-3.8,.08,-65,.08,0x9F9688)]:
             pts=(point(i,a,az),point(j,a,az),point(j,c,cz),point(i,c,cz))
             ids=[b.v(p) for p in pts]
             b.faces.append(tuple(ids if a<=c else ids[::-1]))
@@ -49,7 +63,7 @@ def quay_land(road,col,theme,bc):
 
 
 THEME={
-    "lay":centre_line,"land_builder":quay_land,"terrain":{"sea":False},"land":{"mid":0x8F9987},"edge":"gracht","kerbs":False,
+    "road_half_width":3.4,"lay":centre_line,"land_builder":quay_land,"terrain":{"sea":False},"land":{"mid":0x8F9987},"edge":"gracht","kerbs":False,
     "sky":[0xD7E9F0,0xB5D4E9,0x89BADB,0x659FCD,0x4288C1],
     "light":[0xFFF0D4,2.9],"fill":[0xDEEFF8,0x898A76],"haze":0xD1E0E4,
     "sun_altitude":.59,"sun_azimuth":-1.1,"palette":{"asphalt":0x996857,"promenade":0xB2A997},
@@ -68,36 +82,43 @@ def canal_house(k,b,d,side):
         return (x+u*along[0]+proud*outward[0],y+u*along[1]+proud*outward[1],height)
     brick=lin(k.rng.choice((0x81584C,0x735248,0x8F6654,0xADA58C,0x665956,0xA2745C)))
     trim=lin(0xEAE4D3)
-    pane=lin(k.rng.choice((0x516568,0x627074,0x495F61)))
     w=4.3
     h=k.rng.uniform(9,14)
-    def rect(l,r,lo,hi,col,proud):
-        pts=(point(l,lo,proud),point(r,lo,proud),point(r,hi,proud),point(l,hi,proud))
-        b.face(pts if facing<0 else pts[::-1],(col,)*4)
-    rect(-w,w,0,h,brick,0)
-    # The shared walls run back to the roof, closing the end of each staggered row.
+    sheet=k.B["canal-front"]
+    if sheet.uvs is None:
+        sheet.uvs=[]
+    tile=k.rng.randrange(8)
+    form=tile%4
+    top=h/.74
+    def facade(outline):
+        points=[point(u,v,.12) for u,v in outline]
+        coords=[((tile%4+.005+.99*(u+w)/(2*w))/4,
+                 (1-tile//4+.005+.99*v/top)/2) for u,v in outline]
+        if facing>0:
+            points.reverse()
+            coords.reverse()
+        sheet.faces.append(tuple(sheet.v(pos) for pos in points))
+        sheet.uvs.extend(coords)
+    facade([(-w,0),(w,0),(w,h),(-w,h)])
     b.box(point(0,0,-3.7),(2*w,7.25,h-.03),yaw,brick)
-    form=k.rng.randrange(3)
     if form==0:
-        for row,half in enumerate((w*.82,w*.59,w*.36,w*.15)):
-            rect(-half,half,h+row*.65,h+(row+1)*.65,brick,.01)
-            rect(-half,half,h+(row+1)*.65-.11,h+(row+1)*.65,trim,.03)
+        widths=[1,.83,.66,.49,.32,.32]
+    elif form==1:
+        widths=[1,.71,.56,.45,.32,.13]
+    elif form==2:
+        widths=[1,.74,.47,.42,.40,.11]
     else:
-        last=w
-        for row in range(6):
-            t=(row+1)/6
-            half=.9+(w-.9)*((1-t)**(2.4 if form==1 else .65))
-            pts=(point(-last,h+row*.43),point(last,h+row*.43),point(half,h+(row+1)*.43),point(-half,h+(row+1)*.43))
-            b.face(pts if facing<0 else pts[::-1],(brick,)*4)
-            last=half
-        rect(-1.12,1.12,h+2.58,h+2.8,trim,.04)
-    for row in range(3):
-        base=.65+row*(h-1)/3
-        for centre in (-2.7,0,2.7):
-            rect(centre-.79,centre+.79,base,base+2.1,trim,.05)
-            rect(centre-.65,centre+.65,base+.12,base+1.97,pane,.08)
-            rect(centre-.66,centre+.66,base+1.43,base+1.51,trim,.10)
-    rect(-w,w,h-.25,h-.06,trim,.08)
+        widths=[1,1,.54,.54,.54,.54]
+    rise=(top-h)*(0.53 if form==3 else 1)
+    for j,(lo,hi) in enumerate(zip(widths,widths[1:])):
+        low,high=h+rise*j/5,h+rise*(j+1)/5
+        facade([(-w*lo,low),(w*lo,low),(w*(lo if form==0 else hi),high),(-w*(lo if form==0 else hi),high)])
+    # The saddle sees stoops and sills in relief even close to a house.
+    for step in range(3):
+        b.box(point(-w*.62,step*.16,.55-step*.13),(1.65,1.48-step*.24,.17),yaw,lin(0x978F83))
+    b.box(point(0,top*.91,.62),(.22,1.65,.26),yaw,lin(0x544B40))
+    for j in range(1,4):
+        b.box(point(0,j*h/4,.15),(2*w,.25,.10),yaw,trim)
 
 
 def bridge(k,b,d):
@@ -132,6 +153,8 @@ def bridge(k,b,d):
         b.face(pts,(stone,)*4)
         pts=(pt(-3.1,a,soffit(a)),pt(-3.1,c,soffit(c)),pt(3.1,c,soffit(c)),pt(3.1,a,soffit(a)))
         b.face(pts,(brick,)*4)
+    for side in (12, 14):
+        bicycle(b, pt(-2.78, side, crown(side)), yaw + math.pi / 2)
 
 
 def elm(k,b,d,offset):
@@ -139,14 +162,35 @@ def elm(k,b,d,offset):
     x,y,z=k.road.at(i,offset)
     bark=lin(0x635B4A)
     b.tube((x,y,z-.4),.22,.14,4.2,bark,bark,6)
-    for j in range(3):
-        a=j*math.tau/3+k.rng.uniform(-.2,.2)
-        base=(x+.85*math.cos(a),y+.85*math.sin(a),z+3.5+j*.45)
-        width=k.rng.uniform(2.15,2.95)
-        leaf=lin(k.rng.choice((0x76934D,0x6C904F,0x829E56)))
-        shade=tuple(c*.72 for c in leaf[:3])+(1,)
-        b.tube(base,width*.34,width,1.65,shade,leaf,7)
-        b.tube((base[0],base[1],base[2]+1.65),width,width*.22,2.1,leaf,leaf,7,leaf)
+    leaves=k.B["elm-leaves"]
+    if leaves.uvs is None:
+        leaves.uvs=[]
+    # The canopy's dapple is baked into the road, with softer, broken edges.
+    shade=Painted(k)
+    for j in range(12):
+        a=j*2.399
+        i2=k.road.index(d+math.sin(a)*2.8)
+        off=offset-2.55+math.cos(a)*2.7
+        points=[k.P(i2,math.cos(v*math.tau/6)*1.02,off+math.sin(v*math.tau/6)*.66,.035)
+                for v in range(6)]
+        if abs(off)<4.9:
+            # Sparse patches leave the clinker visible between them.
+            tint=lin(0x846352)
+            shade.face(points,(tint,)*6)
+    for j in range(7):
+        a=j*math.tau/3+.35
+        radius=1.45 if j<6 else .2
+        cx=x+radius*math.cos(a)
+        cy=y+radius*math.sin(a)
+        base=z+2.2+(j//3)*1.6
+        width=k.rng.uniform(3.1,4.4)
+        b.tube((cx,cy,base-.65),.10,.055,1.8,bark,bark,5)
+        for angle in (a,a+math.pi/2):
+            dx=width/2*math.cos(angle)
+            dy=width/2*math.sin(angle)
+            pts=((cx-dx,cy-dy,base),(cx+dx,cy+dy,base),(cx+dx,cy+dy,base+width),(cx-dx,cy-dy,base+width))
+            leaves.faces.append(tuple(leaves.v(pos) for pos in pts))
+            leaves.uvs.extend(((0,0),(1,0),(1,1),(0,1)))
 
 
 def houseboat(k,b,d,offset):
@@ -171,7 +215,7 @@ def houseboat(k,b,d,offset):
 
 def bollard(k,b,d):
     i=k.road.index(d)
-    x,y,z=k.road.at(i,-5.7)
+    x,y,z=k.road.at(i,-4.05)
     red=lin(0x8B4D3C)
     b.tube((x,y,z),.125,.09,.91,red,red,7,red)
     # Three St Andrew’s crosses on the side that faces an approaching rider.
@@ -235,25 +279,47 @@ def tour_boat(k):
 def scenery(k):
     b=Painted(k)
     for d in range(-55,int(k.length)+40,9):
-        canal_house(k,b,d,-10.5)
+        canal_house(k,b,d,-8.5)
         canal_house(k,b,d,41.5)
     for d in range(FIRST_BRIDGE,int(k.length),BRIDGE_SPACING):
         bridge(k,b,d)
     for d in range(-35,int(k.length)+55,22):
         if abs((d-FIRST_BRIDGE+200)%400-200)>9:
-            elm(k,b,d,6.65)
+            elm(k,b,d,4.7)
         if d%3:
             elm(k,b,d+7,37.3)
     for d in range(-19,int(k.length),61):
         if abs((d-FIRST_BRIDGE+200)%400-200)>16:
-            houseboat(k,b,d,32.2 if d%2 else 10.2)
+            houseboat(k,b,d,32.2 if d%2 else 8.4)
     for d in range(3,int(k.length),10):
         bollard(k,b,d)
     for d in range(6,int(k.length),36):
         i=k.road.index(d)
+        iron = lin(0x49544C)
+        yaw = k.s[i]["h"]
+        for along in (-.35, 1.85):
+            x,y,z = k.P(i,along,4.88)
+            b.tube((x,y,z+.06),.04,.04,.72,iron,iron,6)
+        x,y,z = k.P(i,.75,4.88)
+        b.box((x,y,z+.76),(2.28,.075,.07),yaw,iron)
         for j in range(3):
-            x,y,z=k.P(i,j*.75,6.66)
+            x,y,z=k.P(i,j*.75,4.8)
             bicycle(b,(x,y,z+.08),k.s[i]["h"]+.78)
+    # Tall cast-iron lanterns and the open boats occupy the gaps between the trees.
+    for d in range(16,int(k.length),58):
+        i=k.road.index(d)
+        x,y,z=k.road.at(i,4.77)
+        iron=lin(0x4C5B51)
+        b.tube((x,y,z),.14,.07,3.55,iron,iron,7)
+        b.tube((x,y,z+3.55),.16,.27,.43,lin(0xC5BFA4),lin(0xEFE7BD),4)
+        b.tube((x,y,z+3.98),.32,.05,.23,iron,iron,4,iron)
+        if d%3==1:
+            x,y,_=k.road.at(i,12.5)
+            yaw=k.s[i]["h"]
+            b.box((x,y,WATER-.14),(3.8,1.43,.44),yaw,lin(0x755247))
+            for u in (-1.0,.4):
+                a,c,_=k.P(i,u,12.5)
+                b.box((a,c,WATER+.27),(.29,1.45,.11),yaw,lin(0xBDA07A))
     tour_boat(k)
     bicycle(Painted(k,"commuter"),(0,0,0),math.pi/2,True)
     return {"efforts":0}

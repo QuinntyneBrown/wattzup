@@ -4208,7 +4208,7 @@ function elmGeometry(seed: number): { wood: BufferGeometry; leaves: BufferGeomet
 }
 
 /** A spray of spring elm leaves, fresh green with lighter tips, on clear ground. */
-function leafTexture(): CanvasTexture {
+export function leafTexture(): CanvasTexture {
   return canvasTexture(512, 512, (g) => {
     g.clearRect(0, 0, 512, 512);
     g.scale(2, 2);
@@ -5179,7 +5179,7 @@ function gableShape(kind: Gable): Shape {
  * the eaves, tall white-framed sash windows on four floors, the door with its fanlight at the
  * foot, and in the gable a hoist beam over a loft window, trimmed in sandstone.
  */
-function facadeTexture(
+export function facadeTexture(
   kind: Gable,
   front: string,
   seed: number,
