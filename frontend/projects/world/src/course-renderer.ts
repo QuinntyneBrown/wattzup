@@ -172,6 +172,7 @@ import type { northFace } from './north-face';
 import type { shipwreckCoast } from './shipwreck-coast';
 import type { haleakalaSummit } from './haleakala-summit';
 import type { hanRiver } from './han-river';
+import type { hardknottFells } from './hardknott-fells';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -207,6 +208,8 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   BanpoJets: 1050,
   HanReflections: 900,
   HanCyclists: 200,
+  FellGround: 1850,
+  HerdwickHead: 750,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -343,6 +346,7 @@ export class CourseRenderer implements WorldRenderer {
   private coastline: ReturnType<typeof shipwreckCoast> | null = null;
   private summit: ReturnType<typeof haleakalaSummit> | null = null;
   private river: ReturnType<typeof hanRiver> | null = null;
+  private fells: ReturnType<typeof hardknottFells> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -962,6 +966,12 @@ export class CourseRenderer implements WorldRenderer {
         if (this.disposed) return false;
         this.river = hanRiver(this.course);
         this.disposables.push(this.river);
+      }
+      if (this.course.file.id === 'hardknott') {
+        const { hardknottFells } = await import('./hardknott-fells');
+        if (this.disposed) return false;
+        this.fells = hardknottFells(this.course);
+        this.disposables.push(this.fells);
       }
       this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material, gizaMaterials);
       if (this.course.file.id === 'aguascalientes') {
@@ -1735,6 +1745,7 @@ export class CourseRenderer implements WorldRenderer {
     this.coastline?.update(frame.reducedMotion ? 0 : frame.time);
     this.summit?.update(frame.reducedMotion ? 0 : frame.time);
     this.river?.update(frame.reducedMotion ? 0 : frame.time, this.camera);
+    this.fells?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -2075,6 +2086,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.coastline) Object.assign(materials, this.coastline.materials);
     if (this.summit) Object.assign(materials, this.summit.materials);
     if (this.river) Object.assign(materials, this.river.materials);
+    if (this.fells) Object.assign(materials, this.fells.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     Object.assign(materials, localMaterials);
     if (this.championship) {
@@ -2090,6 +2102,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.fells?.landmark(group, mesh);
       this.river?.landmark(group, mesh);
       this.summit?.landmark(group, mesh);
       this.coastline?.landmark(group, mesh);
@@ -2234,6 +2247,7 @@ export class CourseRenderer implements WorldRenderer {
     this.map = map;
     this.scene.add(map);
     this.river?.install(map, this.scene);
+    this.fells?.install(map, this.scene);
     // The map is some hundreds of chunks, and a frame draws a few dozen of them. A chunk that is only hidden is
     // still walked twice by every frame (to place it and to ask whether it is in view), so the chunks are taken out
     // of the map and only those near the camera are in the scene (`choose`). Each keeps its place in the world as
@@ -2944,6 +2958,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.coastline) Object.assign(drawn, this.coastline.report(this.camera));
     if (this.summit) Object.assign(drawn, this.summit.report(this.camera));
     if (this.river) Object.assign(drawn, this.river.report(this.camera));
+    if (this.fells) Object.assign(drawn, this.fells.report(this.camera));
     hook['course'] = drawn;
   }
 

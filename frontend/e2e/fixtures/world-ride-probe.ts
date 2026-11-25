@@ -64,6 +64,17 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async fellDetail(
+    part: 'grazing' | 'crossing' | 'fellMist' | 'fortX' | 'signX',
+  ): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async riverMotion(
     part: 'fountainFlow' | 'cyclePhase' | 'banpoX' | 'towerX' | 'towerTopY',
   ): Promise<number | null> {

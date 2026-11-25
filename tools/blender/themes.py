@@ -1523,3 +1523,9 @@ import hanriver
 
 THEMES['hanriver'] = hanriver.THEME
 SCENERY['hanriver'] = hanriver.scenery
+
+
+import hardknott
+
+THEMES['hardknott'] = hardknott.THEME
+SCENERY['hardknott'] = hardknott.scenery
