@@ -215,3 +215,18 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+## Fish Hill, Cotswolds (#2120)
+
+The class defines a strong effort grade and tight bends. Its renderer uses amber light, dry ground and a general road palette. There is no Fish Hill race in Map Select. Preserve Leg Burner’s 16 intervals on an 11.6 km course from Broadway to the ridge. Put the steepest rise on the wooded scarp, with short descents on the upper pastures. A damp surface and pale overcast light preserve detail in the limestone.
+
+| Rider viewpoint | Composition and reference |
+| --- | --- |
+| Broadway, 0.08 km | Honey-coloured shop fronts and broad grass verges frame Broadway High Street. Real 03–04, 07 and 09, games 01 and 05. |
+| Cottages, 1.06 km | A red phone box, thatch, wisteria and low garden walls mark the village edge. Real 05–06, 08–09 and 14, games 01 and 05. |
+| Cutting, 3.72 km | A red-bordered grade sign and white lines lead into the steep A44 cutting beneath the beeches. Real 01–02 and 15, games 02 and 04. |
+| Vale, 6.48 km | The wooded scarp opens to the patchwork fields of the Vale of Evesham. Real 12–14, games 02–03. |
+| Pasture, 8.63 km | Sheep graze beyond a rough limestone wall beside the ridge road. Real 10–13, games 01 and 03. |
+| Tower, 11.37 km | Three round turrets and a crenellated parapet identify Broadway Tower on the ridge. Real 10–11, game 04 for the approaching sightline. |
+
+Place Broadway Tower at a fixed position, as Caribana does with the CN Tower. Build the turrets and battlements in three dimensions for the final approach. Separate the near wall, wooded scarp and distant patchwork vale. Batch cottages, coping stones, signs, gateposts and garden planting by section. Keep sheep movement and leaf motion deterministic on ride time and hold them on pause or reduced motion. Load the course, materials and moving figures on entry, then release each on exit. Follow ADRs 0021, 0023, 0030, 0034 and 0035. The performance design measures submitted frames on the High Street and in the beech cutting after nine seconds of warm-up.
