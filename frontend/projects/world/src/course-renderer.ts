@@ -81,6 +81,7 @@ import type { speedwayAsphalt } from './speedway-asphalt';
 import type { SpeedwayFlags } from './speedway-flags';
 import type { seafrontAsphalt } from './seafront-asphalt';
 import type { BrightonParade } from './brighton-parade';
+import type { BrooklynCommute } from './brooklyn-commute';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -257,6 +258,8 @@ export class CourseRenderer implements WorldRenderer {
   private speedway: SpeedwayFlags | null = null;
   private seafrontSurface: typeof seafrontAsphalt | null = null;
   private parade: BrightonParade | null = null;
+  private commute: BrooklynCommute | null = null;
+  private deckSurface: Material | null = null;
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
   private pipeline: RenderPipeline | null = null;
@@ -284,6 +287,8 @@ export class CourseRenderer implements WorldRenderer {
     balloonHeight: undefined as number | undefined,
     bannerTip: undefined as number | undefined,
     floatPosition: undefined as number | undefined,
+    cabPosition: undefined as number | undefined,
+    ferryPosition: undefined as number | undefined,
     backend: '' as string,
     ghostSeparationMetres: 0,
     boatHeight: null as number | null,
@@ -519,6 +524,13 @@ export class CourseRenderer implements WorldRenderer {
         if (this.disposed) return false;
         this.seafrontSurface = seafrontAsphalt;
       }
+      if (this.course.file.id === 'brooklyn') {
+        const { brooklynDeck } = await import('./brooklyn-deck');
+        if (this.disposed) return false;
+        const surface = brooklynDeck();
+        this.deckSurface = surface.material;
+        this.disposables.push(...surface.textures);
+      }
       this.build(gltf.scene, canvas, clinker, fronts, foliage);
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
@@ -553,6 +565,13 @@ export class CourseRenderer implements WorldRenderer {
         this.parade = new BrightonParade(this.course);
         this.scene.add(this.parade.root);
         this.disposables.push(this.parade);
+      }
+      if (this.course.file.id === 'brooklyn') {
+        const { BrooklynCommute } = await import('./brooklyn-commute');
+        if (this.disposed) return false;
+        this.commute = new BrooklynCommute(this.course);
+        this.scene.add(this.commute.root);
+        this.disposables.push(this.commute);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -795,6 +814,7 @@ export class CourseRenderer implements WorldRenderer {
     this.speedWeek?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.speedway?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.parade?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.commute?.update(frame.reducedMotion ? 0 : frame.time, metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -904,6 +924,8 @@ export class CourseRenderer implements WorldRenderer {
     this.speedway = null;
     this.seafrontSurface = null;
     this.parade = null;
+    this.commute = null;
+    this.deckSurface = null;
     this.groundEye = null;
     this.speedWeek = null;
     this.saltRoad = null;
@@ -1045,7 +1067,7 @@ export class CourseRenderer implements WorldRenderer {
       coloured,
       clinker,
     );
-    const pavement = this.saltRoad ?? this.speedwaySurface?.(detail) ?? this.seafrontSurface?.(detail);
+    const pavement = this.saltRoad ?? this.speedwaySurface?.(detail) ?? this.seafrontSurface?.(detail) ?? this.deckSurface;
     materials['Ground'] = pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
@@ -1787,6 +1809,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.balloonHeight = this.speedway?.balloonHeight;
     drawn.bannerTip = this.parade?.bannerTip;
     drawn.floatPosition = this.parade?.floatPosition;
+    drawn.cabPosition = this.commute?.cabPosition;
+    drawn.ferryPosition = this.commute?.ferryPosition;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

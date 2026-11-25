@@ -1397,3 +1397,8 @@ import brighton as _brighton
 
 THEMES["brighton"] = _brighton.THEME
 SCENERY["brighton"] = _brighton.scenery
+
+import brooklyn as _brooklyn
+
+THEMES["brooklyn"] = _brooklyn.THEME
+SCENERY["brooklyn"] = _brooklyn.scenery

@@ -15,6 +15,7 @@ import bluemountainsElevation from './bluemountains-elevation.json';
 import blueridgeElevation from './blueridge-elevation.json';
 import bondiElevation from './bondi-elevation.json';
 import brightonElevation from './brighton-elevation.json';
+import brooklynElevation from './brooklyn-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1298,6 +1299,51 @@ export const brightonCourseMap = {
       seg('work', 180, 21, 90),
       seg('work', 180, 22, 100),
       seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
+
+export const brooklynCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'brooklyn-bridge-commute',
+  name: 'Brooklyn Bridge Commute',
+  routeName: 'The Brooklyn Bridge',
+  place: 'Brooklyn and Lower Manhattan, New York',
+  world: 'brooklyn',
+  distanceKm: 10.7,
+  climbingM: 117,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: brooklynElevation,
+  },
+  thumbnailUrl: 'maps/brooklyn-bridge-commute.jpg',
+  photoUrl: 'maps/brooklyn-bridge-commute-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 13, 80),
+      seg('work', 30, 16, 80),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 16, 80),
+      seg('recover', 60, 13, 80),
+      seg('work', 60, 19, 100),
+      seg('recover', 180, 16, 80),
+      seg('work', 60, 19, 100),
+      seg('recover', 90, 13, 80),
+      seg('work', 120, 21, 100),
+      seg('work', 180, 18, 80),
+      seg('recover', 90, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('work', 30, 19, 80),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 19, 100),
+      seg('recover', 30, 16, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 13, 80),
+      seg('work', 60, 19, 100),
+      seg('recover', 60, 16, 80),
+      seg('cool-down', 60, 13, 80),
     ],
   },
 };
