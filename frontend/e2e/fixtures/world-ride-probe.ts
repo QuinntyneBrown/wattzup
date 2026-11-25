@@ -455,6 +455,17 @@ export class WorldRideProbe {
     );
   }
 
+  async engadinMotion(
+    part: 'kiteHeight' | 'trainPosition' | 'villageFronts',
+  ): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async report(): Promise<WorldRideReport | null> {
     return this.page.evaluate(
       () =>

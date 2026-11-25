@@ -963,3 +963,18 @@ EdinburghStreet already animates a juggling cascade, with stone façades, crowds
 | 8.39 km | The street opens onto the Esplanade below the Castle on its rock. | Real 13–15, games 04 and 05 |
 
 Give the Castle, St Giles and Tron Kirk separate fixed silhouettes, following Caribana’s landmark parallax. Batch the setts, stone surrounds and street furniture, retain the juggling cascade, and add fire and damp-stone highlights on ride time. Keep temporary stages, flyering queues and the Heritage Heart clear of the racing line. Group spectators and posters by visible section and release every owned texture, material and geometry on exit. Consult the performance budget design and ADRs 0021, 0023, 0030, 0034 and 0035. Measure the opened race with the six matched views and two minute-long tablet runs.
+
+## Engadin Lakes (#2117)
+
+The original class supplies a clear alpine day, gentle bends and the 28 stages of GCN’s 60 Minute Turbo Trainer Class. Its scene is selected in `worlds.ts` and lit in `world-renderer.ts`. The race catalogue has no Engadin entry. Add its 24.625 km lakes road to Map Select with the unchanged 60:00 plan. The route follows the sequence of the real lakes, compressing the distances to the class. A search for Engadin-specific rider feedback found the current issue.
+
+| Rider viewpoint | Composition and reference |
+| --- | --- |
+| Maloja, 0.08 km | White edge markings, yellow cycle lane, granite kilometre stone and road converging below the peaks. Real 01–03, games 01 and 05. |
+| Lej da Segl, 3.14 km | Near shore, reflective water and larch-covered far bank occupy distinct depths. Real 05, 07, 14 and 15, games 02 and 04. |
+| Sils, 7.44 km | White houses with painted surrounds, pasture cattle and split-rail fences line the village approach. Real 02, 04 and 14, games 02 and 03. |
+| Silvaplana, 12.82 km | Kites and their riders track the lake below Corvatsch. Pines and larches frame the far shore. Real 07 and 09–10 establish the shore, games 01 and 04 the rider scale. |
+| Railway, 19.36 km | A red Rhaetian passenger train runs alongside the rider, with overhead wire and station platforms. Real 11–12, game 03. |
+| St. Moritz, 23.91 km | The hotels step up the hill toward the characteristic leaning tower and church. Real 06, 08 and 10–13, games 04–05. |
+
+Keep the Corvatsch and Bernina skyline fixed in world space, as Caribana does with the Toronto landmarks. Fence rails, near trees, rocks and villages should pass independently of the mountains. Bake the road and shore profile in Blender under ADRs 0034 and 0035. Load any animated content with the Engadin course in the existing world library under ADR 0030. Advance the kites and the red train on ride time. Use one set of shared materials and window the roadside batches. Dispose of textures, materials, geometry and scene objects on exit. Preserve Chromium WebGL 2 and WebGPU under ADR 0021, and keep the physical course aligned through its bends under ADR 0023. Follow the performance design for a nine-second warm-up and two moving sixty-second samples, with paired rider views at the six chainages.

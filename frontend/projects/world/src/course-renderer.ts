@@ -16,6 +16,8 @@ import type { marinaPromenade } from './marina-promenade';
 import type { MarinaBoats } from './marina-boats';
 import type { fringeStreet } from './fringe-street';
 import type { FringePerformers } from './fringe-performers';
+import type { engadinShore } from './engadin-shore';
+import type { engadinLakes } from './engadin-lakes';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -302,6 +304,8 @@ export class CourseRenderer implements WorldRenderer {
   private marinaBoats: MarinaBoats | null = null;
   private street: Awaited<ReturnType<typeof fringeStreet>> | null = null;
   private fringe: FringePerformers | null = null;
+  private shore: Awaited<ReturnType<typeof engadinShore>> | null = null;
+  private lakes: Awaited<ReturnType<typeof engadinLakes>> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -422,6 +426,9 @@ export class CourseRenderer implements WorldRenderer {
     foilX: null as number | null,
     dancerY: null as number | null,
     passengerY: null as number | null,
+    villageFronts: 0,
+    trainPosition: null as number | null,
+    kiteHeight: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -1091,6 +1098,31 @@ export class CourseRenderer implements WorldRenderer {
         this.disposables.push(street);
         street.at(0);
       }
+      if (this.course.file.id === 'engadin') {
+        const { engadinLakes } = await import('./engadin-lakes');
+        if (this.disposed) return false;
+        const lakes = await engadinLakes(this.course);
+        if (this.disposed) {
+          lakes.dispose();
+          return false;
+        }
+        this.lakes = lakes;
+        this.disposables.push(lakes);
+        this.scene.add(lakes.group);
+        this.camera.setViewOffset(1, 1, 0, 0.055, 1, 1);
+        lakes.at(0, 0);
+        const { engadinShore } = await import('./engadin-shore');
+        if (this.disposed) return false;
+        const shore = await engadinShore(this.course);
+        if (this.disposed) {
+          shore.dispose();
+          return false;
+        }
+        this.shore = shore;
+        this.scene.add(shore.group);
+        this.disposables.push(shore);
+        shore.at(0);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1278,6 +1310,8 @@ export class CourseRenderer implements WorldRenderer {
     }
     const metres = Math.min(ridden + this.benchFrom, course.end);
     if (this.pinned) this.drawn.metres = metres;
+    this.shore?.at(metres, frame.reducedMotion ? 0 : frame.time);
+    this.lakes?.at(frame.reducedMotion ? 0 : frame.time, metres);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
     const standing = this.ride(you, metres, 0);
@@ -1529,6 +1563,8 @@ export class CourseRenderer implements WorldRenderer {
     this.marinaTrees = null;
     this.fringe = null;
     this.street = null;
+    this.lakes = null;
+    this.shore = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -1556,7 +1592,8 @@ export class CourseRenderer implements WorldRenderer {
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
-    const fogRange = this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : FOG;
+    const clearValley = this.course!.file.id === 'engadin';
+    const fogRange = this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : clearValley ? ([750, 5000] as const) : FOG;
     this.scene.fog = new Fog(look.haze, fogRange[0], fogRange[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -2048,8 +2085,8 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : CAMERA_BACK;
-    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : CAMERA_UP;
+    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : this.lakes ? 4.65 : CAMERA_BACK;
+    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : this.lakes ? 2.65 : CAMERA_UP;
     const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : this.commuters ? 4.1 : distance + (CLOSE_BACK - distance) * close;
     const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : this.commuters ? 2.0 : eye + (CLOSE_UP - eye) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
@@ -2483,6 +2520,9 @@ export class CourseRenderer implements WorldRenderer {
     drawn.ravenHeading = this.basin?.ravenHeading ?? null;
     drawn.taxiZ = this.festival?.taxiZ ?? null;
     drawn.sparkY = this.festival?.sparkY ?? null;
+    drawn.villageFronts = this.shore?.villageFronts ?? 0;
+    drawn.trainPosition = this.lakes?.trainPosition ?? null;
+    drawn.kiteHeight = this.lakes?.kiteHeight ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;

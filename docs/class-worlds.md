@@ -62,6 +62,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Diwali, Marine Drive (`diwali`) | 25 Minute High Intensity Intervals (GCN, 25:05) | 10.163 km | 4 m | `public/courses/diwali.glb` ([ride views](screenshots/diwali-marine-drive/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Dubai Marina (`dubai`) | Sprint Into the Effort (GCN Training, 20:00) | 8.600 km | 3 m | `public/courses/dubai.glb` ([ride views](screenshots/dubai-marina/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Edinburgh Fringe (`edinburgh`) | 20 Minute HIIT (GCN Training, 20:00) | 8.655 km | 90 m | `public/courses/edinburgh.glb` ([ride views](screenshots/edinburgh-fringe/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Engadin Lakes (`engadin`) | 60 Minute Turbo Trainer Class (GCN, 60:00) | 24.625 km | 118 m | `public/courses/engadin.glb` ([ride views](screenshots/engadin-lakes/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

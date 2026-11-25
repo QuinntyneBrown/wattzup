@@ -1422,3 +1422,8 @@ import edinburgh as _edinburgh
 
 THEMES["edinburgh"] = _edinburgh.THEME
 SCENERY["edinburgh"] = _edinburgh.scenery
+
+import engadin as _engadin
+
+THEMES["engadin"] = _engadin.THEME
+SCENERY["engadin"] = _engadin.scenery

@@ -1,0 +1,187 @@
+{
+  "id": "engadin",
+  "name": "Engadin Lakes",
+  "world": "engadin",
+  "theme": "engadin",
+  "seed": 2117,
+  "layout": 0,
+  "class": {
+    "id": "60-minute-turbo-trainer-class",
+    "title": "60 Minute Turbo Trainer Class",
+    "channel": "GCN",
+    "videoId": "lFbjsRvjF-A",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 420,
+        "level": 14,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 21,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 21,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 21,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 21,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 21,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 21,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 16,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 65
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 11,
+        "cadenceAim": 85
+      }
+    ]
+  }
+}
