@@ -1,3 +1,4 @@
+import engadinElevation from './engadin-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,56 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const engadinCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'engadin-lakes',
+  name: 'Engadin Lakes',
+  routeName: 'The lakes road',
+  place: 'Upper Engadin, Switzerland',
+  world: 'engadin',
+  distanceKm: 24.625,
+  climbingM: 118,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: engadinElevation,
+  },
+  thumbnailUrl: 'maps/engadin-lakes.jpg',
+  photoUrl: 'maps/engadin-lakes-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 420, 14, 85),
+      seg('work', 120, 18, 70),
+      seg('recover', 120, 16, 95),
+      seg('work', 120, 18, 70),
+      seg('recover', 120, 16, 95),
+      seg('work', 120, 18, 70),
+      seg('recover', 120, 16, 95),
+      seg('work', 120, 18, 70),
+      seg('recover', 120, 16, 95),
+      seg('work', 120, 18, 70),
+      seg('recover', 120, 16, 95),
+      seg('work', 120, 18, 70),
+      seg('recover', 120, 16, 95),
+      seg('work', 90, 21, 70),
+      seg('recover', 90, 16, 95),
+      seg('work', 90, 21, 70),
+      seg('recover', 90, 16, 95),
+      seg('work', 90, 21, 70),
+      seg('recover', 90, 16, 95),
+      seg('work', 90, 21, 70),
+      seg('recover', 90, 16, 95),
+      seg('work', 90, 21, 70),
+      seg('recover', 90, 16, 95),
+      seg('work', 90, 21, 70),
+      seg('recover', 90, 16, 95),
+      seg('work', 300, 21, 65),
+      seg('recover', 180, 18, 95),
+      seg('cool-down', 180, 11, 85),
+    ],
   },
 };
