@@ -508,7 +508,7 @@ export class CourseRenderer implements WorldRenderer {
       Peaks: new MeshLambertMaterial({ ...lit, fog: false }),
       Funivia: new MeshLambertMaterial({ ...lit, fog: false }),
       Glider: new MeshLambertMaterial({ ...lit, fog: false }),
-      Glow: new MeshBasicMaterial(glow),
+      Glow: new MeshBasicMaterial({ ...glow, fog: this.course!.file.id !== 'bund' }),
       Confetti: new MeshBasicMaterial({ ...glow, side: DoubleSide }),
       Sun: new MeshBasicMaterial({ ...glow, fog: false }),
       // A sky the map carries, painted in its vertices (build_sky in build_course.py).
