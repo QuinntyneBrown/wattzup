@@ -10,7 +10,7 @@ def route(course,theme,bc):
     length=stages[-1]["to"]
     mean=sum((s["to"]-s["from"])*s["level"] for s in stages)/length
     def yaw(d):
-        return .26*math.sin(d/300)+.14*math.sin(d/105)+.48*smooth(-80,100,d)-.48*smooth(230,520,d)
+        return .26*math.sin(d/300)+.14*math.sin(d/105)-.95*smooth(35,180,d)+.95*smooth(240,540,d)
     x,y=-bc.LEAD_IN,0
     samples=[]
     for i in range(math.ceil((bc.LEAD_IN+length+bc.RUN_OUT)/bc.STEP)+1):
@@ -49,7 +49,7 @@ def banks(road,col,theme,bc):
 
 THEME={
     "lay":route,"land_builder":banks,"terrain":{"sea":False},"land":{"mid":0x576449},
-    "edge":"verge","kerbs":False,"sky":[0xF5BA97,0xDAAEA8,0xAAA6BB,0x8198B2,0x6385A5],
+    "edge":"laterite","kerbs":False,"sky":[0xF5BA97,0xDAAEA8,0xAAA6BB,0x8198B2,0x6385A5],
     "haze":0xCCAEA3,"light":[0xFFDAA9,2.7],"fill":[0xDAD2DD,0x837259],"sun_altitude":.085,
     "sun_azimuth":.7,"palette":{"asphalt":0x565356,"sand":0xAA6345,"promenade":0xA05C40},
 }
@@ -68,9 +68,11 @@ def lotus_tower(art,c,height,radius,stone):
 
 
 def wat(k,art):
-    i=k.road.index(166)
-    yaw=k.s[i]["h"]-.40
-    origin=k.road.at(i,83)
+    i=k.road.index(24)
+    # Across the water, just left of the initial line of travel. The road turns
+    # right along the moat while the towers retain their original bearing.
+    yaw=k.s[i]["h"]+math.pi/2+.29
+    origin=k.P(i,184,21)
     cs,sn=math.cos(yaw),math.sin(yaw)
     def pt(u,v,z):
         return (origin[0]+u*cs-v*sn,origin[1]+u*sn+v*cs,z)
@@ -122,6 +124,7 @@ def gate(k,art,d):
 def scenery(k):
     art=Painted(k)
     wat(k,art)
+    traffic_models(k)
     for d in range(650,int(k.length),1640):
         gate(k,art,d)
     for d in range(-60,int(k.length)+80,12):
@@ -139,4 +142,129 @@ def scenery(k):
                 cx=x+2.3*math.cos(a);cy=y+2.3*math.sin(a)
                 art.tube((cx,cy,h-.5+j*.65),3.6,4.6,1.8,foliage,foliage,8)
                 art.tube((cx,cy,h+1.3+j*.65),4.6,.45,2.3,foliage,foliage,8,foliage)
+    for d in range(975,int(k.length),3340):
+        bayon(k,art,d)
+    for d in range(1215,int(k.length),3340):
+        root_temple(k,art,d)
+    for d in range(230,int(k.length),730):
+        market(k,art,d)
     return {"efforts":0}
+
+def root_temple(k,art,d):
+    i=k.road.index(d)
+    yaw=k.s[i]["h"]
+    def pt(u,v,z):
+        x,y,_=k.P(i,u,v)
+        return x,y,z
+    stones=[lin(h) for h in (0xA69B83,0x8A846E,0x878772,0xA99D86)]
+    for row in range(8):
+        for j in range(-9,10):
+            u=j*1.4+.68*(row%2)
+            if abs(u)<1.65 and row<6: continue
+            if abs(j)>7 and row>5: continue
+            art.box(pt(u,-8.8,.1+row*.54),(1.36,2.6,.52),yaw,k.rng.choice(stones))
+    for side in (-1,1):
+        art.box(pt(1.81*side,-7.38,.1),(.49,.3,3.45),yaw,stones[0])
+    for j in range(3):
+        art.box(pt(0,-7.31,3.35+j*.27),(4.2-j*.32,.41,.25),yaw,stones[j])
+    root=lin(0xA59B82)
+    for j in range(10):
+        origin=2.7+j*.13
+        end=(j-4)*1.9
+        for n in range(9):
+            t=n/9;t2=(n+1)/9
+            def edge(t,sign):
+                u=origin+(end-origin)*(t**1.42)+.35*math.sin(t*8+j)*t
+                return pt(u+sign*(.39-.22*t),-7.31+.45*math.sin(t*3.8)-.5*math.exp(-7*t),5.5*(1-t))
+            coords=(edge(t,-1),edge(t,1),edge(t2,1),edge(t2,-1))
+            art.face(coords,(root,lin(0xCBC0A4),lin(0xB4AC91),root))
+            art.face(coords[::-1],(root,)*4)
+    art.tube(pt(3.25,-8.15,4),1.28,.72,12,root,root,9)
+    for j in range(5):
+        a=j*math.tau/5
+        art.tube(pt(3+3.1*math.cos(a),-8+3.1*math.sin(a),15+j*.42),3.5,1.8,2.9,
+                 lin(0x435D41),lin(0x526843),8,lin(0x566F47))
+
+
+def market(k,art,d):
+    i=k.road.index(d);yaw=k.s[i]["h"]
+    def pt(u,v,z): return k.P(i,u,v,z)
+    for j in range(2):
+        off=-8.1-3.5*j
+        wood=lin(0x7E624B)
+        art.box(pt(j*4,off,.5),(2.5,1.25,.65),yaw,wood)
+        art.tube(pt(j*4,off,1.1),.06,.05,1.7,wood,wood,6)
+        cloth=lin(0xAB7150 if j==0 else 0x8C8C68)
+        art.tube(pt(j*4,off,2.6),1.8,.16,.62,cloth,cloth,10,cloth)
+        for t in range(4):
+            art.box(pt(j*4-1+t*.55,off,1.15),(.42,.53,.23),yaw,lin(0xA79B68))
+    for j in range(3):
+        c=pt(-9+j*2.15,-5.8,.03)
+        saffron=lin((0xCE782E,0xB76927,0xD69033)[j])
+        skin=lin(0xA47858)
+        art.tube(c,.28,.17,1.36,saffron,saffron,7,saffron)
+        art.tube((c[0],c[1],c[2]+1.35),.12,.135,.24,skin,skin,8,skin)
+
+def traffic_models(k):
+    def wheel(art,x,y,r):
+        rubber=lin(0x333331)
+        rim=lin(0x878980)
+        for j in range(14):
+            a=j*math.tau/14;b=(j+1)*math.tau/14
+            def point(at,radius,side):
+                return (x+side,y+radius*math.cos(at),r+radius*math.sin(at))
+            quad=(point(a,r,-.05),point(b,r,-.05),point(b,r,.05),point(a,r,.05))
+            art.face(quad,(rubber,)*4)
+            for side in (-.051,.051):
+                q=(point(a,r,side),point(b,r,side),point(b,r*.82,side),point(a,r*.82,side))
+                art.face(q,(rubber,)*4);art.face(q[::-1],(rubber,)*4)
+                spoke=(point(a,r*.84,side),point(a+.045,r*.84,side),(x+side,y,r))
+                art.face(spoke,(rim,)*3);art.face(spoke[::-1],(rim,)*3)
+    art=Painted(k,"tuk-tuk")
+    red,teal,cream,iron,skin=map(lin,(0x9C5642,0x446C67,0xD9B88C,0x4D5149,0xA37C60))
+    for x in (-.76,.76): wheel(art,x,-.68,.34)
+    wheel(art,0,1.5,.32)
+    art.box((0,-.35,.43),(1.48,1.81,.29),0,teal)
+    art.box((0,-.92,.71),(1.39,.25,.59),0,red)
+    art.box((0,-.64,.72),(1.29,.43,.15),0,cream)
+    for x in (-.66,.66):
+        for y in (-1.0,.39):art.tube((x,y,.68),.038,.035,1.1,iron,iron,6)
+    art.box((0,-.33,1.76),(1.65,1.79,.16),0,red)
+    art.roof((0,-.33,1.92),1.76,1.64,.19,math.pi/2,red)
+    art.box((0,.91,.43),(.31,1.08,.29),0,teal)
+    art.tube((0,.91,.73),.18,.22,.56,cream,cream,7)
+    art.tube((0,.95,1.28),.14,.14,.25,skin,skin,7,skin)
+    art=Painted(k,"touring-bike")
+    for y in (-.54,.54):wheel(art,0,y,.34)
+    for a,b in (((-.54,.34),(-.18,.8)),((-.18,.8),(0,.34)),((0,.34),(-.54,.34)),((0,.34),(.39,.80)),((.39,.80),(.54,.34))):
+        quad=tuple((0,u,z+off) for (u,z),off in ((a,-.028),(b,-.028),(b,.028),(a,.028)))
+        art.face(quad,(teal,)*4);art.face(quad[::-1],(teal,)*4)
+    art.tube((0,-.17,.85),.14,.19,.48,red,red,7)
+    art.tube((0,-.13,1.33),.12,.13,.23,skin,skin,7,skin)
+
+def bayon(k,art,d):
+    i=k.road.index(d);yaw=k.s[i]["h"]
+    dark,base,light=map(lin,(0x675F52,0x9B937D,0xB0A48C))
+    for along,off,h in ((0,-12,10.8),(-8,-21,7.8),(10,-23,8.7)):
+        def pt(u,v,z):return k.P(i,along+u,off+v,z)
+        for j in range(9):
+            size=5.2-.095*j
+            art.box(pt(0,0,j*.79),(size,size,.77),yaw,base)
+        # Four faces on a tower look out in the cardinal directions. The lips
+        # curve toward each cheek; the heavy eyelids are downcast (real-14).
+        for side in range(4):
+            angle=side*math.pi/2
+            def facept(horizontal,relief,z):
+                u=horizontal*math.sin(angle)+(2.14+relief)*math.cos(angle)
+                v=-horizontal*math.cos(angle)+(2.14+relief)*math.sin(angle)
+                return pt(u,v,z)
+            def patch(outline,tint):
+                coords=[facept(*p) for p in outline]
+                art.face(coords,(tint,)*len(coords));art.face(coords[::-1],(tint,)*len(coords))
+            patch([(-1.48,0,6.1),(-1.40,.14,4.1),(-.87,.27,3.3),(0,.37,3.0),(.87,.27,3.3),(1.40,.14,4.1),(1.48,0,6.1)],base)
+            for sign in (-1,1):
+                patch([(sign*.16,.38,5.22),(sign*.55,.50,5.37),(sign*1.19,.19,5.20),(sign*.73,.50,5.05)],light)
+                patch([(sign*.23,.42,5.10),(sign*.68,.53,4.99),(sign*1.12,.24,5.12),(sign*.66,.54,5.08)],dark)
+            patch([(-.32,.38,4.44),(0,.91,4.29),(.32,.38,4.44),(.15,.39,5.25),(-.15,.39,5.25)],light)
+            patch([(-.78,.36,4.03),(0,.63,3.89),(.78,.36,4.03),(.47,.48,3.83),(0,.63,3.80),(-.47,.48,3.83)],dark)
+        lotus_tower(art,pt(0,0,7.1),h-3,2.05,base)

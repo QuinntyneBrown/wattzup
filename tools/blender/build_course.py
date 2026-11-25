@@ -572,7 +572,7 @@ HALOS_PART = "Halos"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "chalet-plaster": 3, "tower": 3, "wall": 3, "stone": 5, "dolomite-pale": 5, "larch-aged": 6, "larch-warm": 6, "chalet-wood": 6,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
 WIDER = {"Land": 4, "Beams": 6, "Glow": 6, "Leaves": 1, "Halos": 4, "Ground": 2}
-WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "peaks": "Peaks", "funivia": "Funivia", "glider": "Glider", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
+WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "peaks": "Peaks", "funivia": "Funivia", "glider": "Glider", "tuk-tuk": "TukTuk", "touring-bike": "TouringBike", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
 
 def group_of(mat: str) -> tuple[str, bool]:
@@ -844,6 +844,13 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         strip(sand, i, -(kerb + 2.4), 0.0, -(kerb + 7.0), -1.6)
 
     for i in range(n - 1):
+        if edge == "laterite":
+            # Unmarked tarmac meets the dusty red shoulder at grade through the jungle.
+            half = 3.65
+            strip(asphalt, i, half, 0.0, -half, 0.0)
+            strip(sand, i, 7.1, -.06, half, 0.0)
+            strip(sand, i, -half, 0.0, -7.1, -.06)
+            continue
         strip(asphalt, i, ROAD_HALF, 0.0, -ROAD_HALF, 0.0)
         # The double yellow line down the middle and a white line inside each edge.
         if white_centre:
@@ -1796,7 +1803,7 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         "durationSeconds": sum(s["duration"] for s in st),
         "step": STEP,
         "startIndex": int(LEAD_IN / STEP),
-        "roadHalfWidth": ROAD_HALF,
+        "roadHalfWidth": course.get("roadHalfWidth", ROAD_HALF),
         "meanLevel": round(mean, 2),
         "gradePerLevel": per_level,
         # The direction the light comes from, as a unit vector in the glb's axes.

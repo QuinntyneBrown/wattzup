@@ -5,6 +5,7 @@
   "theme": "angkor",
   "seed": 2068,
   "layout": 0,
+  "roadHalfWidth": 3.65,
   "class": {
     "id": "60-minute-reverse-pyramid",
     "title": "60 Minute Reverse Pyramid",
