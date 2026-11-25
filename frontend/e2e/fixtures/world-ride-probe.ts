@@ -63,6 +63,15 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async ligurianMotion(part: 'hikerX' | 'boatRoll'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async chichenMotion(part: 'wingAngle' | 'walkerX'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
