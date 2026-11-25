@@ -216,7 +216,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 186 | Ramp Session: Dialling In Your Training Zones | Joshua Tree | 35% |  | Desert road through twisted Joshua trees and boulder piles. |
 | 187 | 60 Minute Endurance Intervals | Cabot Trail | 35% |  | Nova Scotia's coastal highlands with ocean views and moose. |
 | 188 | 55 Minute FTP Threshold Intervals | Pico Veleta | 35% |  | Spain's highest paved road above Granada in the Sierra Nevada. |
-| 189 | Zwift Group Workout: HIIT Intervals | Bay of Islands Group Ride | 35% |  | A New Zealand bunch ride past sheltered bays and green hills. |
+| 189 | Zwift Group Workout: HIIT Intervals | Bay of Islands Group Ride | 35% | [Ride views](screenshots/bay-of-islands/README.md) | A New Zealand bunch ride past sheltered bays and green hills. |
 | 190 | Race Winning Intervals | Yorkshire Dales | 35% |  | Stone walls, moors and race-day crowds on the Buttertubs climb. |
 | 191 | 60 Minute Turbo Trainer Class | Engadin Lakes | 35% |  | A Swiss high valley road along St. Moritz's chain of lakes. |
 
