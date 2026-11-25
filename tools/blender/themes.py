@@ -1254,3 +1254,58 @@ import adelaide as _adelaide
 MATERIALS.update(_adelaide.MATERIALS)
 THEMES["adelaide"] = _adelaide.THEME
 SCENERY["adelaide"] = _adelaide.scenery
+
+# A banked, indoor pursuit track.
+import aguascalientes as _aguascalientes
+
+THEMES["aguascalientes"] = _aguascalientes.THEME
+SCENERY["aguascalientes"] = _aguascalientes.scenery
+
+import algarve as _algarve
+
+MATERIALS["moored-boats"] = {"color": 0xFFFFFF, "rough": 0.85, "vertex": True}
+THEMES["algarve"] = _algarve.THEME
+SCENERY["algarve"] = _algarve.scenery
+
+import alpe as _alpe
+
+MATERIALS["orange-smoke"] = {"color": 0xFFFFFF, "vertex": True}
+THEMES["alpe"] = _alpe.THEME
+SCENERY["alpe"] = _alpe.scenery
+
+import amsterdam as _amsterdam
+
+MATERIALS.update({name: {"color": 0xFFFFFF, "vertex": True} for name in ("tour-boat", "commuter", "canal-front", "elm-leaves", "elm-shade")})
+THEMES["amsterdam"] = _amsterdam.THEME
+SCENERY["amsterdam"] = _amsterdam.scenery
+
+import angels as _angels  # noqa: E402
+
+THEMES["angels"] = _angels.THEME
+SCENERY["angels"] = _angels.scenery
+
+import angkor as _angkor  # noqa: E402
+
+THEMES["angkor"] = _angkor.THEME
+SCENERY["angkor"] = _angkor.scenery
+
+MATERIALS.update({name: {"color": 0xFFFFFF, "vertex": True} for name in ("tuk-tuk", "touring-bike")})
+
+import angliru as _angliru  # noqa: E402
+
+MATERIALS["angliru-concrete"] = {"color": 0xA49F91, "rough": .9}
+THEMES["angliru"] = _angliru.THEME
+SCENERY["angliru"] = _angliru.scenery
+
+import antwerp as _antwerp
+
+THEMES['antwerp'] = _antwerp.THEME
+SCENERY['antwerp'] = _antwerp.scenery
+
+import arenberg as _arenberg
+
+THEMES['arenberg'] = _arenberg.THEME
+SCENERY['arenberg'] = _arenberg.scenery
+MATERIALS['pave'] = {'color': 0xFFFFFF, 'vertex': True}
+MATERIALS.update({name: {'color': 0xFFFFFF, 'vertex': True} for name in ('commissaire','team-car')})
+MATERIALS['arenberg-foliage'] = {'color': 0xFFFFFF, 'vertex': True}

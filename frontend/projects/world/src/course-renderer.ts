@@ -21,6 +21,9 @@ import {
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
+  RepeatWrapping,
+  type Texture,
+  TextureLoader,
   MeshStandardNodeMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
@@ -58,6 +61,9 @@ import {
   courseWet,
   parseCourse,
 } from './course';
+import type { AngliruRoadside } from './angliru-roadside';
+import type { AntwerpWind } from './antwerp-wind';
+import type { arenbergPave } from './arenberg-pave';
 import { CourseCyclistKit, type RiderModel as Cyclist } from './course-cyclist';
 import { fenceMaterial } from './fence-material';
 import { type CabinPose, gondolaPosition } from './gondola-flight';
@@ -66,6 +72,7 @@ import { type GroundEye, groundMaterial, surfaceTexture } from './ground-materia
 import { haloMaterial } from './halo-material';
 import { colouredGlow, LampGlow } from './lamp-glow';
 import { colourLightMap, lampLightMap } from './lamp-light-map';
+import type { PursuitBoard } from './pursuit-board';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
@@ -108,6 +115,8 @@ const SHADOW_WIDTH = 0.8;
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Land: 950,
+  Pave: 180,
+  Foliage: 110,
   Ground: 420,
   Solid: 250,
   Walls: 220,
@@ -200,7 +209,10 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
+  private angliruRoadside: AngliruRoadside | null = null;
+  private pave: ReturnType<typeof arenbergPave> | null = null;
   private course: Course | null = null;
+  private timing: PursuitBoard | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -237,16 +249,34 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    ghostSeparationMetres: 0,
+    boatHeight: null as number | null,
     drawCalls: 0,
     triangles: 0,
+    metres: 0,
+    smokeHeight: null as number | null,
+    tourBoatX: null as number | null,
+    trainingRiderX: null as number | null,
+    tukTukX: null as number | null,
+    asturiasFlagAngle: 0,
+    echelonLeaderX: null as number | null,
+    commissaireX: null as number | null,
     groups: {} as Record<string, number>,
   };
+  private readonly trainingGroup: Cyclist[] = [];
+  private portWind: AntwerpWind | null = null;
+  private readonly echelon: Cyclist[] = [];
+  private readonly convoy: { holder: Group; moto: boolean }[] = [];
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
   private startGreen: Mesh | null = null;
   private beams: MeshBasicMaterial | null = null;
+  private smoke: { mesh: Mesh; x: number; y: number } | null = null;
+  private readonly canalTraffic: { holder: Group; boat: boolean; order: number }[] = [];
+  private readonly templeTraffic: { holder: Group; bike: boolean }[] = [];
   private readonly confetti: Mesh[] = [];
+  private boats: { mesh: Mesh; waterline: number } | null = null;
   private funivia: { holder: Group; span: CourseCableway; pose: CabinPose } | null = null;
   private glider: { holder: Group; orbit: CourseGliderOrbit; pose: GliderPose } | null = null;
   /** The blob every rider's shadow is drawn with, and each rider's own. */
@@ -335,7 +365,7 @@ export class CourseRenderer implements WorldRenderer {
       renderer.toneMapping = AgXToneMapping;
       renderer.toneMappingExposure = 1.15;
 
-      const [file, gltf, body] = await Promise.all([
+      const [file, gltf, body, clinkerModule, fronts, foliage] = await Promise.all([
         fetch(`${this.path}.course.json`).then((response) => {
           if (!response.ok) throw new Error(`The course file answered ${response.status}.`);
           return response.json() as Promise<unknown>;
@@ -345,6 +375,9 @@ export class CourseRenderer implements WorldRenderer {
         new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(`${this.path}.glb`),
         // The riders' body, built in Blender as the map is (ADR 0036).
         RiderBody.load(),
+        _world.id === 'amsterdam' ? import('./amsterdam-clinker') : null,
+        _world.id === 'amsterdam' ? this.loadCourseTexture('-fronts.webp') : null,
+        _world.id === 'amsterdam' ? this.loadCourseTexture('-foliage.webp') : null,
       ]);
       if (this.disposed) {
         body.dispose();
@@ -356,9 +389,56 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
-      this.build(gltf.scene, canvas);
+      const clinker = clinkerModule?.clinkerTexture('#8a4a36') ?? null;
+      if (clinker) {
+        clinker.wrapS = clinker.wrapT = RepeatWrapping;
+        this.disposables.push(clinker);
+      }
+      for (const image of [fronts, foliage]) {
+        if (image) {
+          image.colorSpace = SRGBColorSpace;
+          image.anisotropy = 4;
+          image.flipY = false;
+        }
+      }
+      if (this.course.file.id === 'arenberg') {
+        const { arenbergPave } = await import('./arenberg-pave');
+        if (this.disposed) return false;
+        this.pave = arenbergPave();
+        this.disposables.push(this.pave);
+      }
+      this.build(gltf.scene, canvas, clinker, fronts, foliage);
+      if (this.course.file.id === 'aguascalientes') {
+        const { PursuitBoard } = await import('./pursuit-board');
+        if (this.disposed) return false;
+        this.timing = new PursuitBoard();
+        this.scene.add(this.timing.group);
+        this.disposables.push(this.timing);
+      }
+      if (this.course.file.id === 'angliru') {
+        const { AngliruRoadside } = await import('./angliru-roadside');
+        if (this.disposed) return false;
+        this.angliruRoadside = new AngliruRoadside(this.course);
+        this.scene.add(this.angliruRoadside.root);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
+      if (_world.id === 'angels') {
+        for (const [index, colour] of [0x4a7990, 0xac5449, 0x537149].entries()) {
+          const cyclist = this.rider('girona-club-' + index, colour);
+          if (cyclist) this.trainingGroup.push(cyclist);
+        }
+      }
+      if (this.course.file.id === 'antwerp') {
+        const { AntwerpWind } = await import('./antwerp-wind');
+        if (this.disposed) return false;
+        this.portWind = new AntwerpWind(this.course);
+        this.scene.add(this.portWind.root);
+        for (const [index, colour] of [0x27698a, 0xc76437, 0xeac765, 0x4d7c65].entries()) {
+          const rider = this.rider('scheldt-echelon-' + index, colour);
+          if (rider) this.echelon.push(rider);
+        }
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -415,6 +495,7 @@ export class CourseRenderer implements WorldRenderer {
       if (typeof from === 'number') this.benchFrom = from;
     }
     const metres = Math.min(ridden + this.benchFrom, course.end);
+    if (this.pinned) this.drawn.metres = metres;
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
     const standing = this.ride(you, metres, 0);
@@ -422,9 +503,13 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    this.timing?.update(metres, frame.time);
+    if (this.trainingGroup.length) this.placeTrainingGroup(frame, metres);
+    if (this.echelon.length) this.placeEchelon(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -433,6 +518,17 @@ export class CourseRenderer implements WorldRenderer {
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
+    if (this.canalTraffic.length)
+      this.placeCanalTraffic(metres, frame.reducedMotion ? 0 : frame.time);
+    if (this.templeTraffic.length)
+      this.placeTempleTraffic(metres, frame.reducedMotion ? 0 : frame.time);
+    if (this.angliruRoadside) {
+      this.drawn.asturiasFlagAngle = this.angliruRoadside.draw(
+        metres,
+        frame.reducedMotion ? 0 : frame.time,
+      );
+    }
+    if (this.convoy.length) this.placeConvoy(metres, frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -457,6 +553,8 @@ export class CourseRenderer implements WorldRenderer {
 
   dispose(): void {
     this.disposed = true;
+    this.angliruRoadside?.dispose();
+    this.angliruRoadside = null;
     this.pipeline?.dispose();
     this.pipeline = null;
     this.map?.traverse((part) => {
@@ -468,11 +566,25 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh } of this.chunks) mesh.geometry.dispose();
     this.near.clear();
     this.chunks.length = 0;
+    this.boats = null;
     this.confetti.length = 0;
+    this.timing = null;
     this.funivia = null;
     this.glider = null;
+    this.smoke = null;
+    for (const { holder } of this.canalTraffic) this.scene.remove(holder);
+    this.canalTraffic.length = 0;
+    for (const { holder } of this.templeTraffic) this.scene.remove(holder);
+    this.templeTraffic.length = 0;
+    for (const { holder } of this.convoy) this.scene.remove(holder);
+    this.convoy.length = 0;
+    this.pave = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
+    this.trainingGroup.length = 0;
+    this.portWind?.dispose();
+    this.portWind = null;
+    this.echelon.length = 0;
     this.riders.clear();
     this.lamplit.clear();
     this.lampGlow = null;
@@ -488,7 +600,20 @@ export class CourseRenderer implements WorldRenderer {
     this.renderer = null;
   }
 
-  private build(map: Object3D, canvas: HTMLCanvasElement): void {
+  private loadCourseTexture(suffix: string): Promise<Texture> {
+    return new Promise((resolve, reject) => {
+      const texture = new TextureLoader().load(this.path + suffix, resolve, undefined, reject);
+      this.disposables.push(texture);
+    });
+  }
+
+  private build(
+    map: Object3D,
+    canvas: HTMLCanvasElement,
+    clinker: Texture | null,
+    fronts: Texture | null,
+    foliage: Texture | null,
+  ): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
@@ -532,6 +657,22 @@ export class CourseRenderer implements WorldRenderer {
         blending: AdditiveBlending,
       }),
     };
+    if (fronts && foliage) {
+      materials['Facades'] = new MeshLambertMaterial({ map: fronts, side: DoubleSide });
+      materials['Dapple'] = new MeshBasicMaterial({
+        map: foliage,
+        color: 0x253322,
+        side: DoubleSide,
+        transparent: true,
+        opacity: 0.22,
+        depthWrite: false,
+      });
+      materials['Elms'] = new MeshLambertMaterial({
+        map: foliage,
+        side: DoubleSide,
+        alphaTest: 0.45,
+      });
+    }
     // Where the course has street lamps, what stands near the road is lit by them (lamp-glow.ts).
     const lamps = courseLamps(this.course!.file);
     if (lamps) {
@@ -569,6 +710,10 @@ export class CourseRenderer implements WorldRenderer {
     const coloured = this.lampGlow?.coloured ?? dusk;
     const made = this.lampGlow?.light ?? dusk;
     this.disposables.push(...Object.values(materials));
+    if (this.pave) {
+      materials['Pave'] = this.pave.material;
+      materials['Foliage'] = this.pave.foliage;
+    }
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
     const detail = surfaceTexture();
@@ -579,6 +724,7 @@ export class CourseRenderer implements WorldRenderer {
       courseWet(this.course!.file),
       new Color(look.haze),
       coloured,
+      clinker,
     );
     materials['Ground'] = ground.material;
     this.groundEye = ground.eye;
@@ -628,7 +774,26 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
-      const material = materials[group];
+      if (group === 'Smoke' && !materials[group]) {
+        const mist = new MeshBasicMaterial({
+          ...glow,
+          transparent: true,
+          opacity: 0.22,
+          depthWrite: false,
+          side: DoubleSide,
+        });
+        materials[group] = mist;
+        this.disposables.push(mist);
+      }
+      const useLandMaterial =
+        group === 'Boats' ||
+        group === 'TourBoat' ||
+        group === 'Commuter' ||
+        group === 'TukTuk' ||
+        group === 'TouringBike' ||
+        group === 'Commissaire' ||
+        group === 'TeamCar';
+      const material = materials[useLandMaterial ? 'Land' : group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
       mesh.material = material;
@@ -639,10 +804,12 @@ export class CourseRenderer implements WorldRenderer {
         return;
       }
       // The ground is lit smoothly: its normals are worked out here, so the map's file carries none.
-      if (group === 'Ground') mesh.geometry.computeVertexNormals();
+      if (group === 'Ground' || group === 'Pave') mesh.geometry.computeVertexNormals();
       // The map is set once and never moves: its matrices are worked out here, not every frame.
       mesh.matrixAutoUpdate = false;
       mesh.updateMatrix();
+      if (group === 'Boats') this.boats = { mesh, waterline: mesh.position.y };
+      if (group === 'Smoke') this.smoke = { mesh, x: mesh.position.x, y: mesh.position.y };
       if (group === 'Confetti') this.confetti.push(mesh);
       if (group === 'StartRed') this.startRed = mesh;
       if (group === 'StartGreen') this.startGreen = mesh;
@@ -706,6 +873,42 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.scene.add(this.glider.holder);
       this.placeGlider(0, true);
+    }
+    for (const name of ['TourBoat', 'Commuter']) {
+      const mesh = map.getObjectByName(name) as Mesh | undefined;
+      if (!mesh?.isMesh) continue;
+      mesh.updateMatrixWorld(true);
+      mesh.matrix.copy(mesh.matrixWorld);
+      this.disposables.push(mesh.geometry);
+      for (const order of [0, 1]) {
+        const holder = new Group();
+        holder.add(order === 0 ? mesh : mesh.clone());
+        this.scene.add(holder);
+        this.canalTraffic.push({ holder, boat: name === 'TourBoat', order });
+      }
+    }
+    for (const name of ['TukTuk', 'TouringBike']) {
+      const vehicle = map.getObjectByName(name) as Mesh | undefined;
+      if (!vehicle?.isMesh) continue;
+      vehicle.updateMatrixWorld(true);
+      vehicle.matrix.copy(vehicle.matrixWorld);
+      const holder = new Group();
+      holder.add(vehicle);
+      this.scene.add(holder);
+      this.templeTraffic.push({ holder, bike: name === 'TouringBike' });
+      this.disposables.push(vehicle.geometry);
+    }
+    for (const name of ['Commissaire', 'TeamCar']) {
+      const mesh = map.getObjectByName(name) as Mesh | undefined;
+      if (!mesh?.isMesh) continue;
+      mesh.updateMatrixWorld(true);
+      mesh.matrix.copy(mesh.matrixWorld);
+      const holder = new Group();
+      holder.add(mesh);
+      if (name === 'Commissaire' && this.pave) holder.add(this.pave.trail);
+      this.scene.add(holder);
+      this.convoy.push({ holder, moto: name === 'Commissaire' });
+      this.disposables.push(mesh.geometry);
     }
     this.map = map;
     this.scene.add(map);
@@ -777,6 +980,7 @@ export class CourseRenderer implements WorldRenderer {
       this.body!,
       this.course!.file.night === true,
       this.tier <= SIMPLE_RIDERS,
+      this.course!.file.id === 'aguascalientes',
     );
     this.kit = kit;
     // The rider wears the You jersey of the race board (L2-060).
@@ -856,7 +1060,7 @@ export class CourseRenderer implements WorldRenderer {
     cyclist.group.rotation.set(
       at.pitch,
       at.heading,
-      bendLean(at.heading, ahead, LEAN_AHEAD),
+      at.bank ?? bendLean(at.heading, ahead, LEAN_AHEAD),
       'YXZ',
     );
     if (this.casting.has(cyclist) && cyclist.group.visible) this.lampShadows?.add(metres, lane);
@@ -894,11 +1098,49 @@ export class CourseRenderer implements WorldRenderer {
     this.groundEye?.at(metres - behind, 0, up);
     const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
+    // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
+    if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
     this.sun.position.set(ahead.x + x * 70, ahead.y + 34, ahead.z + z * 70);
     this.sun.target.updateMatrixWorld();
+  }
+
+  private placeTrainingGroup(frame: SceneFrame, metres: number): void {
+    const elapsed = frame.reducedMotion ? 0 : frame.time;
+    const lead = 32 + elapsed * 5.2;
+    // Reuse three bodies. Switch to the next group only when both groups are out of sight.
+    const nearest = lead + Math.round((metres - lead) / 760) * 760;
+    this.drawn.trainingRiderX = null;
+    for (const [index, cyclist] of this.trainingGroup.entries()) {
+      const at = nearest - index * 2.7;
+      cyclist.group.visible = at >= 0 && at < this.course!.length && Math.abs(at - metres) < 150;
+      if (!cyclist.group.visible) continue;
+      const standing = this.ride(cyclist, at, index % 2 === 0 ? 1.3 : 2.2);
+      cyclist.pose(elapsed * 8.9 + index, standing);
+      if (index === 0) this.drawn.trainingRiderX = cyclist.group.position.x;
+    }
+  }
+
+  private placeEchelon(frame: SceneFrame, metres: number): void {
+    const time = frame.reducedMotion ? 0 : frame.time;
+    this.portWind?.draw(metres, time);
+    const lead = 28 + time * 8.4;
+    const nearest = lead + Math.round((metres - lead) / 680) * 680;
+    this.drawn.echelonLeaderX = null;
+    for (const [index, cyclist] of this.echelon.entries()) {
+      const along = nearest - index * 2.65;
+      cyclist.group.visible =
+        along >= 0 && along < this.course!.length && Math.abs(along - metres) < 155;
+      const shadow = this.shadows.get(cyclist);
+      if (shadow) shadow.visible = cyclist.group.visible;
+      if (!cyclist.group.visible) continue;
+      // Shelter from the Scheldt crosswind on the wheel ahead, diagonally across the quay.
+      const standing = this.ride(cyclist, along, -1.32 + index * 0.86);
+      cyclist.pose(time * 9.75 + index * 1.3, standing);
+      if (index === 0) this.drawn.echelonLeaderX = cyclist.group.position.x;
+    }
   }
 
   /** The race's other riders at their places, each on a line of their own (L2-064 AC3). */
@@ -909,6 +1151,20 @@ export class CourseRenderer implements WorldRenderer {
       if (shadow) shadow.visible = false;
     }
     if (!frame.riders) return;
+    // A pursuit starts opposite the clocked opponent. Its replay still advances by the
+    // recorded distance, including when a rider gains a full lap or makes the catch.
+    if (this.timing && frame.riders.length === 1 && frame.riders[0]?.jersey === 'ghost') {
+      const ghost = this.rider('ghost');
+      if (ghost) {
+        const lap = 250;
+        const replay = metres + frame.riders[0].metres + lap / 2;
+        const onOval = ((replay % lap) + lap) % lap;
+        ghost.group.visible = true;
+        this.ride(ghost, onOval, 0.45);
+        ghost.pose(frame.reducedMotion ? 0 : frame.crank);
+      }
+      return;
+    }
     const nearest = ridersOnRoad(frame.riders, FAR_RIDERS)
       .sort((a, b) => Math.abs(a.metres) - Math.abs(b.metres))
       .slice(0, MOST_RIDERS);
@@ -941,11 +1197,12 @@ export class CourseRenderer implements WorldRenderer {
   }
 
   /** A race rider in their jersey, made the first time they ride into view; the ghost in translucent gold. */
-  private rider(jersey: string): Cyclist | null {
+  private rider(jersey: string, clubColour?: number): Cyclist | null {
     const made = this.riders.get(jersey);
     if (made) return made;
     if (!this.kit || !this.canvas) return null;
-    const colour = jerseyColour(this.canvas, jersey);
+    const colour =
+      clubColour === undefined ? jerseyColour(this.canvas, jersey) : new Color(clubColour);
     // The ghost is a figure of glass: it carries no light.
     const cyclist = this.kit.make(
       colour,
@@ -1006,6 +1263,17 @@ export class CourseRenderer implements WorldRenderer {
     if (this.beams) this.beams.opacity = 0.17 + 0.06 * Math.sin(time * 1.7);
     this.skyClock?.(time);
     this.waterClock?.(time);
+    if (this.boats) {
+      const { mesh, waterline } = this.boats;
+      mesh.position.y = waterline + 0.17 * Math.sin(time * 1.18) + 0.045 * Math.sin(time * 2.09);
+      mesh.updateMatrix();
+    }
+    if (this.smoke) {
+      const { mesh, x, y } = this.smoke;
+      mesh.position.x = x + 0.55 * Math.sin(time * 0.75);
+      mesh.position.y = y + 0.34 * Math.sin(time * 1.1);
+      mesh.updateMatrix();
+    }
     this.rain?.at(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
@@ -1014,6 +1282,57 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.placeFunivia(time, false);
     this.placeGlider(time, false);
+  }
+
+  private placeCanalTraffic(rider: number, time: number): void {
+    const course = this.course!;
+    for (const { holder, boat, order } of this.canalTraffic) {
+      const spacing = boat ? 400 : 96;
+      const phase = (boat ? 78 : 18) + time * (boat ? 2.1 : 4.1);
+      const metres = phase + (Math.floor((rider - phase) / spacing) + order) * spacing;
+      holder.visible = metres >= 0 && metres <= course.end;
+      if (!holder.visible) continue;
+      const at = course.place(metres, boat ? -20 : -2.1, this.there);
+      holder.position.set(at.x, boat ? -1.65 : at.y + 0.04, at.z);
+      holder.rotation.y = at.heading;
+      if (boat && this.pinned) this.drawn.tourBoatX = holder.position.x;
+    }
+  }
+
+  private placeTempleTraffic(rider: number, time: number): void {
+    const course = this.course!;
+    for (const { holder, bike } of this.templeTraffic) {
+      const spacing = bike ? 480 : 830;
+      const phase = (bike ? 18 : 36) + time * (bike ? 4.4 : 6.5);
+      const metres = phase + Math.round((rider - phase) / spacing) * spacing;
+      holder.visible = metres >= 0 && metres < course.length && Math.abs(metres - rider) < 180;
+      if (!holder.visible) continue;
+      const at = course.place(metres, bike ? 2.65 : 1.65, this.there);
+      holder.position.set(at.x, at.y + 0.025, at.z);
+      holder.rotation.set(at.pitch, at.heading, 0, 'YXZ');
+      if (!bike && this.pinned) this.drawn.tukTukX = holder.position.x;
+    }
+  }
+
+  private placeConvoy(rider: number, time: number): void {
+    const lead = 33 + 7.1 * time;
+    const nearest = lead + Math.round((rider - lead) / 610) * 610;
+    this.drawn.commissaireX = null;
+    for (const { holder, moto } of this.convoy) {
+      const d = nearest - (moto ? 0 : 18);
+      holder.visible = d >= 0 && d < this.course!.length && Math.abs(d - rider) < 170;
+      if (!holder.visible) continue;
+      // A vehicle being passed moves out onto the muddy shoulder before it reaches the rider.
+      const passing = Math.max(0, 1 - Math.abs(d - rider) / 23);
+      const lane = (moto ? -1.22 : -1.05) - passing * (moto ? 0.75 : 1.43);
+      const at = this.course!.place(d, lane, this.there);
+      holder.position.set(at.x, at.y + 0.035, at.z);
+      holder.rotation.set(at.pitch, at.heading, 0, 'YXZ');
+      if (moto) {
+        this.drawn.commissaireX = holder.position.x;
+        this.pave?.updateTrail(d, time, time > 0);
+      }
+    }
   }
 
   private placeFunivia(time: number, reducedMotion: boolean): void {
@@ -1105,10 +1424,17 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    const ghost = this.riders.get('ghost');
+    drawn.ghostSeparationMetres =
+      this.you && ghost?.group.visible
+        ? this.you.group.position.distanceTo(ghost.group.position)
+        : 0;
+    drawn.boatHeight = this.boats?.mesh.position.y ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
     hook['course'] = drawn;
   }
 

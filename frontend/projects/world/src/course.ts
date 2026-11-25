@@ -34,6 +34,8 @@ export interface CourseFile {
   readonly stages: readonly CourseStage[];
   /** The centre line, x, y, z a point, in the glb's axes (+Y up), metres. */
   readonly points: readonly number[];
+  /** Outward cross-slope in degrees, sampled beside each centre-line point on a banked track. */
+  readonly bankDegrees?: readonly number[];
   /** The world's sky from the horizon up, as `#rrggbb`; a course without one is drawn in Ibiza's sunset. */
   readonly sky?: readonly string[];
   /** The haze the distance fades into. */
@@ -276,6 +278,8 @@ export interface CoursePlace {
   z: number;
   /** The road's direction as a rotation about +Y, in radians: 0 faces -Z, as the cyclist kit's rider does. */
   heading: number;
+  /** Outward cross-slope in radians on a banked track. */
+  bank?: number;
   /** The road's slope, in radians: positive climbs. */
   pitch: number;
 }
@@ -307,6 +311,14 @@ export function parseCourse(value: unknown): CourseFile {
   const { points, stages, sun } = file;
   if (!Array.isArray(points) || points.length % 3 !== 0 || !points.every(isNumber)) {
     throw new Error("The course's centre line is not a list of points.");
+  }
+  if (
+    file.bankDegrees !== undefined &&
+    (!Array.isArray(file.bankDegrees) ||
+      file.bankDegrees.length !== points.length / 3 ||
+      !file.bankDegrees.every((value) => isNumber(value) && Math.abs(value) < 90))
+  ) {
+    throw new Error('The course’s banking does not match its centre line.');
   }
   const needed = file.startIndex! + Math.ceil(file.lengthMetres / file.step) + 1;
   if (points.length / 3 < needed)
@@ -402,6 +414,13 @@ export class Course {
     into.x = p[a]! + (p[b]! - p[a]!) * t + (-tz / flat) * lane;
     into.y = p[a + 1]! + (p[b + 1]! - p[a + 1]!) * t;
     into.z = p[a + 2]! + (p[b + 2]! - p[a + 2]!) * t + (tx / flat) * lane;
+    const banks = this.file.bankDegrees;
+    if (banks) {
+      into.bank = ((banks[i]! + (banks[i + 1]! - banks[i]!) * t) * Math.PI) / 180;
+      into.y += lane * Math.tan(into.bank);
+    } else {
+      into.bank = undefined;
+    }
     into.heading = Math.atan2(-tx, -tz);
     into.pitch = Math.atan2(ty, flat);
     return into;

@@ -12,6 +12,110 @@ namespace Telo.Ride.Api.Tests;
 public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<TeloRideApiFactory>
 {
     [Fact]
+    public async Task Angliru_rides_all_twenty_one_stages_of_five_gruelling_minutes()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "alto-angliru");
+        Assert.Equal("angliru", map.World);
+        Assert.Equal(17.625, map.DistanceKm);
+        Assert.Equal(1102, map.ClimbingM);
+        var heights = Assert.IsAssignableFrom<IReadOnlyList<double>>(map.Terrain.Elevation);
+        Assert.Equal(map.ClimbingM, Math.Round(heights[^1] - heights[0]));
+        var step = map.DistanceKm * 1000 / (heights.Count - 1);
+        var crux = (int)(14975 / step);
+        Assert.Equal(23.5, 100 * (heights[crux + 1] - heights[crux]) / step, 1);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 60, 19, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 600, 19, 90),
+                new Segment("recover", 120, 16, 85),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 120, 16, 85),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 120, 16, 85),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("cool-down", 360, 11, 80)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Antwerp_keeps_the_original_lead_out_efforts_on_the_quays()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "antwerp-port-sprint");
+        Assert.Equal("antwerp", map.World);
+        Assert.Equal(20.9, map.DistanceKm);
+        Assert.Equal(18, map.ClimbingM);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 360, 13, 80),
+                new Segment("work", 120, 16, 80),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 240, 21, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 240, 18, 80),
+                new Segment("work", 180, 21, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 240, 18, 80),
+                new Segment("work", 180, 19, 80),
+                new Segment("work", 90, 22, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 240, 18, 80),
+                new Segment("work", 180, 19, 80),
+                new Segment("work", 90, 21, 80),
+                new Segment("recover", 30, 24, 100),
+                new Segment("cool-down", 210, 10, 80)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Arenberg_rides_the_original_dont_get_dropped_timetable()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "arenberg-forest");
+        Assert.Equal("arenberg", map.World);
+        Assert.Equal(10.725, map.DistanceKm);
+        Assert.Equal(34, map.ClimbingM);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 10, 80),
+                new Segment("work", 60, 13, 80),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 60, 19, 90),
+                new Segment("work", 30, 21, 90),
+                new Segment("recover", 30, 16, 85),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 60, 19, 90),
+                new Segment("work", 60, 10, 80),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 60, 19, 90),
+                new Segment("recover", 30, 21, 90),
+                new Segment("work", 30, 16, 85),
+                new Segment("recover", 30, 22, 100),
+                new Segment("work", 60, 19, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 240, 18, 85),
+                new Segment("recover", 60, 23, 100),
+                new Segment("work", 120, 16, 85),
+                new Segment("recover", 60, 19, 90),
+                new Segment("cool-down", 120, 10, 80)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task The_catalogue_lists_its_maps_in_unlock_order_without_a_session()
     {
         var maps = await ReadMaps();
@@ -30,6 +134,15 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Cinque Terre", 17.1, 335, "Hard", "3 Mins On, 2 Mins Off", "The corniche above the Ligurian Sea"),
                 new Listed("Haleakalā", 15.8, 923, "Brutal", "Maximum Intensity Hill Climb Efforts", "The summit road from the Pacific coast to the crater rim"),
                 new Listed("Adelaide Hills", 17.11, 265, "Moderate", "The Willunga road", "Summer vineyards and gum trees on the climb to Willunga Hill"),
+                new Listed("Aguascalientes Velodrome", 12.875, 0, "Hard", "The pursuit line", "A banked timber pursuit track in a high-altitude Mexican arena"),
+                new Listed("Algarve Cliffs", 16.8, 113, "Hard", "The clifftop road", "The limestone headlands of southern Portugal"),
+                new Listed("Alpe d'Huez", 7.4, 328, "Hard", "The 21 hairpins", "The 21 bends above Bourg-d’Oisans"),
+                new Listed("Amsterdam Canals", 8.0, 28, "Easy", "Herengracht", "The canal quays of Amsterdam"),
+                new Listed("Els Àngels, Girona", 17.05, 505, "Hard", "Santuari dels Àngels", "Girona and the Gavarres"),
+                new Listed("Angkor Temples", 25.15, 24, "Moderate", "Temple Road", "Angkor Wat and Angkor Thom at dawn"),
+                new Listed("Angliru", 17.625, 1102, "Brutal", "Cueña les Cabres", "Sierra del Aramo, Asturias"),
+                new Listed("Antwerp Port Sprint", 20.9, 18, "Hard", "Scheldt Quays", "Eilandje and the port of Antwerp"),
+                new Listed("Arenberg Forest", 10.725, 34, "Hard", "Trouée d’Arenberg", "Wallers, Hauts-de-France"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -53,6 +166,15 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("cinqueterre", null),
                 ("haleakala", null),
                 ("adelaide-hills", null),
+                ("aguascalientes", null),
+                ("algarve-cliffs", null),
+                ("alpe-dhuez", null),
+                ("amsterdam-canals", null),
+                ("els-angels", null),
+                ("angkor-temples", null),
+                ("alto-angliru", null),
+                ("antwerp-port-sprint", null),
+                ("arenberg-forest", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -76,6 +198,15 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("cinqueterre", null),
                 ("haleakala", null),
                 ("adelaide-hills", null),
+                ("aguascalientes", null),
+                ("algarve-cliffs", null),
+                ("alpe-dhuez", null),
+                ("amsterdam-canals", null),
+                ("els-angels", null),
+                ("angkor-temples", null),
+                ("alto-angliru", null),
+                ("antwerp-port-sprint", null),
+                ("arenberg-forest", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -85,9 +216,9 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     {
         var maps = await ReadMaps();
 
-        Assert.Equal(
-            [null, null, null, null, null, 10, null, null, null, null, null, null],
-            maps.Select(m => m.UnlockLevel));
+        var levelMap = Assert.Single(maps, m => m.UnlockLevel.HasValue);
+        Assert.Equal("vice-city", levelMap.Id);
+        Assert.Equal(10, levelMap.UnlockLevel);
     }
 
     [Fact]
@@ -99,7 +230,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -118,7 +249,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
@@ -158,6 +289,130 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.Equal(new Segment("warm-up", 270, 14, 80), map.Plan.Segments[0]);
         Assert.Equal(5, map.Plan.Segments.Count(s => s == new Segment("work", 30, 24, 100)));
         Assert.Equal(new Segment("cool-down", 240, 11, 80), map.Plan.Segments[^1]);
+    }
+
+    [Fact]
+    public async Task Olympic_pursuit_efforts_rides_the_flat_Aguascalientes_oval()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "aguascalientes");
+        Assert.Equal("aguascalientes", map.World);
+        Assert.Equal(0, map.ClimbingM);
+        Assert.Equal(12.875, map.DistanceKm);
+        Assert.Equal(1800, map.Plan.Segments.Sum(s => s.Duration));
+        Assert.Equal(new Segment("warm-up", 240, 12, 80), map.Plan.Segments[0]);
+        Assert.Contains(new Segment("work", 240, 24, 100), map.Plan.Segments);
+        Assert.Equal(new Segment("cool-down", 120, 11, 80), map.Plan.Segments[^1]);
+    }
+
+    [Fact]
+    public async Task Get_fit_in_40_follows_the_Algarve_headland_road()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "algarve-cliffs");
+        Assert.Equal("algarve", map.World);
+        Assert.Equal(113, map.ClimbingM);
+        Assert.Equal(16.8, map.DistanceKm);
+        Assert.Equal(2400, map.Plan.Segments.Sum(s => s.Duration));
+        Assert.Equal(new Segment("warm-up", 120, 11, 80), map.Plan.Segments[0]);
+        Assert.Equal(new Segment("cool-down", 180, 13, 80), map.Plan.Segments[^1]);
+    }
+
+    [Fact]
+    public async Task Elevate_your_climbing_power_rides_the_21_Alpe_bends()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "alpe-dhuez");
+        Assert.Equal("alpe", map.World);
+        Assert.Equal(328, map.ClimbingM);
+        Assert.Equal(7.4, map.DistanceKm);
+        Assert.Equal(1200, map.Plan.Segments.Sum(s => s.Duration));
+        Assert.Equal(14, map.Plan.Segments.Count);
+        Assert.Equal(new Segment("warm-up", 120, 11, 80), map.Plan.Segments[0]);
+    }
+
+    [Fact]
+    public async Task Herengracht_rides_the_original_beginner_training_session()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "amsterdam-canals");
+        Assert.Equal("amsterdam", map.World);
+        Assert.Equal(8.0, map.DistanceKm);
+        Assert.Equal(28, map.ClimbingM);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 12, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 120, 16, 80),
+                new Segment("work", 120, 18, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 120, 16, 80),
+                new Segment("cool-down", 120, 13, 80)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Girona_rides_the_stages_of_drop_ollie_at_all_costs()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "els-angels");
+        Assert.Equal("angels", map.World);
+        Assert.Equal(17.05, map.DistanceKm);
+        Assert.Equal(505, map.ClimbingM);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 10, 80),
+                new Segment("work", 120, 14, 82),
+                new Segment("recover", 120, 19, 90),
+                new Segment("work", 60, 22, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 240, 18, 88),
+                new Segment("recover", 120, 24, 100),
+                new Segment("work", 300, 10, 80),
+                new Segment("recover", 120, 20, 92),
+                new Segment("work", 180, 10, 80),
+                new Segment("recover", 60, 22, 97),
+                new Segment("work", 120, 10, 80),
+                new Segment("recover", 25, 24, 100),
+                new Segment("work", 10, 10, 80),
+                new Segment("recover", 25, 24, 100),
+                new Segment("work", 120, 10, 80),
+                new Segment("recover", 25, 24, 100),
+                new Segment("work", 10, 10, 80),
+                new Segment("recover", 25, 24, 100),
+                new Segment("work", 120, 10, 80),
+                new Segment("recover", 60, 24, 100),
+                new Segment("cool-down", 120, 10, 80)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Temple_road_rides_the_original_reverse_pyramid()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "angkor-temples");
+        Assert.Equal("angkor", map.World);
+        Assert.Equal(25.15, map.DistanceKm);
+        Assert.Equal(24, map.ClimbingM);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 90),
+                new Segment("work", 120, 16, 90),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("work", 120, 22, 80),
+                new Segment("recover", 180, 21, 90),
+                new Segment("work", 240, 19, 85),
+                new Segment("recover", 300, 18, 80),
+                new Segment("work", 360, 16, 80),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 120, 22, 80),
+                new Segment("work", 180, 21, 90),
+                new Segment("recover", 240, 19, 85),
+                new Segment("work", 300, 18, 80),
+                new Segment("recover", 360, 16, 80),
+                new Segment("cool-down", 360, 18, 90)
+            ],
+            map.Plan.Segments);
     }
 
     [Fact]
@@ -205,5 +460,5 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
 
     private sealed record Segment(string Kind, int Duration, int Level, int CadenceAim);
 
-    private sealed record CatalogueTerrain(IReadOnlyDictionary<string, double> Grade, double Roll);
+    private sealed record CatalogueTerrain(IReadOnlyDictionary<string, double> Grade, double Roll, IReadOnlyList<double>? Elevation);
 }

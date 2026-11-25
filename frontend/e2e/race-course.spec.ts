@@ -7,6 +7,15 @@
 import type { Locator, Page } from '@playwright/test';
 import {
   adelaideCourseMap,
+  aguascalientesCourseMap,
+  algarveCourseMap,
+  alpeCourseMap,
+  amsterdamCourseMap,
+  angelsCourseMap,
+  angkorCourseMap,
+  angliruCourseMap,
+  antwerpCourseMap,
+  arenbergCourseMap,
   cinqueTerreCourseMap,
   haleakalaCourseMap,
   ibizaCourseMap,
@@ -99,6 +108,15 @@ test.describe('a course', () => {
   // (L2-166 AC43, AC44).
   for (const [id, course, catalogue] of [
     [adelaideCourseMap.id, 'adelaide', [adelaideCourseMap]],
+    [aguascalientesCourseMap.id, 'aguascalientes', [aguascalientesCourseMap]],
+    [algarveCourseMap.id, 'algarve', [algarveCourseMap]],
+    [alpeCourseMap.id, 'alpe', [alpeCourseMap]],
+    [amsterdamCourseMap.id, 'amsterdam', [amsterdamCourseMap]],
+    [angelsCourseMap.id, 'angels', [angelsCourseMap]],
+    [angkorCourseMap.id, 'angkor', [angkorCourseMap]],
+    [angliruCourseMap.id, 'angliru', [angliruCourseMap]],
+    [antwerpCourseMap.id, 'antwerp', [antwerpCourseMap]],
+    [arenbergCourseMap.id, 'arenberg', [arenbergCourseMap]],
     ['prairie-paceline', 'prairie', undefined],
     ['vice-city', 'vicecity', undefined],
     [cinqueTerreCourseMap.id, 'cinqueterre', [cinqueTerreCourseMap]],

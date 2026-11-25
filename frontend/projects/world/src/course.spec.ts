@@ -285,3 +285,13 @@ describe('courseGliders', () => {
     expect(orbits[0]!.radiusX).toBe(68);
   });
 });
+
+describe('banked pursuit track', () => {
+  it('places an outside rider up the bank and the measurement-line rider at track height', () => {
+    const file = courseFile();
+    const bankDegrees = new Array(file.points.length / 3).fill(42);
+    const course = new Course({ ...file, bankDegrees } as CourseFile);
+    expect(course.place(18, 0).y).toBeCloseTo(0);
+    expect(course.place(18, 2).y).toBeCloseTo(2 * Math.tan((42 * Math.PI) / 180));
+  });
+});

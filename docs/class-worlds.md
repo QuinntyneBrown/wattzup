@@ -7,6 +7,10 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Course | Class | Length | Climbing | Model | Status |
 | --- | --- | --- | --- | --- | --- |
 | Adelaide Hills (`adelaide`) | HIIT Fat Burn With Mitchelton-Scott (GCN, 30:00) | 17.11 km | 265 m | `public/courses/adelaide.glb` ([captures](screenshots/adelaide/)) | Built and ridden; open from the start in Map Select |
+| Aguascalientes Velodrome (`aguascalientes`) | Olympic Pursuit Efforts (GCN Training, 30:00) | 12.875 km | 0 m | `public/courses/aguascalientes.glb` ([captures](screenshots/aguascalientes/)) | Available from Map Select |
+| Algarve Cliffs (`algarve`) | Get Fit in 40 (GCN Training, 40:00) | 16.8 km | 113 m | `public/courses/algarve.glb` ([captures](screenshots/algarve/)) | Available from Map Select |
+| Alpe d’Huez (`alpe`) | Elevate Your Climbing Power (GCN Training, 20:00) | 7.4 km | 328 m | `public/courses/alpe.glb` ([rider views](screenshots/alpe/)) | Open from Map Select. The 14 original stages take the rider from Bourg-d’Oisans to the ski station through 21 numbered bends. |
+| Amsterdam Canals (`amsterdam`) | Beginner Training Session (GCN Training, 20:00) | 8.0 km | 28 m | `public/courses/amsterdam.glb` ([rider views](screenshots/amsterdam-canals/)) | Open from Map Select. Nine original stages follow Herengracht past narrow canal houses, houseboats and arched bridges. |
 | Ibiza Sunset Strip (`ibiza`) | Intervals to the Beat (GCN Training, 20:00) | 8.4 km | 159 m | `public/courses/ibiza.glb` ([captures](screenshots/courses/ibiza/)) | Built and ridden; open from the start on the map catalogue |
 | Sella Ronda (`sellaronda`) | Over/Under Intervals on the Passo Sella (GCN Training, 28:00) | 11.7 km | 357 m | `public/courses/sellaronda.glb` ([captures](screenshots/courses/sellaronda/)) | Built and ridden; open from the start on the map catalogue |
 | Prairie Paceline (`prairie`) | The catalogue's 30:00 intervals (placeholder) | 18.4 km | 90 m | `public/courses/prairie.glb` ([film](../blender/prairie.mp4)) | Built in Blender (ADR 0035) and ridden in races |
@@ -113,7 +117,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 82 | Flat Out Efforts | Silverstone Track Day | 35% |  | Flat-out sweeps of the British circuit with the grandstands empty. |
 | 83 | Sprint to the Music | Glastonbury Fields | 78% |  | Tents, flags and the Pyramid Stage; sprint between music stages. |
 | 84 | Sprints for Climbing | Mur de Huy | 35% |  | The Ardennes' brutal wall, climbing past chapels toward the finish. |
-| 85 | Don't Get Dropped | Arenberg Forest | 35% |  | Paris-Roubaix cobbles through the trees; hold the wheel or lose it. |
+| 85 | Don't Get Dropped | Arenberg Forest | 35% | [Race views](screenshots/arenberg-forest/README.md) | Paris-Roubaix cobbles through the trees; hold the wheel or lose it. |
 | 86 | Wake Up and Smell the Lactic | Pike Place at Dawn | 77% |  | Coffee steam and fish-market crowds at sunrise over Seattle's Elliott Bay. |
 | 87 | 25 Minute Sprint Intervals | Chicago Lakefront Trail | 35% |  | Lake Michigan beaches and the skyline along the waterfront trail. |
 | 88 | 25 Minute High Intensity Intervals | Diwali, Marine Drive | 35% |  | Mumbai's Queen's Necklace lit with lamps and fireworks over the Arabian Sea. |
@@ -183,13 +187,13 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 152 | Ramp It Up: Punchy Intervals | La Redoute | 84% |  | Liège-Bastogne-Liège's punchy Ardennes wall, painted with fan names. |
 | 153 | Spin Those Legs | Okinawa Coast Road | 35% |  | Coral beaches and turquoise shallows along a subtropical island road. |
 | 154 | Get Fit in 40 | Algarve Cliffs | 35% |  | Golden sea cliffs, coves and fishing villages on Portugal's south coast. |
-| 155 | 5 Gruelling Minutes | Angliru | 82% |  | Asturian ramps so steep the crowd pushes in on the road. |
+| 155 | 5 Gruelling Minutes | Angliru | 82% | [Race views](screenshots/alto-angliru/README.md) | Asturian ramps so steep the crowd pushes in on the road. |
 | 156 | Repeat Your Max | Mulholland Drive | 35% |  | Hollywood Hills ridge road with city views on repeat. |
 | 157 | Get Fit Fast: 40 Minute Sweet Spot | Provence Lavender | 35% |  | Purple lavender rows and stone farmhouses on the Valensole plateau. |
 | 158 | 3 Mins On, 2 Mins Off | Cinque Terre | 80% |  | Cliffside villages in pastel colours above the Ligurian Sea. |
 | 159 | A Little Bit of Everything | Cherry Blossom Festival, D.C. | 35% |  | The National Mall and Tidal Basin under pink blossoms and kites. |
 | 160 | Cobbled Mayhem | Oude Kwaremont | 35% |  | Tour of Flanders cobbles, beer tents and roaring Flemish fans. |
-| 161 | Drop Ollie at All Costs | Els Àngels, Girona | 81% |  | A favourite pro training climb above Girona's old town. |
+| 161 | Drop Ollie at All Costs | Els Àngels, Girona | 81% |  | Follow the Onyar, climb through cork oaks with local training groups and finish at the sanctuary. The 17.05 km race preserves all 22 class stages. [Rider views](screenshots/els-angels/README.md). |
 | 162 | FTP Builder | Oregon Coast | 35% |  | Highway 101 past sea stacks, lighthouses and misty spruce. |
 | 163 | Ramp Workout: From Threshold to Sprints | Cypress Mountain | 35% |  | Vancouver's ski-hill road ramping above the city and ocean. |
 | 164 | Aerobic Efforts With Max Sprints | Winterlude, Ottawa | 85% |  | Snow sculptures and skaters on the frozen Rideau Canal. |
@@ -198,7 +202,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 167 | Hank's Hardest Training Session | Alto de Letras | 82% |  | Colombia's 80-kilometre climb through coffee country to the páramo. |
 | 168 | Ramp It Up: 50 Minute HIIT | Prague Old Town | 35% |  | Cobbles, spires and Charles Bridge ramping up to the castle. |
 | 169 | Steepest Climb in the World | Ffordd Pen Llech | 35% |  | A Welsh street in Harlech, once ranked the world's steepest. |
-| 170 | Lead Out Efforts Into Full Sprints | Antwerp Port Sprint | 84% |  | Flat docklands roads and a bunch-sprint finish in Antwerp. |
+| 170 | Lead Out Efforts Into Full Sprints | Antwerp Port Sprint | 84% | [Race views](screenshots/antwerp-port-sprint/README.md) | Flat docklands roads and a bunch-sprint finish in Antwerp. |
 | 171 | Aerobic Efforts: Drop Ollie Like a Boss | Andalusian White Villages | 35% |  | Whitewashed hill towns and olive groves in southern Spain. |
 | 172 | Un-Paced Efforts | Mongolian Steppe | 35% |  | Endless grassland, yurts and wild horses, no markers in sight. |
 | 173 | Sandwich Max Efforts | Lake Tahoe | 81% |  | Clear alpine lake shore ringed by pines and granite. |
@@ -207,7 +211,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 176 | Extreme Fat Burning Class | Atacama Desert | 86% |  | The driest desert on earth, salt flats and flamingo lagoons. |
 | 177 | 45 Minute Sprint Training | Beach Road, Melbourne | 35% |  | Bayside bunch-ride route past beach boxes and piers. |
 | 178 | FTP Booster Extended Efforts | Blue Ridge Parkway | 35% |  | Appalachian ridgeline road in blazing autumn colour. |
-| 179 | 60 Minute Reverse Pyramid | Angkor Temples | 82% |  | Jungle roads between Khmer temples and moats at dawn. |
+| 179 | 60 Minute Reverse Pyramid | Angkor Temples | 82% |  | Temple Road follows the moat past Angkor Wat to the South Gate, Bayon and Ta Prohm. All 17 reverse-pyramid stages are preserved. [Rider views](screenshots/angkor-temples/README.md). |
 | 180 | Reverse HIIT Race Winning Intervals | Verona Arena Finale | 35% |  | A grand tour finale circling into the Roman arena. |
 | 181 | Reverse Steps | Valparaíso Stairways | 35% |  | Colourful hillside stairways and funiculars above the Chilean port. |
 | 182 | 60 Minutes of Brutal Power | Mauna Kea | 81% |  | A brutal climb past observatories to Hawaii's highest summit. |

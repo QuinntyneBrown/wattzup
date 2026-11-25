@@ -372,6 +372,7 @@ export class CourseCyclistKit {
     lights = false,
     /** A simple build, for a slow device: the lamps throw no pools on the road. */
     readonly simple = false,
+    readonly pursuit = false,
   ) {
     this.spokeTexture.center.set(0.5, 0.5);
     if (!lights) return;
@@ -527,18 +528,18 @@ class CourseCyclist implements RiderModel {
     // in their skin, their shorts, their socks, their gloves and their hair.
     const body = kit.body.make(detail >= FINE_BODY);
     const fabric = new MeshStandardMaterial({
-      map: kitTexture(jersey, look.design, new Color(look.trim), number),
+      map: kitTexture(jersey, look.design, new Color(look.trim), number, kit.pursuit),
       roughness: 0.62,
       vertexColors: true,
     });
-    paint(body.plain.geometry, colours);
+    paint(body.plain.geometry, colours, kit.pursuit ? jersey : SHORTS);
     paint(body.kit.geometry, colours);
     body.plain.material = plain;
     body.kit.material = fabric;
     this.rig.add(body.root);
     this.owned.push(...body.owned, fabric, fabric.map!);
     // The helmet, with its cradle and straps: it turns with the head.
-    const shell = helmet(jersey);
+    const shell = helmet(jersey, kit.pursuit);
     const worn = mergeGeometries(shell, false)!;
     for (const piece of shell) piece.dispose();
     this.owned.push(worn);
@@ -669,7 +670,7 @@ const BODY_FINISH: Readonly<Record<BodyRegion, Color>> = {
  * Paints a body's mesh in a rider's colours: each vertex's marker (rider-turn.ts) names its part, and is given that
  * part's colour and finish. What the kit's texture is drawn on is left white, for the texture to colour.
  */
-function paint(geometry: BufferGeometry, look: Palette): void {
+function paint(geometry: BufferGeometry, look: Palette, shorts = SHORTS): void {
   const marker = geometry.getAttribute('color');
   const count = geometry.getAttribute('position').count;
   const colours = new Float32Array(count * 3);
@@ -677,7 +678,7 @@ function paint(geometry: BufferGeometry, look: Palette): void {
   const white = new Color(1, 1, 1);
   const own: Readonly<Record<BodyRegion, Color>> = {
     skin: look.skin,
-    shorts: SHORTS,
+    shorts,
     gripper: GRIPPER,
     sock: look.sock,
     glove: GLOVE,
@@ -874,7 +875,7 @@ function bike(look: Palette): BufferGeometry[] {
  * The helmet, coloured by vertex, which turns with the head: a road helmet's shell, its cradle on the nape and its
  * straps down past each ear to the chin.
  */
-function helmet(jersey: Color): BufferGeometry[] {
+function helmet(jersey: Color, pursuit: boolean): BufferGeometry[] {
   const parts: BufferGeometry[] = [];
   const placed = (piece: BufferGeometry, matrix: Matrix4) => {
     piece.applyMatrix4(matrix);
@@ -909,7 +910,7 @@ function helmet(jersey: Color): BufferGeometry[] {
   FINISHES.set(lacquer, LACQUER);
   FINISHES.set(tail, LACQUER);
   const brow = skull.clone().add(new Vector3(0, 0.03, -0.138));
-  const stern = skull.clone().add(new Vector3(0, 0.066, 0.168));
+  const stern = skull.clone().add(new Vector3(0, pursuit ? 0.025 : 0.066, pursuit ? 0.245 : 0.168));
   const shell = loft(
     [
       { t: 0, rx: 0.03, rz: 0.018, z: 0.012 },
@@ -927,7 +928,7 @@ function helmet(jersey: Color): BufferGeometry[] {
       if (off > 0.25) return VENT;
       if (off > 0.215) return VENT;
       const vent = [0, 0.075, 0.15].some((at) => Math.abs(off - at) < 0.018);
-      if (vent && t > 0.14 && t < 0.88) return VENT;
+      if (!pursuit && vent && t > 0.14 && t < 0.88) return VENT;
       return t > 0.93 ? tail : lacquer;
     },
     28,
@@ -952,6 +953,7 @@ function kitTexture(
   design: KitDesign,
   second: Color,
   number: number,
+  pursuit: boolean,
 ): CanvasTexture {
   const size = 512;
   const canvas = document.createElement('canvas');
@@ -1019,11 +1021,16 @@ function kitTexture(
       ctx.lineTo(back + x, y(0.285));
     }
     ctx.stroke();
+    // A pursuit skinsuit has a continuous back panel from the shoulders to the saddle.
+    if (pursuit) {
+      ctx.fillStyle = main;
+      ctx.fillRect(back - 65, y(0.45), 130, y(0.24) - y(0.45));
+    }
     // The collar, the hem, and the shorts below it with a pale mark on the seat.
     ctx.fillStyle = pale;
     ctx.fillRect(0, 0, trunk, y(0.965));
-    ctx.fillRect(0, y(0.266), trunk, y(0.24) - y(0.266));
-    ctx.fillStyle = '#121316';
+    if (!pursuit) ctx.fillRect(0, y(0.266), trunk, y(0.24) - y(0.266));
+    ctx.fillStyle = pursuit ? main : '#121316';
     ctx.fillRect(0, y(0.24), trunk, size - y(0.24));
     ctx.fillStyle = '#3a3d44';
     ctx.fillRect(back - 16, y(0.17), 32, 7);
