@@ -1329,3 +1329,8 @@ import aubisque as _aubisque
 
 THEMES["aubisque"] = _aubisque.THEME
 SCENERY["aubisque"] = _aubisque.scenery
+
+import austin as _austin
+
+THEMES["austin"] = _austin.THEME
+SCENERY["austin"] = _austin.scenery

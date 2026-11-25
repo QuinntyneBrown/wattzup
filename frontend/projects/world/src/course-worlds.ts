@@ -16,6 +16,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   atacama: 'courses/atacama',
   atlanticroad: 'courses/atlanticroad',
   aubisque: 'courses/aubisque',
+  austin: 'courses/austin',
   ibiza: 'courses/ibiza',
   alpe: 'courses/alpe',
   cinqueterre: 'courses/cinqueterre',
