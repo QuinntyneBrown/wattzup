@@ -6,7 +6,7 @@ from mathutils import Vector
 from worldkit import Painted,lin,smooth
 
 def head(d):
-    return .22*math.sin(d/390)+.25*math.sin(d/221)-.31*math.sin(d/93)*(.35+.65*math.exp(-((d-1230)/400)**2))
+    return -.63*math.exp(-((d-1180)/98)**2)-.50*math.exp(-((d-2150)/93)**2)-.49*math.exp(-((d-8050)/94)**2)+.22*math.sin(d/390)+.25*math.sin(d/221)-.31*math.sin(d/93)*(.35+.65*math.exp(-((d-1230)/400)**2))
 
 def elevation(d):
     return 4.6+4.3*math.sin(d/525)**2+7.4*math.exp(-((d-5210)/530)**2)
@@ -135,7 +135,7 @@ def rock(art,x,y,r,h,rng):
         co=lin(rng.choice((0x877F70,0xB9B39E,0x797B6A)));art.face((a,b,c),(co,)*3);art.face((c,b,a),(co,)*3)
 
 def cottage(k,art,d,l,paint,rum=False):
-    x,y,_=k.road.pos(d,l);z=surface(d,l);yaw=head(d);cs,sn=math.cos(yaw),math.sin(yaw)
+    x,y,_=k.road.pos(d,l);z=surface(d,l);yaw=head(d)+(math.pi if l<0 else 0);cs,sn=math.cos(yaw),math.sin(yaw)
     def p(u,v,h):return(x+u*cs-v*sn,y+u*sn+v*cs,z+h)
     def box(u,v,h,w,b,high,t):art.box(p(u,v,h),(w,b,high),yaw,lin(t))
     trim=0xE6DDC5;timber=0x756553
@@ -184,6 +184,25 @@ def scenery(k):
         else:k.palm(x,y,surface(d,l))
     for i,d in enumerate((98,129,166,212,455,609,1121,2024,2220,3692,3821,5250,6830,7260,8953,9790,10471)):
         cottage(k,art,d,11.8+(i%4)*2,(0x6BB4A5,0xD69D7D,0xE5C58D,0x87A9B1)[i%4] if d not in (609,3821,8953) else 0xAC4C42,d in (609,3821,8953))
+    cottage(k,art,620,-10.2,0xAD4941,True)
+    cottage(k,art,115,-11.4,0x66B1A4)
+    for d in (2222,2230,2236):
+        boat(k,art,d,-12.7,rng.choice((0x407F9E,0xCE654F,0xD3AD4D)))
+    # Low spreading sea grape above the beach, with grey trunks and clusters of broad leaves.
+    for i in range(200):
+        d=45+rng.uniform(0,10580);lane=rng.choice((1,-1))*rng.uniform(6.6,16.8)
+        if any(abs(d-q)<16 for q in (115,620,1262,2222)):continue
+        x,y,_=k.road.pos(d,lane);z=surface(d,lane)
+        for j in range(3):
+            angle=rng.random()*math.tau;r=rng.uniform(.8,2.2)
+            u,v=x+r*math.cos(angle),y+r*math.sin(angle);h=rng.uniform(1.2,2.4)
+            beam(art,(x,y,z),(u,v,z+h),.15,.13,lin(0x82765B))
+            for n in range(8):
+                a=n*math.tau/8;b=(n+1)*math.tau/8
+                rim=(u+1.6*math.cos(a),v+1.3*math.sin(a),z+h)
+                next_rim=(u+1.6*math.cos(b),v+1.3*math.sin(b),z+h)
+                top=(u+.1,v-.1,z+h+.66);co=lin(rng.choice((0x66804B,0x78934E,0x779454,0x5D854D)))
+                art.face((rim,next_rim,top),(co,co,lin(0x93A563)))
     for d in (2251,2259,2265,5298,5304,8037):boat(k,art,d,-shore(d)+4,rng.choice((0x6598AA,0xC87A60,0x70A186)))
     for d in range(235,10230,5):
         if d%1780>675:continue
