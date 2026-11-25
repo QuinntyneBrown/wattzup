@@ -67,8 +67,8 @@ def road_deck(road,st,length,col,bc):
     for b in (asphalt,white,shoulder):b.build(col)
 
 THEME={'lay':lay,'road_builder':road_deck,'land_builder':sea,'terrain':{'sea':True},'land':{'mid':0x677365},
-       'sky':[0xC5D0C7,0xA5B7BB,0x788B9A,0x626F80,0x566679],
-       'haze':0xB7C2C0,'light':[0xFDE5B7,3.2],'fill':[0xC2D1DB,0x778981],
+       'sky':[0xAAB9B8,0x8BA7B1,0x6D8799,0x566D85,0x495A71],
+       'haze':0xA1B0B4,'light':[0xFDE5B7,3.2],'fill':[0xC2D1DB,0x778981],
        'sun_altitude':.44,'sun_azimuth':2.45,'palette':{'asphalt':0x474B50},'chunks':{'Land':2}}
 
 def beam(art,a,b,width,height,colour):
@@ -98,6 +98,13 @@ def skerry(art,x,y,rx,ry,h,seed):
             a,b,c,d=rings[j][i],rings[j][n],rings[j+1][n],rings[j+1][i]
             co=lin(shade[j]);art.face((a,b,c,d),(co,)*4)
     art.face(rings[-1],(lin(shade[-1]),)*18)
+    # Pale striations and dark joints run along the same strike on the exposed granite.
+    for j in (2,5,8,13,16):
+        n=(j+1)%18
+        a,b,c,d=rings[2][j],rings[2][n],rings[3][n],rings[3][j]
+        def lerp(u,v,t):return tuple(u[i]+(v[i]-u[i])*t for i in range(3))
+        tint=lin(0xA9AA94 if j%2 else 0x636E69)
+        art.face((lerp(a,d,.36),lerp(b,c,.52),lerp(b,c,.57),lerp(a,d,.40)),(tint,)*4)
 
 def rorbu(art,x,y,z,yaw):
     red,white,slate,dark=map(lin,(0x954B40,0xD6D1BC,0x515C5A,0x475654))
@@ -146,10 +153,34 @@ def scenery(k):
             skerry(art,xx,yy,rng.uniform(12,48),rng.uniform(11,31),rng.uniform(2.1,9.2),rng.uniform(0,6))
     for d,side in ((375,-1),(668,1),(2260,-1),(3330,1),(4020,-1),(5920,-1),(8530,1),(11020,-1)):
         x,y,_=at(d,31*side);skerry(art,x,y,26,15,3.6,.4);rorbu(art,x,y,3.3,heading(d)+.34)
-    # A low mainland range, with irregular summits and shaded cirques.
-    for j in range(44):
-        x=-2000+j*560;y=2100+340*math.sin(j*.64);h=120+160*(.5+.5*math.sin(j*1.34))+48*math.cos(j*.76)
-        a,b,c=(x-440,y,-7),(x+460,y,-7),(x+130*math.sin(j),y,h)
-        far.face((a,b,c),(lin(0x85979A),lin(0x839496),lin(0x9DACA9)))
-        far.face((a,c,(x-220,y-84,h*.24)),(lin(0x879898),lin(0x9AA7A4),lin(0x829397)))
+    # Walkway and shore anglers, with peaked caps, bright jackets, boots and rods.
+    for d,l in ((3576,-6.0),(3611,-6.0),(3635,-6.1),(3669,-5.96),(3712,-6.0),(4220,6.5)):
+        def stand(u,v,h):return at(d+u,l+v,h+.12)
+        coat=lin(rng.choice((0xA96746,0x71846E,0xA38A4E,0x516C78)))
+        trouser=lin(0x4E5C5B);skin=lin(0xBF9578)
+        for u in (-.125,.125):
+            beam(art,stand(u,0,0),stand(u*.7,-.03,.85),.16,.15,trouser)
+            art.box(stand(u,-.07,-.02),(.19,.31,.14),heading(d),lin(0x414B4A))
+        art.tube(stand(0,0,.77),.22,.245,.64,coat,coat,9,coat)
+        art.tube(stand(0,-.02,1.40),.13,.135,.25,skin,skin,9,skin)
+        art.tube(stand(0,-.055,1.61),.17,.12,.105,trouser,trouser,8,trouser)
+        for u in (-.19,.19):
+            beam(art,stand(u,0,1.27),stand(u*1.15,-.20,1.05),.12,.13,coat)
+            beam(art,stand(u*1.15,-.20,1.05),stand(u*.4,-.45,1.19),.10,.11,coat)
+        p0,p1,p2=stand(.05,-.25,.93),stand(.15,-2.1,2.67),stand(.22,-3.48,3.22)
+        beam(art,p0,p1,.035,.035,trouser);beam(art,p1,p2,.021,.021,trouser)
+        beam(art,p2,stand(.28,-5.4,-2.1),.012,.012,lin(0x99A6A2))
+    # One continuous mainland sill under irregular summits, with folded faces on the seaward side.
+    ridge=[]
+    for j in range(161):
+        x=-3500+j*155
+        h=135+85*math.sin(j*.15)+45*math.cos(j*.52)+26*math.sin(j*1.13)
+        y=1900+170*math.sin(j*.13)
+        ridge.append(((x,y-125, -9),(x+23*math.cos(j),y-50,h*.47),(x,y,h)))
+    for j,(a,b) in enumerate(zip(ridge,ridge[1:])):
+        co=lin(0x8A9B9B);top=lin(0x9CAAA7);shade=lin(0x839596)
+        art_pts=(a[0],b[0],b[1],a[1])
+        far.face(art_pts,(co,co,shade,shade))
+        far.face((a[1],b[1],a[2]),(shade,shade,top))
+        far.face((b[1],b[2],a[2]),(co,top,top))
     return {'efforts':0}
