@@ -24,6 +24,8 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
+  # The announcer uses browser WASM. No job needs the optional native CUDA provider.
+  ONNXRUNTIME_NODE_INSTALL_CUDA: skip
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
