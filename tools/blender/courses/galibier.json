@@ -1,0 +1,139 @@
+{
+  "id": "galibier",
+  "name": "Col du Galibier",
+  "world": "galibier",
+  "theme": "galibier",
+  "seed": 2123,
+  "layout": 0,
+  "class": {
+    "id": "increase-your-threshold-power",
+    "title": "Increase Your Threshold Power",
+    "channel": "GCN Training",
+    "videoId": "I8P6ngXhGRY",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 360,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 360,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 150,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 150,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

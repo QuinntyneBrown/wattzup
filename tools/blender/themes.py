@@ -1247,3 +1247,10 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import galibier as _galibier
+
+for name in ("galibier-pasture", "galibier-scree", "galibier-snow", "galibier-tarmac"):
+    MATERIALS[name] = {"color": 0x82807c, "rough": 1.0, "vertex": True}
+THEMES["galibier"] = _galibier.THEME
+SCENERY["galibier"] = _galibier.scenery

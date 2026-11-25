@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Zwift Medio Fondo 2022” Route Details (Watopia)](https://zwiftinsider.com/route/zwift-medio-fondo-2022/) (g0195) | © Zwift |
 | game-04.jpg | Zwift: [“Mountain Route” Route Details (Watopia)](https://zwiftinsider.com/route/mountain-route/) (g0104) | © Zwift |
 | game-05.jpg | Zwift: [“Epic Run” Route Details (Watopia)](https://zwiftinsider.com/route/epic-run/) (g0043) | © Zwift |
+
+## Race artwork
+
+The La Meije and Le Râteau skyline is original generated art informed by real 02, 03 and 13. The asphalt, shale, tundra and cut snow surfaces are original textures informed by real 01–04, 08, 11 and 14. The dressed stone tunnel entrance, Henri Desgrange column and summit plinth are original Blender geometry based on real 05–07 and 15. The Tour road lettering, names and spectator clothing palette come from this repository’s Galibier class. The cloud texture first appeared in the Mount Fuji Road course. The matched rider views identify the game references used for scale and sightlines.
