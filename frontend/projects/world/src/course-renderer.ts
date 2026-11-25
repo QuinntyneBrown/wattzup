@@ -81,6 +81,7 @@ import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
+import type { ArtMuseumJoggers } from './artmuseum-joggers';
 import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
@@ -237,10 +238,12 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    joggerHeight: null as number | null,
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
   };
+  private joggers: ArtMuseumJoggers | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -359,6 +362,13 @@ export class CourseRenderer implements WorldRenderer {
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
+      if (this.path.endsWith('/artmuseum')) {
+        const { ArtMuseumJoggers } = await import('./artmuseum-joggers');
+        if (this.disposed) return false;
+        this.joggers = new ArtMuseumJoggers();
+        this.scene.add(this.joggers.mesh);
+        this.disposables.push(this.joggers);
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -433,6 +443,10 @@ export class CourseRenderer implements WorldRenderer {
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
+    if (this.joggers) {
+      this.joggers.mesh.visible = Math.abs(you.group.position.x + 39) < 200;
+      if (this.joggers.mesh.visible) this.joggers.update(frame.reducedMotion ? 0 : frame.time);
+    }
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -471,6 +485,7 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    this.joggers = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -1105,6 +1120,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.joggerHeight = this.joggers?.height ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
