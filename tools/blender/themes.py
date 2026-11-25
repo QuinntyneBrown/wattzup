@@ -1387,3 +1387,8 @@ import chichen as _chichen
 
 THEMES["chichen"] = _chichen.THEME
 SCENERY["chichen"] = _chichen.scenery
+
+import como as _como  # noqa: E402
+
+THEMES["como"] = _como.THEME
+SCENERY["como"] = _como.scenery

@@ -49,6 +49,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Chicago Loop Crit (`chicago`) | 20 Minute Crit Sprints (GCN Training, 20:00) | 8.750 km | 21 m | `public/courses/chicago.glb` ([ride views](screenshots/chicago-loop-crit/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Chichén Itzá (`chichen`) | The Full Pyramid (GCN Training, 30:00) | 12.700 km | 18 m | `public/courses/chichen.glb` ([ride views](screenshots/chichen-itza/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Cinque Terre (`cinqueterre`) | 3 Mins On, 2 Mins Off (GCN Training, 40:00) | 17.087 km | 335 m | `public/courses/cinqueterre.glb` ([ride views](screenshots/cinque-terre-corniche/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Lake Como (`como`) | Seated Surges (GCN Training, 30:00) | 12.400 km | 83 m | `public/courses/como.glb` ([ride views](screenshots/lake-como/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
