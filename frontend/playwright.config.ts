@@ -6,13 +6,24 @@ const developmentPort = port + 1;
 
 // Behaviour specs only, Chromium only, never retried (AGENTS.md). e2e/fixtures/test.ts fails a spec on a page error,
 // a request off localhost, an unanswered backend or hub request, or an unexpected Bluetooth call.
+// On macOS the headless shell defaults to SwiftShader. Select ANGLE’s native Metal
+// backend for real race renders and keep all tests on the same Chromium shell.
+const metal = !process.env['CI'] && process.platform === 'darwin';
+const worldSpecs = [
+  '**/race-world*.spec.ts',
+  '**/race-course.spec.ts',
+  '**/pursuit-timing.spec.ts',
+  '**/coastal-boats.spec.ts',
+];
+
 export default defineConfig({
   testDir: './e2e',
   testMatch: '**/*.spec.ts',
   fullyParallel: true,
   forbidOnly: !!process.env['CI'],
   retries: 0,
-  workers: process.env['CI'] ? '100%' : undefined,
+  // Concurrent software-rendered worlds compete for one GPU on a developer machine.
+  workers: process.env['CI'] ? '100%' : 2,
   reporter: process.env['CI'] ? 'github' : 'list',
   use: {
     ...devices['Desktop Chrome'],
@@ -27,7 +38,18 @@ export default defineConfig({
   },
   projects: [
     // The production build, as riders get it.
-    { name: 'chromium', testIgnore: '**/*.development.spec.ts' },
+    { name: 'chromium', testIgnore: ['**/*.development.spec.ts', ...(metal ? worldSpecs : [])] },
+    ...(metal
+      ? [
+          {
+            name: 'chromium-metal',
+            testMatch: worldSpecs,
+            use: {
+              launchOptions: { args: ['--use-gl=angle', '--use-angle=metal'] },
+            },
+          },
+        ]
+      : []),
     // The development build, the only one that honours ?simulate (L2-024).
     {
       name: 'development',
