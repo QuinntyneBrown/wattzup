@@ -158,12 +158,12 @@ export const maps = [
 /**
  * A test-only map whose world `main`'s World Ride scenes still draw: every catalogue map is a course built in
  * Blender (ADR 0035), so World Ride's own specs (its quality tiers, step-down, riders, a hidden tab) race this,
- * served with `catalogue: [worldRideMap]`. Old Town's plan and terrain, on Amsterdam's canals.
+ * served with `catalogue: [worldRideMap]`. Old Town's plan and terrain, in the Mardi Gras scene.
  */
 export const worldRideMap = {
   ...maps[1]!,
-  id: 'canal-criterium',
-  name: 'Canal Criterium',
-  world: 'amsterdam',
+  id: 'parade-criterium',
+  name: 'Parade Criterium',
+  world: 'mardigras',
   realPlace: null,
 };
