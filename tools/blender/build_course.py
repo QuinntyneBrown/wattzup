@@ -637,6 +637,8 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
         group, chunked = group_of(part.mat)
         if part.name in GROUND_PARTS:
             group = "Ground"
+        elif part.name == "Meltwater":
+            group = part.name
         elif part.name == WINDOWS_PART:
             group = "Windows"
         elif part.name == FENCES_PART:

@@ -1247,3 +1247,7 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import north_face as _north_face
+
+THEMES["granite"].update(lay=_north_face.lay, land_builder=_north_face.land)
