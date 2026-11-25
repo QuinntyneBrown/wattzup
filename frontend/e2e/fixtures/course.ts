@@ -40,6 +40,7 @@ import edinburghElevation from './edinburgh-elevation.json';
 import engadinElevation from './engadin-elevation.json';
 import etnaElevation from './etna-elevation.json';
 import fensElevation from './fens-elevation.json';
+import fishhillElevation from './fishhill-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -2731,6 +2732,45 @@ export const fensCourseMap = {
       seg('recover', 180, 11, 80),
       seg('work', 600, 21, 90),
       seg('cool-down', 180, 11, 80),
+    ],
+  },
+};
+
+export const fishhillCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'fish-hill-cotswolds',
+  name: 'Fish Hill, Cotswolds',
+  routeName: 'The Broadway escarpment',
+  place: 'Worcestershire, England',
+  world: 'fishhill',
+  distanceKm: 11.6,
+  climbingM: 245,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: fishhillElevation,
+  },
+  thumbnailUrl: 'maps/fish-hill-cotswolds.jpg',
+  photoUrl: 'maps/fish-hill-cotswolds-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 17, 80),
+      seg('work', 60, 13, 70),
+      seg('recover', 60, 22, 80),
+      seg('work', 60, 13, 70),
+      seg('recover', 60, 18, 50),
+      seg('work', 60, 21, 100),
+      seg('work', 180, 19, 80),
+      seg('recover', 60, 13, 70),
+      seg('work', 60, 18, 50),
+      seg('work', 60, 21, 100),
+      seg('work', 180, 19, 80),
+      seg('recover', 60, 13, 70),
+      seg('work', 60, 18, 50),
+      seg('work', 60, 21, 100),
+      seg('recover', 180, 19, 80),
+      seg('cool-down', 300, 13, 78),
     ],
   },
 };

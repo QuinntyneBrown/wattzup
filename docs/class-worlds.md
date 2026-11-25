@@ -65,6 +65,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Engadin Lakes (`engadin`) | 60 Minute Turbo Trainer Class (GCN, 60:00) | 24.625 km | 118 m | `public/courses/engadin.glb` ([ride views](screenshots/engadin-lakes/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Mount Etna (`etna`) | Go Until You Blow (GCN Training, 30:00) | 12.885 km | 798 m | `public/courses/etna.glb` ([ride views](screenshots/mount-etna/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Fenland Time Trial (`fens`) | Tough Time Trial Efforts (GCN Training, 35:00) | 15.000 km | 9 m | `public/courses/fens.glb` ([ride views](screenshots/fenland-time-trial/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Fish Hill, Cotswolds (`fishhill`) | Leg Burner (GCN Training, 30:00) | 11.600 km | 245 m | `public/courses/fishhill.glb` ([ride views](screenshots/fish-hill-cotswolds/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

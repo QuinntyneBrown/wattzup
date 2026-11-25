@@ -1442,3 +1442,10 @@ for name in ("fen-lane", "fen-fields", "fen-drains", "fen-banks"):
     MATERIALS[name] = {"color": 0x878579, "rough": 1.0, "vertex": True}
 THEMES["fens"] = _fens.THEME
 SCENERY["fens"] = _fens.scenery
+
+import fishhill as _fishhill
+
+for name in ("fishhill-lane", "fishhill-meadow", "fishhill-wall", "fishhill-slate"):
+    MATERIALS[name] = {"color": 0x99937b, "rough": 1.0, "vertex": True}
+THEMES["fishhill"] = _fishhill.THEME
+SCENERY["fishhill"] = _fishhill.scenery
