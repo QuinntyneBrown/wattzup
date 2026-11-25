@@ -198,4 +198,30 @@ def scenery(k):
         for j in range(10):
             box(art,x+(j-4.5)*.31,y+1.26,z+1.1,.32,.1,1.31,
                 (0xC85851,0xC79141,0x428E87,0xD7BC75,0x885379)[(i+j)%5])
+    # Feathered serpent balustrade heads at the north foot of El Castillo and at the Warriors stairs.
+    for station,lateral,width in [(12749,-6,56),(8196,27,44)]:
+        tx,ty,h=pose(station,lateral)
+        for sign in (-1,1):
+            nose=width/2+3.9
+            x=tx-math.cos(h)*nose-sign*math.sin(h)*width*.082
+            y=ty-math.sin(h)*nose+sign*math.cos(h)*width*.082
+            z=height(station)-.25
+            box(monument,x,y,z,3.25,1.3,.47,0xAA9E84,h)
+            box(monument,x-.15,y,z+.47,2.95,1.22,.14,0x776F5B,h)
+            box(monument,x+.18,y,z+.68,2.52,1.3,.65,0xB5A68C,h)
+            box(monument,x+.71,y,z+1.26,1.45,1.42,.43,0xAA9D85,h)
+            for cheek in (-1,1):
+                box(monument,x+.39,y+cheek*.68,z+1.24,.34,.10,.23,0x716D5E,h)
+                box(monument,x-.66,y+cheek*.53,z+.41,.13,.17,.34,0xC8BEA9,h)
+    # Sunlit stones and blotches of bare earth break up the edge of the open plaza.
+    for location in (7290,12580):
+        for i in range(190):
+            d=location+rng.uniform(-185,150);l=rng.choice((-1,1))*rng.uniform(5,57)
+            x,y,h=pose(d,l)
+            art.tube((x,y,height(d)-.34),rng.uniform(.34,2.2),rng.uniform(.33,2.1),.025,
+                     lin(0xA09A71),lin(0xA09A71),6,lin(rng.choice((0xA29970,0xACA07A,0x918B5F))))
+    for j in range(30):
+        d=3220+24*math.sin(j*2);l=34+15*math.cos(j*1.31)
+        x,y,h=pose(d,l)
+        box(art,x,y,height(3230)-9.585,.37+rng.random()*2.7,.17,.006,0x90A167,h)
     return {'efforts':0}
