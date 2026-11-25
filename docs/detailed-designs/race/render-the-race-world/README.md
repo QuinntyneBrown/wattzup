@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Lake Louise (#2154)
+
+The 8 km ride compresses the lakeshore and two nearby mountain roads into thirteen stages of GCN Training’s 20 Min Cardio Spin Bike Workout. Keep the lake at a single elevation. Place Victoria Glacier and the ridges in fixed positions so gaps in the trees reveal the same landmarks from different angles. Bake blue-green reflections beneath the cliffs and leave distant water clear enough to read the red canoe silhouettes.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Château forecourt, 0.08 km | Real 08, 13–14 and game 05 | Arcaded limestone walls and rows of windows rise from the terrace. Hikers cross between the lawn and the low stone parapet. |
+| Canoe dock, 1.22 km | Real 04–05, 09–11 and game 03 | Red canoes leave a timber boathouse, their paddles dipping beside the dock against milky turquoise water. |
+| Victoria Glacier, 2.68 km | Real 06–07 and games 01 and 04 | The hanging glacier sits in a notch between dark rock faces above its reflection, visible beyond the stone-lined gravel trail. |
+| Bow Valley Parkway, 4.14 km | Real 02–03 and 12 and game 02 | Lodgepole pines and spruce close around a narrow asphalt bend. A park sign and timber bench mark a pullout. |
+| Fairview shoreline, 5.86 km | Real 06, 10 and 15 and game 04 | The steep grey shoulder of Fairview drops into jade water. Hikers and road cyclists pass on the near side of the lake. |
+| Moraine Lake road, 7.52 km | Real 01, 03, 14–15 and games 01 and 05 | The road turns past a signed viewpoint. Mount Temple rises beyond the lower tree-covered slopes. |
+
+Use Caribana’s separate skyline and instanced foreground for the mountain profiles, groups of spruce, visitors and moving boats. The shoreline walls and benches follow the gravel path. Animate canoe paddles, hulls, hikers and cyclists on the race clock. Release the course-owned textures, instance buffers and materials on exit. The Lake Louise issue-title search returned #2154.
