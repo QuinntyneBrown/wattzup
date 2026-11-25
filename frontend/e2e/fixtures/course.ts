@@ -1,3 +1,4 @@
+import greatoceanElevation from './greatocean-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,42 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const greatoceanCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'great-ocean-road',
+  name: 'Great Ocean Road',
+  routeName: 'The Great Ocean Road',
+  place: 'Victoria, Australia',
+  world: 'greatocean',
+  distanceKm: 8.45,
+  climbingM: 105,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: greatoceanElevation,
+  },
+  thumbnailUrl: 'maps/great-ocean-road.jpg',
+  photoUrl: 'maps/great-ocean-road-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 10, 80),
+      seg('work', 60, 14, 80),
+      seg('work', 120, 16, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 19, 90),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 19, 90),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 19, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 60, 19, 90),
+      seg('work', 60, 22, 100),
+      seg('recover', 120, 19, 90),
+      seg('cool-down', 120, 13, 80),
+    ],
   },
 };
