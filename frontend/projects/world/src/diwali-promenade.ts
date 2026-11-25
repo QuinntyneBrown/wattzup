@@ -54,6 +54,21 @@ export async function diwaliPromenade(course: Course) {
       throw e;
     });
   facadeMap.colorSpace = SRGBColorSpace;
+  const shoreMap = await new TextureLoader()
+    .loadAsync('courses/diwali-bay.webp')
+    .catch((error: unknown) => {
+      atlas.dispose();
+      facadeMap.dispose();
+      throw error;
+    });
+  shoreMap.colorSpace = SRGBColorSpace;
+  const shore = new MeshBasicMaterial({
+    map: shoreMap,
+    alphaTest: 0.24,
+    side: DoubleSide,
+    fog: false,
+    toneMapped: false,
+  });
   const balconies = new MeshBasicMaterial({ map: facadeMap, side: DoubleSide, color: 0xf5ddc8 });
   const powder = rangoli();
   const people = new MeshBasicMaterial({
@@ -94,6 +109,45 @@ export async function diwaliPromenade(course: Course) {
       section.add(new Mesh(g, material));
       pos.length = uv.length = rgb.length = idx.length = 0;
     }
+    // Each stretch follows the opposite coast in world coordinates. Its varying height and
+    // shore distance give the north headland a distinct silhouette as the rider rounds the bay.
+    const island = (d: number) =>
+      course.place(d, -255 - 48 * Math.sin(d / 540) - 24 * Math.cos(d / 290));
+    for (let j = 0; j < 5; j++) {
+      const d = start + j * 29,
+        a = island(d),
+        b = island(d + 29);
+      const n = pos.length / 3;
+      const height = (chainage: number) =>
+        48 + 15 * Math.sin(chainage / 670) + 10 * Math.cos(chainage / 425);
+      pos.push(
+        a.x,
+        a.y - 2.41,
+        a.z,
+        b.x,
+        b.y - 2.41,
+        b.z,
+        b.x,
+        b.y - 2.41 + height(d + 29),
+        b.z,
+        a.x,
+        a.y - 2.41 + height(d),
+        a.z,
+      );
+      const tile = Math.floor((d + 90) / 725),
+        u = ((d + 90) % 725) / 725,
+        v = u + 29 / 725;
+      const left = tile % 2 ? 1 - u : u,
+        right = tile % 2 ? 1 - v : v;
+      uv.push(left, 0, right, 0, right, 1, left, 1);
+      idx.push(n, n + 1, n + 2, n, n + 2, n + 3);
+    }
+    mesh(shore);
+    const coast = section.children[0]!;
+    // The distant shore has a longer sightline than the people and lanterns.
+    group.add(coast);
+    coast.userData['metres'] = start + 72;
+    coast.userData['reach'] = 1700;
     const crowded = (start > 5500 && start < 7500) || (start > 2100 && start < 3200);
     for (let i = 0; i < (crowded ? 35 : 12); i++) {
       const d = start + random() * 145,
@@ -305,7 +359,8 @@ export async function diwaliPromenade(course: Course) {
       sparks.opacity = 0.66 + 0.33 * Math.sin(time * 10) * Math.cos(time * 17);
       if (Math.abs(d - previous) < 12) return;
       previous = d;
-      for (const s of group.children) s.visible = Math.abs(Number(s.userData['metres']) - d) < 420;
+      for (const s of group.children)
+        s.visible = Math.abs(Number(s.userData['metres']) - d) < Number(s.userData['reach'] ?? 420);
     },
     dispose() {
       group.removeFromParent();
@@ -313,6 +368,8 @@ export async function diwaliPromenade(course: Course) {
       atlas.dispose();
       powder.dispose();
       facadeMap.dispose();
+      shoreMap.dispose();
+      shore.dispose();
       balconies.dispose();
       people.dispose();
       lamps.dispose();

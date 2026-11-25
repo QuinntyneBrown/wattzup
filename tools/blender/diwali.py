@@ -120,25 +120,7 @@ def scenery(k):
             for floor in range(4,int(h)-2,5):
                 for col in (-7,-2,3,8):
                     if rng.random()<.69:glow(d+col,off+9.55,floor,(1.67,.12,.84),'glow-door')
-    # Across Back Bay, a few high-rise clusters define Nariman Point and Malabar Hill.
-    # The distance is compressed so the necklace remains visible at rider height.
-    far=Painted(k,'peaks')
-    for j in range(144):
-        d=-155+j*74
-        bay=285+104*math.sin(j*.084)+38*math.cos(j*.31)
-        x,y,z=r.pos(d,bay)
-        tall=(1+.7*math.cos(j*.065))*(13+rng.random()*41)
-        width=rng.uniform(10,27);yaw=bearing(d)
-        far.box((x,y,z-2.24),(width,12,tall),yaw,lin(rng.choice((0x20283b,0x29283b,0x343047,0x292d3c))))
-        for floor in range(3,int(tall),4):
-            for n in range(-int(width/2)+2,int(width/2)-1,4):
-                if rng.random()<.68:
-                    xx=x+math.cos(yaw)*n+math.sin(yaw)*6.05
-                    yy=y+math.sin(yaw)*n-math.cos(yaw)*6.05
-                    far.box((xx,yy,z-2.15+floor),(1.2,.09,.82),yaw,lin(rng.choice((0xffc57c,0xacc5cb,0xd39461))))
-        for step in range(4):
-            xx,yy,zz=r.pos(d+step*17,bay-26)
-            far.box((xx,yy,zz-1.0),(.96,.75,.7),yaw,lin(0xffb354))
+    # The far shore and its waterfront lights share the original panorama in diwali-promenade.ts.
     return {'efforts':0}
 
 
