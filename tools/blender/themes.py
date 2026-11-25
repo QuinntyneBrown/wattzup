@@ -1402,3 +1402,8 @@ import brooklyn as _brooklyn
 
 THEMES["brooklyn"] = _brooklyn.THEME
 SCENERY["brooklyn"] = _brooklyn.scenery
+
+import bund as _bund
+
+THEMES["bund"] = _bund.THEME
+SCENERY["bund"] = _bund.scenery

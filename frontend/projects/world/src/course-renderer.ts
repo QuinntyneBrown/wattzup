@@ -82,6 +82,7 @@ import type { SpeedwayFlags } from './speedway-flags';
 import type { seafrontAsphalt } from './seafront-asphalt';
 import type { BrightonParade } from './brighton-parade';
 import type { BrooklynCommute } from './brooklyn-commute';
+import type { BundCruise } from './bund-cruise';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -260,6 +261,7 @@ export class CourseRenderer implements WorldRenderer {
   private parade: BrightonParade | null = null;
   private commute: BrooklynCommute | null = null;
   private deckSurface: Material | null = null;
+  private cruise: BundCruise | null = null;
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
   private pipeline: RenderPipeline | null = null;
@@ -289,6 +291,8 @@ export class CourseRenderer implements WorldRenderer {
     floatPosition: undefined as number | undefined,
     cabPosition: undefined as number | undefined,
     ferryPosition: undefined as number | undefined,
+    boatPosition: undefined as number | undefined,
+    touristPosition: undefined as number | undefined,
     backend: '' as string,
     ghostSeparationMetres: 0,
     boatHeight: null as number | null,
@@ -573,6 +577,13 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.commute.root);
         this.disposables.push(this.commute);
       }
+      if (this.course.file.id === 'bund') {
+        const { BundCruise } = await import('./bund-cruise');
+        if (this.disposed) return false;
+        this.cruise = new BundCruise(this.course);
+        this.scene.add(this.cruise.root);
+        this.disposables.push(this.cruise);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -815,6 +826,7 @@ export class CourseRenderer implements WorldRenderer {
     this.speedway?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.parade?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.commute?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.cruise?.update(frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -926,6 +938,7 @@ export class CourseRenderer implements WorldRenderer {
     this.parade = null;
     this.commute = null;
     this.deckSurface = null;
+    this.cruise = null;
     this.groundEye = null;
     this.speedWeek = null;
     this.saltRoad = null;
@@ -974,7 +987,7 @@ export class CourseRenderer implements WorldRenderer {
       Peaks: new MeshLambertMaterial({ ...lit, fog: false }),
       Funivia: new MeshLambertMaterial({ ...lit, fog: false }),
       Glider: new MeshLambertMaterial({ ...lit, fog: false }),
-      Glow: new MeshBasicMaterial(glow),
+      Glow: new MeshBasicMaterial({ ...glow, fog: this.course!.file.id !== 'bund' }),
       Confetti: new MeshBasicMaterial({ ...glow, side: DoubleSide }),
       Sun: new MeshBasicMaterial({ ...glow, fog: false }),
       // A sky the map carries, painted in its vertices (build_sky in build_course.py).
@@ -1811,6 +1824,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.floatPosition = this.parade?.floatPosition;
     drawn.cabPosition = this.commute?.cabPosition;
     drawn.ferryPosition = this.commute?.ferryPosition;
+    drawn.boatPosition = this.cruise?.boatPosition;
+    drawn.touristPosition = this.cruise?.touristPosition;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

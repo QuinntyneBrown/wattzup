@@ -38,6 +38,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Indianapolis Brickyard (`brickyard`) | 90-Second Extended Accelerations (GCN Training, 30:00) | 12.000 km | 0 m | `public/courses/brickyard.glb` ([ride views](screenshots/indianapolis-brickyard/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Brighton Pride (`brighton`) | Emily's Short Mix (GCN Training, 30:00) | 13.075 km | 37 m | `public/courses/brighton.glb` ([ride views](screenshots/brighton-pride/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Brooklyn Bridge Commute (`brooklyn`) | Get to Work on Your Cycling Fitness (GCN Training, 25:00) | 10.700 km | 117 m | `public/courses/brooklyn.glb` ([ride views](screenshots/brooklyn-bridge-commute/README.md)) | Built and ridden; open from the start on the map catalogue |
+| The Bund, Shanghai (`bund`) | 30 Minute High Cadence HIIT (GCN Training, 30:03) | 12.832 km | 0 m | `public/courses/bund.glb` ([ride views](screenshots/the-bund-shanghai/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
