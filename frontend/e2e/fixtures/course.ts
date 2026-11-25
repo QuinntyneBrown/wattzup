@@ -6,6 +6,7 @@ import atlanticElevation from './atlantic-elevation.json';
 import aubisqueElevation from './aubisque-elevation.json';
 
 import bathshebaElevation from './bathsheba-elevation.json';
+import bayOfIslandsElevation from './bayofislands-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -803,6 +804,52 @@ export const bathshebaCourseMap = {
       seg('work', 300, 18, 90),
       seg('work', 120, 19, 90),
       seg('cool-down', 240, 13, 80),
+    ],
+  },
+};
+
+export const bayOfIslandsCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'bay-of-islands',
+  name: 'Bay of Islands Group Ride',
+  routeName: 'Northland bay road',
+  place: 'Northland, New Zealand',
+  world: 'bayofislands',
+  distanceKm: 27.95,
+  climbingM: 59,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: bayOfIslandsElevation,
+  },
+  thumbnailUrl: 'maps/bay-of-islands.jpg',
+  photoUrl: 'maps/bay-of-islands-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 14, 90),
+      seg('work', 360, 18, 98),
+      seg('work', 60, 14, 90),
+      seg('recover', 60, 18, 110),
+      seg('work', 60, 14, 90),
+      seg('recover', 60, 18, 110),
+      seg('work', 90, 14, 90),
+      seg('recover', 30, 24, 100),
+      seg('work', 190, 21, 91),
+      seg('recover', 240, 16, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 190, 21, 91),
+      seg('work', 240, 16, 90),
+      seg('recover', 30, 24, 100),
+      seg('work', 190, 21, 91),
+      seg('recover', 240, 16, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 21, 90),
+      seg('work', 10, 24, 110),
+      seg('recover', 210, 16, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 21, 90),
+      seg('cool-down', 670, 13, 85),
     ],
   },
 };

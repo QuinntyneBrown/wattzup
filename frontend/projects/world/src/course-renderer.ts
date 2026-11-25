@@ -6,7 +6,7 @@
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
-import { pass } from 'three/tsl';
+import { pass, uniform } from 'three/tsl';
 import {
   AdditiveBlending,
   AgXToneMapping,
@@ -91,22 +91,18 @@ import { windowMaterial } from './window-material';
 import { heldFps } from './held-fps';
 import type { ArtMuseumFlags } from './artmuseum-flags';
 import type { ArtMuseumJoggers } from './artmuseum-joggers';
-import { heldFps } from './held-fps';
 import type { SalarMirage } from './atacama-salt';
 import type { AtacamaWildlife } from './atacama-wildlife';
-import { heldFps } from './held-fps';
 import type { AtlanticSwell } from './atlantic-swell';
-import { heldFps } from './held-fps';
 import type { AubisqueWeather } from './aubisque-weather';
 import type { AubisqueLivestock } from './aubisque-livestock';
-import { heldFps } from './held-fps';
 import type { AustinPerformers } from './austin-performers';
-import { heldFps } from './held-fps';
 import type { BathshebaReef } from './bathsheba-reef';
-import { heldFps } from './held-fps';
+import type { BayOfIslandsBoats } from './bay-of-islands-boats';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
+const eveningUniform = () => uniform(0);
 const CAMERA_BACK = 2.75;
 const CAMERA_UP = 1.8;
 /**
@@ -275,6 +271,8 @@ export class CourseRenderer implements WorldRenderer {
     horseLane: null as number | null,
     guitarHand: null as number | null,
     reefCrest: null as number | null,
+    eveningLight: null as number | null,
+    ferryX: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -301,6 +299,8 @@ export class CourseRenderer implements WorldRenderer {
   private livestock: AubisqueLivestock | null = null;
   private performers: AustinPerformers | null = null;
   private reef: BathshebaReef | null = null;
+  private evening: ReturnType<typeof eveningUniform> | undefined;
+  private boats: BayOfIslandsBoats | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -538,6 +538,13 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.reef.group);
         this.disposables.push(this.reef);
       }
+      if (this.course.file.id === 'bayofislands') {
+        const { BayOfIslandsBoats } = await import('./bay-of-islands-boats');
+        if (this.disposed) return false;
+        this.boats = new BayOfIslandsBoats(this.course);
+        this.scene.add(this.boats.group);
+        this.disposables.push(this.boats);
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -607,6 +614,14 @@ export class CourseRenderer implements WorldRenderer {
     if (this.echelon.length) this.placeEchelon(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
+    if (this.evening) {
+      const progress = Math.max(0, Math.min(1, (metres - 19500) / 7900));
+      const t = progress * progress * (3 - 2 * progress);
+      this.evening.value = t;
+      this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
+      if (this.scene.fog instanceof Fog)
+        this.scene.fog.color.setRGB(0.402 + 0.43 * t, 0.604 - 0.27 * t, 0.658 - 0.43 * t);
+    }
     this.aim(metres);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -620,6 +635,7 @@ export class CourseRenderer implements WorldRenderer {
     this.livestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.performers?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.reef?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.boats?.update(metres, frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -704,6 +720,8 @@ export class CourseRenderer implements WorldRenderer {
     this.weather = null;
     this.performers = null;
     this.reef = null;
+    this.boats = null;
+    this.evening = undefined;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -741,6 +759,7 @@ export class CourseRenderer implements WorldRenderer {
   ): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
+    if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -872,6 +891,7 @@ export class CourseRenderer implements WorldRenderer {
         detail,
         this.course!.file.night === true,
         coloured,
+        this.evening,
       );
       materials['Sea']!.dispose();
       materials['Sea'] = water.material;
@@ -1063,6 +1083,7 @@ export class CourseRenderer implements WorldRenderer {
         this.course!.file.sun,
         detail,
         this.course!.file.id === 'atlanticroad',
+        this.evening,
       );
       this.skyClock = sky.at;
       this.sky = new Mesh(dome, sky.material);
@@ -1226,7 +1247,11 @@ export class CourseRenderer implements WorldRenderer {
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
-    this.sun.position.set(ahead.x + x * 70, ahead.y + 34, ahead.z + z * 70);
+    this.sun.position.set(
+      ahead.x + x * 70,
+      ahead.y + 34 - 25 * (this.evening?.value ?? 0),
+      ahead.z + z * 70,
+    );
     this.sun.target.updateMatrixWorld();
   }
 
@@ -1562,6 +1587,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.horseLane = this.livestock?.horseLane ?? null;
     drawn.guitarHand = this.performers?.guitarHand ?? null;
     drawn.reefCrest = this.reef?.crest ?? null;
+    drawn.eveningLight = this.evening?.value ?? null;
+    drawn.ferryX = this.boats?.ferryX ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

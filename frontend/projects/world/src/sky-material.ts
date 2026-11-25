@@ -46,6 +46,7 @@ export function skyMaterial(
   sun: readonly [number, number, number],
   detail: DataTexture,
   coastalSquall = false,
+  evening?: Node<'float'>,
 ): Sky {
   const colours = look.sky.map((hex) => new Color(hex));
   const stop = (i: number) => vec3(colours[i]!.r, colours[i]!.g, colours[i]!.b);
@@ -135,6 +136,19 @@ export function skyMaterial(
   }
 
   const material = new MeshBasicNodeMaterial({ side: BackSide, fog: false, depthWrite: false });
+  if (evening) {
+    const sunset = mix(vec3(1.0, 0.43, 0.16), vec3(0.12, 0.19, 0.39), smoothstep(0, 0.48, height));
+    const lowSun = toward.dot(vec3(0.945, 0.105, 0.31).normalize()).max(0);
+    const amber = sunset.add(
+      vec3(1, 0.58, 0.18).mul(
+        lowSun
+          .pow(160)
+          .mul(0.58)
+          .add(smoothstep(0.9993, 0.9997, lowSun).mul(2.3)),
+      ),
+    );
+    sky = mix(sky, mix(amber, vec3(0.62, 0.44, 0.48), cover.mul(0.57)), evening);
+  }
   material.colorNode = sky;
   return {
     material,

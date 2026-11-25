@@ -1339,3 +1339,8 @@ import bathsheba as _bathsheba
 
 THEMES["bathsheba"] = _bathsheba.THEME
 SCENERY["bathsheba"] = _bathsheba.scenery
+
+import bayofislands as _bayofislands
+
+THEMES["bayofislands"] = _bayofislands.THEME
+SCENERY["bayofislands"] = _bayofislands.scenery

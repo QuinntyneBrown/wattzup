@@ -87,6 +87,28 @@ export class WorldRideProbe {
     );
   }
 
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+
+  async ferryX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { ferryX?: number } } }).__wzWorldRide
+          ?.course?.ferryX ?? null,
+    );
+  }
+
+  async eveningLight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { eveningLight?: number } } })
+          .__wzWorldRide?.course?.eveningLight ?? null,
+    );
+  }
+
   async pin(tier: Tier, backend: 'auto' | 'webgl2' = 'auto'): Promise<void> {
     await this.page.addInitScript(
       ([t, b]) => {

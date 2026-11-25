@@ -1,0 +1,157 @@
+{
+  "id": "bayofislands",
+  "name": "Bay of Islands Group Ride",
+  "world": "bayofislands",
+  "theme": "bayofislands",
+  "seed": 2078,
+  "layout": 0,
+  "class": {
+    "id": "zwift-group-workout-hiit-intervals",
+    "title": "Zwift Group Workout: HIIT Intervals",
+    "channel": "GCN",
+    "videoId": "-gl2yJkKrSk",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 360,
+        "level": 18,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 190,
+        "level": 21,
+        "cadenceAim": 91
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 190,
+        "level": 21,
+        "cadenceAim": 91
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 190,
+        "level": 21,
+        "cadenceAim": 91
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 210,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 670,
+        "level": 13,
+        "cadenceAim": 85
+      }
+    ]
+  }
+}
