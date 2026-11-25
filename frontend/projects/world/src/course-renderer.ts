@@ -237,6 +237,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly near = new Group();
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
+    cloudBearing: null as number | null,
     turbineAngle: null as number | null,
     dustPosition: null as number | null,
     shadowOffset: null as number | null,
@@ -757,7 +758,7 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.sky = carried;
       this.scene.add(carried);
-    } else {
+    } else if (!this.fen) {
       const dome = new SphereGeometry(9000, 24, 12);
       const sky = skyMaterial(look, this.course!.file.sun, detail);
       this.skyClock = sky.at;
@@ -1129,6 +1130,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.cloudBearing = this.fen?.cloudBearing ?? null;
     drawn.dustPosition = this.fen?.dustPosition ?? null;
     drawn.turbineAngle = this.fen?.turbineAngle ?? null;
     drawn.shadowOffset = this.fen?.shadowOffset ?? null;

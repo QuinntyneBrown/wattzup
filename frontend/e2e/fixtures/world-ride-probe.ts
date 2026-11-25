@@ -62,7 +62,7 @@ export class WorldRideProbe {
   }
 
   async fenlandMotion(
-    part: 'turbineAngle' | 'dustPosition' | 'shadowOffset',
+    part: 'turbineAngle' | 'dustPosition' | 'shadowOffset' | 'cloudBearing',
   ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>

@@ -9,6 +9,7 @@ import { RacePage } from './pages/race.page';
 
 for (const [actor, metres, part] of [
   ['drainage district turbine', 7890, 'turbineAngle'],
+  ['cloud bank', 80, 'cloudBearing'],
   ['crosswind dust', 5450, 'dustPosition'],
   ['cloud shadow', 10720, 'shadowOffset'],
 ] as const) {
