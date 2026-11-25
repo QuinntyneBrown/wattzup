@@ -47,7 +47,7 @@ def surface(d,lane):
     rise=max(0,-lane-7)
     return elevation(d)-.22+rise*(.23+.12*math.sin(d/131))+.08*rise*math.sin(d/57+lane/24)
 
-def road(road,st,length,col,theme,bc):
+def road(road,st,length,col,bc):
     asphalt=bc.Builder('Road','asphalt');yellow=bc.Builder('CentreLine','yellow');paint=bc.Builder('RoadPaint','paint')
     for i in range(len(road.s)-1):
         def band(batch,a,b,up):batch.quad(road.at(i,a,up),road.at(i,b,up),road.at(i+1,b,up),road.at(i+1,a,up))

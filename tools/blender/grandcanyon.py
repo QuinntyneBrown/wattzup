@@ -148,7 +148,7 @@ def land(road,col,theme,bc):
     for b in (apron,strata,temple,far,water,bend):b.build(col)
     return None,lambda x,y:road.s[road.tree.find((x,y,0))[1]]['z']-.21
 
-def road_surface(road,st,length,col,theme,bc):
+def road_surface(road,st,length,col,bc):
     tar=bc.Builder('Road','asphalt');line=bc.Builder('Road markings','yellow');edge=bc.Builder('RoadPaint','paint')
     for i in range(road.index(-70),road.index(length+40)):
         def band(batch,left,right,z):batch.quad(road.at(i,left,z),road.at(i,right,z),road.at(i+1,right,z),road.at(i+1,left,z))

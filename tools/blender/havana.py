@@ -37,7 +37,7 @@ def lay(course,theme,bc):
     return rows,stages,LENGTH,sum(s['level']*(s['to']-s['from']) for s in stages)/LENGTH,0
 
 
-def road(r,st,length,col,theme,bc):
+def road(r,st,length,col,bc):
     batches={key:bc.Builder(name,mat) for key,name,mat in [('road','Road','asphalt'),('white','RoadPaint','paint'),('yellow','CentreLine','yellow')]}
     for i,p in enumerate(r.s[:-1]):
         def stripe(key,left,right,z):

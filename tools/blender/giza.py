@@ -193,7 +193,7 @@ def sphinx(b,x,y,z,yaw):
     form([(15.9,0,15.52,.42,.62),(16.12,0,16.02,.45,.61),(15.75,0,17.22,.4,.47)],ochre)
     form([(15.82,0,14.27,.38,1.13),(15.93,0,14.62,.4,1.13)],brown)
 
-def road_surface(road,st,length,col,theme,bc):
+def road_surface(road,st,length,col,bc):
     tar=bc.Builder('Plateau asphalt','asphalt');kerb=bc.Builder('Plateau kerbstones','terrain')
     drift=bc.Builder('Wind blown sand','terrain');mark=bc.Builder('RoadPaint','paint')
     kerb.colours=[];drift.colours=[]

@@ -346,22 +346,22 @@ export class CourseRenderer implements WorldRenderer {
   private pave: ReturnType<typeof arenbergPave> | null = null;
   private visitors: Awaited<ReturnType<typeof cornwallVisitors>> | null = null;
   private harbour: CornwallHarbour | null = null;
-  private forest: Awaited<ReturnType<typeof cypressForest>> | null = null;
+  private cypressTrees: Awaited<ReturnType<typeof cypressForest>> | null = null;
   private cypressLift: CypressLift | null = null;
   private readonly climbingRiders: Cyclist[] = [];
   private verges: Awaited<ReturnType<typeof dalesVerges>> | null = null;
   private flock: DalesSheep | null = null;
-  private flags: DalesFlags | null = null;
-  private boardwalk: DaytonaBoardwalk | null = null;
-  private shore: DaytonaTideLine | null = null;
+  private dalesFlags: DalesFlags | null = null;
+  private daytonaBoardwalk: DaytonaBoardwalk | null = null;
+  private daytonaShore: DaytonaTideLine | null = null;
   private course: Course | null = null;
   private timing: PursuitBoard | null = null;
   private geology: Awaited<ReturnType<typeof badwaterGeology>> | null = null;
-  private basin: DeathValleyStreet | null = null;
-  private promenade: Awaited<ReturnType<typeof diwaliPromenade>> | null = null;
+  private desertBasin: DeathValleyStreet | null = null;
+  private diwaliTrees: Awaited<ReturnType<typeof diwaliPromenade>> | null = null;
   private festival: DiwaliFestival | null = null;
   private quay: DocklandsQuay | null = null;
-  private forest: Awaited<ReturnType<typeof gardenaForest>> | null = null;
+  private gardenaTrees: Awaited<ReturnType<typeof gardenaForest>> | null = null;
   private marinaTrees: Awaited<ReturnType<typeof marinaPromenade>> | null = null;
   private marinaBoats: MarinaBoats | null = null;
   private street: Awaited<ReturnType<typeof fringeStreet>> | null = null;
@@ -1260,7 +1260,7 @@ export class CourseRenderer implements WorldRenderer {
           forest.dispose();
           return false;
         }
-        this.forest = forest;
+        this.cypressTrees = forest;
         this.scene.add(forest.root);
         this.disposables.push(forest);
         this.cypressLift = new CypressLift(this.course, this.scene);
@@ -1292,9 +1292,9 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(verges.root);
         this.disposables.push(verges);
         this.flock = new DalesSheep(this.course);
-        this.flags = new DalesFlags(this.course, this.scene);
+        this.dalesFlags = new DalesFlags(this.course, this.scene);
         this.scene.add(this.flock.mesh);
-        this.disposables.push(this.flock, this.flags);
+        this.disposables.push(this.flock, this.dalesFlags);
         this.camera.setViewOffset(1, 1, 0, 0.09, 1, 1);
       }
       if (this.path === 'courses/daytona') {
@@ -1303,21 +1303,21 @@ export class CourseRenderer implements WorldRenderer {
           import('./daytona-boardwalk'),
         ]);
         if (this.disposed) return false;
-        this.boardwalk = new DaytonaBoardwalk(this.scene);
-        this.disposables.push(this.boardwalk);
-        this.shore = new DaytonaTideLine(this.course, this.disposables);
-        this.scene.add(this.shore.group);
+        this.daytonaBoardwalk = new DaytonaBoardwalk(this.scene);
+        this.disposables.push(this.daytonaBoardwalk);
+        this.daytonaShore = new DaytonaTideLine(this.course, this.disposables);
+        this.scene.add(this.daytonaShore.group);
         this.camera.setViewOffset(1, 1, 0, 0.053, 1, 1);
       }
       if (this.path === 'courses/deathvalley') {
         const { DeathValleyStreet } = await import('./world-deathvalley');
         if (this.disposed) return false;
-        this.basin = new DeathValleyStreet((texture) => {
+        this.desertBasin = new DeathValleyStreet((texture) => {
           this.disposables.push(texture);
           return texture;
         }, this.disposables);
-        this.basin.buildBasin(this.course);
-        await this.basin.loadPanamints(() => !this.disposed);
+        this.desertBasin.buildBasin(this.course);
+        await this.desertBasin.loadPanamints(() => !this.disposed);
         if (this.disposed) return false;
         const { badwaterGeology } = await import('./badwater-geology');
         if (this.disposed) return false;
@@ -1328,7 +1328,7 @@ export class CourseRenderer implements WorldRenderer {
         }
         this.geology = geology;
         this.disposables.push(geology);
-        this.scene.add(this.basin.group, geology.group);
+        this.scene.add(this.desertBasin.group, geology.group);
         this.camera.setViewOffset(1, 1, 0, 0.05, 1, 1);
       }
       if (this.path === 'courses/diwali') {
@@ -1343,7 +1343,7 @@ export class CourseRenderer implements WorldRenderer {
           promenade.dispose();
           return false;
         }
-        this.promenade = promenade;
+        this.diwaliTrees = promenade;
         this.disposables.push(promenade);
         this.scene.add(promenade.group);
         this.camera.setViewOffset(1, 1, 0, 0.062, 1, 1);
@@ -1372,7 +1372,7 @@ export class CourseRenderer implements WorldRenderer {
           forest.dispose();
           return false;
         }
-        this.forest = forest;
+        this.gardenaTrees = forest;
         this.scene.add(forest.group);
         this.disposables.push(forest);
       }
@@ -1680,7 +1680,7 @@ export class CourseRenderer implements WorldRenderer {
     this.camp?.update(frame.time, metres, frame.reducedMotion);
     if (this.cypressLift) {
       const seconds = frame.reducedMotion ? 0 : frame.time;
-      this.forest?.follow(metres);
+      this.cypressTrees?.follow(metres);
       this.sun.intensity = 1.94 + (0.86 * metres) / course.length;
       const leader = seconds * 3.64;
       for (const [i, rider] of this.climbingRiders.entries()) {
@@ -1698,12 +1698,12 @@ export class CourseRenderer implements WorldRenderer {
       this.sun.intensity = 2.13 + 0.66 * Math.sin(metres / 317) + 0.32 * Math.sin(metres / 127);
     }
     this.flock?.update(metres, frame.reducedMotion ? 0 : frame.time);
-    this.flags?.update(frame.reducedMotion ? 0 : frame.time, metres);
-    this.boardwalk?.update(frame.reducedMotion ? 0 : frame.time, metres);
-    this.shore?.place(metres, frame.reducedMotion ? 0 : frame.time);
+    this.dalesFlags?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.daytonaBoardwalk?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.daytonaShore?.place(metres, frame.reducedMotion ? 0 : frame.time);
     this.geology?.follow(metres);
-    this.basin?.followBasin(course, metres, frame.reducedMotion ? 0 : frame.time);
-    this.marinaTrees?.follow(metres, frame.reducedMotion ? 0 : frame.time);
+    this.desertBasin?.followBasin(course, metres, frame.reducedMotion ? 0 : frame.time);
+    this.diwaliTrees?.follow(metres, frame.reducedMotion ? 0 : frame.time);
     this.festival?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
@@ -1843,6 +1843,8 @@ export class CourseRenderer implements WorldRenderer {
     });
     this.boardwalk?.group.removeFromParent();
     this.boardwalk = null;
+    this.daytonaBoardwalk = null;
+    this.daytonaShore = null;
     this.promenade?.root.removeFromParent();
     this.promenade = null;
     this.copacabana = null;
@@ -1872,6 +1874,7 @@ export class CourseRenderer implements WorldRenderer {
     this.pave = null;
     this.joggers = null;
     this.flags = null;
+    this.dalesFlags = null;
     this.atacamaWildlife = null;
     this.salt = null;
     this.mirage = null;
@@ -1892,6 +1895,7 @@ export class CourseRenderer implements WorldRenderer {
     this.mill = null;
     this.surf = null;
     this.basin = null;
+    this.desertBasin = null;
     this.railway = null;
     this.plaza = null;
     this.coast = null;
@@ -1902,6 +1906,7 @@ export class CourseRenderer implements WorldRenderer {
     this.crews = null;
     this.quay = null;
     this.festival = null;
+    this.diwaliTrees = null;
     this.park = null;
     this.canyon = null;
     for (const d of this.disposables) d.dispose();
@@ -1931,7 +1936,8 @@ export class CourseRenderer implements WorldRenderer {
     this.parkTraffic = null;
     this.champsParade = null;
     this.rain = null;
-    this.forest = null;
+    this.cypressTrees = null;
+    this.gardenaTrees = null;
     this.marinaBoats = null;
     this.marinaTrees = null;
     this.fringe = null;
@@ -2551,7 +2557,7 @@ export class CourseRenderer implements WorldRenderer {
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
-    this.forest?.follow(back.x, back.z);
+    this.gardenaTrees?.follow(back.x, back.z);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
     this.sun.position.set(
@@ -2948,11 +2954,11 @@ export class CourseRenderer implements WorldRenderer {
     drawn.climberX = this.climbingRiders[0]?.group.position.x ?? null;
     drawn.chairX = this.cypressLift?.chairX ?? null;
     drawn.sheepX = this.flock?.sheepX ?? null;
-    drawn.flagTip = this.flags?.tip ?? null;
-    drawn.pickupZ = this.boardwalk?.pickupZ ?? null;
-    drawn.gondolaY = this.boardwalk?.gondolaY ?? null;
-    drawn.mirageOpacity = this.basin?.mirageOpacity ?? null;
-    drawn.ravenHeading = this.basin?.ravenHeading ?? null;
+    drawn.flagTip = this.dalesFlags?.tip ?? null;
+    drawn.pickupZ = this.daytonaBoardwalk?.pickupZ ?? null;
+    drawn.gondolaY = this.daytonaBoardwalk?.gondolaY ?? null;
+    drawn.mirageOpacity = this.desertBasin?.mirageOpacity ?? null;
+    drawn.ravenHeading = this.desertBasin?.ravenHeading ?? null;
     drawn.taxiZ = this.festival?.taxiZ ?? null;
     drawn.sparkY = this.festival?.sparkY ?? null;
     drawn.villageFronts = this.shore?.villageFronts ?? 0;

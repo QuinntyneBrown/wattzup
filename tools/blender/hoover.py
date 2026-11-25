@@ -53,7 +53,7 @@ def lay(course,theme,bc):
                          k=direction(d+.5)-direction(d-.5),g=100*(elevation(d+.5)-elevation(d-.5))))
     return rows,stages,LENGTH,sum(s['level']*(s['to']-s['from']) for s in stages)/LENGTH,0
 
-def road(r,st,length,col,theme,bc):
+def road(r,st,length,col,bc):
     paving=bc.Builder('Road','asphalt');yellow=bc.Builder('CentreLine','yellow');white=bc.Builder('EdgeLines','paint')
     for i in range(len(r.s)-1):
         def stripe(batch,lft,rgt,z):

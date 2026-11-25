@@ -33,7 +33,7 @@ def lay(course,theme,bc):
         rows.append(dict(x=x,y=y,z=height_at_station(d),d=d,h=h,k=(bearing(d+.5)-bearing(d-.5)),g=100*(height_at_station(d+.5)-height_at_station(d-.5))))
     return rows,stages,length,sum(s['level']*(s['to']-s['from']) for s in stages)/length,0
 
-def road(r,st,length,col,theme,bc):
+def road(r,st,length,col,bc):
     asphalt=bc.Builder("Road","asphalt");tufts=bc.Builder("Centre turf","terrain");tufts.colours=[]
     for i,row in enumerate(r.s[:-1]):
         width=2.12+.18*math.sin(row['d']/39)+.62*min(1,abs(row['k'])*18)

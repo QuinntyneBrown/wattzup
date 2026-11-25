@@ -65,7 +65,7 @@ def land(road,col,theme,bc):
             district.colours.extend([lin(0x716F67)]*4)
     return district.build(col),ground
 
-def road_surface(road,st,length,col,theme,bc):
+def road_surface(road,st,length,col,bc):
     tar=bc.Builder('Road','asphalt');paint=bc.Builder('RoadPaint','paint')
     pavement=bc.Builder('Kerbstones and sandstone pavement','terrain');pavement.colours=[]
     def band(batch,i,left,right,z,colour=None):

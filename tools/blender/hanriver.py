@@ -47,7 +47,7 @@ def lay(course,theme,bc):
     return rows,stages,length,sum(s['level']*(s['to']-s['from']) for s in stages)/length,0
 
 
-def road(r,st,length,col,theme,bc):
+def road(r,st,length,col,bc):
     asphalt=bc.Builder('Road','asphalt');yellow=bc.Builder('CentreLine','yellow');edge=bc.Builder('RoadPaint','paint')
     for i,s in enumerate(r.s[:-1]):
         def band(b,a,h,z):

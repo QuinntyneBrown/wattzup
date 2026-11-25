@@ -70,7 +70,7 @@ def land(road,col,theme,bc):
         last=nxt
     return b.build(col),height
 
-def road_surface(road,st,length,col,theme,bc):
+def road_surface(road,st,length,col,bc):
     tar=bc.Builder('Road','asphalt');paint=bc.Builder('RoadPaint','paint')
     verges=bc.Builder('Rounded kerbs and footpaths','terrain');verges.colours=[]
     for i in range(road.index(-60),road.index(length+45)):
