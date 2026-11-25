@@ -149,3 +149,41 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const bealachCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'bealach-na-ba',
+  name: 'Bealach na Bà',
+  routeName: 'Applecross pass',
+  place: 'Wester Ross, Scotland',
+  world: 'bealach',
+  distanceKm: 9.05,
+  climbingM: 626,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/bealach-na-ba.jpg',
+  photoUrl: 'maps/bealach-na-ba-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 60, 22, 60),
+      seg('work', 60, 21, 110),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 22, 60),
+      seg('work', 60, 21, 110),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 22, 60),
+      seg('work', 60, 21, 110),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 22, 60),
+      seg('work', 60, 21, 110),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 22, 60),
+      seg('recover', 60, 21, 110),
+      seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
