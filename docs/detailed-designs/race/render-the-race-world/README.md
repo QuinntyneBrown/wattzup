@@ -828,3 +828,14 @@ Journey 7 currently reaches a generic rolling Cabot class world with its own ben
 Use the existing catalogue and Race Setup path into the lazy authored-course renderer. Read the arc-length course JSON and GLB from the ride's same-origin course assets. Bake cliff strata, roadside wear and canopy shade into shared geometry. Keep the far headlands in fixed coordinates like Caribana’s Toronto skyline. Merge local details into distance-culled sections. Use shared geometry for boat and animal parts on both backends, seed variation at construction, update from race time and dispose on departure. Keep class progression and HUD on the existing race engine.
 
 Measure two sixty-second samples from the normal race entry with the simulated bike, nine seconds of warm-up, Low/WebGL2 and fourfold CPU throttle. Capture matched rider views before and after and record actual submissions, display callbacks, p95, longest interval, peak draw calls and advancing HUD distance. The performance and capture suites stay opt-in.
+### Independence Pass · #2140
+
+Restore the historical 35-minute GCN workout and its ordinary unlock behaviour in the race catalogue. Compile the 15.2 km road and its elevation profile into the native Blender course and load it only for this map (ADRs 0021, 0023, 0030, 0034 and 0035). The west approach climbs from 2,790 m to the 3,687 m divide. Across the eastern sightline Twin Lakes remains below the rider. The course finishes at the sign.
+
+| Section | Low-tier geometry and sightline | References |
+| --- | --- | --- |
+| Lower Highway 82 and river | Break the crowns into gold and green patches, leaving the dark branch forks and white trunks readable. Frame the river between boulders and open the road edge at the cascade. | Real 02, 09, 13 and 14. Games 03 and 05. |
+| Mining meadow and treeline | Cabin wall logs terminate at the corners. Vary collapsed, stripped and roofed structures. Narrow the spruce silhouettes with altitude before the tundra opens. | Real 05, 06, 08, 11 and 14. Games 02 and 04. |
+| Exposed summit approach | Smooth descending sightlines across tight folds, galvanised rails, thawing snow and rough scree. Keep the sign’s brown silhouette and pale lower panel legible. Anchor the two blue lakes and snow-streaked Sawatch skyline to the valley. | Real 01, 03–05, 07, 08, 10, 12 and 15. Games 01, 02 and 04. |
+
+Caribana’s fixed skyline and detailed moving foreground guide the distribution of GPU work. The river and near leaves share bounded materials owned by the scene. Keep the summit lettering legible on Low without changing the HUD. Verify six positions through the simulated bike. Compare the opening and busiest summit approach on Low/WebGL2 with nine seconds of warm-up and a moving one-minute sample per section.
