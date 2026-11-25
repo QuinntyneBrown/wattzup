@@ -61,7 +61,9 @@ export class WorldRideProbe {
     }, metres);
   }
 
-  async graniteMotion(part: 'meltwater' | 'mistPosition'): Promise<number | null> {
+  async graniteMotion(
+    part: 'meltwater' | 'mistPosition' | 'borneX' | 'summitX',
+  ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide

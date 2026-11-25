@@ -1,6 +1,22 @@
-import { mix, positionWorld, sin, smoothstep, uniform, vec3 } from 'three/tsl';
 import {
+  mix,
+  normalWorld,
+  positionWorld,
+  sin,
+  smoothstep,
+  uniform,
+  vec3,
+  texture as sampleTexture,
+  vertexColor,
+} from 'three/tsl';
+import {
+  Box3,
+  type Camera,
   DoubleSide,
+  MirroredRepeatWrapping,
+  SRGBColorSpace,
+  TextureLoader,
+  Vector3,
   Group,
   Mesh,
   MeshBasicMaterial,
@@ -11,6 +27,54 @@ import type { Course } from './course';
 import { canvasTexture, seeded } from './world-kit';
 
 export function northFace(course: Course) {
+  const loader = new TextureLoader();
+  const rock = loader.load('courses/granite-north-face.webp');
+  rock.colorSpace = SRGBColorSpace;
+  rock.wrapS = rock.wrapT = MirroredRepeatWrapping;
+  rock.anisotropy = 4;
+  const cliff = new MeshBasicMaterial({
+    map: rock,
+    vertexColors: true,
+    side: DoubleSide,
+    fog: false,
+  });
+  const fell = new MeshBasicNodeMaterial({ side: DoubleSide });
+  const slopeLight = normalWorld
+    .dot(vec3(-0.37, 0.75, 0.53))
+    .mul(0.25)
+    .add(0.85);
+  fell.colorNode = sampleTexture(rock)
+    .rgb.mul(0.88)
+    .add(0.7)
+    .mul(vertexColor().rgb)
+    .mul(slopeLight);
+  const tar = new MeshBasicNodeMaterial({ side: DoubleSide });
+  const aggregate = sampleTexture(rock, positionWorld.xz.mul(0.065)).r;
+  const pavement = sampleTexture(rock, positionWorld.xz.mul(0.62)).g;
+  tar.colorNode = vec3(0.057, 0.063, 0.068).mul(
+    aggregate.mul(0.92).add(pavement.mul(0.43)).add(0.75),
+  );
+  const trees = loader.load('courses/granite-conifers.webp');
+  trees.flipY = false;
+  trees.colorSpace = SRGBColorSpace;
+  const conifers = new MeshBasicMaterial({ map: trees, alphaTest: 0.38, side: DoubleSide });
+  const paint = loader.load('courses/granite-col-signs.webp');
+  paint.flipY = false;
+  paint.colorSpace = SRGBColorSpace;
+  paint.anisotropy = 8;
+  const board = new MeshBasicMaterial({ map: paint, side: DoubleSide, alphaTest: 0.3 });
+  const marks = new Map<string, Vector3>();
+  const projected = new Vector3();
+  function landmark(kind: string, mesh: Mesh) {
+    if (kind === 'SummitSign' || kind === 'SixthBorne')
+      marks.set(kind, new Box3().setFromObject(mesh, true).getCenter(new Vector3()));
+  }
+  function screenX(kind: string, camera: Camera) {
+    const point = marks.get(kind);
+    if (!point) return Infinity;
+    projected.copy(point).project(camera);
+    return Math.abs(projected.z) <= 1 ? projected.x : Infinity;
+  }
   const phase = uniform(0);
   const water = new MeshBasicNodeMaterial({ side: DoubleSide });
   // Wave crests follow the fall of the baked streambed, in metres.
@@ -51,14 +115,29 @@ export function northFace(course: Course) {
   });
   return {
     group,
-    water,
+    materials: {
+      Meltwater: water,
+      NorthFace: cliff,
+      FellGround: fell,
+      ColTarmac: tar,
+      ColConifers: conifers,
+      ColSigns: board,
+      SummitSign: board,
+      SixthBorne: board,
+    },
+    landmark,
     update(seconds: number) {
       phase.value = (seconds % 240) * 3;
       for (const [i, bank] of banks.entries())
         bank.mesh.position.x = bank.x + 21 * Math.sin(seconds * 0.032 + i);
     },
-    report() {
-      return { meltwater: phase.value, mistPosition: banks[0]!.mesh.position.x };
+    report(camera: Camera) {
+      return {
+        borneX: screenX('SixthBorne', camera),
+        summitX: screenX('SummitSign', camera),
+        meltwater: phase.value,
+        mistPosition: banks[0]!.mesh.position.x,
+      };
     },
     dispose() {
       group.removeFromParent();
@@ -67,6 +146,14 @@ export function northFace(course: Course) {
       mist.dispose();
       texture.dispose();
       water.dispose();
+      rock.dispose();
+      paint.dispose();
+      cliff.dispose();
+      fell.dispose();
+      tar.dispose();
+      trees.dispose();
+      conifers.dispose();
+      board.dispose();
     },
   };
 }

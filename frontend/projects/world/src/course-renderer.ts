@@ -107,6 +107,7 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  NorthFace: 5200,
   Land: 950,
   Ground: 420,
   Solid: 250,
@@ -630,7 +631,7 @@ export class CourseRenderer implements WorldRenderer {
     // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
-    if (this.northFace) materials['Meltwater'] = this.northFace.water;
+    if (this.northFace) Object.assign(materials, this.northFace.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     const painted: Mesh[] = [];
     map.traverse((part) => {
@@ -638,6 +639,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.northFace?.landmark(group, mesh);
       const material = materials[group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
@@ -1119,7 +1121,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
-    if (this.northFace) Object.assign(drawn, this.northFace.report());
+    if (this.northFace) Object.assign(drawn, this.northFace.report(this.camera));
     hook['course'] = drawn;
   }
 

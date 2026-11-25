@@ -54,3 +54,32 @@ for (const [actor, metres, part] of [
     await expect.poll(() => worldRide.graniteMotion(part)).not.toBe(held);
   });
 }
+
+for (const [feature, metres, point] of [
+  ['kilometre borne', 5975, 'borneX'],
+  ['col sign at the refuge', 15950, 'summitX'],
+] as const) {
+  test('the climb frames the ' + feature, async ({ api, bluetooth, page, worldRide }) => {
+    api.answer('GET', '/api/maps', [graniteCourseMap]);
+    api.answer('GET', '/api/progress', {
+      ...newRiderProgress,
+      stars: { dolomites: 3 },
+      openMapIds: [graniteCourseMap.id],
+    });
+    await worldRide.pin('low', 'webgl2');
+    await bluetooth.remember(echelonBike);
+    const race = new RacePage(page);
+    const maps = new MapSelectPage(page);
+    await maps.open();
+    await worldRide.startAt(metres);
+    const row = maps.row(graniteCourseMap.name);
+    await row.root.click();
+    const setup = new RaceSetupPage(page);
+    await setup.mode('Your best time').click();
+    await setup.start.click();
+    await expect(race.backend).toBeVisible();
+    await expect
+      .poll(async () => Math.abs((await worldRide.graniteMotion(point)) ?? Infinity))
+      .toBeLessThan(0.43);
+  });
+}

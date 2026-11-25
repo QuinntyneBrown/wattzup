@@ -7,6 +7,7 @@
   "layout": 1,
   "map": "col-du-granit",
   "route": null,
+  "roadHalfWidth": 3.05,
   "distanceKm": 16.1,
   "climbingMetres": 1240,
   "plan": {
