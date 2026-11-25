@@ -3598,7 +3598,7 @@ export const loireCourseMap = {
   place: 'Loire Valley, France',
   world: 'loire',
   distanceKm: 12.2,
-  climbingM: 43,
+  climbingM: 19,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
