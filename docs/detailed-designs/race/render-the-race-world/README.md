@@ -215,3 +215,18 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+## Ghent Six-Day (#2125)
+
+The class recreates a straight every 166 m. It already has a textured pine floor, blue apron, spectators, cabins, trusses and a distance-driven board. The race needs a continuous oval with the other straight always across the infield. The ten-minute, 4.575 km race covers 27 complete laps and part of the next. The measurement line is level. Banking changes the cross-slope and rider lean without adding course climbing.
+
+| Rider viewpoint | Composition and reference |
+| --- | --- |
+| Boards, 0.014 km | Pine boards, the black measurement line and red sprinter’s line lead into the first bend. Real 03–05, 08 and 10, games 01 and 04. |
+| Bank, 0.045 km | The rider and chase camera lean into the steep bend above the blue côte d’azur. Real 04–06, 09 and 11, games 02 and 05. |
+| Bars, 0.087 km | Bar tables and spectators fill the infield under trusses, with the opposite stand in sight. Real 01–03, 12–13, games 01 and 03. |
+| Board, 0.148 km | The illuminated lap board and brass bell face the home straight above the infield rail. Real 01–03 and 07, games 02 and 04. |
+| Madison, 0.537 km | A resting rider drops from the banking to meet a teammate for a Madison change. Real 06–11 and 14–15, games 04–05. |
+| Night, 4.422 km | Warm floodlights pick out the packed stands and hoardings on a late six-day lap. Real 01–05 and 12–13, games 01–03. |
+
+The catalogue carries the eleven original workout stages. Bake one compact Kuipke bowl, then sample its periodic centre line and bank angle over the full session. Register the course with the lazy renderer. Lift riders in the outside lanes onto the drawn boards and roll the chase camera through the banking. Keep the advertising rail, spectators, stairs, bar counters and roof trusses fixed in the building. Position each Madison pair on the same banked oval as the rider and coordinate their arms, lanes and pace during a change. Update the board only when the lap changes. Share the existing Ghent music asset and respect World music, race status and teardown. Use the nearest tier for the active riders and batches for repeated fans, furniture and lamps. Follow ADRs 0021, 0023, 0030, 0034 and 0035. Measure actual frame submissions after nine seconds of warm-up on both sampled laps.
