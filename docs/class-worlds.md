@@ -15,6 +15,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Dolomites (`dolomites`) | The catalogue's 30:00 intervals (placeholder) | 38.5 km | 860 m | `public/courses/dolomites.glb` ([film](../blender/dolomites.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Vice City (`vicecity`) | The catalogue's 30:00 intervals (placeholder) | 24 km | 60 m | `public/courses/vicecity.glb` ([film](../blender/vicecity.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Col du Granit (`granite`) | The catalogue's 30:00 intervals (placeholder) | 16.1 km | 1,240 m | `public/courses/granite.glb` ([film](../blender/granite.mp4)) | Built in Blender (ADR 0035) and ridden in races |
+| Col d'Aubisque (`aubisque`) | 35 Minute Torque Power Intervals (GCN, 33:00) | 12.600 km | 361 m | `public/courses/aubisque.glb` ([ride views](screenshots/col-aubisque/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
@@ -174,7 +175,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 144 | 35 Minute Threshold HIIT | Vienna Ringstrasse | 35% |  | Grand boulevard past palaces, opera house and trams. |
 | 145 | Climb & Sprint to the Beat | Blue Mountains, Jamaica | 35% |  | Coffee-farm switchbacks with reggae drifting up from roadside sound systems. |
 | 146 | Get Pumped With Grace | Sixth Street, Austin | 81% |  | Live-music bars and festival crowds spilling into the street. |
-| 147 | 35 Minute Torque Power Intervals | Col d'Aubisque | 35% | [Ride views](screenshots/col-aubisque/README.md) | Pyrenean cliff road with cows and giant bike sculptures. |
+| 147 | 35 Minute Torque Power Intervals | Col d'Aubisque | 35% |  | Pyrenean cliff road with cows and giant bike sculptures. |
 | 148 | Fast Fitness: High Intensity 35 | Rome Colosseum Loop | 35% |  | Ancient ruins, umbrella pines and sampietrini cobbles. |
 | 149 | 35 Minute Hill Training | Winnats Pass | 80% |  | Peak District limestone gorge, steep and grassy-walled. |
 | 150 | Climb Time: Boost Your Climbing Power | Great St Bernard Pass | 35% |  | An alpine border climb to a hospice and a frozen lake. |
