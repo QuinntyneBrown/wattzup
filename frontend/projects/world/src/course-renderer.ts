@@ -1,3 +1,4 @@
+import type { dalesVerges } from './dales-verges';
 import type { DalesSheep } from './dales-sheep';
 import type { DalesFlags } from './dales-flags';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
@@ -202,6 +203,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
+  private verges: Awaited<ReturnType<typeof dalesVerges>> | null = null;
   private flock: DalesSheep | null = null;
   private flags: DalesFlags | null = null;
   private course: Course | null = null;
@@ -364,11 +366,20 @@ export class CourseRenderer implements WorldRenderer {
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
       if (this.path === 'courses/dales') {
-        const [{ DalesSheep }, { DalesFlags }] = await Promise.all([
+        const [{ DalesSheep }, { DalesFlags }, { dalesVerges }] = await Promise.all([
           import('./dales-sheep'),
           import('./dales-flags'),
+          import('./dales-verges'),
         ]);
         if (this.disposed) return false;
+        const verges = await dalesVerges(this.course);
+        if (this.disposed) {
+          verges.dispose();
+          return false;
+        }
+        this.verges = verges;
+        this.scene.add(verges.root);
+        this.disposables.push(verges);
         this.flock = new DalesSheep(this.course);
         this.flags = new DalesFlags(this.course, this.scene);
         this.scene.add(this.flock.mesh);
@@ -440,6 +451,10 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    if (this.verges) {
+      this.verges.follow(metres);
+      this.sun.intensity = 2.13 + 0.66 * Math.sin(metres / 317) + 0.32 * Math.sin(metres / 127);
+    }
     this.flock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.flags?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.lampShadows?.end();

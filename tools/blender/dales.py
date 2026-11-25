@@ -84,6 +84,15 @@ def scenery(kit):
             if d%241<8:continue
             l=side*4.4;z=ground_height(d,l)
             art.box(pose(d,l,z),(4.12,.68,.91),heading(d),lin(0x777b6d))
+            # The rough courses interlock under the coping. Draw only the rider-facing skin.
+            for row in range(3):
+                for k in range(5):
+                    s0=d-2+k*.8+(.29 if row%2 else 0)
+                    span=.77+rng.uniform(-.07,.06);lo=z+.04+row*.255
+                    tint=lin(rng.choice((0x888c7f,0x909184,0x82877b,0xa09e8e,0x84877d)))
+                    y=l-side*.353
+                    vs=(pose(s0,y,lo),pose(s0+span,y,lo+.028),pose(s0+span-.047,y,lo+.254),pose(s0+.07,y,lo+.238))
+                    art.face(vs if side>0 else vs[::-1],(tint,)*4)
             for j in range(5):
                 offset=d-1.6+j*.8+rng.uniform(-.08,.08);h=rng.uniform(.22,.42)
                 art.box(pose(offset,l,z+.83),(.72,.65,h),heading(d)+rng.uniform(-.11,.11),lin(rng.choice((0x989b89,0x8e9584,0xa6a493))))
@@ -91,6 +100,7 @@ def scenery(kit):
         z=ground_height(d,-3.77);x,y,_=pose(d,-3.77)
         art.box((x,y,height(d)+z),(.14,.17,1.09),heading(d),lin(0x696e63))
         art.box((x,y,height(d)+z+.83),(.146,.18,.25),heading(d),lin(0xe4dfcb))
+    race_day(art,rng)
     valleys(kit)
     settlements(art,rng)
     return {'efforts':0}
@@ -98,19 +108,42 @@ def scenery(kit):
 
 def valleys(kit):
     art=Painted(kit,'peaks')
-    def rolling(x,y):
-        return 165+45*math.sin(x/1260)+26*math.cos(y/350+x/1760)+220*(1-math.exp(-((abs(y)/1800)**2)))+58*math.sin(x/1470+y/670)
-    for x in range(-5500,31000,190):
-        for y in range(-7600,7400,190):
-            coords=((x,y),(x+190,y),(x+190,y+190),(x,y+190))
-            heights=[rolling(a,b) for a,b in coords]
-            # Keep the near valley floor below every road crossing this longitude.
-            level=height(min(LENGTH,max(0,x*1.15)))-32
-            heights=[min(z,level-35+abs(b)*.019) for z,(a,b) in zip(heights,coords)]
-            p=[(a,b,z) for (a,b),z in zip(coords,heights)]
-            band=math.sin(x/1120+y/460)
-            colour=0x72875f if band>.45 else (0x768666 if band>-.1 else 0x697c5f)
-            art.face(p,(lin(colour),)*4)
+    # Follow the road's monotonic easting. Every section spans a vertical plane
+    # across the dale and stays below the road where it crosses that plane.
+    def fell(d,off):
+        x,y,_=pose(d)
+        a=abs(off);valley=math.exp(-((off+840+130*math.sin(d/780))/670)**2)
+        far=smooth(80,2500,a)
+        ridge=150+104*math.sin(d/1460+off/720)+51*math.cos(d/680-off/530)
+        z=height(d)-38-116*valley+far*ridge+far*.034*a
+        return x,y+off,z
+    stripes=(-7600,-5400,-3800,-2700,-2150,-1720,-1280,-900,-655,-430,-260,-145,-70,0,70,145,260,430,655,900,1280,1720,2150,2700,3800,5400,7600)
+    for d in range(-80,int(LENGTH)+100,85):
+        for i,(lo,hi) in enumerate(zip(stripes,stripes[1:])):
+            band=math.sin(d/575+lo/312)+.6*math.sin(d/277+hi/175)
+            c=(0x71865a if band>.53 else 0x7f905f if band>-.15 else 0x88976b)
+            if abs(lo)>1720:c=0x7e8a75 if band>.0 else 0x87917c
+            pts=(fell(d,lo),fell(d+85,lo),fell(d+85,hi),fell(d,hi))
+            art.face(pts,(lin(c),)*4)
+            if 160<abs(lo)<1450 and i%3:
+                wall=lin(0x687660)
+                a,b=pts[:2]
+                art.face((a,b,(b[0],b[1]+2.4,b[2]+.63),(a[0],a[1]+2.4,a[2]+.63)),(wall,)*4)
+                if d%255==5:
+                    a,b=pts[1:3]
+                    art.face((a,b,(b[0]+2,b[1],b[2]+.69),(a[0]+2,a[1],a[2]+.69)),(wall,)*4)
+    # Narrow grass meadows with cross-walls below the road. The far faces are
+    # anchored on the continuous ground surface, leaving the road corridor clear.
+    for d in range(680,int(LENGTH)-600,159):
+        for band,(a,b) in enumerate(((-900,-650),(-650,-430),(-430,-260),(260,430),(430,650))):
+            start=d+band*19
+            pts=[fell(start,a),fell(start+140,a+9),fell(start+157,b-6),fell(start+12,b)]
+            top=[(x,y,z+1.9) for x,y,z in pts]
+            c=lin((0x7a9158,0x869a65,0x778854,0x929f66)[(d//159+band)%4])
+            art.face(top,(c,)*4)
+            for j,k in ((0,1),(1,2)):
+                x,y,z=top[j];xx,yy,zz=top[k]
+                art.face(((x,y,z+.15),(xx,yy,zz+.15),(xx+1.1,yy+1.6,zz+1.34),(x+1.1,y+1.6,z+1.34)),(lin(0x586959),)*4)
     # An irregular patchwork of limestone walls and meadows can be seen below the road.
     for d in range(450,int(LENGTH)-250,136):
         if 6100<d<12600:continue
@@ -173,15 +206,59 @@ def settlements(art,rng):
         if 6400<d<12200:continue
         side=-1 if d%3 else 1
         house(d,side*(28+d%39),8.3,5.3,4.1,True)
-    for d,l in ((3240,-14),(3302,26),(3410,-32),(14290,-22)):house(d,l,9.2,5.9,4.4,True)
+    for d,l in ((3240,-14),(3295,10),(3308,-13),(3344,21),(3410,-32),(14290,-22)):
+        house(d,l,10.4,6.7,4.9,True)
     for start,count in ((-34,22),(13120,17),(22730,24)):
         for j in range(count):
             for sign in (-1,1):
                 if j%7==2 and sign<0:continue
                 house(start+9.1*j+3*(sign>0),sign*(7.1+.48*math.sin(j)),8.4,5.8,5.0+.5*rng.random(),pub=j%13==6)
+    # Moss patches, lintels and ochre grit distinguish old limestone from smooth concrete.
+    for start,end,side in ((2980,3410,1),(3150,3610,-1),(7050,7640,1),(9010,9430,-1)):
+        for _ in range((end-start)*2):
+            d=rng.uniform(start,end);l=side*4.4;h=ground_height(d,l)+rng.uniform(.12,.82)
+            w=rng.uniform(.03,.13);l-=side*.368
+            pts=(pose(d-w,l,h),pose(d+w,l,h+.012),pose(d+w*.36,l,h+.056))
+            shade=lin(rng.choice((0x87935f,0xa8a88d,0xa8a178)))
+            art.face(pts if side>0 else pts[::-1],(shade,)*3)
     # Heather and rough grasses form low, irregular patches across the summit shoulder.
     for j in range(5900):
         d=rng.uniform(6650,12050);l=rng.choice((-1,1))*rng.uniform(3.85,70);h=ground_height(d,l)+.12
         a=rng.uniform(.52,2.2);b=rng.uniform(.3,1.2)
         vs=[pose(d+u,l+v,h+.08) for u,v in ((-a,0),(-.4*a,-b),(.8*a,-.61*b),(a,.36*b),(.15*a,b))]
         art.face(vs,(lin(rng.choice((0x867464,0x8b7770,0x947d7e,0x7e7554,0x827451))),)*5)
+
+
+def race_day(art,rng):
+    """Physical flag supports, original yellow bike silhouettes and strings of bunting."""
+    def rod(a,b,r,c):
+        dx,dy,dz=(b[i]-a[i] for i in range(3));h=math.hypot(dx,dy);length=math.hypot(h,dz)
+        if length<.001:return
+        u=(-dy/h,dx/h,0) if h>.001 else (1,0,0)
+        v=(-dz*u[1]/length,dz*u[0]/length,(dx*u[1]-dy*u[0])/length)
+        def ring(p):return [tuple(p[i]+r*(u[i]*q+v[i]*t) for i in range(3)) for q,t in ((1,1),(-1,1),(-1,-1),(1,-1))]
+        old,new=ring(a),ring(b);tint=lin(c)
+        for i in range(4):art.face((old[i],old[(i+1)%4],new[(i+1)%4],new[i]),(tint,)*4)
+    stations=(38,91,137,199,8730,8795,8860,8904,8948,8997,9033,9072,9111,9135,9154,9176,9198,9223,9250,9286,9327,9370,13175,22856,22927)
+    for i,d in enumerate(stations):
+        l=-(1 if i%2==0 else -1)*(3.65+(i%3)*.19)
+        rod(pose(d,l,0),pose(d,l,3.09),.033,0x958772)
+    for base in (36,104,153,13205,22852,22910):
+        def flagpoint(t):return pose(base+4*t,4.8-9.6*t,5.1-.65*math.sin(math.pi*t))
+        for j in range(18):
+            a,b=j/18,(j+1)/18;p,q=flagpoint(a),flagpoint(b)
+            rod(p,q,.014,0x636959)
+            m=flagpoint((a+b)/2);r=(m[0],m[1],m[2]-.31)
+            col=lin((0xebc14c,0x447a9a,0xf2efda)[j%3])
+            art.face((p,q,r),(col,)*3);art.face((r,q,p),(col,)*3)
+    for d in (65,98,137,13196,22878,22917):
+        l=4.06 if d%2 else -4
+        def p(x,z):return pose(d+x,l,z)
+        for axle in (-.49,.49):
+            for j in range(16):
+                a=j*math.tau/16;b=(j+1)*math.tau/16
+                rod(p(axle+.34*math.cos(a),.36+.34*math.sin(a)),p(axle+.34*math.cos(b),.36+.34*math.sin(b)),.035,0xdcae32)
+                if j%4==0:rod(p(axle,.36),p(axle+.32*math.cos(a),.36+.32*math.sin(a)),.012,0xc69b36)
+        for a,b in (((-.49,.36),(-.17,.84)),((-.17,.84),(.04,.30)),((.04,.30),(-.49,.36)),((-.17,.84),(.31,.78)),((.31,.78),(.04,.30)),((.31,.78),(.49,.36)),((.31,.78),(.27,.96)),((-.22,.92),(-.17,.84))):
+            rod(p(*a),p(*b),.034,0xeabe36)
+        rod(p(-.33,.93),p(-.08,.93),.042,0xc89f2e)

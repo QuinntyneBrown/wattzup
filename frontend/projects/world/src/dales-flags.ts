@@ -1,3 +1,5 @@
+import { dalesPaint } from './dales-paint';
+import { dalesRoad } from './dales-road';
 import {
   BufferGeometry,
   CanvasTexture,
@@ -52,11 +54,15 @@ function rose() {
   return t;
 }
 export class DalesFlags {
+  private readonly signs;
+  private readonly asphalt;
   private readonly root = new Group();
   private readonly texture = rose();
   private readonly material = new MeshBasicMaterial({ map: this.texture, side: DoubleSide });
   private readonly flags;
   constructor(course: Course, scene: Scene) {
+    this.signs = dalesPaint(course, scene);
+    this.asphalt = dalesRoad(course, scene);
     const stations = [
       38, 91, 137, 199, 8730, 8795, 8860, 8904, 8948, 8997, 9033, 9072, 9111, 9135, 9154, 9176,
       9198, 9223, 9250, 9286, 9327, 9370, 13175, 22856, 22927,
@@ -109,6 +115,8 @@ export class DalesFlags {
     }
   }
   dispose() {
+    this.asphalt.dispose();
+    this.signs.dispose();
     this.root.removeFromParent();
     for (const f of this.flags) f.mesh.geometry.dispose();
     this.material.dispose();
