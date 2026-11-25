@@ -64,6 +64,17 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async hooverDetail(
+    part: 'visitorMetres' | 'heatPhase' | 'archX' | 'intakeX',
+  ): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async maleconDetail(
     part: 'breaker' | 'taxiMetres' | 'hotelX' | 'morroX',
   ): Promise<number | null> {

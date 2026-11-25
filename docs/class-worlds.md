@@ -80,6 +80,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Han River Parks, Seoul (`hanriver`) | 20 Minute High Intensity Workout (GCN, 20:40) | 8.708 km | 12 m | `public/courses/hanriver.glb` ([ride views](screenshots/han-river-parks/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Hardknott Pass (`hardknott`) | 25 Minute Hill Training (GCN, 25:00) | 10.300 km | 387 m | `public/courses/hardknott.glb` ([ride views](screenshots/hardknott-pass/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Havana Malecón (`havana`) | 30 Sec On, 2 Min Off (GCN Training, 20:00) | 8.950 km | 8 m | `public/courses/havana.glb` ([ride views](screenshots/havana-malecon/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Hoover Dam (`hoover`) | 30 Minutes of Threshold Power (GCN Training, 30:00) | 13.175 km | 65 m | `public/courses/hoover.glb` ([ride views](screenshots/hoover-dam/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

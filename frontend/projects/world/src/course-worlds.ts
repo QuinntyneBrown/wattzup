@@ -80,6 +80,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   docklands: 'courses/docklands',
   dolomites: 'courses/dolomites',
   granite: 'courses/granite',
+  hoover: 'courses/hoover',
   // Vice City, a map with no world of its own on `main`, is drawn under South Beach's id (map-world.ts).
   southbeach: 'courses/vicecity',
   sellaronda: 'courses/sellaronda',

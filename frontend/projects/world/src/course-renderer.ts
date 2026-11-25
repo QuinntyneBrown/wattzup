@@ -174,6 +174,7 @@ import type { haleakalaSummit } from './haleakala-summit';
 import type { hanRiver } from './han-river';
 import type { hardknottFells } from './hardknott-fells';
 import type { malecon } from './malecon';
+import type { blackCanyon } from './black-canyon';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -216,6 +217,10 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   WallSpray: 420,
   SaltPuddles: 160,
   MaleconStone: 950,
+  BlackCanyon: 2200,
+  CanyonCrags: 750,
+  MeadWater: 2700,
+  RoadShimmer: 235,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -354,6 +359,7 @@ export class CourseRenderer implements WorldRenderer {
   private river: ReturnType<typeof hanRiver> | null = null;
   private fells: ReturnType<typeof hardknottFells> | null = null;
   private malecon: ReturnType<typeof malecon> | null = null;
+  private dam: ReturnType<typeof blackCanyon> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -988,6 +994,14 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.updateProjectionMatrix();
         this.malecon = malecon(this.course);
         this.disposables.push(this.malecon);
+      }
+      if (this.course.file.id === 'hoover') {
+        const { blackCanyon } = await import('./black-canyon');
+        if (this.disposed) return false;
+        this.camera.clearViewOffset();
+        this.camera.updateProjectionMatrix();
+        this.dam = blackCanyon(this.course);
+        this.disposables.push(this.dam);
       }
       this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material, gizaMaterials);
       if (this.course.file.id === 'aguascalientes') {
@@ -1763,6 +1777,7 @@ export class CourseRenderer implements WorldRenderer {
     this.river?.update(frame.reducedMotion ? 0 : frame.time, this.camera);
     this.fells?.update(frame.reducedMotion ? 0 : frame.time);
     this.malecon?.update(frame.reducedMotion ? 0 : frame.time, this.camera, metres);
+    this.dam?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -1927,7 +1942,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
     const clearValley = this.course!.file.id === 'engadin';
-    const fogRange = this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : clearValley ? ([750, 5000] as const) : FOG;
+    const fogRange = this.dam ? ([450, 4200] as const) : this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : clearValley ? ([750, 5000] as const) : FOG;
     this.scene.fog = new Fog(look.haze, fogRange[0], fogRange[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -2105,6 +2120,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.river) Object.assign(materials, this.river.materials);
     if (this.fells) Object.assign(materials, this.fells.materials);
     if (this.malecon) Object.assign(materials, this.malecon.materials);
+    if (this.dam) Object.assign(materials, this.dam.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     Object.assign(materials, localMaterials);
     if (this.championship) {
@@ -2120,6 +2136,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.dam?.landmark(group, mesh);
       this.malecon?.landmark(group, mesh);
       this.fells?.landmark(group, mesh);
       this.river?.landmark(group, mesh);
@@ -2268,6 +2285,7 @@ export class CourseRenderer implements WorldRenderer {
     this.river?.install(map, this.scene);
     this.fells?.install(map, this.scene);
     this.malecon?.install(map, this.scene);
+    this.dam?.install(map);
     // The map is some hundreds of chunks, and a frame draws a few dozen of them. A chunk that is only hidden is
     // still walked twice by every frame (to place it and to ask whether it is in view), so the chunks are taken out
     // of the map and only those near the camera are in the scene (`choose`). Each keeps its place in the world as
@@ -2296,7 +2314,7 @@ export class CourseRenderer implements WorldRenderer {
       this.scene.add(carried);
     } else if (!this.fen) {
       const dome = new SphereGeometry(9000, 24, 12);
-      const sky = skyMaterial(
+      const sky = this.dam?.sky ?? skyMaterial(
         look,
         this.course!.file.sun,
         detail,
@@ -2454,8 +2472,8 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : this.lakes ? 4.65 : this.etna ? 4.55 : this.fen ? 4.4 : this.escarpment ? 4.45 : this.subaru ? 4.45 : this.furka ? 4.45 : this.galibier ? 4.45 : this.gardena ? 4.45 : this.arena ? 3.8 : this.malecon ? 5.5 : CAMERA_BACK;
-    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : this.lakes ? 2.65 : this.etna ? 2.42 : this.fen ? 2.1 : this.escarpment ? 2.2 : this.subaru ? 2.2 : this.furka ? 2.2 : this.galibier ? 2.2 : this.gardena ? 2.2 : this.arena ? 2.15 : this.malecon ? 2.1 : CAMERA_UP;
+    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : this.lakes ? 4.65 : this.etna ? 4.55 : this.fen ? 4.4 : this.escarpment ? 4.45 : this.subaru ? 4.45 : this.furka ? 4.45 : this.galibier ? 4.45 : this.gardena ? 4.45 : this.arena ? 3.8 : this.malecon ? 5.5 : this.dam ? 4.5 : CAMERA_BACK;
+    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : this.lakes ? 2.65 : this.etna ? 2.42 : this.fen ? 2.1 : this.escarpment ? 2.2 : this.subaru ? 2.2 : this.furka ? 2.2 : this.galibier ? 2.2 : this.gardena ? 2.2 : this.arena ? 2.15 : this.malecon ? 2.1 : this.dam ? 2.0 : CAMERA_UP;
     const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : this.commuters ? 4.1 : distance + (CLOSE_BACK - distance) * close;
     const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : this.commuters ? 2.0 : eye + (CLOSE_UP - eye) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
@@ -2480,7 +2498,9 @@ export class CourseRenderer implements WorldRenderer {
     const skyline = this.railway ? Math.max(0, 1 - Math.abs(lap - 670) / 105) : 0;
     const train = this.railway ? Math.max(0, 1 - Math.abs(lap - 220) / 74) : 0;
     const view = this.basin?.sightline(metres) ?? this.plaza?.sightline(metres);
-    const ahead = this.malecon
+    const ahead = this.dam
+      ? course.place(metres + 22, this.dam.lookAcross(metres), this.there)
+      : this.malecon
       ? course.place(metres + 24, this.malecon.lookAcross(metres), this.there)
       : course.place(metres + (calobra ? 24 : this.arena ? 7.5 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0) + shoulder, this.there);
     this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : this.arena ? 2.45 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train - Math.abs(shoulder) * 0.12, ahead.z);
@@ -2982,6 +3002,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.river) Object.assign(drawn, this.river.report(this.camera));
     if (this.fells) Object.assign(drawn, this.fells.report(this.camera));
     if (this.malecon) Object.assign(drawn, this.malecon.report(this.camera));
+    if (this.dam) Object.assign(drawn, this.dam.report(this.camera));
     hook['course'] = drawn;
   }
 

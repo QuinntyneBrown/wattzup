@@ -1535,3 +1535,6 @@ import havana
 
 THEMES['havana'] = havana.THEME
 SCENERY['havana'] = havana.scenery
+import hoover as _hoover
+THEMES['hoover'] = _hoover.THEME
+SCENERY['hoover'] = _hoover.scenery
