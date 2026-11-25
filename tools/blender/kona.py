@@ -1,4 +1,5 @@
 """Queen Kaʻahumanu Highway, its coastal lava bench and the Aliʻi Drive finish."""
+import bisect
 import math
 import sys
 from worldkit import Painted, lin, smooth
@@ -47,11 +48,11 @@ def surface(road, stages, length, col, theme):
 
 
 def coast_distance(d):
-    return 190 - 170 * smooth(5600, 7090, d)
+    return 190 - 156 * smooth(5600, 7090, d)
 
 
 def land(road, col, theme, bc):
-    mesh = bc.Builder('Coastal lava bench','terrain')
+    mesh = bc.Builder('KonaLava','terrain')
     mesh.colours = []
     sea_level = min(p['z'] for p in road.s) - 5
     def height(d, off, base):
@@ -60,8 +61,13 @@ def land(road, col, theme, bc):
         coast = coast_distance(d)
         shore = smooth(coast * .57, coast, off)
         return (base - .26 + shoulder*folds) * (1-shore) + (sea_level-1.2)*shore
+    centres = [p['x'] for p in road.s]
     def height_at(x,y):
-        i = road.index(x - road.s[0]['x'] + road.s[0]['d'])
+        i = min(len(centres)-1, bisect.bisect_left(centres,x))
+        for _ in range(2):
+            p=road.s[i]
+            along=(x-p['x'])*math.cos(p['h'])+(y-p['y'])*math.sin(p['h'])
+            i=road.index(p['d']+along)
         p = road.s[i]
         offset = (y-p['y'])*math.cos(p['h']) - (x-p['x'])*math.sin(p['h'])
         return height(p['d'],offset,p['z'])
@@ -95,7 +101,7 @@ def roadside(k, art):
         side = k.rng.choice((-1,1))
         off = side*k.rng.uniform(7.2,18)
         x,y,z = k.road.pos(d,off)
-        z -= .26
+        z = k.height_at(x,y)-.06
         r = k.rng.uniform(.35,1.7)
         crown = (x+.2*r,y,z+(r*.72 if basalt else .17))
         tone = rust if basalt and k.rng.random()<.32 else dark
@@ -127,10 +133,24 @@ def roadside(k, art):
                 for col,bit in enumerate(bits):
                     if bit=='1':
                         p=k.road.pos(start+j*2.8+col*.53,-7.2-row*.56)
-                        art.tube((p[0],p[1],p[2]-.18),.26,.18,.29,coral,coral,6,coral)
-    for station in (4880,4930,4990):
+                        z=k.height_at(p[0],p[1])
+                        radius=k.rng.uniform(.20,.28)
+                        art.tube((p[0],p[1],z-.12),radius,radius*.65,.22,lin(0xACA58C),coral,5,coral)
+    from iten_landmarks import pictured, picture
+    crowd = pictured(k,'KonaFans')
+    def person(station,off,variant,volunteer):
+        yaw=bearing(station)+(.44 if off>0 else -.44)
+        x,y,z=k.road.pos(station,off)
+        size=k.rng.uniform(1.67,1.89)
+        dx,dy=-math.sin(yaw)*size*.50,math.cos(yaw)*size*.50
+        base=k.height_at(x,y)-.08
+        corners=[(x-dx,y-dy,base),(x+dx,y+dy,base),(x+dx,y+dy,base+size),(x-dx,y-dy,base+size)]
+        u=variant*.25
+        v=.5 if volunteer else 0
+        picture(crowd,corners,[(u,v),(u+.25,v),(u+.25,v+.5),(u,v+.5)])
+    for station in range(4868,5025,8):
         p=k.road.pos(station,6.4)
-        k.person(p,bearing(station)-math.pi/2,('whitewash','crowd-3','crowd-5'))
+        person(station,6.6,k.rng.randrange(4),True)
         for off in (4.85,5.5):
             p=k.road.pos(station,off)
             art.tube(p,.17,.035,.52,lin(0xD9532B),lin(0xF78245),8)
@@ -149,7 +169,8 @@ def roadside(k, art):
         for side in (-1,1):
             off = side*k.rng.uniform(6.8,10.2)
             p=k.road.pos(d,off)
-            k.person(p,bearing(d)-side*math.pi/2,('whitewash','crowd-1','crowd-3','crowd-2'))
+            person(d,off,k.rng.randrange(4),False)
+            if k.rng.random()<.7:person(d+1.4,off+side*1.1,k.rng.randrange(4),False)
 
 
 def scenery(k):
@@ -157,6 +178,15 @@ def scenery(k):
     peaks=Painted(k,'peaks')
     sea_level=min(p['z'] for p in k.road.s)-5
     # The water extends to the horizon. Its surf line follows the same lava bench as the terrain.
+    ocean=Painted(k,'sea')
+    # Smooth tumbling breakers wash the dark rocks below the highway.
+    for d in range(6980,9920,9):
+        off=coast_distance(d)+k.rng.uniform(-3,6)
+        x,y,_=k.road.pos(d,off)
+        width=k.rng.uniform(2,6)
+        ocean.face(((x-width,y,sea_level+.10),(x,y-1.6,sea_level+.55),
+                    (x+width,y+.3,sea_level+.14),(x,y+.7,sea_level+.18)),
+                   (lin(0x74C1C1),lin(0xE3EEE4),lin(0x8BCACB),lin(0xCADFD9)))
     last=None
     for d in range(-100,int(k.length)+220,28):
         coast=coast_distance(d)
@@ -167,13 +197,13 @@ def scenery(k):
             row.append(((x,y,sea_level),lin(tone)))
         if last:
             for a,b,c,e in zip(last,last[1:],row[1:],row):
-                art.face((a[0],e[0],c[0],b[0]),(a[1],e[1],c[1],b[1]))
+                ocean.face((a[0],e[0],c[0],b[0]),(a[1],e[1],c[1],b[1]))
         last=row
     # Two independent profiles stay anchored to the island as riders travel the coast.
     for cx,cy,rx,ry,h,tone in ((9200,-2900,4400,2450,840,0x76797C),
                                 (13500,-4200,6100,2900,1540,0x898693)):
         previous=None
-        for scale,up in ((1,0),(.75,.2),(.48,.49),(.23,.78),(.07,.96),(0,1)):
+        for scale,up in ((1.18,-.75),(1,0),(.75,.2),(.48,.49),(.23,.78),(.07,.96),(0,1)):
             ring=[]
             for j in range(40):
                 angle=j*math.tau/40
@@ -188,7 +218,7 @@ def scenery(k):
     for d in range(9200, int(k.length), 29):
         for side in (-1,1):
             x,y,z=k.road.pos(d,side*k.rng.uniform(7.5,12))
-            k.palm(x,y,z-.35)
+            k.palm(x,y,k.height_at(x,y)-.42)
     for d in range(4860,5030,20):
         for off in (7.8,11.3):
             for shift in (0,4.4):
