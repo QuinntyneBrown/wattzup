@@ -149,3 +149,39 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const chicagoCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'chicago-loop-crit',
+  name: 'Chicago Loop Crit',
+  routeName: 'Wabash Avenue',
+  place: 'Chicago, Illinois',
+  world: 'chicago',
+  distanceKm: 8.75,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/chicago-loop-crit.jpg',
+  photoUrl: 'maps/chicago-loop-crit-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 120, 16, 85),
+      seg('work', 60, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 13, 80),
+      seg('work', 180, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 21, 90),
+      seg('work', 60, 24, 100),
+      seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
