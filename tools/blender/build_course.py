@@ -904,7 +904,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     # Chevrons up every effort: the road itself says "push".
     for stage in st:
-        if stage["kind"] != "work":
+        if edge == "angliru" or stage["kind"] != "work":
             continue
         d = stage["from"] + 12
         while d < stage["to"] - 6:

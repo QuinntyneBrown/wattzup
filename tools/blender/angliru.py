@@ -108,13 +108,25 @@ def fan(k,b,x,y,z,yaw,orange):
     tall=rng.uniform(.9,1.12)
     skin=lin(rng.choice((0xB78264,0xE4B696,0x936B55)))
     shirt=lin(rng.choice((0xED6B22,0xF68423,0xCF521F) if orange else (0x446C91,0xF0D768,0xBA5648,0xDDDCCF)))
-    b.box((x,y,z),(.34,.34,.81*tall),yaw,lin(0x485260))
-    b.tube((x,y,z+.78*tall),.18,.24,.6*tall,shirt,shirt,7)
-    b.tube((x,y,z+1.37*tall),.13,.115,.24*tall,skin,skin,7,skin)
+    # Face the passing riders. Separate shoes, knees, sleeves and raised hands
+    # keep the two lines of fans readable in silhouette against the ridge.
+    def point(u,v,h):
+        return (x+u*math.cos(yaw)-v*math.sin(yaw),
+                y+u*math.sin(yaw)+v*math.cos(yaw),z+h*tall)
+    shorts=lin(rng.choice((0x454B55,0x546378,0x62605C)))
     for side in (-1,1):
-        lift=rng.uniform(.22,.58)
-        b.box((x-math.sin(yaw)*side*.24,y+math.cos(yaw)*side*.24,z+1.03*tall),
-              (.13,.12,lift),yaw,skin)
+        u=side*.102
+        foot=rng.uniform(-.11,.09)
+        b.box(point(u,foot,0),(.137,.264,.088),yaw,lin(0x514F4B))
+        b.tube(point(u,foot,.08),.061,.081,.39*tall,skin,skin,7)
+        b.tube(point(u,0,.45),.083,.102,.35*tall,shorts,shorts,7)
+    b.tube(point(0,0,.77),.18,.224,.54*tall,shirt,shirt,8)
+    b.tube(point(0,0,1.30),.084,.081,.10*tall,skin,skin,7)
+    b.tube(point(0,0,1.39),.12,.105,.20*tall,skin,skin,8,skin)
+    for side in (-1,1):
+        lift=rng.uniform(.18,.55)
+        b.box(point(side*.221,0,1.12),(.132,.16,.18),yaw,shirt)
+        b.tube(point(side*.253,0,1.15),.059,.05,lift*tall,skin,skin,7,skin)
     if rng.random()<.38:
         b.tube((x,y,z+1.58*tall),.16,.13,.08,shirt,shirt,8,shirt)
 
@@ -125,6 +137,7 @@ def scenery(k):
     def site(d,side):
         i=k.road.index(d)
         return k.road.at(i,side,slope(d,side)),k.s[i]["h"]
+    ridge(k)
     cream,stone,slate=map(lin,(0xE1DBC7,0xA19D8A,0x635F54))
     for d in range(-40,8400,13):
         for side in (-1,1):
@@ -143,11 +156,11 @@ def scenery(k):
         if d%470<170:
             (x,y,z),yaw=site(d,6)
             art.box((x,y,z),(6.1,.77,.87),yaw,stone)
-    for d in range(90,13200,390):
-        (x,y,z),yaw=site(d,14)
+    for d in [57,98,246,*range(480,13200,390)]:
+        (x,y,z),yaw=site(d,7.5 if d<300 else 14)
         animal(art,x,y,z,yaw,k.rng,d%7<2)
     for d in (300,3610,6870):
-        (x,y,z),yaw=site(d,-13)
+        (x,y,z),yaw=site(d,-8.5)
         for u,v in ((-2,-2),(-2,2),(2,-2),(2,2)):
             art.tube((x+u,y+v,z),.4,.25,1.2,stone,stone,7,stone)
         art.box((x,y,z+1.2),(5.8,5.8,2.5),0,lin(0x715743))
@@ -158,7 +171,7 @@ def scenery(k):
             (x,y,z),yaw=site(d,off)
             fan(k,art,x,y,z,yaw,False)
             if d%60==0:asturias(art,x,y,z,yaw)
-        if d%112==0:
+        if (d-13900)%112==0:
             (x,y,z),yaw=site(d,-8.2)
             camper(art,x,y,z,yaw)
     for d in range(1000,int(k.length),1000):
@@ -166,7 +179,7 @@ def scenery(k):
         art.box((x,y,z),(.23,1.26,1.15),yaw,cream)
         words(art,str(d//1000)+" km",(x-.14*math.cos(yaw),y-.14*math.sin(yaw),z+.50),
               (math.sin(yaw),-math.cos(yaw),0),(0,0,1),.31,1.12,0x3B443C)
-    for d,text in ((520,"RIOSA"),(14240,"VAMOS"),(14825,"CUEÑA"),(14952,"23.5%"),(15070,"ANGLIRU"),(17420,"META")):
+    for d,text in ((520,"RIOSA"),(14185,"CONTADOR"),(14335,"ROGLIČ"),(14864,"VUELTA"),(14240,"VAMOS"),(14825,"CUEÑA"),(14952,"23.5%"),(15070,"ANGLIRU"),(17420,"META")):
         i=k.road.index(d)
         h=k.s[i]["h"]
         words(art,text,k.road.at(i,-.6,.045),(math.sin(h),-math.cos(h),0),
@@ -182,6 +195,28 @@ def scenery(k):
         words(art,"23.5%" if d<k.length-10 else "1,570 m",(*front,z+1.65),right,(0,0,1),.48,2.6,0x454E45)
     return {"efforts":0}
 
+
+def ridge(k):
+    """Fixed overlapping Aramo ridgelines. Exposed pale limestone breaks through the turf."""
+    art=Painted(k,"peaks")
+    for side,offset in ((-1,340),(1,610)):
+        previous=None
+        for d in range(-250,20501,52):
+            i=k.road.index(d)
+            sample=k.s[i]
+            # Use a world-aligned ridge, so it never follows the local direction of a bend.
+            x=sample["x"]+max(0,d-k.length)
+            y=side*(offset+76*math.sin(d/525))
+            base=sample["z"]-105
+            high=base+210+78*math.sin(d/354)+38*math.sin(d/107)+16*math.sin(d/34)
+            rows=[(x,y-side*110,base),(x,y-side*58,high-56),(x,y-side*18,high-21),(x,y,high)]
+            if previous:
+                for j in range(3):
+                    c=lin((0x808E78,0x9C9F92,0xB2B3A6)[j])
+                    shade=tuple(q*(.91+.065*math.sin(d/84)) for q in c[:3])+(1,)
+                    quad=(previous[j],rows[j],rows[j+1],previous[j+1])
+                    art.face(quad if side>0 else quad[::-1],(shade,c,c,shade))
+            previous=rows
 
 def animal(art,x,y,z,yaw,rng,horse):
     scale=rng.uniform(.88,1.14)
