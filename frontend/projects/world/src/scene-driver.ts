@@ -3,6 +3,8 @@ import type { SceneRider, TimedSegment as Segment, WorldRenderer } from '@telo/a
 
 export interface SceneInput {
   readonly segments: readonly Segment[];
+  /** Race distance at the last telemetry tick, including time spent off screen. */
+  readonly raceMetres?: number | undefined;
   readonly elapsed: number;
   readonly speedKmh: number | null;
   readonly running: boolean;
@@ -19,6 +21,8 @@ const METRES_PER_TURN = 5;
 export class SceneDriver {
   private s = 0;
   private crank = 0;
+  private lastRaceMetres: number | undefined;
+  private interpolatedSeconds = 0;
   private last: number | null = null;
   private time: number | null = null;
 
@@ -31,8 +35,25 @@ export class SceneDriver {
     const speedKmh = input.speedKmh ?? 0;
     if (input.running) {
       const metres = (speedKmh / 3.6) * dt;
-      this.s += metres;
+      if (input.raceMetres === undefined) {
+        this.s += metres;
+      } else if (input.raceMetres !== this.lastRaceMetres) {
+        this.s = input.raceMetres;
+        this.interpolatedSeconds = 0;
+        this.lastRaceMetres = input.raceMetres;
+      } else {
+        // Animate between whole-second race updates. A long frame cannot leave the
+        // camera behind the standings or send it ahead of the next telemetry tick.
+        const step = Math.min(dt, 1 - this.interpolatedSeconds);
+        this.s += (speedKmh / 3.6) * step;
+        this.interpolatedSeconds += step;
+      }
       this.crank = (this.crank + (metres / METRES_PER_TURN) * 2 * Math.PI) % (2 * Math.PI);
+    }
+    if (!input.running && input.raceMetres !== undefined) {
+      this.s = input.raceMetres;
+      this.lastRaceMetres = input.raceMetres;
+      this.interpolatedSeconds = 0;
     }
     // The engine counts whole seconds; the scene's clock runs on between them, never more than a
     // second ahead of the engine and never behind it (#897).
