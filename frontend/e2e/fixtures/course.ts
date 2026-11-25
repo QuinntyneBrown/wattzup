@@ -1,3 +1,4 @@
+import brightonElevation from './brighton-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -158,11 +159,12 @@ export const brightonCourseMap = {
   place: 'Brighton, England',
   world: 'brighton',
   distanceKm: 13.075,
-  climbingM: 0,
+  climbingM: 37,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: brightonElevation,
   },
   thumbnailUrl: 'maps/brighton-pride.jpg',
   photoUrl: 'maps/brighton-pride-photo.jpg',
