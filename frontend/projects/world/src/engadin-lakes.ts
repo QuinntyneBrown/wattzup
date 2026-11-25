@@ -69,21 +69,34 @@ export async function engadinLakes(course: Course) {
   const rigging = new MeshBasicMaterial({ color: 0x4d5054 });
   const group = new Group(),
     geometries: BufferGeometry[] = [];
-  const range = new PlaneGeometry(8200, 2560);
+  const origin = course.place(0),
+    destination = course.place(course.length);
+  const valleyLength = Math.hypot(destination.x - origin.x, destination.z - origin.z);
+  const dx = (destination.x - origin.x) / valleyLength,
+    dz = (destination.z - origin.z) / valleyLength;
+  const range = new PlaneGeometry(1, 1);
   geometries.push(range);
-  // Fixed summits and far-bank forest stand behind each part of the valley.
-  for (const [d, l, a, w] of [
-    [3200, -2600, 1.04, 1],
-    [10500, -2700, 1.11, 1.15],
-    [18200, -2550, 1.08, 1.0],
-    [24600, -1600, 0.23, 0.91],
-  ] as const) {
-    const at = course.place(d, l),
-      m = new Mesh(range, ridge);
-    m.rotation.y = at.heading + a;
-    m.scale.x = w;
-    m.position.set(at.x, at.y + 1135, at.z);
+  // Continuous, fixed mountain faces beyond both shores, joined edge to edge at matching heights.
+  function ridgeFace(along: number, lane: number, width: number, side: boolean, mirror: boolean) {
+    const m = new Mesh(range, ridge);
+    m.rotation.y = side ? Math.atan2(-dz, dx) : Math.atan2(-dx, -dz);
+    m.scale.set(width * (mirror ? -1 : 1), 1960, 1);
+    m.position.set(origin.x + dx * along - dz * lane, 2610, origin.z + dz * along + dx * lane);
     group.add(m);
+  }
+  const margin = 4200,
+    length = valleyLength + 2 * margin,
+    halfWidth = 3600;
+  for (const side of [-1, 1]) {
+    for (let i = 0; i < 5; i++)
+      ridgeFace(
+        -margin + (length * (i + 0.5)) / 5,
+        side * halfWidth,
+        length / 5 + 0.5,
+        true,
+        Boolean(i % 2),
+      );
+    ridgeFace(side < 0 ? -margin : valleyLength + margin, 0, 2 * halfWidth + 0.5, false, false);
   }
   const coach = carriage(false),
     cab = carriage(true);
@@ -92,8 +105,8 @@ export async function engadinLakes(course: Course) {
   group.add(...train);
   const kites: Group[] = [];
   for (const [i, tone] of [0xe64f3d, 0x28a999, 0xf2bb34, 0x4356bc, 0xe85c86].entries()) {
-    const d = 12862 + i * 23,
-      p = course.place(d, -125 - (i % 3) * 11);
+    const d = 13010 + i * 29,
+      p = course.place(d, -58 - (i % 3) * 12);
     const base = new Group();
     base.position.set(p.x, 1790.11, p.z);
     base.rotation.y = p.heading;
@@ -151,7 +164,7 @@ export async function engadinLakes(course: Course) {
     at(time: number, metres: number) {
       for (const [i, car] of train.entries()) {
         car.visible = Math.abs(metres - 19450) < 840;
-        const p = course.place(19448 + 92 * Math.sin(time * 0.079) - i * 14.8, 16.4, at);
+        const p = course.place(19492 + 71 * Math.sin(time * 0.079) - i * 14.8, 16.4, at);
         car.position.set(p.x, p.y + 0.65, p.z);
         car.rotation.y = p.heading;
       }

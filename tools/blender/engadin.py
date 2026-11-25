@@ -30,7 +30,7 @@ def banks(d):
     for a,b,z in LAKES:
         if a<=d<=b:
             t=(d-a)/(b-a);w=math.sin(math.pi*t)**.65
-            return 30+34*(.5+.5*math.sin(d/237))+27*(.5+.5*math.cos(d/465)),28+630*w,z
+            return 14+10*(.5+.5*math.sin(d/237))+8*(.5+.5*math.cos(d/465)),28+630*w,z
     return 60,4,level(d)-2
 
 
@@ -47,7 +47,7 @@ def land(r,col,theme,bc):
     b=bc.Builder('Lake shores, pastures and high valley shoulders','terrain');b.colours=[]
     def row(i):
         d=r.s[i]['d'];base=r.s[i]['z'];edge,width,water=banks(d)
-        pts=[(-800,base+205),(-330,base+78),(-110,base+27),(-46,base+6),(-19,base+.8),(-7.25,base-.02),(7.25,base-.02),(edge,water+.34),(edge+2,water),(edge+min(9,width*.2),water),(edge+width,water),(edge+width+5,water+.43),(edge+width+65,water+18),(edge+width+280,water+156)]
+        pts=[(-800,base+205),(-330,base+78),(-110,base+27),(-46,base+6),(-19,base+(.19 if 17700<d<21110 else .8)),(-7.25,base-.02),(7.25,base-.02),(edge,water+.34),(edge+2,water),(edge+min(9,width*.2),water),(edge+width,water),(edge+width+5,water+.43),(edge+width+65,water+18),(edge+width+280,water+156)]
         return [(*r.at(i,x)[:2],z) for x,z in pts]
     colours=(0x697e55,0x526b46,0x71845a,0x84945c,0x94a561,0x738448,0x8b9b61,0xaba78d,0x629896,0x286b80,0x9a9980,0x697e4d,0x5a704c)
     a=row(0)
@@ -86,6 +86,7 @@ def scenery(k):
             if 7620<d<8020 or 22330<d:continue
             for n in range(2):
                 off=side*rng.uniform(14,31);at=d+rng.uniform(-28,28);z=.42 if side>0 else max(.65,(abs(off)-14)*.13)
+                if side>0 and abs(off)>banks(at)[0]-2:continue
                 if side>0:z=-(abs(off)-7)/max(1,banks(at)[0]-7)*(level(at)-banks(at)[2])
                 h=rng.uniform(7.0,13.0);gold=(d+n*65)%470<245
                 tube(at,off,z,.24,.12,h*.78,0x685540)

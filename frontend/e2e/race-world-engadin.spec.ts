@@ -54,3 +54,30 @@ for (const [actor, metres, part] of [
     await expect.poll(() => worldRide.engadinMotion(part)).not.toBe(held);
   });
 }
+
+test('Sils shows the decorated village facades beside the rider', async ({
+  api,
+  bluetooth,
+  page,
+  worldRide,
+}) => {
+  api.answer('GET', '/api/maps', [engadinCourseMap]);
+  api.answer('GET', '/api/progress', {
+    ...newRiderProgress,
+    openMapIds: [engadinCourseMap.id],
+  });
+  await worldRide.pin('low', 'webgl2');
+  await bluetooth.remember(echelonBike);
+  const race = new RacePage(page);
+  const maps = new MapSelectPage(page);
+  await maps.open();
+  await worldRide.startAt(7440);
+  const row = maps.row(engadinCourseMap.name);
+  await row.root.click();
+  const setup = new RaceSetupPage(page);
+  await setup.mode('Your best time').click();
+  await setup.start.click();
+  await expect(race.backend).toBeVisible();
+
+  await expect.poll(() => worldRide.engadinMotion('villageFronts')).toBeGreaterThan(0);
+});

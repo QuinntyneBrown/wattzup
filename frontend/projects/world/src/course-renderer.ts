@@ -1,3 +1,4 @@
+import type { engadinShore } from './engadin-shore';
 import type { engadinLakes } from './engadin-lakes';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
@@ -202,6 +203,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private shore: Awaited<ReturnType<typeof engadinShore>> | null = null;
   private lakes: Awaited<ReturnType<typeof engadinLakes>> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
@@ -239,6 +241,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    villageFronts: 0,
     trainPosition: null as number | null,
     kiteHeight: null as number | null,
     drawCalls: 0,
@@ -374,6 +377,17 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(lakes.group);
         this.camera.setViewOffset(1, 1, 0, 0.055, 1, 1);
         lakes.at(0, 0);
+        const { engadinShore } = await import('./engadin-shore');
+        if (this.disposed) return false;
+        const shore = await engadinShore(this.course);
+        if (this.disposed) {
+          shore.dispose();
+          return false;
+        }
+        this.shore = shore;
+        this.scene.add(shore.group);
+        this.disposables.push(shore);
+        shore.at(0);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -433,6 +447,7 @@ export class CourseRenderer implements WorldRenderer {
       if (typeof from === 'number') this.benchFrom = from;
     }
     const metres = Math.min(ridden + this.benchFrom, course.end);
+    this.shore?.at(metres);
     this.lakes?.at(frame.reducedMotion ? 0 : frame.time, metres);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
@@ -500,6 +515,7 @@ export class CourseRenderer implements WorldRenderer {
     this.riderBatch = null;
     this.rain = null;
     this.lakes = null;
+    this.shore = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -907,8 +923,10 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const distance = this.lakes ? 4.65 : CAMERA_BACK;
+    const behind = distance + (CLOSE_BACK - distance) * close;
+    const eye = this.lakes ? 2.65 : CAMERA_UP;
+    const up = eye + (CLOSE_UP - eye) * close;
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
@@ -1125,6 +1143,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.villageFronts = this.shore?.villageFronts ?? 0;
     drawn.trainPosition = this.lakes?.trainPosition ?? null;
     drawn.kiteHeight = this.lakes?.kiteHeight ?? null;
     drawn.tier = this.tier;

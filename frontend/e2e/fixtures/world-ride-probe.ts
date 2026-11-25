@@ -103,7 +103,9 @@ export class WorldRideProbe {
     }, metres);
   }
 
-  async engadinMotion(part: 'kiteHeight' | 'trainPosition'): Promise<number | null> {
+  async engadinMotion(
+    part: 'kiteHeight' | 'trainPosition' | 'villageFronts',
+  ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
