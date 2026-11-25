@@ -157,7 +157,7 @@ def dress_arena(k, b):
     b.tube((x+0.77, y, 1.84), 0.075, 0.06, 0.15, charcoal, brass, 8, brass)
     # Hangers and backing frames for the active timing faces, mirrored at both ends.
     for side in (-1, 1):
-        x, y = side * 47, -side * 9
+        x, y = side * 39, -side * 18
         b.box((x+side*0.18, y, 5.0), (0.30, 13.40, 4.82), 0, charcoal)
         for delta in (-5.2, 5.2):
             b.box((x, y+delta, 9.72), (0.13, 0.13, 6.28), 0, steel)

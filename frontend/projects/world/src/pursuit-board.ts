@@ -24,7 +24,7 @@ export class PursuitBoard {
     this.texture.colorSpace = SRGBColorSpace;
     for (const side of [-1, 1]) {
       const board = new Mesh(this.geometry, this.material);
-      board.position.set(side * 47, 7.4, side * 9);
+      board.position.set(side * 39, 7.4, side * 18);
       board.rotation.y = (-side * Math.PI) / 2;
       this.group.add(board);
     }

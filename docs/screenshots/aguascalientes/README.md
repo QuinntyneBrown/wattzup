@@ -12,4 +12,4 @@ As in Caribana, changing colour in the mesh gives small repeated surfaces depth 
 
 ## Moving-frame measurement
 
-Before the live timing faces were installed, the arena sustained 120.44 render submissions/s and 120.00 display callbacks/s over 60 seconds, with a 9.70 ms p95 interval, an 18.80 ms longest interval and up to 17 draw calls. The rider advanced from 0.12 to 0.95 km, crossing both straights and bends more than three times. Headed Chromium 159.0.8154.6 ran on an Apple M5 Pro with 24 GB RAM, at DPR 1 with 4× CPU throttling and nine seconds of warm-up. The GPU ran at its normal speed.
+With the live timing faces, opposing rider, skinsuit, aero helmet and bell in view over the sample, the arena sustained 120.23 render submissions/s and 120.00 display callbacks/s over 60 seconds. The p95 interval was 9.70 ms, the longest interval was 17.40 ms and draw calls peaked at 29. The rider advanced from 0.12 to 0.95 km, crossing both straights and bends more than three times. Headed Chromium 159.0.8154.6 ran on an Apple M5 Pro with 24 GB RAM, at DPR 1 with 4× CPU throttling and nine seconds of warm-up. The GPU ran at its normal speed.
