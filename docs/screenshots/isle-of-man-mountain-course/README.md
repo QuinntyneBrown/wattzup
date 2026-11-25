@@ -19,7 +19,7 @@ Headed Chromium 159.0.8154.6 on Apple M5 Pro, 1024 × 768 at DPR 1, Low/WebGL 2,
 
 | Section | Scene offset | HUD distance | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak calls |
 | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| Lower road and hedge banks | 0 m | 0.12 km to 0.95 km | 120.43 | 120.00 | 9.8 ms | 17.1 ms | 35 |
-| Bungalow tram and the mountain footbridge | 3290 m | 0.12 km to 0.95 km | 120.93 | 120.00 | 9.7 ms | 17.3 ms | 45 |
+| Lower road and hedge banks | 0 m | 0.12 km to 0.95 km | 120.53 | 120.00 | 9.5 ms | 20.9 ms | 29 |
+| Bungalow tram and the mountain footbridge | 3290 m | 0.12 km to 0.95 km | 120.40 | 120.00 | 9.6 ms | 23.3 ms | 45 |
 
 Reproduce from the frontend workspace with `npm run perf -- isleofman-tablet --headed`.
