@@ -429,7 +429,14 @@ export class WorldRideProbe {
     );
   }
 
-  /** The renderer's latest report, or null before the scene has started. */
+  async cabinHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { cabinHeight?: number } } })
+          .__wzWorldRide?.course?.cabinHeight ?? null,
+    );
+  }
+
   async report(): Promise<WorldRideReport | null> {
     return this.page.evaluate(
       () =>

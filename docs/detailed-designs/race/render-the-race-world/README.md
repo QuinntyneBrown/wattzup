@@ -918,3 +918,18 @@ Map Select → Race Setup → Race already loads the native docklands GLB and it
 | 10.78 km | A series of lit steel arches encloses the effort deck above the black water. | Real 01–04, 10, 14–15 and games 03–05 |
 
 Adapt Caribana’s layered street and skyline by keeping existing towers fixed, placing ship and bridge silhouettes at their real course distances and adding nearby people and wet quay fittings. Share hull, porthole and promenade materials. Batch repetitive handrails, moorings and brick details by section. The ferry and walkers use the ride clock and release their geometry and textures on exit. Measure submitted frames at 60 m and 8,150 m on Low and inspect matched views. Trace to L1 Race, the ride-a-map journey, L2-064–066 and L2-159–160, the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Dolomites (#2114)
+
+Map Select loads the seeded Dolomites map after two stars on Cliffside Coast. Race Setup and Race resolve its native course JSON and GLB through the lazy world library. Preserve its physical centre line, all 17 stages, 30:00 duration and existing grade. The current generator provides a guardrail, generic mountain scenery, conifers and repeated chalets. Distinguish all three massifs, the three village centres, larch fringes and a crossing lift on this same SS242 alignment. The feedback search found the current issue as the only Dolomites-titled issue.
+
+| Rider viewpoint | Low-tier target | Sources |
+| --- | --- | --- |
+| 0.08 km | Ortisei’s onion dome rises above timber balconies and flower boxes. | Real 01 and 04, game 04 |
+| 2.10 km | Mown meadows and hay huts open a view to the pale Sassolungo wall. | Real 02, 03, 05 and 14, games 01 and 05 |
+| 8.40 km | Santa Cristina’s white church steps up the hillside above the SS242. | Real 06, 09 and 10, games 02–03 |
+| 15.10 km | A gondola crosses the valley above the spruce canopy and lime-green larch. | Real 03, 09, 10 and 14, game 02 |
+| 23.50 km | The Geisler needles rise beyond a fenced meadow and a low stone wall. | Real 08, 11, 12 and 15, games 01 and 05 |
+| 32.60 km | Behind Selva’s Tyrolean hotels, the plateau of the Sella closes the valley head. | Real 03, 07, 08 and 13, games 03–04 |
+
+Follow Caribana’s separation of foreground batches from fixed skyline geometry. Work in the course coordinate system, build the three village groups at their own chainages, and share repeating balcony, stone-wall and tree materials. Use the existing course cableway and ride clock for a moving cabin. Dispose of scene geometry and textures on leaving the race. Measure real submissions near Ortisei and Santa Cristina with the HUD visible, and compare the matched views against the existing ride. See the performance budget design and ADRs 0021, 0023, 0030, 0034 and 0035.

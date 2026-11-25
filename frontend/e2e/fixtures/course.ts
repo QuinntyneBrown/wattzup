@@ -2399,3 +2399,137 @@ export const docklandsCourseMap = {
     roll: 0.6,
   },
 };
+
+export const dolomitesCourseMap = {
+  id: 'dolomites',
+  name: 'Dolomites',
+  routeName: 'Val Gardena Valley Road',
+  place: 'An alpine valley under pale limestone peaks',
+  distanceKm: 38.5,
+  climbingM: 860,
+  rating: 'Hard',
+  world: 'dolomites',
+  thumbnailUrl: 'maps/dolomites.jpg',
+  photoUrl: 'maps/dolomites-photo.jpg',
+  unlock: {
+    kind: 'stars',
+    mapId: 'cliffside-coast',
+    stars: 2,
+  },
+  plan: {
+    segments: [
+      {
+        kind: 'warm-up',
+        duration: 300,
+        level: 8,
+        cadenceAim: 80,
+      },
+      {
+        kind: 'work',
+        duration: 30,
+        level: 24,
+        cadenceAim: 98,
+      },
+      {
+        kind: 'recover',
+        duration: 180,
+        level: 6,
+        cadenceAim: 72,
+      },
+      {
+        kind: 'work',
+        duration: 30,
+        level: 24,
+        cadenceAim: 98,
+      },
+      {
+        kind: 'recover',
+        duration: 150,
+        level: 6,
+        cadenceAim: 72,
+      },
+      {
+        kind: 'work',
+        duration: 30,
+        level: 24,
+        cadenceAim: 98,
+      },
+      {
+        kind: 'recover',
+        duration: 150,
+        level: 6,
+        cadenceAim: 72,
+      },
+      {
+        kind: 'work',
+        duration: 30,
+        level: 24,
+        cadenceAim: 98,
+      },
+      {
+        kind: 'recover',
+        duration: 120,
+        level: 6,
+        cadenceAim: 72,
+      },
+      {
+        kind: 'work',
+        duration: 30,
+        level: 24,
+        cadenceAim: 98,
+      },
+      {
+        kind: 'recover',
+        duration: 120,
+        level: 6,
+        cadenceAim: 72,
+      },
+      {
+        kind: 'work',
+        duration: 30,
+        level: 24,
+        cadenceAim: 98,
+      },
+      {
+        kind: 'recover',
+        duration: 90,
+        level: 6,
+        cadenceAim: 72,
+      },
+      {
+        kind: 'work',
+        duration: 30,
+        level: 24,
+        cadenceAim: 98,
+      },
+      {
+        kind: 'recover',
+        duration: 90,
+        level: 6,
+        cadenceAim: 72,
+      },
+      {
+        kind: 'work',
+        duration: 30,
+        level: 24,
+        cadenceAim: 98,
+      },
+      {
+        kind: 'cool-down',
+        duration: 360,
+        level: 6,
+        cadenceAim: 70,
+      },
+    ],
+  },
+  terrain: {
+    grade: {
+      'warm-up': 1,
+      work: 2,
+      recover: 0,
+      'cool-down': -1,
+      steady: 0.8,
+    },
+    roll: 2.4,
+  },
+};

@@ -1115,6 +1115,11 @@ def build_land(road: Road, col, theme: dict, cell: float = 14.0):
                 drop = smoothstep(10.0, 40.0, d) if cliff else smoothstep(13.0, 64.0, d)
                 fall = smoothstep(80.0, 240.0, d) * (1 - seaward) + drop * seaward
                 h = h * (1 - fall) + (-8.0) * fall
+            if ter.get("clear_road") and d < cell * 1.6:
+                # Even where two stretches approach on different levels, each terrain triangle
+                # meeting the SS242 must stay beneath its lowest road surface.
+                close = road.tree.find_range((x, y, 0), cell * 1.6)
+                h = min(h, min(road.s[j]["z"] for _, j, _ in close) - 1.6)
             if d < 26.0:
                 h = min(h, h_road - 1.4)
             if not sea:
@@ -2300,6 +2305,8 @@ def main(argv: list[str] | None = None) -> dict:
 
     args.out.mkdir(parents=True, exist_ok=True)
     args.blend.mkdir(parents=True, exist_ok=True)
+    if forest := facts.pop("forest", None):
+        (args.out / f"{course['id']}-trees.json").write_text(json.dumps(forest, separators=(",", ":")))
     data = write_course_json(args.out / f"{course['id']}.course.json", course, samples, st, length, mean, facts, per_level)
     # Only the map goes into the glb: the guides stay in the scene.
     bpy.data.collections["Guides"].hide_viewport = True

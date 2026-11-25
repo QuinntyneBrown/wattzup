@@ -11,6 +11,7 @@ import type { badwaterGeology } from './badwater-geology';
 import type { DeathValleyStreet } from './world-deathvalley';
 import type { diwaliPromenade } from './diwali-promenade';
 import type { DiwaliFestival } from './diwali-festival';
+import type { gardenaForest } from './gardena-forest';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -292,6 +293,7 @@ export class CourseRenderer implements WorldRenderer {
   private promenade: Awaited<ReturnType<typeof diwaliPromenade>> | null = null;
   private festival: DiwaliFestival | null = null;
   private quay: DocklandsQuay | null = null;
+  private forest: Awaited<ReturnType<typeof gardenaForest>> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -351,6 +353,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     ferryRoll: null as number | null,
     walkerZ: null as number | null,
+    cabinHeight: null as number | null,
     tier: 0 as number,
     pushCarPosition: undefined as number | undefined,
     mirageHeight: undefined as number | undefined,
@@ -1019,6 +1022,27 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.quay.group);
         this.disposables.push(this.quay);
       }
+      if (this.course.file.id === 'dolomites') {
+        const { gardenaMassifs } = await import('./gardena-massifs');
+        if (this.disposed) return false;
+        const massifs = await gardenaMassifs(this.course);
+        if (this.disposed) {
+          massifs.dispose();
+          return false;
+        }
+        this.scene.add(massifs.mesh);
+        this.disposables.push(massifs);
+        const { gardenaForest } = await import('./gardena-forest');
+        if (this.disposed) return false;
+        const forest = await gardenaForest();
+        if (this.disposed) {
+          forest.dispose();
+          return false;
+        }
+        this.forest = forest;
+        this.scene.add(forest.group);
+        this.disposables.push(forest);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1448,6 +1472,7 @@ export class CourseRenderer implements WorldRenderer {
     this.parkTraffic = null;
     this.champsParade = null;
     this.rain = null;
+    this.forest = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -1996,6 +2021,7 @@ export class CourseRenderer implements WorldRenderer {
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
+    this.forest?.follow(back.x, back.z);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
     this.sun.position.set(
@@ -2407,6 +2433,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.walkerX = this.plaza?.walkerX;
     drawn.ferryRoll = this.quay?.ferry.rotation.z ?? null;
     drawn.walkerZ = this.quay?.walkerZ ?? null;
+    drawn.cabinHeight = this.funivia?.holder.position.y ?? null;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
