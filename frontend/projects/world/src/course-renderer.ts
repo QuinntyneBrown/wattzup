@@ -1188,7 +1188,14 @@ export class CourseRenderer implements WorldRenderer {
         materials[group] = mist;
         this.disposables.push(mist);
       }
-      const useLandMaterial = group === 'Boats' || group === 'TourBoat' || group === 'Commuter' || group === 'TukTuk' || group === 'TouringBike' || group === 'Commissaire' || group === 'TeamCar';
+      const useLandMaterial =
+        group === 'Boats' ||
+        group === 'TourBoat' ||
+        group === 'Commuter' ||
+        group === 'TukTuk' ||
+        group === 'TouringBike' ||
+        group === 'Commissaire' ||
+        group === 'TeamCar';
       const material = materials[useLandMaterial ? 'Land' : group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();

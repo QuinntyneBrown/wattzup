@@ -947,9 +947,9 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     {
         var maps = await ReadMaps();
 
-        Assert.Equal(
-            [null, null, null, null, null, 10, null, null, null, null, null, null],
-            maps.Select(m => m.UnlockLevel));
+        var levelMap = Assert.Single(maps, m => m.UnlockLevel.HasValue);
+        Assert.Equal("vice-city", levelMap.Id);
+        Assert.Equal(10, levelMap.UnlockLevel);
     }
 
     [Fact]
