@@ -67,15 +67,6 @@ def land(road,col,theme,bc):
         if last:
             for q in range(len(row)-1):b.faces.append((last[q],row[q],row[q+1],last[q+1]))
         last=row
-    for layer in range(3):
-        last=None
-        for x in range(-6200,20500,95):
-            y=-1650-layer*1200
-            z=280+layer*100+95*math.sin(x/613+layer)+57*math.sin(x/180+layer*.5)
-            row=[b.v((x,y-70,z)),b.v((x,y+500,-400))]
-            b.colours.extend([lin((0x738a7b,0x899d91,0xa6b7ae)[layer])]*2)
-            if last:b.faces.append((last[0],row[0],row[1],last[1]))
-            last=row
     return b.build(col),lambda x,y:0
 
 
@@ -223,9 +214,24 @@ def scenery(k):
                          y+.28*math.sin(h)*math.cos(a*math.tau/14),
                          height(d)+up+.28*math.sin(a*math.tau/14)) for a in range(14)]
                 art.face(points,[lin(0x242c2f)]*14);art.face(points[::-1],[lin(0x242c2f)]*14)
+    # The opposite slopes and the skyline occupy the same world coordinates at every quality tier.
+    horizon = Painted(k, "peaks")
+    for layer, tint in enumerate((0x718b78, 0x879c91, 0xa6b5af)):
+        previous = None
+        for x in range(-4800, 18000, 95):
+            y = -1700 - layer * 1050 + 190 * math.sin(x / 710 + layer)
+            crest = 410 + max(0, x) * .048 + layer * 240
+            crest += 120 * math.sin(x / 670 + layer) + 55 * math.sin(x / 227 + layer)
+            row = ((x, y + 540, -320), (x, y + 260, crest * .51), (x, y, crest))
+            if previous:
+                for band in range(2):
+                    quad = (previous[band], previous[band+1], row[band+1], row[band])
+                    shade = lin(tint)
+                    horizon.face(quad, [shade] * 4)
+            previous = row
     # Downtown lies beyond the nearest roofs rather than moving with each curve.
     for i in range(390):
         x=rng.uniform(-1800,14600);y=rng.uniform(-1600,-550);z=16+max(0,x*.021)
         h=rng.uniform(13,72);w=rng.uniform(6,16)
-        art.box((x,y,z),(w,w*.8,h),.06,lin(rng.choice((0x929e9e,0xb1b1a3,0x899a9d))),.74)
+        horizon.box((x,y,z),(w,w*.8,h),.06,lin(rng.choice((0x929e9e,0xb1b1a3,0x899a9d))),.74)
     return {"efforts":k.gates("accent","accent-2",[f"crowd-{i}" for i in range(6)])}
