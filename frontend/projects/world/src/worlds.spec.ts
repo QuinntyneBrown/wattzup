@@ -10,7 +10,6 @@ describe('targetGrade (L2-101)', () => {
     ['oldtown', { 'warm-up': 0.5, work: 6, recover: -1.5, 'cool-down': 0, steady: 0 }, 6.092265],
     ['prairie', { 'warm-up': 0, work: 1.5, recover: -0.5, 'cool-down': 0, steady: 0.5 }, 1.68453],
     ['dolomites', { 'warm-up': 1, work: 2, recover: 0, 'cool-down': -1, steady: 0.8 }, 2.442871],
-    ['caribana', { 'warm-up': 0.5, work: 3, recover: -0.5, 'cool-down': 0, steady: 0.5 }, 3.073812],
     ['southbeach', { 'warm-up': 0.5, work: 4, recover: -1, 'cool-down': 0, steady: 0.5 }, 4.092265],
     [
       'westminster',
@@ -278,7 +277,7 @@ describe('heading (L2-101 AC6)', () => {
     ['prairie', 3, 500, 0.502577],
     ['dolomites', 25, 110, 22.11076],
     ['coast', 35, 90, 23.196515],
-    ['caribana', 6, 220, -1.226266],
+    ['caribana', 24, 360, 6.563633],
     ['westminster', 10, 160, -0.091843],
     ['centralpark', 18, 120, 12.712273],
     ['southbeach', 5, 250, -0.768936],
@@ -475,5 +474,28 @@ describe('heading (L2-101 AC6)', () => {
       if (turn !== 0) tightest = Math.min(tightest, 1 / Math.abs(turn));
     }
     expect(tightest).toBeGreaterThanOrEqual(25);
+  });
+});
+
+describe('Lake Shore Boulevard’s two rolling rises over each 360 m section', () => {
+  const world = worldById('caribana');
+  it.each([
+    [0, 5.77411584],
+    [90, 1.16444725],
+    [180, -2.32265367],
+    [270, -4.61590942],
+    [300, -1.56751669],
+    [360, 5.77411584],
+  ])('adds the baked grade at %i m to every stage', (metres, rise) => {
+    for (const [kind, base] of Object.entries({
+      'warm-up': 0.5,
+      work: 3,
+      recover: -0.5,
+      'cool-down': 0,
+      steady: 0,
+    })) {
+      expect(targetGrade(world, kind as SegmentKind, metres)).toBeCloseTo(base + rise, 6);
+      expect(targetGrade(world, kind as SegmentKind, metres + 360)).toBeCloseTo(base + rise, 6);
+    }
   });
 });
