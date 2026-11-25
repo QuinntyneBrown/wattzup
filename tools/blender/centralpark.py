@@ -195,7 +195,7 @@ def scenery(k):
             x,y,_=water(at,l)
             art.box((x,y,water_z+.015),(rng.uniform(1,5),rng.uniform(.3,2),.008),
                     heading(d),lin(rng.choice((0xA8B7C0,0xB8AEAE,0x98A9A5))))
-    fx,fy,_=verge(2535,37)
+    fx,fy,_=verge(2580,27)
     for j in range(19):
         ang=j*math.tau/19;r=1.4+1.3*(j%3);h=6.8-j%4
         last=(fx,fy,water_z+.2)
@@ -220,8 +220,8 @@ def scenery(k):
         box(at+2,8.1,(4,.42,.19),0xD3B79D,.87)
     # Elms branch outwards over the drive. Build different crowns as clumps with shaded undersides.
     for side in (-1,1):
-        for d in range(0,LENGTH,17):
-            l=side*rng.uniform(8.7,18)
+        for d in range(0,LENGTH,26):
+            l=side*rng.uniform(39,62)
             if side==1 and (1010<d<1190 or 1970<d<3330):
                 continue
             x,y,z=verge(d+rng.uniform(-4,4),l)
@@ -250,7 +250,7 @@ def scenery(k):
             for h in (.64,.83):
                 box(d+4,l+side*.28,(1.85,.074,.13),0x897052,h)
     # The San Remo pair share a setback base and distinct octagonal lanterns.
-    sx,sy,_=verge(3165,145)
+    sx,sy,_=verge(3165,65)
     def tower(x,y,z,w,depth,h,tint):
         skyline.box((x,y,z),(w,depth,h),0,lin(tint))
         for side in (-1,1):

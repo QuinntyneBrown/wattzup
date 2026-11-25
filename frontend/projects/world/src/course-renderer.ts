@@ -69,6 +69,7 @@ import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
+import type { ParkTraffic } from './park-traffic';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -214,6 +215,7 @@ export class CourseRenderer implements WorldRenderer {
   private waterClock: ((seconds: number) => void) | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
+  private parkTraffic: ParkTraffic | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
@@ -236,6 +238,8 @@ export class CourseRenderer implements WorldRenderer {
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
     tier: 0 as number,
+    horseStride: undefined as number | undefined,
+    clubDistance: undefined as number | undefined,
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
@@ -357,6 +361,21 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'centralpark') {
+        const { ParkTraffic } = await import('./park-traffic');
+        if (this.disposed) return false;
+        this.parkTraffic = new ParkTraffic(this.course, this.kit!, this.riderBatch!);
+        this.scene.add(this.parkTraffic.root);
+        this.disposables.push(this.parkTraffic);
+        const { parkCanopy } = await import('./park-canopy');
+        const trees = await parkCanopy(this.course);
+        if (this.disposed) {
+          trees.dispose();
+          return false;
+        }
+        this.scene.add(trees.root);
+        this.disposables.push(trees);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -423,6 +442,7 @@ export class CourseRenderer implements WorldRenderer {
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
+    this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.riderBatch?.follow();
     this.aim(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
@@ -479,6 +499,7 @@ export class CourseRenderer implements WorldRenderer {
     this.sunGlow = null;
     this.groundEye = null;
     this.riderBatch = null;
+    this.parkTraffic = null;
     this.rain = null;
     this.shadows.clear();
     this.casting.clear();
@@ -935,6 +956,7 @@ export class CourseRenderer implements WorldRenderer {
       this.ride(cyclist, metres + 6 + order, 0);
       cyclist.pose(0);
     }
+    this.parkTraffic?.update(0, metres);
     this.riderBatch?.follow();
     this.aim(metres);
     this.render();
@@ -1105,6 +1127,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.horseStride = this.parkTraffic?.horseStride;
+    drawn.clubDistance = this.parkTraffic?.clubDistance;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
