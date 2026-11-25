@@ -1254,3 +1254,9 @@ import adelaide as _adelaide
 MATERIALS.update(_adelaide.MATERIALS)
 THEMES["adelaide"] = _adelaide.THEME
 SCENERY["adelaide"] = _adelaide.scenery
+
+# A banked, indoor pursuit track.
+import aguascalientes as _aguascalientes
+
+THEMES["aguascalientes"] = _aguascalientes.THEME
+SCENERY["aguascalientes"] = _aguascalientes.scenery

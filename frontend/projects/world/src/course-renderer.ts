@@ -66,6 +66,7 @@ import { type GroundEye, groundMaterial, surfaceTexture } from './ground-materia
 import { haloMaterial } from './halo-material';
 import { colouredGlow, LampGlow } from './lamp-glow';
 import { colourLightMap, lampLightMap } from './lamp-light-map';
+import type { PursuitBoard } from './pursuit-board';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
@@ -201,6 +202,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private timing: PursuitBoard | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -237,6 +239,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    ghostSeparationMetres: 0,
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
@@ -357,6 +360,13 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'aguascalientes') {
+        const { PursuitBoard } = await import('./pursuit-board');
+        if (this.disposed) return false;
+        this.timing = new PursuitBoard();
+        this.scene.add(this.timing.group);
+        this.disposables.push(this.timing);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -422,6 +432,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    this.timing?.update(metres, frame.time);
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
@@ -469,6 +480,7 @@ export class CourseRenderer implements WorldRenderer {
     this.near.clear();
     this.chunks.length = 0;
     this.confetti.length = 0;
+    this.timing = null;
     this.funivia = null;
     this.glider = null;
     for (const d of this.disposables) d.dispose();
@@ -777,6 +789,7 @@ export class CourseRenderer implements WorldRenderer {
       this.body!,
       this.course!.file.night === true,
       this.tier <= SIMPLE_RIDERS,
+      this.course!.file.id === 'aguascalientes',
     );
     this.kit = kit;
     // The rider wears the You jersey of the race board (L2-060).
@@ -856,7 +869,7 @@ export class CourseRenderer implements WorldRenderer {
     cyclist.group.rotation.set(
       at.pitch,
       at.heading,
-      bendLean(at.heading, ahead, LEAN_AHEAD),
+      at.bank ?? bendLean(at.heading, ahead, LEAN_AHEAD),
       'YXZ',
     );
     if (this.casting.has(cyclist) && cyclist.group.visible) this.lampShadows?.add(metres, lane);
@@ -894,6 +907,8 @@ export class CourseRenderer implements WorldRenderer {
     this.groundEye?.at(metres - behind, 0, up);
     const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
+    // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
+    if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
@@ -909,6 +924,20 @@ export class CourseRenderer implements WorldRenderer {
       if (shadow) shadow.visible = false;
     }
     if (!frame.riders) return;
+    // A pursuit starts opposite the clocked opponent. Its replay still advances by the
+    // recorded distance, including when a rider gains a full lap or makes the catch.
+    if (this.timing && frame.riders.length === 1 && frame.riders[0]?.jersey === 'ghost') {
+      const ghost = this.rider('ghost');
+      if (ghost) {
+        const lap = 250;
+        const replay = metres + frame.riders[0].metres + lap / 2;
+        const onOval = ((replay % lap) + lap) % lap;
+        ghost.group.visible = true;
+        this.ride(ghost, onOval, 0.45);
+        ghost.pose(frame.reducedMotion ? 0 : frame.crank);
+      }
+      return;
+    }
     const nearest = ridersOnRoad(frame.riders, FAR_RIDERS)
       .sort((a, b) => Math.abs(a.metres) - Math.abs(b.metres))
       .slice(0, MOST_RIDERS);
@@ -1105,6 +1134,11 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    const ghost = this.riders.get('ghost');
+    drawn.ghostSeparationMetres =
+      this.you && ghost?.group.visible
+        ? this.you.group.position.distanceTo(ghost.group.position)
+        : 0;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

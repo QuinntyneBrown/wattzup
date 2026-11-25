@@ -96,6 +96,15 @@ export class WorldRideProbe {
     });
   }
 
+  /** Straight-line distance between the visible ghost and rider in the submitted course scene. */
+  async ghostSeparation(): Promise<number> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { ghostSeparationMetres: number } } })
+          .__wzWorldRide?.course?.ghostSeparationMetres ?? 0,
+    );
+  }
+
   /** The renderer's latest report, or null before the scene has started. */
   async report(): Promise<WorldRideReport | null> {
     return this.page.evaluate(

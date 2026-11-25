@@ -30,6 +30,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Cinque Terre", 17.1, 335, "Hard", "3 Mins On, 2 Mins Off", "The corniche above the Ligurian Sea"),
                 new Listed("Haleakalā", 15.8, 923, "Brutal", "Maximum Intensity Hill Climb Efforts", "The summit road from the Pacific coast to the crater rim"),
                 new Listed("Adelaide Hills", 17.11, 265, "Moderate", "The Willunga road", "Summer vineyards and gum trees on the climb to Willunga Hill"),
+                new Listed("Aguascalientes Velodrome", 12.875, 0, "Hard", "The pursuit line", "A banked timber pursuit track in a high-altitude Mexican arena"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -53,6 +54,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("cinqueterre", null),
                 ("haleakala", null),
                 ("adelaide-hills", null),
+                ("aguascalientes", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -76,6 +78,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("cinqueterre", null),
                 ("haleakala", null),
                 ("adelaide-hills", null),
+                ("aguascalientes", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -118,7 +121,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
@@ -158,6 +161,19 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.Equal(new Segment("warm-up", 270, 14, 80), map.Plan.Segments[0]);
         Assert.Equal(5, map.Plan.Segments.Count(s => s == new Segment("work", 30, 24, 100)));
         Assert.Equal(new Segment("cool-down", 240, 11, 80), map.Plan.Segments[^1]);
+    }
+
+    [Fact]
+    public async Task Olympic_pursuit_efforts_rides_the_flat_Aguascalientes_oval()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "aguascalientes");
+        Assert.Equal("aguascalientes", map.World);
+        Assert.Equal(0, map.ClimbingM);
+        Assert.Equal(12.875, map.DistanceKm);
+        Assert.Equal(1800, map.Plan.Segments.Sum(s => s.Duration));
+        Assert.Equal(new Segment("warm-up", 240, 12, 80), map.Plan.Segments[0]);
+        Assert.Contains(new Segment("work", 240, 24, 100), map.Plan.Segments);
+        Assert.Equal(new Segment("cool-down", 120, 11, 80), map.Plan.Segments[^1]);
     }
 
     [Fact]
