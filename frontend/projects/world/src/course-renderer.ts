@@ -373,11 +373,16 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
-      this.build(gltf.scene, canvas);
       if (parsed.id === 'cherryblossom') {
-        const { blossomFestival } = await import('./blossom-festival');
+        const [{ blossomFestival }, { promenadeSurface }] = await Promise.all([
+          import('./blossom-festival'),
+          import('./cherryblossom-shore'),
+        ]);
         if (this.disposed) return false;
-        const festival = await blossomFestival(this.course);
+        const paving = promenadeSurface();
+        this.disposables.push(paving.tile);
+        this.build(gltf.scene, canvas, paving.material);
+        const festival = await blossomFestival(this.course, options.sunrise === true);
         if (this.disposed) {
           festival.dispose();
           return false;
@@ -385,6 +390,8 @@ export class CourseRenderer implements WorldRenderer {
         this.basin = festival;
         this.scene.add(festival.root);
         this.disposables.push(festival);
+      } else {
+        this.build(gltf.scene, canvas);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -519,7 +526,7 @@ export class CourseRenderer implements WorldRenderer {
     this.renderer = null;
   }
 
-  private build(map: Object3D, canvas: HTMLCanvasElement): void {
+  private build(map: Object3D, canvas: HTMLCanvasElement, pavement?: Material): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
@@ -611,7 +618,8 @@ export class CourseRenderer implements WorldRenderer {
       new Color(look.haze),
       coloured,
     );
-    materials['Ground'] = ground.material;
+    if (pavement) ground.material.dispose();
+    materials['Ground'] = pavement ?? ground.material;
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
@@ -923,8 +931,9 @@ export class CourseRenderer implements WorldRenderer {
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
+    const view = this.basin?.sightline(metres);
+    const ahead = course.place(metres + LOOK_AHEAD, view?.lane ?? 0, this.there);
+    this.camera.lookAt(ahead.x, ahead.y + LOOK_UP + (view?.rise ?? 0), ahead.z);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);

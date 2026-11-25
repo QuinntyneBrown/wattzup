@@ -1,5 +1,8 @@
 import {
   BufferGeometry,
+  CanvasTexture,
+  RepeatWrapping,
+  MeshStandardNodeMaterial,
   Color,
   DoubleSide,
   Float32BufferAttribute,
@@ -9,6 +12,7 @@ import {
   SRGBColorSpace,
   TextureLoader,
 } from 'three/webgpu';
+import { positionWorld, texture } from 'three/tsl';
 import type { Course } from './course';
 import { seeded } from './world-kit';
 
@@ -123,4 +127,42 @@ export async function blossomShore(course: Course) {
       atlas.dispose();
     },
   };
+}
+
+/** Granite aggregate, staggered joints and fallen petals in a four-metre repeat. */
+export function promenadeSurface() {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 512;
+  const g = canvas.getContext('2d')!;
+  const random = seeded(1943);
+  g.fillStyle = '#877e78';
+  g.fillRect(0, 0, 512, 512);
+  for (let row = 0; row < 8; row++) {
+    for (let column = -1; column < 5; column++) {
+      const x = column * 128 + (row % 2) * 64,
+        y = row * 64;
+      const grey = Math.floor(155 + 10 * random());
+      g.fillStyle = 'rgb(' + grey + ',' + (grey - 4) + ',' + (grey - 7) + ')';
+      g.fillRect(x + 0.9, y + 0.9, 126.4, 62.5);
+      g.fillStyle = 'rgba(246,234,216,.23)';
+      g.fillRect(x + 2, y + 1.6, 124, 1.3);
+    }
+  }
+  for (let i = 0; i < 23000; i++) {
+    g.fillStyle = i % 3 ? 'rgba(68,60,59,.21)' : 'rgba(255,250,234,.45)';
+    g.fillRect(random() * 512, random() * 512, 1 + random(), 0.8 + random());
+  }
+  for (let i = 0; i < 64; i++) {
+    g.fillStyle = i % 3 ? '#ecd5cc' : '#d4a8b1';
+    g.beginPath();
+    g.ellipse(random() * 512, random() * 512, 1.8, 1.1, random() * 3, 0, Math.PI * 2);
+    g.fill();
+  }
+  const tile = new CanvasTexture(canvas);
+  tile.colorSpace = SRGBColorSpace;
+  tile.wrapS = tile.wrapT = RepeatWrapping;
+  tile.anisotropy = 8;
+  const material = new MeshStandardNodeMaterial({ roughness: 0.94 });
+  material.colorNode = texture(tile, positionWorld.xz.mul(0.25)).rgb;
+  return { tile, material };
 }

@@ -6,6 +6,7 @@ import {
   Float32BufferAttribute,
   Group,
   InstancedMesh,
+  Mesh,
   MeshBasicMaterial,
   Object3D,
   SphereGeometry,
@@ -15,10 +16,12 @@ import type { Course } from './course';
 import { blossomShore } from './cherryblossom-shore';
 
 /** The eight rental boats and fifteen tethered kites use the ride clock and fixed instance buffers. */
-export async function blossomFestival(course: Course) {
+export async function blossomFestival(course: Course, sunrise: boolean) {
   const shore = await blossomShore(course);
   const root = new Group();
   root.add(shore.root);
+  const reflection = sunrise ? dawnReflection(course) : null;
+  if (reflection) root.add(reflection);
   const oval = new SphereGeometry(1, 12, 7);
   const strip = new BoxGeometry(1, 1, 1);
   const cloth = new BufferGeometry();
@@ -46,10 +49,8 @@ export async function blossomFestival(course: Course) {
     mesh.frustumCulled = false;
     root.add(mesh);
   }
-  const boats = Array.from({ length: 8 }, (_, i) => course.place(1437 + i * 14, -14 - (i % 3) * 4));
-  const fields = Array.from({ length: 15 }, (_, i) =>
-    course.place(2092 + i * 11, 14 + (i % 3) * 7),
-  );
+  const boats = Array.from({ length: 8 }, (_, i) => course.place(1469 + i * 12, -10 - (i % 3) * 3));
+  const fields = Array.from({ length: 15 }, (_, i) => course.place(2140 + i * 11, 9 + (i % 3) * 4));
   const part = new Object3D(),
     tip = new Vector3(),
     unit = new Vector3(0, 1, 0);
@@ -133,9 +134,22 @@ export async function blossomFestival(course: Course) {
     }
     for (const mesh of [hulls, lines, sails]) mesh.instanceMatrix.needsUpdate = true;
   }
+  // The chase camera gently follows the open waterfront and looks up to the high obelisk.
+  const view = { lane: 0, rise: 0 };
+  function sightline(metres: number) {
+    const d = ((metres % (course.length / 5)) + course.length / 5) % (course.length / 5);
+    const window = (centre: number, width: number) => {
+      const t = Math.max(0, 1 - Math.abs(d - centre) / width);
+      return t * t * (3 - 2 * t);
+    };
+    view.lane = -6.4 * window(1430, 210) - 3.8 * window(1010, 170) + 2.8 * window(2160, 160);
+    view.rise = 3.4 * window(2160, 160) + 4.8 * window(2830, 220);
+    return view;
+  }
   update(0);
   return {
     root,
+    sightline,
     update,
     get boatX() {
       return boatX;
@@ -146,6 +160,8 @@ export async function blossomFestival(course: Course) {
     dispose() {
       root.clear();
       shore.dispose();
+      reflection?.geometry.dispose();
+      reflection?.material.dispose();
       for (const mesh of [hulls, lines, sails]) mesh.dispose();
       oval.dispose();
       strip.dispose();
@@ -154,4 +170,27 @@ export async function blossomFestival(course: Course) {
       silk.dispose();
     },
   };
+}
+
+/** A shallow rose reflection sits below the broken bands of reflected stone and flowers. */
+function dawnReflection(course: Course) {
+  const lap = course.length / 5;
+  const vertices: number[] = [];
+  for (let d = 0; d < lap; d += 8) {
+    const a = course.place(d, -7.9),
+      b = course.place(Math.min(d + 8, lap), -7.9);
+    vertices.push(0, 0.599, 0, a.x, 0.599, a.z, b.x, 0.599, b.z);
+  }
+  const geometry = new BufferGeometry();
+  geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
+  return new Mesh(
+    geometry,
+    new MeshBasicMaterial({
+      color: 0xf1b6b4,
+      side: DoubleSide,
+      transparent: true,
+      opacity: 0.33,
+      depthWrite: false,
+    }),
+  );
 }
