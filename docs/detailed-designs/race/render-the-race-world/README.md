@@ -215,3 +215,12 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+### Haleakalā (#2133)
+
+Map Select and Race Setup already open the baked Haleakalā course. Preserve its eleven stages, 15.75 km centre line, 923 m climb, earned progress, three-second class video offset and existing course key. The road, native beach park, ranch homesteads, jacaranda avenues, silversword colonies, summit shelter, crater cones and Science City buildings already ship. Refine surfaces, motion and distant detail within the lazy renderer. All work traces to L1 Race, L2-064–066 and L2-159–160.
+
+- Pāʻia and Kula use real 07–09 for coastline, canopy, animals and pasture. The camera must show a transition from sea level to planted slope. The ranch fences and vegetation use the actual terrain height; GitHub #948 describes floating vegetation and roadside objects in the older repeating world.
+- The cloud belt uses real 03–04, 06 and 15. Distinguish moving low cloud from the fixed island silhouettes. Upper switchbacks follow real 10–12 and game 03, with yellow paint and reflector posts. Preserve the original continuous road.
+- Real 01–02 show the difference between the broad basal silversword rosette and its flowering stalk. Real 05–06 establish the white observatory drum, dome openings and solar tower. Real 10 and 12–15 define the broad crater walls, distinct cinder cones and sparse vegetation. Games 01–05 inform silhouette, hazard-free road position and readable depth at riding speed.
+- Keep static geometry merged by section. Drive cloud movement and ranch motion from ride time and freeze both on pause. Bound repeated plants and release route-owned buffers, textures and materials on exit. Use the six rider-height mock positions, HUD visible, for a paired comparison with Caribana. Benchmark Pāʻia and the upper silversword section with Chromium low/WebGL2, DPR 1, 1024 × 768, 4× CPU throttle, nine seconds of warm-up and 60 seconds of actual submitted frames as required by ADRs 0021, 0023, 0030 and 0034–0035.
