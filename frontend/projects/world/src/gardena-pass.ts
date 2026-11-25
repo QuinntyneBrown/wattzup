@@ -17,6 +17,7 @@ import {
   RepeatWrapping,
   SRGBColorSpace,
   TextureLoader,
+  type BufferGeometry,
   type Texture,
 } from 'three/webgpu';
 import type { Course } from './course';
@@ -225,7 +226,7 @@ export async function gardenaPass(course: Course) {
     h: number,
     depth: number,
     tone: number,
-    shape = unit as import('three/webgpu').BufferGeometry,
+    shape: BufferGeometry = unit,
   ) {
     let paint = colours.get(tone);
     if (!paint) {
