@@ -1876,3 +1876,36 @@ export const comuna13CourseMap = {
     ],
   },
 };
+
+export const coneyCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'coney-island-boardwalk',
+  name: 'Coney Island Boardwalk',
+  routeName: 'The boardwalk',
+  place: 'Brooklyn, New York',
+  world: 'coney',
+  distanceKm: 8.475,
+  climbingM: 5,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0.3,
+  },
+  thumbnailUrl: 'maps/coney-island-boardwalk.jpg',
+  photoUrl: 'maps/coney-island-boardwalk-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 10, 80),
+      seg('work', 60, 13, 80),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 19, 90),
+      seg('recover', 60, 13, 105),
+      seg('work', 120, 19, 90),
+      seg('recover', 60, 13, 105),
+      seg('work', 180, 19, 90),
+      seg('recover', 60, 13, 105),
+      seg('work', 120, 19, 90),
+      seg('cool-down', 60, 10, 80),
+    ],
+  },
+};

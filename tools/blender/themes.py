@@ -1397,3 +1397,8 @@ import comuna13 as _comuna13  # noqa: E402
 
 THEMES["comuna13"] = _comuna13.THEME
 SCENERY["comuna13"] = _comuna13.scenery
+
+import coney as _coney  # noqa: E402
+
+THEMES["coney"] = _coney.THEME
+SCENERY["coney"] = _coney.scenery

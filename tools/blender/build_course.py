@@ -794,6 +794,8 @@ def mix(a, b, t):
 
 
 def build_road(road: Road, st: list[dict], length: float, col, theme: dict | None = None) -> None:
+    if theme and theme.get("road_builder"):
+        return theme["road_builder"](road, st, length, col, sys.modules[__name__])
     edge = (theme or {}).get("edge", "seawall")
     white_centre = (theme or {}).get("centre") == "white"
     # A racing circuit's red-and-white kerbs round a bend; a theme whose road is a public one turns them off.
