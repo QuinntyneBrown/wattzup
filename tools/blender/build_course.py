@@ -573,11 +573,15 @@ HALOS_PART = "Halos"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "chalet-plaster": 3, "tower": 3, "wall": 3, "stone": 5, "dolomite-pale": 5, "larch-aged": 6, "larch-warm": 6, "chalet-wood": 6,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
 WIDER = {"Land": 4, "Beams": 6, "Glow": 6, "Leaves": 1, "Halos": 4, "Ground": 2}
-WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "peaks": "Peaks", "funivia": "Funivia", "glider": "Glider", "tuk-tuk": "TukTuk", "touring-bike": "TouringBike", "tour-boat": "TourBoat", "commuter": "Commuter", "orange-smoke": "Smoke", "moored-boats": "Boats", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
+WHOLE = {"commissaire":"Commissaire","team-car":"TeamCar","sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "peaks": "Peaks", "funivia": "Funivia", "glider": "Glider", "tuk-tuk": "TukTuk", "touring-bike": "TouringBike", "tour-boat": "TourBoat", "commuter": "Commuter", "orange-smoke": "Smoke", "moored-boats": "Boats", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
 
 def group_of(mat: str) -> tuple[str, bool]:
     """The mesh a part's faces join, and whether that mesh is cut into chunks along the road."""
+    if mat == "arenberg-foliage":
+        return "Foliage", True
+    if mat == "pave":
+        return "Pave", True
     if mat == "angliru-concrete":
         return "Ground", True
     if mat in WHOLE:
@@ -692,7 +696,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos", "Facades", "Elms", "Dapple"):
+                if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple"):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -703,11 +707,11 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences", "Halos", "Facades", "Elms", "Dapple"):
+                    if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple"):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
-                    if group == "Ground":
+                    if group in ("Ground", "Pave"):
                         _, near, _ = road.tree.find((v[0], v[1], 0.0))
                         p = road.s[near]
                         dx, dy = v[0] - p["x"], v[1] - p["y"]
@@ -854,8 +858,20 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         strip(sand, i, kerb + 7.0, drop, kerb + 2.4, 0.0)
         strip(sand, i, -(kerb + 2.4), 0.0, -(kerb + 7.0), -1.6)
 
+    stones = Builder("Crowned five-star sector", "pave") if edge == "pave" else None
     slab = Builder("Grooved concrete", "angliru-concrete") if edge == "angliru" else None
     for i in range(n - 1):
+        if stones is not None:
+            if 320 <= s[i]["d"] < 2720:
+                strip(stones,i,2.12,-.075,1.1,.025)
+                strip(stones,i,1.1,.025,0,.08)
+                strip(stones,i,0,.08,-1.1,.025)
+                strip(stones,i,-1.1,.025,-2.12,-.075)
+            else:
+                strip(asphalt,i,2.12,0,-2.12,0)
+            for side in (-1,1):
+                strip(sand,i,side*2.12,-.075,side*3.12,-.105)
+            continue
         if edge == 'scheldt':
             strip(asphalt,i,4.9,0,-4.9,0)
             strip(prom,i,11,-.05,4.9,0)
@@ -916,6 +932,9 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         strip(prom, i, -kerb, 0.12, -(kerb + TERRACE), 0.12)
         strip(sand, i, -(kerb + TERRACE), 0.12, -(kerb + TERRACE + 8.0), -2.4)
 
+    if stones is not None:
+        stones.build(col)
+
     if slab is not None:
         slab.build(col)
 
@@ -931,7 +950,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     # Chevrons up every effort: the road itself says "push".
     for stage in st:
-        if edge == "scheldt" or edge == "angliru" or stage["kind"] != "work":
+        if edge == "pave" or edge == "scheldt" or edge == "angliru" or stage["kind"] != "work":
             continue
         d = stage["from"] + 12
         while d < stage["to"] - 6:
