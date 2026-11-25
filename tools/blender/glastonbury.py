@@ -210,12 +210,31 @@ def scenery(k):
     art.box(pt(0,0,41),(6.5,5.4,13),h,lin(0x928878))
     for x in (-3,3):
         for y in (-2.5,2.5):art.box(pt(x,y,41),(.9,.9,15),h,lin(0xA19783))
+    # Patchwork pastures extend beyond the campsite. Taller ridges carry clumps of trees.
+    for d in range(0,LENGTH,78):
+        for side in (-1,1):
+            x,y,z,h=local(d,side*(220+45*math.sin(d/260)))
+            height=12+7*math.sin(d/180)+5*math.cos(d/81)
+            art.tube((x,y,z-7),78,40,height,lin(0x727D54),lin(0x889461),11)
+            art.tube((x,y,z-7+height),40,3,5,lin(0x889461),lin(0x889461),11)
+            if d%3==0:k.broadleaf(x,y,z-3+height,.86)
+    bulbs=Painted(k,'neon-amber');bulbs.b.name='FestivalBulbs'
+    for d in list(range(0,251,17))+list(range(3350,3610,17))+list(range(10160,10510,17)):
+        a,h=frame(d,-6.8);b,_=frame(d,6.8)
+        for end in (a,b):bar(end(0,0,0),end(0,0,6.4),.16,steel)
+        start=a(0,0,6.3);end=b(0,0,6.3);prev=start
+        for j in range(1,17):
+            f=j/16;cord=tuple(start[i]*(1-f)+end[i]*f-(.95*math.sin(math.pi*f) if i==2 else 0) for i in range(3))
+            bar(prev,cord,.055,dark);prev=cord
+            if j<16:
+                x,y,z=cord;bulbs.tube((x,y,z-.24),.092,.13,.21,lin(0xFFF4AE),lin(0xFFFFCD),7)
     for d in range(0,LENGTH,32):
         if min(abs(d-s) for s in (120,3400,5670,7810,10300))>185:continue
         side=1 if d%3 else -1;pt,h=frame(d,side*12)
         colour=lin(rng.choice(fabric))
         art.box(pt(0,0,.15),(5,2.9,2.4),h,colour)
         art.box(pt(0,-side*1.5,.92),(4.4,.12,1.18),h,dark)
+        graphic([pt(-2,-side*1.54,2.01),pt(2,-side*1.54,2.01),pt(2,-side*1.54,2.89),pt(-2,-side*1.54,2.89)],(0,427/512,1/3,1))
         art.box(pt(0,-side*1.72,2.25),(5.4,1.24,.23),h,lin(0xE8C590))
         for i in range(6):glow.box(pt(i*.78-1.99,-side*2.3,2.38),(.12,.12,.14),h,lin(0xFFDC94))
         art.tube(pt(4,-side*2,0),.41,.48,1.05,dark,steel,9)

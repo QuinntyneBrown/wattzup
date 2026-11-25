@@ -68,7 +68,9 @@ export class WorldRideProbe {
           .__wzWorldRide?.course?.groups['FestivalPrint'] ?? 0,
     );
   }
-  async glastonburyMotion(part: 'flagTip' | 'walkerPosition'): Promise<number | null> {
+  async glastonburyMotion(
+    part: 'flagTip' | 'walkerPosition' | 'lampLevel',
+  ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide

@@ -636,7 +636,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             film.objects.link(bpy.data.objects.new(part.name, data))
         group, chunked = group_of(part.mat)
         surfaces = {'Laid trackway panels':'FestivalPanels','Churned wheel ruts':'FestivalMud','Somerset pasture':'FestivalGrass'}
-        if part.name == 'FestivalPrint':
+        if part.name in ('FestivalPrint','FestivalBulbs'):
             group = part.name
         elif part.name in surfaces:
             group = surfaces[part.name]

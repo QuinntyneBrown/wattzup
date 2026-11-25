@@ -2,6 +2,7 @@ import {
   BufferGeometry,
   Color,
   CylinderGeometry,
+  SphereGeometry,
   DoubleSide,
   DynamicDrawUsage,
   Float32BufferAttribute,
@@ -104,7 +105,35 @@ export function glastonburyFestival(course: Course) {
   owned.push(geom, cloth, masts, mastGeometry, metal);
   const figures = new Figures(group, owned, 210, wardrobe, 2027, false);
   const pose = new Object3D(),
-    state = { flagTip: 0, walkerPosition: 0 };
+    state = { flagTip: 0, walkerPosition: 0, lampLevel: 0 };
+  const outfitGeometry = new SphereGeometry(1, 7, 5);
+  const outfitMaterial = new MeshLambertMaterial();
+  const clothes = new InstancedMesh(outfitGeometry, outfitMaterial, 210 * 6);
+  clothes.frustumCulled = false;
+  group.add(clothes);
+  owned.push(clothes, outfitGeometry, outfitMaterial);
+  const bootColour = new Color(0x384237),
+    lamps = new MeshBasicMaterial({ color: 0xffdfa1 });
+  owned.push(lamps);
+  function garment(
+    i: number,
+    x: number,
+    y: number,
+    z: number,
+    w: number,
+    h: number,
+    depth: number,
+    yaw: number,
+    roll: number,
+    colour: Color,
+  ) {
+    pose.position.set(x, y, z);
+    pose.rotation.set(0, yaw, roll, 'YXZ');
+    pose.scale.set(w, h, depth);
+    pose.updateMatrix();
+    clothes.setMatrixAt(i, pose.matrix);
+    clothes.setColorAt(i, colour);
+  }
   function distance(a: number, b: number) {
     const d = Math.abs(a - b);
     return Math.min(d, course.length - d);
@@ -112,6 +141,7 @@ export function glastonburyFestival(course: Course) {
   function update(time: number, metres: number, reduced: boolean) {
     const station = ((metres % course.length) + course.length) % course.length,
       t = reduced ? 0 : time;
+    pose.rotation.set(0, 0, 0);
     let count = 0,
       vertex = 0,
       nearest = Infinity;
@@ -151,7 +181,8 @@ export function glastonburyFestival(course: Course) {
     geom.setDrawRange(0, vertex);
     positions.needsUpdate = true;
     colours.needsUpdate = true;
-    let i = 0;
+    let i = 0,
+      pieces = 0;
     nearest = Infinity;
     for (const p of people) {
       const gap = distance(station, p.station);
@@ -169,6 +200,47 @@ export function glastonburyFestival(course: Course) {
         p.scale,
         0.033 * Math.abs(Math.sin(t * 3.8 + p.phase)),
       );
+      const facing = h + (p.direction < 0 ? Math.PI : 0);
+      for (const side of [-1, 1]) {
+        const dx = Math.cos(facing) * side * p.scale,
+          dz = -Math.sin(facing) * side * p.scale;
+        garment(
+          pieces++,
+          x + dx * 0.12,
+          p.at.y + 0.2 * p.scale,
+          z + dz * 0.12,
+          0.1,
+          0.22 * p.scale,
+          0.14,
+          facing,
+          0,
+          bootColour,
+        );
+        garment(
+          pieces++,
+          x + dx * 0.222,
+          p.at.y + 1.03 * p.scale,
+          z + dz * 0.222,
+          0.087,
+          0.217 * p.scale,
+          0.093,
+          facing,
+          side * 0.17,
+          p.jacket,
+        );
+        garment(
+          pieces++,
+          x + dx * 0.25,
+          p.at.y + 0.83 * p.scale,
+          z + dz * 0.25,
+          0.064,
+          0.079,
+          0.068,
+          facing,
+          0,
+          p.skin,
+        );
+      }
       figures.setColors(
         i,
         p.jacket.r,
@@ -188,6 +260,12 @@ export function glastonburyFestival(course: Course) {
       i++;
     }
     for (const mesh of [figures.legs, figures.bodies, figures.heads]) mesh.count = i;
+    clothes.count = pieces;
+    clothes.instanceMatrix.needsUpdate = true;
+    if (clothes.instanceColor) clothes.instanceColor.needsUpdate = true;
+    const dusk = 0.55 + 0.85 * Math.min(1, t / course.duration);
+    lamps.color.setRGB(dusk, dusk * 0.75, dusk * 0.38);
+    state.lampLevel = lamps.color.r;
     figures.commit(true);
   }
   const loader = new TextureLoader();
@@ -204,6 +282,7 @@ export function glastonburyFestival(course: Course) {
     return material;
   };
   const materials = {
+    FestivalBulbs: lamps,
     FestivalPrint: surface('performance', 0),
     FestivalPanels: surface('panels', 1.55),
     FestivalMud: surface('mud', 2.4),

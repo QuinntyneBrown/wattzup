@@ -8,6 +8,7 @@ import { RaceSetupPage } from './pages/race-setup.page';
 import { RacePage } from './pages/race.page';
 
 for (const [actor, metres, part] of [
+  ['fairy light at dusk', 10380, 'lampLevel'],
   ['flag beside the Pyramid Stage', 80, 'flagTip'],
   ['festivalgoer walking past West Holts', 3450, 'walkerPosition'],
 ] as const) {
