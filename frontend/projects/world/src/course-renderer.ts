@@ -117,6 +117,7 @@ import type { BlackpoolTrams } from './blackpool-trams';
 import type { BlueMountainsYard } from './blue-mountains-yard';
 import type { MabryMill } from './mabry-mill';
 import type { BondiSurf } from './bondi-surf';
+import type { sunsetStrip } from './sunset-strip';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -143,6 +144,12 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  StripDancers: 150,
+  StripBeams: 430,
+  StripFestoons: 175,
+  StripFleet: 1400,
+  CoveFoam: 370,
+  StripCloth: 170,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -242,6 +249,7 @@ export class CourseRenderer implements WorldRenderer {
   private pave: ReturnType<typeof arenbergPave> | null = null;
   private course: Course | null = null;
   private timing: PursuitBoard | null = null;
+  private strip: ReturnType<typeof sunsetStrip> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -551,6 +559,12 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.fov = 60;
         this.camera.updateProjectionMatrix();
       }
+      if (this.course.file.id === 'ibiza') {
+        const { sunsetStrip } = await import('./sunset-strip');
+        if (this.disposed) return false;
+        this.strip = sunsetStrip();
+        this.disposables.push(this.strip);
+      }
       this.build(gltf.scene, canvas, clinker, fronts, foliage);
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
@@ -807,7 +821,6 @@ export class CourseRenderer implements WorldRenderer {
       if (typeof from === 'number') this.benchFrom = from;
     }
     const metres = Math.min(ridden + this.benchFrom, course.end);
-    if (this.pinned) this.drawn.metres = metres;
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
     const standing = this.ride(you, metres, 0);
@@ -887,6 +900,7 @@ export class CourseRenderer implements WorldRenderer {
       this.joggers.mesh.visible = Math.abs(you.group.position.x + 39) < 200;
       if (this.joggers.mesh.visible) this.joggers.update(frame.reducedMotion ? 0 : frame.time);
     }
+    this.strip?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -1167,6 +1181,7 @@ export class CourseRenderer implements WorldRenderer {
     // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
+    if (this.strip) Object.assign(materials, this.strip.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     const painted: Mesh[] = [];
     map.traverse((part) => {
@@ -1504,7 +1519,12 @@ export class CourseRenderer implements WorldRenderer {
     const back = course.place(metres - behind, sway, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), 0, this.there);
+    // Follow the outside of the promenade curve above the small exposed bay.
+    const cove =
+      this.strip && metres >= 720 && metres <= 1200
+        ? Math.sin((Math.PI * (metres - 720)) / 480) ** 2
+        : 0;
+    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), -4.4 * cove, this.there);
     this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP), ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
@@ -1888,6 +1908,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
+    if (this.strip) Object.assign(drawn, this.strip.report());
     hook['course'] = drawn;
   }
 
