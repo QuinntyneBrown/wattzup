@@ -1290,3 +1290,9 @@ THEMES["angkor"] = _angkor.THEME
 SCENERY["angkor"] = _angkor.scenery
 
 MATERIALS.update({name: {"color": 0xFFFFFF, "vertex": True} for name in ("tuk-tuk", "touring-bike")})
+
+import angliru as _angliru  # noqa: E402
+
+MATERIALS["angliru-concrete"] = {"color": 0xA49F91, "rough": .9}
+THEMES["angliru"] = _angliru.THEME
+SCENERY["angliru"] = _angliru.scenery

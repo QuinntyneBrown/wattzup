@@ -61,6 +61,7 @@ import {
   courseWet,
   parseCourse,
 } from './course';
+import type { AngliruRoadside } from './angliru-roadside';
 import { CourseCyclistKit, type RiderModel as Cyclist } from './course-cyclist';
 import { fenceMaterial } from './fence-material';
 import { type CabinPose, gondolaPosition } from './gondola-flight';
@@ -204,6 +205,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
+  private angliruRoadside: AngliruRoadside | null = null;
   private course: Course | null = null;
   private timing: PursuitBoard | null = null;
   private disposed = false;
@@ -251,6 +253,7 @@ export class CourseRenderer implements WorldRenderer {
     tourBoatX: null as number | null,
     trainingRiderX: null as number | null,
     tukTukX: null as number | null,
+    asturiasFlagAngle: 0,
     groups: {} as Record<string, number>,
   };
   private readonly trainingGroup: Cyclist[] = [];
@@ -396,6 +399,12 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.timing.group);
         this.disposables.push(this.timing);
       }
+      if (this.course.file.id === 'angliru') {
+        const { AngliruRoadside } = await import('./angliru-roadside');
+        if (this.disposed) return false;
+        this.angliruRoadside = new AngliruRoadside(this.course);
+        this.scene.add(this.angliruRoadside.root);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -485,6 +494,12 @@ export class CourseRenderer implements WorldRenderer {
       this.placeCanalTraffic(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.templeTraffic.length)
       this.placeTempleTraffic(metres, frame.reducedMotion ? 0 : frame.time);
+    if (this.angliruRoadside) {
+      this.drawn.asturiasFlagAngle = this.angliruRoadside.draw(
+        metres,
+        frame.reducedMotion ? 0 : frame.time,
+      );
+    }
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -509,6 +524,8 @@ export class CourseRenderer implements WorldRenderer {
 
   dispose(): void {
     this.disposed = true;
+    this.angliruRoadside?.dispose();
+    this.angliruRoadside = null;
     this.pipeline?.dispose();
     this.pipeline = null;
     this.map?.traverse((part) => {

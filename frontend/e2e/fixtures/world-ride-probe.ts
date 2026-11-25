@@ -168,4 +168,12 @@ export class WorldRideProbe {
           ?.course?.tukTukX ?? null,
     );
   }
+  /** Rotation of the flag mesh submitted to the course renderer. */
+  async asturiasFlagAngle(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { asturiasFlagAngle?: number } } })
+          .__wzWorldRide?.course?.asturiasFlagAngle ?? null,
+    );
+  }
 }

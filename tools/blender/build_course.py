@@ -578,6 +578,8 @@ WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Con
 
 def group_of(mat: str) -> tuple[str, bool]:
     """The mesh a part's faces join, and whether that mesh is cut into chunks along the road."""
+    if mat == "angliru-concrete":
+        return "Ground", True
     if mat in WHOLE:
         return WHOLE[mat], False
     spec = MATERIALS[mat]
@@ -852,7 +854,18 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         strip(sand, i, kerb + 7.0, drop, kerb + 2.4, 0.0)
         strip(sand, i, -(kerb + 2.4), 0.0, -(kerb + 7.0), -1.6)
 
+    slab = Builder("Grooved concrete", "angliru-concrete") if edge == "angliru" else None
     for i in range(n - 1):
+        if slab is not None:
+            on_ramp = s[i]["g"] >= 12
+            strip(slab if on_ramp else asphalt, i, 3.12, 0.0, -3.12, 0.0)
+            strip(sand, i, 4.7, -.06, 3.12, 0.0)
+            strip(sand, i, -3.12, 0.0, -4.7, -.06)
+            if on_ramp:
+                for u in (0,.5,1,1.5,2,2.5,3,3.5):
+                    d=s[i]["d"]+u
+                    slab.quad(road.pos(d,-2.98,.011),road.pos(d,2.98,.011),road.pos(d+.04,2.98,.025),road.pos(d+.04,-2.98,.025))
+            continue
         if edge == "laterite":
             # Unmarked tarmac meets the dusty red shoulder at grade through the jungle.
             half = 3.65
@@ -895,6 +908,9 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         strip(prom, i, -kerb, 0.12, -(kerb + TERRACE), 0.12)
         strip(sand, i, -(kerb + TERRACE), 0.12, -(kerb + TERRACE + 8.0), -2.4)
 
+    if slab is not None:
+        slab.build(col)
+
     def chevron(d: float, lane: float) -> None:
         for back in (0.0, 1.5):
             tip, tail = d + 2.2 - back, d - back
@@ -907,7 +923,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     # Chevrons up every effort: the road itself says "push".
     for stage in st:
-        if stage["kind"] != "work":
+        if edge == "angliru" or stage["kind"] != "work":
             continue
         d = stage["from"] + 12
         while d < stage["to"] - 6:

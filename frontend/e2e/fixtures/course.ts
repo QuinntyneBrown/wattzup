@@ -1,3 +1,4 @@
+import angliruElevation from './angliru-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -420,6 +421,45 @@ export const angkorCourseMap = {
       seg('work', 300, 18, 80),
       seg('recover', 360, 16, 80),
       seg('cool-down', 360, 18, 90),
+    ],
+  },
+};
+
+export const angliruCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'alto-angliru',
+  name: 'Angliru',
+  routeName: 'Cueña les Cabres',
+  place: 'Sierra del Aramo, Asturias',
+  world: 'angliru',
+  distanceKm: 17.625,
+  climbingM: 1102,
+  terrain: { ...haleakalaCourseMap.terrain, elevation: angliruElevation },
+  thumbnailUrl: 'maps/alto-angliru.jpg',
+  photoUrl: 'maps/alto-angliru-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 18, 85),
+      seg('work', 60, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 600, 19, 90),
+      seg('recover', 120, 16, 85),
+      seg('work', 120, 22, 100),
+      seg('recover', 120, 16, 85),
+      seg('work', 120, 22, 100),
+      seg('recover', 120, 16, 85),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('cool-down', 360, 11, 80),
     ],
   },
 };
