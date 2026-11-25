@@ -1,3 +1,4 @@
+import lakelouiseElevation from './lakelouise-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3585,6 +3586,42 @@ export const itenCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 60, 24, 110),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const lakeLouiseCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'lake-louise',
+  name: 'Lake Louise',
+  routeName: 'the Lake Louise lakeshore',
+  place: 'Banff National Park, Alberta, Canada',
+  world: 'lakelouise',
+  distanceKm: 8,
+  climbingM: 33,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: lakelouiseElevation,
+  },
+  thumbnailUrl: 'maps/lake-louise.jpg',
+  photoUrl: 'maps/lake-louise-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 21, 80),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 21, 80),
+      seg('cool-down', 180, 10, 80),
     ],
   },
 };
