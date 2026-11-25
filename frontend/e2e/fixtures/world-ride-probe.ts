@@ -62,7 +62,7 @@ export class WorldRideProbe {
   }
 
   async gardenaMotion(
-    part: 'cowHead' | 'cyclistPosition' | 'cloudPosition',
+    part: 'cowHead' | 'cyclistPosition' | 'cloudPosition' | 'nearestRider',
   ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>

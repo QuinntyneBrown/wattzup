@@ -37,6 +37,11 @@ for (const [actor, metres, part] of [
     await expect(race.backend).toBeVisible();
 
     await expect.poll(() => worldRide.gardenaMotion(part)).not.toBeNull();
+    if (part === 'cyclistPosition') {
+      await expect
+        .poll(async () => (await worldRide.gardenaMotion('nearestRider')) ?? Infinity)
+        .toBeLessThan(50);
+    }
     const first = await worldRide.gardenaMotion(part);
     await expect.poll(() => worldRide.gardenaMotion(part)).not.toBe(first);
     await race.pause.click();

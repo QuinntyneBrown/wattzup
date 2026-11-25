@@ -239,6 +239,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     cowHead: null as number | null,
     cloudPosition: null as number | null,
+    nearestRider: null as number | null,
     cyclistPosition: null as number | null,
     tier: 0 as number,
     backend: '' as string,
@@ -1133,6 +1134,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     drawn.cowHead = this.gardena?.cowHead ?? null;
     drawn.cloudPosition = this.gardena?.cloudPosition ?? null;
+    drawn.nearestRider = this.gardena?.nearestRider ?? null;
     drawn.cyclistPosition = this.gardena?.cyclistPosition ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;

@@ -3,6 +3,8 @@ import {
   BoxGeometry,
   CanvasTexture,
   Color,
+  SphereGeometry,
+  CylinderGeometry,
   DoubleSide,
   Group,
   InstancedMesh,
@@ -18,7 +20,7 @@ import {
   type Texture,
 } from 'three/webgpu';
 import type { Course } from './course';
-import { seeded, meadowTexture, dolomiteTexture } from './world-kit';
+import { seeded } from './world-kit';
 import { caribanaCyclists } from './caribana-cyclists';
 
 function ground(distance: number, lane: number, heading: number) {
@@ -44,7 +46,17 @@ export async function gardenaPass(course: Course) {
   resources.push(plain);
   let kit: Awaited<ReturnType<typeof caribanaCyclists>>;
   try {
-    for (const name of ['sella', 'cir', 'sassolungo', 'larches', 'rifugi', 'tarmac', 'cloud']) {
+    for (const name of [
+      'sella',
+      'cir',
+      'sassolungo',
+      'larches',
+      'rifugi',
+      'tarmac',
+      'cloud',
+      'turf',
+      'limestone',
+    ]) {
       const map = await loader.loadAsync('courses/gardena-' + name + '.webp');
       map.colorSpace = SRGBColorSpace;
       maps.push(map);
@@ -56,7 +68,7 @@ export async function gardenaPass(course: Course) {
     for (const r of resources) r.dispose();
     throw error;
   }
-  const [sella, cir, sassolungo, forest, fronts, tarmac, cloud] = maps;
+  const [sella, cir, sassolungo, forest, fronts, tarmac, cloud, meadow, rock] = maps;
   function surface(map: Texture, size: number) {
     map.wrapS = map.wrapT = RepeatWrapping;
     map.anisotropy = 4;
@@ -67,12 +79,9 @@ export async function gardenaPass(course: Course) {
     return paint;
   }
 
-  const meadow = meadowTexture(),
-    rock = dolomiteTexture();
-  resources.push(meadow, rock);
   const materials = {
-    Pasture: surface(meadow, 3.3),
-    Scree: surface(rock, 4.2),
+    Pasture: surface(meadow!, 3.3),
+    Scree: surface(rock!, 2.2),
     Tarmac: surface(tarmac!, 1.45),
   };
   const mid = course.place(4250);
@@ -133,7 +142,7 @@ export async function gardenaPass(course: Course) {
     resources.push(geometry);
     for (let a = 0; a < course.length; a += 200) {
       const count = a < 2200 ? 30 : a < 5300 ? 18 : a < 8150 ? 8 : 4;
-      const mesh = new InstancedMesh(geometry, trees, count);
+      const mesh = new InstancedMesh(geometry, trees, count * 2);
       let used = 0;
       for (let i = 0; i < count; i++) {
         const d = a + rng() * 200,
@@ -150,6 +159,9 @@ export async function gardenaPass(course: Course) {
         transform.position.set(p.x, p.y + ground(d, lane, p.heading) - 0.36, p.z);
         transform.rotation.y = p.heading + (rng() - 0.5) * 1.8;
         transform.scale.set(height * (species === 2 ? 0.66 : 0.79), height, 1);
+        transform.updateMatrix();
+        mesh.setMatrixAt(used++, transform.matrix);
+        transform.rotation.y += Math.PI * 0.5;
         transform.updateMatrix();
         mesh.setMatrixAt(used++, transform.matrix);
       }
@@ -200,7 +212,9 @@ export async function gardenaPass(course: Course) {
     buildings.push({ site, d });
   }
   const unit = new BoxGeometry();
-  resources.push(unit);
+  const rounded = new SphereGeometry(0.5, 10, 8),
+    taper = new CylinderGeometry(0.37, 0.5, 1, 7);
+  resources.push(unit, rounded, taper);
   const colours = new Map<number, MeshLambertMaterial>();
   function block(
     owner: Group,
@@ -211,6 +225,7 @@ export async function gardenaPass(course: Course) {
     h: number,
     depth: number,
     tone: number,
+    shape = unit as import('three/webgpu').BufferGeometry,
   ) {
     let paint = colours.get(tone);
     if (!paint) {
@@ -218,7 +233,7 @@ export async function gardenaPass(course: Course) {
       colours.set(tone, paint);
       resources.push(paint);
     }
-    const mesh = new Mesh(unit, paint);
+    const mesh = new Mesh(shape, paint);
     mesh.position.set(x, y, z);
     mesh.scale.set(w, h, depth);
     owner.add(mesh);
@@ -236,17 +251,22 @@ export async function gardenaPass(course: Course) {
     cow.rotation.y = p.heading + 1.2 * Math.sin(i + 1);
     cattle.add(cow);
     const hide = i % 3 ? 0x9a6850 : 0xa99c84;
-    block(cow, 0, 1.04, 0, 0.77, 0.79, 1.58, hide);
-    block(cow, -0.02, 1.27, 0.35, 0.78, 0.32, 0.39, 0xddd6be);
+    block(cow, 0, 1.04, 0, 0.77, 0.79, 1.58, hide, rounded);
+    block(cow, -0.02, 1.27, 0.35, 0.78, 0.32, 0.39, 0xddd6be, rounded);
     for (const x of [-0.26, 0.26])
-      for (const z of [-0.54, 0.54]) block(cow, x, 0.41, z, 0.16, 0.82, 0.17, hide);
+      for (const z of [-0.54, 0.54]) block(cow, x, 0.41, z, 0.16, 0.82, 0.17, hide, taper);
     const neck = new Group();
     neck.position.set(0, 1.17, -0.61);
     cow.add(neck);
-    block(neck, 0, 0.03, -0.28, 0.44, 0.48, 0.64, hide);
-    block(neck, 0, -0.12, -0.61, 0.36, 0.24, 0.19, 0xc8af9b);
-    block(neck, 0, -0.3, -0.15, 0.19, 0.22, 0.17, 0xa18a4d);
-    for (const x of [-0.24, 0.24]) block(neck, x, 0.16, -0.26, 0.26, 0.11, 0.13, hide);
+    block(neck, 0, 0.03, -0.28, 0.44, 0.48, 0.64, hide, rounded);
+    block(neck, 0, -0.12, -0.61, 0.36, 0.24, 0.19, 0xc8af9b, rounded);
+    block(neck, 0, -0.3, -0.15, 0.19, 0.22, 0.17, 0xa18a4d, taper);
+    for (const x of [-0.24, 0.24]) block(neck, x, 0.16, -0.26, 0.26, 0.11, 0.13, hide, rounded);
+    for (const x of [-0.195, 0.195]) {
+      block(neck, x, 0.09, -0.47, 0.065, 0.065, 0.05, 0x242622, rounded);
+      block(neck, x, 0.27, -0.19, 0.09, 0.22, 0.1, 0xd4c3a1, taper);
+    }
+    block(cow, 0.03, 0.93, 0.76, 0.09, 0.77, 0.11, hide, taper);
     heads.push(neck);
   }
   const signs: { g: Group; d: number }[] = [];
@@ -297,14 +317,20 @@ export async function gardenaPass(course: Course) {
     group.add(rider.group);
     return { rider, seat: course.place(0), lane: i % 2 ? 1.25 : -1.17 };
   });
+  let nearestRider = Infinity,
+    nearest = peloton[0]!;
+  const starts = [12, 18, 51, 58, 87, 94];
   return {
     group,
     materials,
+    get nearestRider() {
+      return nearestRider;
+    },
     get cowHead() {
       return heads[0]!.rotation.x;
     },
     get cyclistPosition() {
-      return peloton[0]!.rider.group.position.x;
+      return nearest.rider.group.position.x;
     },
     get cloudPosition() {
       return sky[0]!.mesh.position.x;
@@ -318,13 +344,13 @@ export async function gardenaPass(course: Course) {
         heads.forEach(
           (head, i) => (head.rotation.x = -0.37 + 0.53 * Math.sin(time * 0.88 + i * 2.1)),
         );
+      nearestRider = Infinity;
       for (let i = 0; i < peloton.length; i++) {
         const { rider, seat, lane } = peloton[i]!;
         // Move successive bunches past the rider; only recycle beyond the visibility window.
-        const period = 176,
-          speed = 6.1 + i * 0.1;
-        const gap =
-          ((((17 + i * 5.8 + time * speed - metres + 18) % period) + period) % period) - 18;
+        const period = 115;
+        const physical = starts[i]! + time * 6.25 + 1.6 * Math.sin(time * 0.12 + i);
+        const gap = ((((physical - metres + 13) % period) + period) % period) - 13;
         const d = metres + gap;
         rider.group.visible = d > 0 && d < course.length && gap > -8 && gap < 105;
         if (!rider.group.visible) continue;
@@ -332,6 +358,10 @@ export async function gardenaPass(course: Course) {
         rider.group.position.set(p.x, p.y + 0.07, p.z);
         rider.group.rotation.y = p.heading;
         rider.group.rotation.x = p.pitch;
+        if (gap >= 0 && gap < nearestRider) {
+          nearestRider = gap;
+          nearest = peloton[i]!;
+        }
         rider.pose(time * (8 + i * 0.12) + i, 0.012 * Math.sin(time * 2 + i), 0.08);
       }
       kit.roll(time * 6.3);
