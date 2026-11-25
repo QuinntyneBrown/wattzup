@@ -176,7 +176,12 @@ export function gizaPanorama(course: Course) {
   });
   const pose = course.place(6810, 9);
   const state = { camelHead: 0, cartPosition: 0 };
-  function update(time: number) {
+  function update(time: number, metres: number) {
+    group.visible =
+      Math.abs(metres - 128) < 150 ||
+      Math.abs(metres - 1541) < 150 ||
+      Math.abs(metres - 6850) < 190;
+    if (!group.visible) return;
     camels.forEach((neck, i) => {
       neck.rotation.x = 0.065 * Math.sin(time * 1.35 + i * 1.84);
       neck.rotation.y = 0.16 * Math.sin(time * 0.63 + i);
@@ -201,7 +206,7 @@ export function gizaPanorama(course: Course) {
     state.camelHead = camels[2]!.rotation.x;
     state.cartPosition = cart.position.x;
   }
-  update(0);
+  update(0, 0);
   return {
     group,
     state,

@@ -437,6 +437,8 @@ MATERIALS: dict[str, dict] = {
     "crowd-5": {"color": 0x3A4A9A, "rough": 0.9},
 }
 MATERIALS.update({k: v for k, v in themes.MATERIALS.items() if k not in MATERIALS})
+for monument in ("khafre","khufu","menkaure","sphinx","relief"):
+    MATERIALS["giza-"+monument] = MATERIALS["terrain"]
 MATERIALS["moon"] = themes.MATERIALS["moon"]
 NEONS = ["neon-pink", "neon-cyan", "neon-amber", "neon-violet", "neon-lime"]
 BEAMS = ["beam-pink", "beam-cyan", "beam-amber"]
@@ -577,6 +579,8 @@ WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Con
 
 def group_of(mat: str) -> tuple[str, bool]:
     """The mesh a part's faces join, and whether that mesh is cut into chunks along the road."""
+    if mat.startswith("giza-"):
+        return mat[5:].capitalize(), False
     if mat in WHOLE:
         return WHOLE[mat], False
     spec = MATERIALS[mat]
@@ -635,7 +639,11 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             data.from_pydata(part.verts, [], part.faces)
             film.objects.link(bpy.data.objects.new(part.name, data))
         group, chunked = group_of(part.mat)
-        if part.name in GROUND_PARTS:
+        if part.name == "Desert floor":
+            group = "Dunes"
+        elif part.name == "Plateau asphalt":
+            group = "Tarmac"
+        elif part.name in GROUND_PARTS:
             group = "Ground"
         elif part.name == WINDOWS_PART:
             group = "Windows"
@@ -685,7 +693,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos"):
+                if group in ("Windows", "Fences", "Halos", "Relief"):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -696,7 +704,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences", "Halos"):
+                    if group in ("Windows", "Fences", "Halos", "Relief"):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
@@ -1762,6 +1770,7 @@ def build_themed_scenery(road: Road, st: list[dict], length: float, height_at, c
     fx, fy = s[fin]["x"], s[fin]["y"]
     alt = theme.get("sun_altitude", 0.1)
     dist_, radius = 5200.0, 300.0 if theme.get("night") else 420.0
+    radius = theme.get("sun_radius", radius)
     sx, sy, sz = fx + math.cos(az) * dist_, fy + math.sin(az) * dist_, max(160.0, dist_ * alt)
     disc = B["moon" if theme.get("night") else "sun"]
     for q in range(32):

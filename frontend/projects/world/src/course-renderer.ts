@@ -12,6 +12,7 @@ import {
   AdditiveBlending,
   AgXToneMapping,
   type CanvasTexture,
+  Box3,
   Color,
   DirectionalLight,
   DoubleSide,
@@ -232,6 +233,8 @@ export class CourseRenderer implements WorldRenderer {
     reach: number;
   }[] = [];
   private panorama: ReturnType<typeof gizaPanorama> | null = null;
+  private readonly monuments: { key: string; centre: Vector3 }[] = [];
+  private readonly projected = new Vector3();
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -358,10 +361,27 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
-      this.build(gltf.scene, canvas);
+      let gizaMaterials: Record<string, Material> | undefined;
+      if (this.course.file.id === 'giza') {
+        const { gizaSurfaces } = await import('./giza-surfaces');
+        if (this.disposed) return false;
+        const surfaces = gizaSurfaces();
+        gizaMaterials = surfaces.materials;
+        this.disposables.push(surfaces);
+        this.camera.setViewOffset(1, 1, 0, 0.045, 1, 1);
+      }
+      this.build(gltf.scene, canvas, gizaMaterials);
       if (this.course.file.id === 'giza') {
         const { gizaPanorama } = await import('./giza-panorama');
         if (this.disposed) return false;
+        if (this.pinned) {
+          for (const name of ['Khafre', 'Khufu', 'Sphinx']) {
+            const centre = new Box3()
+              .setFromObject(gltf.scene.getObjectByName(name)!, true)
+              .getCenter(new Vector3());
+            this.monuments.push({ key: name.toLowerCase() + 'ScreenX', centre });
+          }
+        }
         this.panorama = gizaPanorama(this.course);
         this.scene.add(this.panorama.group);
         this.disposables.push(this.panorama);
@@ -434,7 +454,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
-    this.panorama?.update(frame.reducedMotion ? 0 : frame.time);
+    this.panorama?.update(frame.reducedMotion ? 0 : frame.time, metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -499,7 +519,11 @@ export class CourseRenderer implements WorldRenderer {
     this.renderer = null;
   }
 
-  private build(map: Object3D, canvas: HTMLCanvasElement): void {
+  private build(
+    map: Object3D,
+    canvas: HTMLCanvasElement,
+    localMaterials?: Record<string, Material>,
+  ): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
@@ -633,6 +657,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
+    Object.assign(materials, localMaterials);
     const painted: Mesh[] = [];
     map.traverse((part) => {
       const mesh = part as Mesh;
@@ -1120,7 +1145,13 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
-    if (this.panorama) Object.assign(drawn, this.panorama.state);
+    if (this.panorama) {
+      Object.assign(drawn, this.panorama.state);
+      for (const { key, centre } of this.monuments) {
+        const screen = this.projected.copy(centre).project(this.camera);
+        (drawn as Record<string, unknown>)[key] = screen.z < 1 ? screen.x : Infinity;
+      }
+    }
     hook['course'] = drawn;
   }
 

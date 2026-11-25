@@ -35,3 +35,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | Cairo | Real 13 and 15 informed the built edge of the desert, with denser blocks near the valley. Game 02 informed the softened distant contrast. |
 
 The race meshes, wildlife, saddle blankets and sunrise colours were made for this course. The route fits the plateau landmarks to the original 23-minute workout.
+
+The Sphinx’s face uses an original generated limestone portrait projected onto a curved mesh in the sculpture’s own axes. Real 10, 11 and 13 informed the headdress and erosion.

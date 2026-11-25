@@ -28,6 +28,24 @@ def xy(d):
     t=(pos-arc[i])/(arc[i+1]-arc[i])
     return tuple((a+(b-a)*t)*scale for a,b in zip(raw[i],raw[i+1]))
 
+# Shape the archaeological road around the monuments: a rider sees the faces before
+# turning along their bases. Re-measure the new centre line so the odometer follows the bends.
+def approaches():
+    line=[]
+    for i in range(1881):
+        d=i*5;x,y=xy(d);a,b=xy(d-.5);c,e=xy(d+.5)
+        h=math.atan2(e-b,c-a)
+        lateral=0
+        for station,slope,reach in ((82,-.46,145),(1440,-.32,120),(2970,.54,85),(4570,-.31,62)):
+            delta=(d-station+LENGTH/2)%LENGTH-LENGTH/2
+            lateral+=slope*delta*math.exp(-(delta/reach)**2)
+        line.append((x-lateral*math.sin(h),y+lateral*math.cos(h)))
+    cumulative=[0]
+    for a,b in zip(line,line[1:]):cumulative.append(cumulative[-1]+math.dist(a,b))
+    return line,cumulative,LENGTH/cumulative[-1]
+
+raw,arc,scale=approaches()
+
 def elevation(d):
     pos=d%LENGTH
     for (a,h),(b,k) in zip(PROFILE,PROFILE[1:]):
@@ -53,9 +71,9 @@ def lay(course,theme,bc):
     return rows,stages,LENGTH,mean,0
 
 # Each monument stays at one world position regardless of the rider's heading.
-KHAFRE=(*offset(566,-195),215,137,True)
-KHUFU=(*offset(1720,-166),230,139,False)
-MENKAURE=(*offset(560,-574),103,65,False)
+KHAFRE=(-786,110,215,137,True)
+KHUFU=(363,346,230,139,False)
+MENKAURE=(-510,-115,103,65,False)
 
 def shadow(x,y):
     """Low eastern sun projects the silhouette west along the sand."""
@@ -75,7 +93,7 @@ def terrain(road,col,theme,bc):
         # Close to the road the native shoulder matches its cross section.
         return z-.25+fade*(dunes-4)
     sand=bc.Builder('Desert floor','terrain');sand.colours=[]
-    def quad(points,close):
+    def quad(points):
         for x,y,z in points:
             tone=lin(0xDFBF8C)
             grain=.94+.045*math.sin(x/45+y/81)+.045*math.cos(x/143-y/55)
@@ -85,14 +103,14 @@ def terrain(road,col,theme,bc):
     # The broad dunes lie under a narrow, accurately graded strip along the road.
     for x in range(-4100,4100,65):
         for y in range(-3600,3600,65):
-            quad([(u,v,height(u,v)-2.9) for u,v in ((x,y),(x+65,y),(x+65,y+65),(x,y+65))],False)
+            quad([(u,v,height(u,v)-2.9) for u,v in ((x,y),(x+65,y),(x+65,y+65),(x,y+65))])
     for i in range(road.index(0),road.index(LENGTH),2):
         end=min(i+2,road.index(LENGTH))
         for a,b in ((-45,-18),(-18,-7),(-7,-4.2),(4.2,7),(7,18),(18,45)):
             pts=[]
             for ix,lane in ((i,b),(i,a),(end,a),(end,b)):
                 x,y,_=road.at(ix,lane);pts.append((x,y,height(x,y)-max(0,abs(lane)-18)*.11))
-            quad(pts,True)
+            quad(pts)
     return sand.build(col),height
 
 def pyramid(b,x,y,z,width,height,cap,rng,ruin=False):
@@ -152,12 +170,20 @@ def sphinx(b,x,y,z,yaw):
           (10.8,0,12.7,4.8,4.4),(12.4,0,14.1,3.2,3.25)],ochre)
     # Fabric flares into the shoulders, with two separate striped lappets framing the cheeks.
     for side in (-1,1):
-        for i in range(10):
-            a=i/10;c=(i+1)/10
-            def rim(t,front):
-                return pt((12+3.3*t) if front else 7.1,side*(3.4+2.7*t),17.8-6.8*t)
-            b.face((rim(a,False),rim(a,True),rim(c,True),rim(c,False)),(ochre if i%2 else brown,)*4)
-            b.face((rim(c,False),rim(c,True),rim(a,True),rim(a,False)),(ochre if i%2 else brown,)*4)
+        for i in range(15):
+            a=i/15;c=(i+1)/15
+            def ring(t):
+                wide=3.42+2.52*math.sin(t*1.65)
+                front=12.82+2.4*t
+                return [pt(front,side*1.95,18.5-7.35*t),
+                        pt(front+.19,side*wide,18.5-7.35*t),
+                        pt(8.65-.35*t,side*(wide+.15),18.5-7.35*t),
+                        pt(8.59,side*2.23,18.5-7.35*t)]
+            top,low=ring(a),ring(c)
+            for n in range(4):
+                j=(n+1)%4
+                face=(top[n],low[n],low[j],top[j])
+                b.face(face if side>0 else face[::-1],((ochre if i%3 else brown),)*4)
     form([(12.1,0,13.0,2.7,2.5),(12.85,0,13.55,3.35,2.65),(12.85,0,15.1,3.55,3.2),
           (12.4,0,16.5,3.9,3.65),(11.8,0,18.5,4.3,4.0),(11.4,0,20.1,3.9,3.7),
           (11.0,0,20.75,3.55,3.2)],ochre)
@@ -168,7 +194,7 @@ def sphinx(b,x,y,z,yaw):
     form([(15.82,0,14.27,.38,1.13),(15.93,0,14.62,.4,1.13)],brown)
 
 def road_surface(road,st,length,col,theme,bc):
-    tar=bc.Builder('Road','asphalt');kerb=bc.Builder('Plateau kerbstones','terrain')
+    tar=bc.Builder('Plateau asphalt','asphalt');kerb=bc.Builder('Plateau kerbstones','terrain')
     drift=bc.Builder('Wind blown sand','terrain');mark=bc.Builder('RoadPaint','paint')
     kerb.colours=[];drift.colours=[]
     for i in range(road.index(0),road.index(LENGTH)):
@@ -194,18 +220,40 @@ def road_surface(road,st,length,col,theme,bc):
 
 def scenery(k):
     b=Painted(k);far=Painted(k,'peaks');rng=k.rng
-    for x,y,w,h,cap in (KHAFRE,KHUFU,MENKAURE):
-        pyramid(far,x,y,k.height_at(x,y)-8,w,h+8,cap,rng)
-    for d,l,w,h in ((3075,59,44,20),(3140,81,40,17),(3230,91,42,18)):
-        x,y=offset(d,l);pyramid(b,x,y,k.height_at(x,y)-5,w,h+3,False,rng,True)
+    for name,(x,y,w,h,cap) in zip(('Khafre','Khufu','Menkaure'),(KHAFRE,KHUFU,MENKAURE)):
+        part=Painted(k,'giza-'+name.lower());part.b.name=name
+        pyramid(part,x,y,k.height_at(x,y)-8,w,h+8,cap,rng)
+    for x,y,w,h in ((914,227,44,20),(887,177,40,17),(854,123,42,18)):
+        pyramid(b,x,y,k.height_at(x,y)-5,w,h+3,False,rng,True)
     for d in range(2810,3340,26):
         x,y=offset(d,rng.uniform(19,42));z=k.height_at(x,y)-1.5
         w=rng.uniform(7,12)
         for layer in range(4):
             b.box((x,y,z+layer*.75),(w-layer*.45,6.5-layer*.3,.78),heading(d)+.12,lin(0xB99D75+layer*0x030302))
     # The face looks obliquely towards the approach. The low temple remains below the head.
-    d=4631;x,y=offset(d,-30);z=k.height_at(x,y)-1
-    sphinx(b,x,y,z,heading(d)+math.pi*.77)
+    d=4649;x,y=offset(d,-23);z=k.height_at(x,y)-1
+    sculpture=Painted(k,'giza-sphinx');sculpture.b.name='Sphinx'
+    sphinx(sculpture,x,y,z,heading(d)+math.pi*1.03)
+    # Curve the original carved portrait round the head in the monument’s own axes.
+    # Its brow and lips stand proud of the stone. The lappets recede toward the back.
+    portrait=Painted(k,'giza-relief')
+    portrait.b.name='Relief'
+    portrait.b.uvs=[]
+    yaw=heading(d)+math.pi*1.03
+    def carved(u,v):
+        across=(u-.5)*12.4
+        side=abs(2*u-1)
+        depth=16.63-5.7*side**2
+        depth+=.51*math.exp(-((v-.40)/.11)**2-(across/.9)**2)
+        depth-=.9*max(0,(.16-v)/.16)
+        depth-=1.60*max(0,(v-.66)/.34)
+        return (x+depth*math.cos(yaw)-across*math.sin(yaw),
+                y+depth*math.sin(yaw)+across*math.cos(yaw),z+20.93-v*9.75)
+    for row in range(16):
+        for col in range(24):
+            points=[(col/24,row/16),(col/24,(row+1)/16),((col+1)/24,(row+1)/16),((col+1)/24,row/16)]
+            portrait.face([carved(u,v) for u,v in points],(lin(0xFFFFFF),)*4)
+            portrait.b.uvs.extend(points)
     for row in range(2):
         for n in range(7):
             tx,ty=offset(d-32+n*5.6,-15-row*12)
@@ -223,6 +271,44 @@ def scenery(k):
             xx,yy=offset(at+n*1.8-6,8.4+n%2*1.5);zz=k.height_at(xx,yy)
             k.person((xx,yy,zz),heading(at)+n,["crowd-3","crowd-5"])
             b.tube((xx,yy,zz+1.65),.22,.23,.04,lin(0xBFA676),lin(0xBAA174),10,lin(0xC7B081))
+    for d in range(22,9370,7):
+        l=rng.choice((-1,1))*rng.uniform(5.3,22)
+        x,y=offset(d,l);z=k.height_at(x,y)-.07
+        w=rng.uniform(.10,.64)
+        b.tube((x,y,z),w,w*.64,w*rng.uniform(.31,.83),lin(0x9F8A70),lin(0xCFB995),5,lin(0xDEC7A3))
+    for n in range(32):
+        cx=-2450-rng.uniform(0,1100);cy=-3000+n*200
+        length=rng.uniform(220,570);height=rng.uniform(28,88)
+        crest=[]
+        for j in range(24):
+            t=j/23
+            crown=height*(math.sin(t*math.pi)**.8)*(1+.1*math.sin(t*13+n))
+            crest.append((cx+length*(t-.5),cy+28*math.sin(t*4+n),45+crown))
+        for a,c in zip(crest,crest[1:]):
+            for side,reach,tint in ((-1,160,0xC1A481),(1,65,0xDBBF90)):
+                pts=(a,c,(c[0],c[1]+side*reach,38),(a[0],a[1]+side*reach,38))
+                far.face(pts if side>0 else pts[::-1],(lin(tint),)*4)
+    # Apartment roofs approach from the northern city edge, beyond the archaeological site.
+    for i in range(104):
+        x=-815+(i%41)*22+rng.uniform(-5,5)
+        y=624+145*(i//41)+rng.uniform(-20,20)
+        if k.road.tree.find((x,y,0))[2]<85:continue
+        w=rng.uniform(10,23);h=rng.uniform(12,26)
+        z=62
+        tone=lin(rng.choice((0xBDA591,0xBCA694,0xB8A297,0xC1A992)))
+        far.box((x,y,z),(w,13,h),0,tone)
+        for floor in range(2,int(h),4):
+            far.box((x,y-6.6,z+floor),(w+.2,.65,.37),0,lin(0xAA9485))
+            for j in (-.3,0,.3):
+                far.box((x+j*w,y-6.57,z+floor+.44),(1.8,.2,1.8),0,lin(0x988B81))
+        far.tube((x+2,y,z+h),1.2,1.18,1.8,tone,tone,9,tone)
+    for x,y in ((-422,647),(-85,821),(352,1060)):
+        z=65;tone=lin(0xAD9886)
+        far.tube((x,y,z),2.5,1.85,37,tone,tone,12)
+        for h,w in ((26,3.4),(38,2.65)):
+            far.tube((x,y,z+h),w,w,.85,tone,lin(0xC7AD92),12,tone)
+        far.tube((x,y,z+37.5),1.52,.86,8,tone,tone,12)
+        far.tube((x,y,z+45.5),1.1,.07,5,lin(0x9D8C7F),tone,12)
     # Cairo lies to the east throughout the ride. Bake distant blocks by district and a few slender minarets.
     for n in range(370):
         x=rng.uniform(2250,3100);y=rng.uniform(-3600,3700)
@@ -238,4 +324,4 @@ def scenery(k):
 THEME={'lay':lay,'road_builder':road_surface,'land_builder':terrain,'terrain':{'sea':False},
        'land':{'mid':0xD4B888},'sky':[0xECD3AC,0xDDBA9C,0xC3B6B1,0xA1B0BA,0x90A5B8],
        'haze':0xDDC4A7,'light':[0xFFD099,3.0],'fill':[0xCFD1D2,0xC0A486],
-       'sun_azimuth':.30,'sun_altitude':.18,'palette':{'asphalt':0x706A61,'paint':0xCEBC9D}}
+       'sun_azimuth':.63,'sun_altitude':.135,'sun_radius':27,'palette':{'sun':0xFFF0C6,'asphalt':0x514E4C,'paint':0xCEBC9D}}

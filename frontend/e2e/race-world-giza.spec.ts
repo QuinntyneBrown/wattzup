@@ -54,3 +54,33 @@ for (const [actor, metres, part] of [
     await expect.poll(() => worldRide.gizaMotion(part)).not.toBe(held);
   });
 }
+
+for (const [landmark, metres, part] of [
+  ['Khafre', 80, 'khafreScreenX'],
+  ['Khufu', 1430, 'khufuScreenX'],
+  ['Sphinx', 4560, 'sphinxScreenX'],
+] as const) {
+  test(`the ${landmark} approach frames the monument between the HUD panels`, async ({
+    api,
+    bluetooth,
+    page,
+    worldRide,
+  }) => {
+    api.answer('GET', '/api/maps', [gizaCourseMap]);
+    api.answer('GET', '/api/progress', { ...newRiderProgress, openMapIds: [gizaCourseMap.id] });
+    await worldRide.pin('low', 'webgl2');
+    await bluetooth.remember(echelonBike);
+    const maps = new MapSelectPage(page);
+    await maps.open();
+    await worldRide.startAt(metres);
+    await maps.row(gizaCourseMap.name).root.click();
+    const setup = new RaceSetupPage(page);
+    await setup.mode('Your best time').click();
+    await setup.start.click();
+    const race = new RacePage(page);
+    await expect(race.backend).toBeVisible();
+    await expect
+      .poll(async () => Math.abs((await worldRide.gizaMotion(part)) ?? Infinity))
+      .toBeLessThan(0.56);
+  });
+}
