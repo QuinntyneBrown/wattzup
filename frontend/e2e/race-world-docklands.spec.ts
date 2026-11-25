@@ -35,8 +35,8 @@ for (const [actor, metres, part] of [
     await setup.start.click();
     await expect(race.backend).toBeVisible();
 
-    const first = await worldRide.quayMotion(part);
     await expect.poll(() => worldRide.quayMotion(part)).not.toBeNull();
+    const first = await worldRide.quayMotion(part);
     await expect.poll(() => worldRide.quayMotion(part)).not.toBe(first);
     await race.pause.click();
     await expect(race.resume).toBeVisible();

@@ -19,7 +19,7 @@ def member(builder, a, b, width, depth=None, taper=1):
 
 def bridge(k, first, last, number):
     deck=k.kerb+1.8
-    colour=('neon-cyan','neon-pink','neon-violet','neon-amber')[number%4]
+    colour=('neon-cyan','neon-pink','neon-lime','neon-violet')[number%4]
     steel=k.B['whitewash'];led=k.B[colour];dark=k.B['tower']
     def pos(f,l,z):return k.road.at(round(first+(last-first)*f),l,z)
     if number%4==0:
@@ -85,6 +85,30 @@ def warehouse(k,i,width,floors,off,wall):
             p=k.P(i,j*width*.17,wall+1.66,2.99)
             k.B['bulb'].box(p,(.19,.18,.26),yaw)
             k.light(k.P(i,j*width*.17,wall+1.91,0),'bulb',5,.52)
+
+        if i % 5 < 2:
+            # The letters are built from light tubes attached to the wharf fascia.
+            # The tables use the same footpath elevation as the restaurant entrance.
+            face = wall + 2.19
+            light = k.B['neon-lime' if i % 2 else 'neon-pink']
+            glyphs = {
+                'B': [[(0,0),(0,1),(.55,1),(.73,.79),(.55,.52),(0,.52)],[(.55,.52),(.76,.28),(.55,0),(0,0)]],
+                'A': [[(0,0),(.36,1),(.72,0)],[(.15,.42),(.56,.42)]],
+                'R': [[(0,0),(0,1),(.53,1),(.72,.77),(.52,.52),(0,.52)],[(.38,.52),(.76,0)]],
+            }
+            for j,letter in enumerate('BAR'):
+                for stroke in glyphs[letter]:
+                    for (x,y),(xx,yy) in zip(stroke,stroke[1:]):
+                        def end(a,b):
+                            return k.P(i,(j-1.5)*1.28+a*1.34,face,3.77+b*1.24)
+                        member(light,end(x,y),end(xx,yy),.10)
+            for table in (-.24,.24):
+                along=width*table
+                k.prism(k.B['dark'],k.P(i,along,wall+2.82,.10),.10,.88,7)
+                k.prism(k.B['trunk'],k.P(i,along,wall+2.82,.96),.55,.09,10)
+                for side in (-1,1):
+                    k.prism(k.B['dark'],k.P(i,along+.86*side,wall+2.82,.08),.07,.50,6)
+                    k.prism(k.B['container-0'],k.P(i,along+.86*side,wall+2.82,.58),.26,.08,8)
 
 
 def liner(k):
