@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Knicks Championship Parade (#2148)
+
+Keep the existing championship parade, New York morning light, street banners, moving floats and original soundtrack. The native course anchors the class grade and public landmarks to the race distance. Load Broadway’s existing street model and crowd only when entering this course. The rider advances through the map via Map Select and Race Setup. Sprintavals keeps its eighteen original stages, cadence, resistance and video timing.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Bowling Green, 0.08 km | Real 07, 08, 10 and 13–14 and games 01 and 05 | The bull has a lowered head, curved horns, a humped shoulder and bronze highlights against the park fence. |
+| Float, 1.42 km | Real 01–04 and games 02 and 03 | Rails and team figures ride above the flatbed. Orange and blue fans crowd the blue barriers. Paper tumbles past open windows and accumulates on the road. |
+| Trinity Church, 2.65 km | Real 05, 09 and 15 and games 01–02 | The narrow Gothic spire, churchyard fence and trees break the wall of commercial buildings. |
+| Open bus, 3.88 km | Real 01–06 and 12 and games 03 and 04 | A moving double-decker has an open roof, visible passenger rail and two rows of windows. The lower Broadway street name and signals hang above its lane. |
+| St. Paul’s Chapel, 5.27 km | Real 05, 07, 12 and 15 and games 04 and 05 | A columned porch and pale steeple are seen at the churchyard. Bronze route plaques occupy the granite pavement. Tower shadows leave distinct sunlit bands. |
+| City Hall, 6.69 km | Real 05, 11–12 and 15 and games 01 and 05 | Terra-cotta setbacks and the green copper crown stay at the far end of Broadway and approach the rider. |
+
+Real 01–04 show the US women’s national soccer team parade and supply proportions of floats, fan barriers and viewing distance. Real 06 shows a transit bus and supplies vehicle scale. All Knicks colours and designs come from original game assets. Feedback #900 requires continuous float, crowd and ticker motion. Keep wrapped objects outside the visible interval, fade a paper fragment at each end and use the ride clock for pause and reduced motion. Use bounded buffers and release all native course textures and batches.
