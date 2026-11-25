@@ -182,8 +182,70 @@ def towers(art):
                 art.face((a,b,tip),(lin(0xC1CFD8),lin(0x92A9C0),lin(0xD3DFDA)))
                 beam(art,a,tip,.45,.45,lin(0xC8D8DF))
 
+def festival(k,art,glow):
+    """Open stages, Texas festival barricades, pedicabs, trailers and East Sixth wall paintings."""
+    for d in (118,398,666,1150):
+        _,_,h=street(d)
+        def box(u,v,z,w,depth,height,tint,b=art):
+            b.box(place(d+u,v,z),(w,depth,height),h,lin(tint))
+        box(0,10.25,0,9.8,4.15,1.06,0x554953)
+        box(0,12.1,1.07,9.6,.2,3.2,0x442F50)
+        box(0,10.2,4.24,10.3,4.55,.35,0x614455)
+        for u in (-4.6,4.6):
+            box(u,8.55,1.07,.18,.18,3.2,0x938794)
+            box(u*.79,8.6,1.1,.73,.65,1.32,0x302D38)
+        for j in range(8):box(j-3.5,8.34,4.15,.41,.22,.18,(0xE47D96,0x7BD3C6,0xF0B46B)[j%3],glow)
+        for side in (-1,1):
+            for j in range(16):
+                at=d-27+j*3.8;lane=side*4.6
+                for z in (.34,1.05):
+                    beam(art,place(at,lane,z),place(at+3.65,lane,z),.075,.08,lin(0xAAA49B))
+                for n in range(6):
+                    beam(art,place(at+.6*n,lane,.27),place(at+.6*n,lane,1.03),.049,.05,lin(0x898C88))
+        if d in (398,666):
+            banner=place(d+6,5.5,4.1);right=(math.sin(h),-math.cos(h),0)
+            art.box(banner,(.18,3.7,1.57),h,lin(0xBE6657))
+            words(glow,'SXSW',(banner[0]-.12*math.cos(h),banner[1]-.12*math.sin(h),4.57),right,(0,0,1),.93,3.28,0xFFE8B6)
+    for d in (46,219,668,1145,1319):
+        _,_,h=street(d)
+        def box(u,l,z,w,depth,high,c):
+            art.box(place(d+u,l,z),(w,depth,high),h,lin(c))
+        box(0,-8.9,.42,5.8,2.34,2.16,0xB17B60)
+        box(2.75,-8.9,.4,1.75,2.18,1.59,0xA1AFA6)
+        box(2.81,-7.8,1.32,1.1,.09,.62,0x4A5C65)
+        box(-.15,-7.7,1.15,3.45,.08,.87,0x493D42)
+        box(-.15,-7.45,2.12,3.72,.63,.17,0xE9BA85)
+        for u in (-1.86,1.98):
+            box(u,-7.81,.07,.73,.22,.63,0x372F38)
+        for j in range(3):
+            at=d+10+j*2.8;lane=-7.65
+            for u,v in ((.65,0),(-.53,-.37),(-.53,.37)):
+                for n in range(10):
+                    def rim(a):return place(at+u+.31*math.cos(a),lane+v,.35+.31*math.sin(a))
+                    beam(art,rim(n*math.tau/10),rim((n+1)*math.tau/10),.055,.055,lin(0x443F45))
+            art.box(place(at-.35,lane,.55),(.84,1.07,.36),h,lin(0xA35651))
+            art.box(place(at-.35,lane,1.72),(1.26,1.13,.11),h,lin(0xD8A564))
+            for v in (-.47,.47):beam(art,place(at-.65,lane+v,.65),place(at-.65,lane+v,1.79),.05,.05,lin(0x746A64))
+    for d in (1070,1100,1130,1195):
+        # Painted sun, overlapping hills and rays on a recessed brick bay.
+        h=street(d)[2];lane=-14.02
+        art.box(place(d,lane,.3),(16,.16,5.8),h,lin(0x528892))
+        for n in range(22):
+            a=n*math.tau/22;b=(n+1)*math.tau/22
+            pts=(place(d-2,lane+.12,3.3),place(d-2+2.0*math.cos(a),lane+.12,3.3+2*math.sin(a)),place(d-2+2*math.cos(b),lane+.12,3.3+2*math.sin(b)))
+            art.face(pts,(lin(0xE99C52),)*3);art.face(pts[::-1],(lin(0xE99C52),)*3)
+        for n in range(4):
+            pts=(place(d-8+n*3,lane+.17,.4),place(d-4+n*3,lane+.17,2.8+.5*(n%2)),place(d+n*3,lane+.17,.4))
+            co=lin((0x9B5A76,0x6576A0,0xBA6C67,0x48867E)[n]);art.face(pts,(co,)*3);art.face(pts[::-1],(co,)*3)
+    for d in (310,623,1185):
+        for i in range(5):
+            lane=-8.8-i*.36
+            a=place(d-6+i,lane,.7+i*.11);b=place(d+4+i,lane,.73+i*.11)
+            beam(glow,a,b,.045,.055,lin((0xF39A57,0xFFE9B1,0xC85F60)[i%3]))
+
 def scenery(k):
     art=Painted(k);glow=Painted(k,'glow-window')
+    festival(k,art,glow)
     towers(Painted(k,'peaks'))
     for n,d in enumerate(range(12,LAP-10,22)):
         x,y,heading=street(d);_,_,next_heading=street(d+15)
