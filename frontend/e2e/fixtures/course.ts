@@ -149,3 +149,40 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const bondiCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'bondi-to-bronte',
+  name: 'Bondi to Bronte',
+  routeName: 'The coast walk',
+  place: 'Sydney, Australia',
+  world: 'bondi',
+  distanceKm: 6.15,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/bondi-to-bronte.jpg',
+  photoUrl: 'maps/bondi-to-bronte-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 120, 21, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 120, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 60, 10, 80),
+    ],
+  },
+};
