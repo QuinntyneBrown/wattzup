@@ -1,3 +1,4 @@
+import letrasElevation from './letras-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3585,6 +3586,56 @@ export const itenCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 60, 24, 110),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const letrasCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'alto-de-letras',
+  name: 'Alto de Letras',
+  routeName: 'the Alto de Letras climb',
+  place: 'Tolima and Caldas, Colombia',
+  world: 'letras',
+  distanceKm: 22.15,
+  climbingM: 1319,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: letrasElevation,
+  },
+  thumbnailUrl: 'maps/alto-de-letras.jpg',
+  photoUrl: 'maps/alto-de-letras-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 18, 85),
+      seg('work', 30, 21, 90),
+      seg('work', 30, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 22, 100),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 24, 100),
+      seg('work', 30, 19, 90),
+      seg('recover', 60, 16, 85),
+      seg('cool-down', 60, 10, 80),
     ],
   },
 };
