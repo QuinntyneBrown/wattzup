@@ -1,3 +1,4 @@
+import type { DaytonaTideLine } from './daytona-tide-line';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -200,6 +201,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
+  private shore: DaytonaTideLine | null = null;
   private course: Course | null = null;
   private disposed = false;
   private readonly scene = new Scene();
@@ -357,6 +359,13 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.path === 'courses/daytona') {
+        const { DaytonaTideLine } = await import('./daytona-tide-line');
+        if (this.disposed) return false;
+        this.shore = new DaytonaTideLine(this.course, this.disposables);
+        this.scene.add(this.shore.group);
+        this.camera.setViewOffset(1, 1, 0, 0.053, 1, 1);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -422,6 +431,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    this.shore?.place(metres, frame.reducedMotion ? 0 : frame.time);
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);

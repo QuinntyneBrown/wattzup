@@ -75,13 +75,15 @@ export class DaytonaStreet implements SceneStreet {
     this.ribbons = new Ribbons(this.group, disposables);
   }
 
-  build(roadHalf: number, points: number): void {
+  build(roadHalf: number, points: number, fixedLandmarks = false): void {
     this.disposables.push(this.unit);
     this.addBeach(roadHalf, points);
     this.addUmbrellasAndTowers(roadHalf);
     this.addDunes(roadHalf);
-    this.addHotels(roadHalf);
-    this.addPier(roadHalf);
+    if (!fixedLandmarks) {
+      this.addHotels(roadHalf);
+      this.addPier(roadHalf);
+    }
     this.addDragStrip(roadHalf);
     this.addStockCars(roadHalf);
     this.addBeachgoers(roadHalf);
