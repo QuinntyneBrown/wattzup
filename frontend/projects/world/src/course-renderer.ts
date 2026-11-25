@@ -69,6 +69,7 @@ import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
+import type { BrooklynCommute } from './brooklyn-commute';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -215,6 +216,8 @@ export class CourseRenderer implements WorldRenderer {
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
+  private commute: BrooklynCommute | null = null;
+  private deckSurface: Material | null = null;
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
   private pipeline: RenderPipeline | null = null;
@@ -236,6 +239,8 @@ export class CourseRenderer implements WorldRenderer {
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
     tier: 0 as number,
+    cabPosition: undefined as number | undefined,
+    ferryPosition: undefined as number | undefined,
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
@@ -356,7 +361,21 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
+      if (this.course.file.id === 'brooklyn') {
+        const { brooklynDeck } = await import('./brooklyn-deck');
+        if (this.disposed) return false;
+        const surface = brooklynDeck();
+        this.deckSurface = surface.material;
+        this.disposables.push(...surface.textures);
+      }
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'brooklyn') {
+        const { BrooklynCommute } = await import('./brooklyn-commute');
+        if (this.disposed) return false;
+        this.commute = new BrooklynCommute(this.course);
+        this.scene.add(this.commute.root);
+        this.disposables.push(this.commute);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -425,6 +444,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.commute?.update(frame.reducedMotion ? 0 : frame.time, metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -477,6 +497,8 @@ export class CourseRenderer implements WorldRenderer {
     this.lamplit.clear();
     this.lampGlow = null;
     this.sunGlow = null;
+    this.commute = null;
+    this.deckSurface = null;
     this.groundEye = null;
     this.riderBatch = null;
     this.rain = null;
@@ -580,7 +602,8 @@ export class CourseRenderer implements WorldRenderer {
       new Color(look.haze),
       coloured,
     );
-    materials['Ground'] = ground.material;
+    materials['Ground'] = this.deckSurface ?? ground.material;
+    if (this.deckSurface) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
@@ -1105,6 +1128,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.cabPosition = this.commute?.cabPosition;
+    drawn.ferryPosition = this.commute?.ferryPosition;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

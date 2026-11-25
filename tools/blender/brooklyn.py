@@ -102,7 +102,7 @@ def land(road,col,theme,bc):
     ground=bc.Builder('East River shores','terrain');ground.colours=[]
     for a,b,z,colr in ((-420,1050,5.72,0xA89F8D),(2040,4250,5.72,0xA49F92)):
         for x in range(a,b,50):
-            ground.quad((x,-1000,z),(x+50,-1000,z),(x+50,1000,z),(x,1000,z))
+            ground.quad((x,-4600,z),(x+50,-4600,z),(x+50,4600,z),(x,4600,z))
             ground.colours.extend([lin(colr)]*4)
     sea=bc.Builder('East River','sea');sea.quad((840,-4000,0),(2280,-4000,0),(2280,4000,0),(840,4000,0));sea.build(col)
     return ground.build(col),lambda *_:0
@@ -118,13 +118,7 @@ def roadway(road,st,length,col,bc):
         span=515<a<2630;width=DECK_HALF if span else 4.3
         ribbon(surface,a,a+4,-width,width,0,0xA6957A if span else 0x918A81)
         if span:
-            for i in range(20):
-                x=a+i*.2;colr=(0xA68E72,0x9C896F,0xB09B7E,0xAB967B)[(a+i*3)%4]
-                ribbon(paint,x,x+.188,-width,width,.025,colr)
-            if a%12<8:ribbon(paint,a,a+4,-.056,.056,.042,0xD3BA6F)
-        else:
-            for j in range(4):
-                ribbon(paint,a+j,a+j+.041,-width,width,.019,0x746E65)
+            if a%12<8:ribbon(paint,a,a+4,-.074,.074,.035,0xDDB75A)
     # Only the city turning loops need a second road surface.
     for i in range(len(road.s)-1):
         d=road.s[i]['d'];x,l,_=station(d)
@@ -312,6 +306,14 @@ def scenery(k):
         for y in range(-370,371,18):
             box(art,x+side*4,y,1.5,8,17.96,4.22,0x918674)
             for j in (0,6,12):art.tube((x-side*.64,y+j-8,0),.22,.21,5,lin(0x726957),lin(0x857562),7)
+    # The waterfront forms a continuous base under the taller Financial District silhouettes.
+    for y in range(-870,901,40):
+        if abs(y)<85:continue
+        x=2120+32*math.sin(y/183)
+        h=11+9*math.cos(y/87)**2
+        box(art,x,y,5.75,33,39.6,h,0xAB9F8F)
+        box(art,x,y,5.75+h,34.3,40.4,.72,0x9B9B90)
+        for j in range(5):box(art,x-16.65,y-14+j*6.7,8.9,.24,3.1,5.4,0x738486)
     for x in range(2580,3560,26):
         for side in (-1,1):
             if x%104<25:continue
