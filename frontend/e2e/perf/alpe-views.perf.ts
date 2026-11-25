@@ -26,19 +26,22 @@ test('Alpe d’Huez from the valley, Dutch Corner and ski station', async ({
   for (const [name, km] of [
     ['valley', 0.1],
     ['dutch-corner', 4.86],
+    ['church', 4.90],
     ['station', 7.02],
   ] as const) {
     while (parseFloat((await race.distance.textContent())!) < km) {
       await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(18));
       await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(90));
-      await page.clock.fastForward(1000);
+      // The baseline integrates distance on animation frames and caps each step at
+      // 250 ms. Keep it in step with the HUD when advancing the simulated clock.
+      for (let frame = 0; frame < 5; frame++) await page.clock.fastForward(200);
     }
     await page.clock.resume();
     await page.screenshot({
       path: '../docs/screenshots/alpe/' + version + '-' + name + '.jpg',
       quality: 88,
     });
-    if (version === 'after' && name !== 'dutch-corner') {
+    if (version === 'after' && (name === 'valley' || name === 'station')) {
       const asset = name === 'valley' ? 'alpe-dhuez-photo.jpg' : 'alpe-dhuez.jpg';
       await race.world.screenshot({
         path: 'projects/ride/public/maps/' + asset,

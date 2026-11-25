@@ -70,7 +70,7 @@ THEME={
     "light":[0xFFF1C9,3.2], "fill":[0xDAECF9,0x82835D],"haze":0xC8D9E0,
     "sun_altitude":.78,"sun_azimuth":-.9,"kerbs":False,"edge":"verge","centre":"white",
     "land":{"low":0x7D9855,"mid":0x69904A,"high":0x829263,"rock":0x878B80,"snow":0xF4F5F3},
-    "palette":{"asphalt":0x565555,"sand":0x929383,"promenade":0x9A9A8A},
+    "palette":{"asphalt":0x565555,"chevron":0xE3D4A5,"sand":0x929383,"promenade":0x9A9A8A},
     "chunks":{"Land":2},
 }
 
@@ -190,9 +190,9 @@ def flag(b,x,y,z,yaw):
 
 
 def church(k,b,bend):
-    i=k.road.index(bend+8)
-    x,y,z=k.P(i,6,15)
-    # Set the small nave on the inside of the bend; the square tower is seen before the bell.
+    i=k.road.index(bend+23)
+    x,y,z=k.road.at(i,-13)
+    # The outer shoulder puts the tower above the crowd in the approach sightline.
     cream,slate=lin(0xEEE4CD),lin(0x59616B)
     b.box((x,y,z-1.8),(9,5.1,5.8),0,cream)
     b.roof((x,y,z+4),9,5.1,2.5,0,slate)
@@ -202,6 +202,10 @@ def church(k,b,bend):
     b.tube((x-3.1,y-1,z+8.6),2.22,.09,4.9,slate,slate,4,slate)
     b.box((x-3.1,y-1,z+13.4),(.10,.10,1.1),0,slate)
     b.box((x-3.1,y-1,z+14.0),(.72,.1,.11),0,slate)
+    for j in (-2.5,0,2.5):
+        b.box((x+j,y-2.6,z+.9),(.72,.15,1.7),0,lin(0x545E60))
+    for j in range(3):
+        chalet(b,x+9+j*6.3,y+8+2*(j%2),z-.25,j*.12,5.7,4.9,3.6+j*.3)
 
 
 def lift(k,b):
@@ -283,6 +287,9 @@ def scenery(k):
             side=-1 if j%2==0 else 1
             x,y,z=k.road.at(i,side*7.6)
             b.box((x,y,z-.6),(5.15,.58,1.3),k.s[i]["h"],lin(0xA99E89 if j%3 else 0x899996))
+            if j%3==0:
+                b.box((x,y,z+.72),(5.2,.12,.21),k.s[i]["h"],lin(0xAFB5AE))
+                b.box((x,y,z+.35),(.12,.14,.5),k.s[i]["h"],lin(0x707873))
             if j in (0,14,20) or d2%3==0:
                 x,y,z=k.road.at(i,side*k.rng.uniform(8.5,11.0))
                 k.person((x,y,z-.2),k.s[i]["h"]+side*math.pi/2,["crowd-3","crowd-2"])
