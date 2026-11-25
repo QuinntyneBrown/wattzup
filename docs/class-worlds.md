@@ -232,7 +232,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 140 | Conor's Racing Bonanza | Wicklow Gap | 80% |  | Irish race roads over bog and heather through the Wicklow Mountains. |
 | 141 | Over/Under Threshold Efforts | Independence Pass | 35% |  | Colorado's climb over the Continental Divide among aspens. |
 | 142 | Tough Time Trial Efforts | Fenland Time Trial | 35% |  | Dead-flat English fens, crosswinds and long straight drove roads. |
-| 143 | Maximum Intensity Hill Climb Efforts | Haleakalā | 82% |  | Maui's sea-level-to-summit climb, ending above the clouds. |
+| 143 | Maximum Intensity Hill Climb Efforts | Haleakalā | 82% | [Summit road rider views](screenshots/haleakala/summit-road.md) | Maui's sea-level-to-summit climb, ending above the clouds. |
 | 144 | 35 Minute Threshold HIIT | Vienna Ringstrasse | 35% |  | Grand boulevard past palaces, opera house and trams. |
 | 145 | Climb & Sprint to the Beat | Blue Mountains, Jamaica | 35% |  | Coffee-farm switchbacks with reggae drifting up from roadside sound systems. |
 | 146 | Get Pumped With Grace | Sixth Street, Austin | 81% |  | Live-music bars and festival crowds spilling into the street. |

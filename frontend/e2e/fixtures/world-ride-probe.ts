@@ -64,6 +64,17 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async haleakalaMotion(
+    part: 'grazing' | 'tradeWind' | 'towerX' | 'rosetteX',
+  ): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async greatoceanMotion(
     part: 'waveCrest' | 'coastalLight' | 'archX' | 'apostleX' | 'bridgeX',
   ): Promise<number | null> {

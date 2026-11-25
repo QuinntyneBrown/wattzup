@@ -170,6 +170,7 @@ import type { MabryMill } from './mabry-mill';
 import type { BondiSurf } from './bondi-surf';
 import type { northFace } from './north-face';
 import type { shipwreckCoast } from './shipwreck-coast';
+import type { haleakalaSummit } from './haleakala-summit';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -201,6 +202,7 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   PortLimestone: 2300,
   Apostle: 2300,
   LondonArch: 2300,
+  HkFlank: 1200,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -335,6 +337,7 @@ export class CourseRenderer implements WorldRenderer {
   private etna: Awaited<ReturnType<typeof etnaAscent>> | null = null;
   private northFace: ReturnType<typeof northFace> | null = null;
   private coastline: ReturnType<typeof shipwreckCoast> | null = null;
+  private summit: ReturnType<typeof haleakalaSummit> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -942,6 +945,12 @@ export class CourseRenderer implements WorldRenderer {
         if (this.disposed) return false;
         this.coastline = shipwreckCoast();
         this.disposables.push(this.coastline);
+      }
+      if (this.course.file.id === 'haleakala') {
+        const { haleakalaSummit } = await import('./haleakala-summit');
+        if (this.disposed) return false;
+        this.summit = haleakalaSummit();
+        this.disposables.push(this.summit);
       }
       this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material, gizaMaterials);
       if (this.course.file.id === 'aguascalientes') {
@@ -1713,6 +1722,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.northFace?.update(frame.reducedMotion ? 0 : frame.time);
     this.coastline?.update(frame.reducedMotion ? 0 : frame.time);
+    this.summit?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -2051,6 +2061,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     if (this.northFace) Object.assign(materials, this.northFace.materials);
     if (this.coastline) Object.assign(materials, this.coastline.materials);
+    if (this.summit) Object.assign(materials, this.summit.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     Object.assign(materials, localMaterials);
     if (this.championship) {
@@ -2066,6 +2077,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.summit?.landmark(group, mesh);
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
@@ -2915,6 +2927,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.canyon) Object.assign(drawn, this.canyon.measure(this.camera));
     if (this.northFace) Object.assign(drawn, this.northFace.report(this.camera));
     if (this.coastline) Object.assign(drawn, this.coastline.report(this.camera));
+    if (this.summit) Object.assign(drawn, this.summit.report(this.camera));
     hook['course'] = drawn;
   }
 
