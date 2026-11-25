@@ -47,6 +47,7 @@ export class WorldScene implements AfterViewInit {
   /** The map's world (`MapDto.world`). */
   readonly worldId = input.required<string>();
   readonly segments = input.required<readonly Segment[]>();
+  readonly raceMetres = input<number>();
   readonly elapsed = input.required<number>();
   readonly speedKmh = input.required<number | null>();
   readonly running = input.required<boolean>();
@@ -286,6 +287,7 @@ export class WorldScene implements AfterViewInit {
       lastDrawn = now;
       driver.frame(now, {
         segments: this.timed(),
+        raceMetres: this.raceMetres(),
         elapsed: this.elapsed(),
         speedKmh: this.speedKmh(),
         running: this.running(),
