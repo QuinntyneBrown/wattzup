@@ -687,6 +687,9 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             group = part.name
         elif part.name in GROUND_PARTS:
             group = "Ground"
+        elif part.name in ("YeouidoCity", "BanpoJets", "BanpoNear", "HanCyclists", "HanReflections", "HanWater", "NamsanTower"):
+            group = part.name
+            chunked = group not in ("YeouidoCity", "HanWater", "NamsanTower", "BanpoNear", "HanCyclists")
         elif part.name in ("HkWindCloud", "HkCraterFloor"):
             group, chunked = part.name, False
         elif part.name in ("HkFlank", "HkRanchHead", "HkCrowns", "HkGardenPlant", "HkSolarDrum"):
@@ -2337,7 +2340,10 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
-    (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
+    if (theme or {}).get("road_builder"):
+        theme["road_builder"](road, st, length, col, theme, sys.modules[__name__])
+    else:
+        (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
     if (theme or {}).get("builder") == "sellaronda":
         _, height_at = sellaronda.build_terrain(road, col, Builder)
         facts = sellaronda.build_scenery(road, st, length, height_at, course, col, Builder, build_sky)

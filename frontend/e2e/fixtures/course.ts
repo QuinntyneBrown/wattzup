@@ -52,6 +52,7 @@ import glastonburyElevation from './glastonbury-elevation.json';
 import goldengateElevation from './goldengate-elevation.json';
 import grandcanyonElevation from './grandcanyon-elevation.json';
 import greatoceanElevation from './greatocean-elevation.json';
+import hanriverElevation from './hanriver-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -3267,6 +3268,44 @@ export const greatoceanCourseMap = {
       seg('work', 60, 22, 100),
       seg('recover', 120, 19, 90),
       seg('cool-down', 120, 13, 80),
+    ],
+  },
+};
+
+export const hanRiverCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'han-river-parks',
+  name: 'Han River Parks, Seoul',
+  routeName: 'The riverside path',
+  place: 'Seoul, South Korea',
+  world: 'hanriver',
+  distanceKm: 8.71,
+  climbingM: 12,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: hanriverElevation,
+  },
+  thumbnailUrl: 'maps/han-river-parks.jpg',
+  photoUrl: 'maps/han-river-parks-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 280, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 90, 11, 80),
+      seg('work', 45, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 45, 23, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 55, 22, 100),
+      seg('recover', 97, 11, 80),
+      seg('work', 10, 24, 110),
+      seg('recover', 41, 11, 80),
+      seg('work', 10, 24, 110),
+      seg('cool-down', 177, 11, 80),
     ],
   },
 };

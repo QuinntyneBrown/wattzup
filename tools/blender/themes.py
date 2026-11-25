@@ -1517,3 +1517,9 @@ import greatocean as _greatocean
 
 THEMES['greatocean']=_greatocean.THEME
 SCENERY['greatocean']=_greatocean.scenery
+
+
+import hanriver
+
+THEMES['hanriver'] = hanriver.THEME
+SCENERY['hanriver'] = hanriver.scenery

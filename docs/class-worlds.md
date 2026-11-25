@@ -77,6 +77,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Golden Gate Park (`goldengate`) | 15 Minutes HIIT Sprinting Efforts (GCN Training, 15:00) | 6.375 km | 20 m | `public/courses/goldengate.glb` ([ride views](screenshots/golden-gate-park/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Grand Canyon South Rim (`grandcanyon`) | VO2 Max Booster (GCN Training, 30:00) | 13.425 km | 171 m | `public/courses/grandcanyon.glb` ([ride views](screenshots/grand-canyon-south-rim/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Great Ocean Road (`greatocean`) | Hold Your Intensity (GCN Training, 20:00) | 8.450 km | 126 m | `public/courses/greatocean.glb` ([ride views](screenshots/great-ocean-road/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Han River Parks, Seoul (`hanriver`) | 20 Minute High Intensity Workout (GCN, 20:40) | 8.708 km | 12 m | `public/courses/hanriver.glb` ([ride views](screenshots/han-river-parks/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

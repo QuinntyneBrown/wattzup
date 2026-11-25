@@ -1187,3 +1187,13 @@ Map Select and Race Setup already open the baked Haleakalā course. Preserve its
 - The cloud belt uses real 03–04, 06 and 15. Distinguish moving low cloud from the fixed island silhouettes. Upper switchbacks follow real 10–12 and game 03, with yellow paint and reflector posts. Preserve the original continuous road.
 - Real 01–02 show the difference between the broad basal silversword rosette and its flowering stalk. Real 05–06 establish the white observatory drum, dome openings and solar tower. Real 10 and 12–15 define the broad crater walls, distinct cinder cones and sparse vegetation. Games 01–05 inform silhouette, hazard-free road position and readable depth at riding speed.
 - Keep static geometry merged by section. Drive cloud movement and ranch motion from ride time and freeze both on pause. Bound repeated plants and release route-owned buffers, textures and materials on exit. Use the six rider-height mock positions, HUD visible, for a paired comparison with Caribana. Benchmark Pāʻia and the upper silversword section with Chromium low/WebGL2, DPR 1, 1024 × 768, 4× CPU throttle, nine seconds of warm-up and 60 seconds of actual submitted frames as required by ADRs 0021, 0023, 0030 and 0034–0035.
+
+### Han River Parks, Seoul · L2-2134
+
+Model the broad Han as a continuous water surface. Keep the 63 Building’s gold taper, paired red Parc1 frames and the IFC slabs on the far bank. Place N Seoul Tower on a separate Namsan ridge. Real 05 and 12–14 establish their relative silhouettes. Real 04 shows the Hàn River in Vietnam and informs only the light reflected on water. Game 01, 03 and 05 set their riding scale behind the cycleway.
+
+The path dips below the lit concrete bridge deck and passes its fountain face on a bend. Preserve clearance under the deck. Alternate warm pier lights and cool fascia lights, reflected in narrow broken streaks. Model Banpo’s jets as shared curved ribbons with ride-clock colour and flow. Real 02–03 and 08–09 show the arc spacing and the open space between piers. Game 04 guides the approaching sightline.
+
+Use yellow centre lines, worn stencils, path lamps, stepped grass banks, picnickers and green rental frames at the park and promenade. Real 01, 06–07, 10–11 and 15 guide these near-field details. Game 02 informs passing distance. Batch static geometry in road sections. Reuse geometry for evening riders and hold all movement on pause. Dispose textures, materials and moving instances when leaving the race.
+
+Review the Yeouido, park, piers, Banpo, Namsan and promenade mocks in the race mock directory. Capture those positions from the normal saddle camera and measure the park and fountain sections with the low-tier tablet fixture.
