@@ -355,3 +355,11 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+### Ibiza Sunset Strip · L2-2138
+
+Map Select already lists Ibiza, independent of the class screen. The catalogue resolves `ibiza-sunset-strip` to `ibiza`, which loads the native course, the cyclist kit and CourseRenderer through the world library. Keep the existing ground, track and elevation samples, both roadside signs, palm silhouettes and final approach into the photographed sunset. The earlier captures and the frame-budget history remain under screenshots/courses/ibiza. The rider’s #919 comparison is the baseline.
+
+Retain the shared static batches for distant people, club architecture and boats. Give nearby terrace dancers different joint poses at the same beat with stable phase offsets. Animate anchored hulls, line and bulbs together using bounded meshes and ride time. Keep the DJ beam root at the booth and move its far end. The passing Caló des Moro shore gains rough limestone, shallow surf, a low coping and slate joints in the promenade. Distinct cloth awnings, soft cushions and low terrace furniture break up the backlit white buildings. Release the Ibiza-only geometry, materials and textures on departure under ADRs 0021, 0023, 0030, 0034 and 0035.
+
+Real 01, 04, 09–11 and 15 inform the horizon, Conillera’s low profile and water colour. Real 02–03, 05–07 and 12–14 supply the dimensions, awning shadows, wall heights and crowd placement along the club fronts. Real 08 and 14 guide cove geometry. Games 01–03 guide coastal sightlines; games 04 and 05 guide sign, crowd and beam clearance at speed. The six 1024 × 768 rider captures cover the grid, first letters, cove, DJ, final club strip and Conillera. Compare against the original at identical physical distance. The two moving Low/WebGL 2 rides use 4× CPU, DPR 1 and nine seconds of warm-up.
