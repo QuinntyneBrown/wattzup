@@ -45,6 +45,19 @@ def road(road,st,length,col,bc):
             l=.64+math.sin(d*.13)*.59
             patch.quad(road.at(i,l-.44,.019),road.at(i+1,l-.21,.021),road.at(i+1,l+.47,.019),road.at(i,l+.35,.018))
             patch.colours.extend((lin(0x504B42),lin(0x413E37),lin(0x45413A),lin(0x5F584C)))
+        if i%7 in (0,1,2):
+            side=1 if (i//7)%2 else -1
+            width=.19+.13*math.sin(i*1.3)
+            patch.quad(road.at(i,edge(d,side)-side*width,.028),road.at(i+1,edge(e,side)-side*width*.38,.023),
+                       road.at(i+1,edge(e,side)+side*.23,.018),road.at(i,edge(d,side)+side*.30,.018))
+            patch.colours.extend(lin(c) for c in (0x67604C,0x8F8266,0x94886D,0x6E6A55))
+        if i%61==13:
+            lane=.95*math.sin(i*1.93)
+            border=[road.pos(d+u,lane+v,.037) for u,v in ((-.39,-.21),(.14,-.34),(.62,-.13),(.51,.16),(-.10,.26),(-.47,.09))]
+            centre=road.pos(d+.08,lane,.039)
+            for j in range(6):
+                patch.faces.append(tuple(patch.v(v) for v in (border[j],border[(j+1)%6],centre)))
+                patch.colours.extend((lin(0xA08F73),lin(0x736B5B),lin(0x443F38)))
     t.build(col);patch.build(col)
 
 
@@ -165,6 +178,17 @@ def canopy(art,x,y,z,r,h,a,tint):
         n=(i+1)%8;art.face((base[i],base[n],middle[n],middle[i]),(dark,dark,shade,shade))
         art.face((middle[i],middle[n],top[n],top[i]),(dark,shade,shade,shade))
     art.face(top,(shade,)*8)
+    # Small irregular groups of leaves interrupt the smooth edge of each crown.
+    for j in range(12):
+        t=a+j*2.399;v=(j%4)/4;rr=r*(.65+.29*math.sin(t*3.13)**2)
+        u=x+math.cos(t)*rr;w=y+math.sin(t)*rr*.87;zz=z+h*(.10+v)
+        long=.21*r;wide=.09*r
+        mid=(u,w,zz+.08*h);tip=(u+long*math.cos(t),w+long*math.sin(t),zz-.14*h)
+        elbow=(u-wide*math.sin(t),w+wide*math.cos(t),zz+.02*h)
+        shoulder=(u+wide*math.sin(t),w-wide*math.cos(t),zz+.01*h)
+        light=tuple(min(1,c*(1.12+.23*v)) for c in shade[:3])+(1.,)
+        art.face((mid,elbow,tip,shoulder),(light,shade,dark,light))
+        art.face((shoulder,tip,elbow,mid),(shade,dark,shade,light))
 
 
 def fronds(art,x,y,z,h,seed,banana):
@@ -238,7 +262,23 @@ def building(k,art,d,l,label,mode):
     if label:
         art.box(p(0,front*(depth/2+.14),2.78),(w*.87,.17,.80),a,lin(0x47765E))
         words(art,label,p(0,front*(depth/2+.25),2.94),(-front*c,-front*s,0),(0,0,1),.52,w*.80,0xF6DB95)
+    if mode in ('shop','works','church'):
+        # Incoming riders see the gable before the longer sign on the road-facing side.
+        face_x=-w/2-.10
+        art.box(p(face_x,0,3.00),(.18,depth*.96,1.07),a,lin(0x31534B))
+        words(art,label,p(face_x-.105,0,3.32),(s,-c,0),(0,0,1),.51,depth*.89,0xFFE1A0)
+    if mode=='shop':
+        for i in range(3):
+            art.box(p(0,front*(depth/2+.28),.75+i*.21),(w*.96,.20,.18),a,lin((0xA64237,0xD8A54E,0x427C57)[i]))
+        art.box(p(-1,front*(depth/2+.53),1.12),(3.10,1.02,.16),a,lin(0x996F46))
+        for j in range(12):
+            u=-2.34+.25*j
+            art.tube(p(u,front*(depth/2+.60),1.28),.096,.074,.21+.04*(j%3),lin(0x8B563C),lin((0xC5973D,0xA65436,0x6A915B)[j%3]),6)
+        art.box(p(0,front*(depth/2+.71),2.61),(w+.34,1.5,.16),a,lin(0xB35645))
     if mode=='works':
+        for j in range(6):
+            u=-w*.4+j*w*.16
+            art.box(p(u,front*(depth/2+.07),1.31),(1.32,.18,.95),a,lin(0x516967))
         for j in range(5):
             q=d+15+j*3.2;x0,y0,z0=k.road.pos(q,l);art.box((x0,y0,z0-.20),(2.96,6.0,.40),a,lin(0xB4AA91))
             art.box((x0,y0,z0+.21),(2.64,5.66,.047),a,lin((0x987454,0xAD906C,0xA18060)[j%3]))
@@ -266,6 +306,25 @@ def scenery(k):
                 beam(art,(u,v,z),(u+.38*math.cos(j),v+.58*math.sin(j),z+h),.15,.15,lin(0x728651))
                 canopy(art,u,v,z+h-.47,.65,.61,j,0x6C8857)
         else:tree(art,x,y,z,h,a,species==3)
+    # Mid-distance canopy follows the cut and the ravines, with gaps at the village lookouts.
+    for d in range(18,14555,6):
+        if any(abs(d-c)<38 for c in (108,1540,6336,8860)):continue
+        side=-1 if d%4 else 1
+        if 12600<d<13250 and side<0:continue
+        lateral=side*rng.uniform(10,42)
+        x,y,_=k.road.pos(d,lateral);z=k.height_at(x,y)
+        height=rng.uniform(5.9,12.7);a=rng.uniform(0,6.28)
+        if d%30==0:fronds(art,x,y,z,height*.65,a,True)
+        else:
+            art.tube((x,y,z),height*.036,height*.02,height*.75,lin(0x6B6951),lin(0x767855),6)
+            canopy(art,x,y,z+height*.67,height*.39,height*.31,a,(0x476C49,0x5E8053,0x4F775C)[int(d/6)%3])
+    for d in range(5,14540,4):
+        l=rng.choice((-1,1))*rng.uniform(2.4,5.7)
+        x,y,z=k.road.pos(d,l,-.21)
+        for j in range(4):
+            a=j*2.39+d;h=.21+.19*(1+math.sin(a));xx=x+.29*math.cos(a);yy=y+.24*math.sin(a)
+            face=((xx-.12,yy,z),(xx+.13,yy+.02,z),(xx+.31*math.cos(a),yy+.33*math.sin(a),z+h))
+            colour=lin((0x72834E,0x899851,0x53744C)[j%3]);art.face(face,(colour,)*3);art.face(face[::-1],(colour,)*3)
     for d in range(75,14480,15):
         if d%490>132:continue
         for offset in (0,.36):
