@@ -87,6 +87,21 @@ def castle(art,x,y):
         art.tube((x+u,y+v,h),r*1.12,.13,6,slate,slate,12,slate)
         for a in (0,1.5,3.1,4.7):
             art.box((x+u+r*math.cos(a),y+v+r*math.sin(a),h-3),(.24,.32,1.1),a,slate)
+    # The entrance faces the approaching rider. An arched recess and cut-stone
+    # voussoirs separate the gate from the blank defensive wall above the quay.
+    for j in range(-4,5):
+        half=.48
+        height=2.6+math.sqrt(max(0,4.2-(j*.5)**2))
+        art.box((x-13.09,y+j*.5,.05),(.16,half,height),0,lin(0x5A5952))
+    for j in range(13):
+        angle=math.pi*j/12
+        art.box((x-13.17,y+2.17*math.cos(angle),2.64+2.17*math.sin(angle)),(.19,.43,.39),0,pale)
+    for j in (-6,-4,4,6):
+        art.box((x-13.06,y+j,6.1),(.13,.55,1.3),0,shade)
+    for j in range(-7,8,2):
+        art.box((x-13.02,y+j,9),(.84,.92,1.15),0,pale)
+    for z in (.6,2.1,5.9,8.35):
+        art.box((x-13.07,y,z),(.14,17.98,.14),0,lin(0xABAA98))
     for j in range(-11,12,2):
         art.box((x+j,y-8.8,9),(1.1,.75,1.1),0,pale)
     for u in range(-9,10,3):
@@ -111,6 +126,22 @@ def mas(art,x,y):
             art.box((x+u,y-12.98,z),(.12,.15,1.85),0,iron)
         for u in range(-11,12,4):
             art.box((x+u,y+dy-13.01,z+2.9),(.18,.12,.21),0,lin(0xC1B8A5))
+
+
+class DockBuilding:
+    """Rotate a building on its pier while keeping the dimensions in local metres."""
+    def __init__(self,art,origin,angle):
+        self.art,self.origin,self.angle=art,origin,angle
+        self.cs,self.sn=math.cos(angle),math.sin(angle)
+    def point(self,p):
+        x,y,z=p
+        return (self.origin[0]+x*self.cs-y*self.sn,self.origin[1]+x*self.sn+y*self.cs,z)
+    def box(self,c,size,yaw,tint):
+        self.art.box(self.point(c),size,yaw+self.angle,tint)
+    def roof(self,c,along,across,rise,yaw,tint):
+        self.art.roof(self.point(c),along,across,rise,yaw+self.angle,tint)
+    def face(self,points,colours):
+        self.art.face(tuple(self.point(v) for v in points),colours)
 
 
 def port_house(art,x,y):
@@ -220,7 +251,7 @@ def scenery(k):
     port_finish(k,art)
     castle(art,*pos(100,19)[:2])
     mas(art,*pos(615,32)[:2])
-    port_house(art,*pos(1330,22)[:2])
+    port_house(DockBuilding(art,pos(1330,58),-.89),0,0)
     for d in (205,300,410,760,850,1720,4390,7600,12700,16700):
         x,y,_=pos(d,-17)
         shed(art,x,y,0,d in (205,300))
@@ -234,6 +265,19 @@ def scenery(k):
             for layer in range(k.rng.randint(1,3)):
                 colour=lin(k.rng.choice((0xA55E47,0x517E90,0x779082,0xAD9969,0xB2AB99)))
                 art.box((x+u,y+v,layer*2.55),(12.2,2.44,2.52),0,colour)
+    for d in range(2200,int(k.length)-520,380):
+        x,y,_=pos(d,-67)
+        shed(art,x,y,0,False)
+        for j in range(6):
+            colour=lin(k.rng.choice((0x976555,0x698B98,0x849585,0xA59779)))
+            u=x+j*13
+            art.box((u,y-12,.08),(12,2.45,2.58),0,colour)
+            for r in range(10):
+                art.box((u-5.4+r*1.17,y-10.76,.24),(.14,.09,2.24),0,colour)
+    # Short wind-riffled streaks leave the broad river readable from the road.
+    for d in range(0,int(k.length),8):
+        x,y,_=pos(d,k.rng.uniform(22,154))
+        art.box((x,y,WATER+.018),(k.rng.uniform(2,8),.16,.012),.13,lin(0x9AAEB0))
     iron=lin(0x485453)
     # Dock-rail joints, parallel runoff staining and slotted cast-iron drains.
     for d in range(0,int(k.length),16):

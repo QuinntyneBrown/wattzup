@@ -6,6 +6,8 @@ import {
   Mesh,
   MeshLambertMaterial,
   PlaneGeometry,
+  Sprite,
+  SpriteMaterial,
 } from 'three/webgpu';
 import { type Course, type CoursePlace } from './course';
 import { canvasTexture } from './world-kit';
@@ -86,12 +88,37 @@ export class AntwerpWind {
     g.fillStyle = '#b44836';
     g.fillRect(85, 20, 6, 2);
   });
+  private readonly vapour = canvasTexture(128, 64, (g) => {
+    for (const [x, y, r] of [
+      [30, 35, 27],
+      [56, 30, 29],
+      [80, 32, 26],
+      [100, 40, 19],
+    ] as const) {
+      const tint = g.createRadialGradient(x, y, 0, x, y, r);
+      tint.addColorStop(0, 'rgba(157,174,182,.57)');
+      tint.addColorStop(1, 'rgba(185,196,200,0)');
+      g.fillStyle = tint;
+      g.fillRect(0, 0, 128, 64);
+    }
+  });
+  private readonly cloudMaterial = new SpriteMaterial({
+    map: this.vapour,
+    transparent: true,
+    depthWrite: false,
+  });
+  private readonly clouds = [
+    new Sprite(this.cloudMaterial),
+    new Sprite(this.cloudMaterial),
+    new Sprite(this.cloudMaterial),
+  ];
   private readonly gold = new MeshLambertMaterial({ map: this.flagTexture, side: DoubleSide });
   private readonly flags: { post: Group; fabric: Mesh }[] = [];
   private readonly turbines: { tower: Group; rotor: Group }[] = [];
   private readonly at: CoursePlace = { x: 0, y: 0, z: 0, heading: 0, pitch: 0 };
 
   constructor(private readonly course: Course) {
+    this.root.add(...this.clouds);
     this.cloth.translate(0.825, 0, 0);
     const points = this.cloth.attributes['position']!;
     for (let i = 0; i < points.count; i++) points.setZ(i, 0.095 * Math.sin(points.getX(i) * 7));
@@ -135,6 +162,16 @@ export class AntwerpWind {
       post.rotation.y = p.heading + 0.44;
       fabric.rotation.y = 0.21 * Math.sin(time * 5.3 + i) + 0.075 * Math.sin(time * 9.1);
     });
+    this.clouds.forEach((cloud, i) => {
+      const first = 220 + i * 320;
+      const d = first + Math.round((metres - first) / 960) * 960;
+      const fade = Math.min(1, Math.max(0, (475 - Math.abs(metres - d)) / 100));
+      cloud.visible = fade > 0;
+      if (!cloud.visible) return;
+      const at = this.course.place(d, 70 * Math.sin(time * 0.013 + i * 2), this.at);
+      cloud.position.set(at.x, at.y + 57 + 9 * i, at.z);
+      cloud.scale.set(235 * fade, 39 * fade, 1);
+    });
     this.turbines.forEach(({ tower, rotor }, i) => {
       const first = 200 + i * 350;
       const d = first + Math.round((metres - first) / 1050) * 1050;
@@ -157,6 +194,8 @@ export class AntwerpWind {
       this.white,
       this.flagTexture,
       this.gold,
+      this.cloudMaterial,
+      this.vapour,
     ])
       item.dispose();
   }
