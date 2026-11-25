@@ -60,7 +60,7 @@ interface Stroller {
 export class DaytonaStreet implements SceneStreet {
   readonly group = new Group();
   private readonly ribbons: Ribbons;
-  private readonly props: { mesh: Group; offset: number; x: number }[] = [];
+  private readonly props: { mesh: Group; offset: number; x: number; fixed?: boolean }[] = [];
   private readonly strollers: Stroller[] = [];
   private beachgoers: Figures | null = null;
   private foam: Texture | null = null;
@@ -84,8 +84,8 @@ export class DaytonaStreet implements SceneStreet {
       this.addHotels(roadHalf);
       this.addPier(roadHalf);
     }
-    this.addDragStrip(roadHalf);
-    this.addStockCars(roadHalf);
+    this.addDragStrip(roadHalf, fixedLandmarks);
+    this.addStockCars(roadHalf, fixedLandmarks);
     this.addBeachgoers(roadHalf);
   }
 
@@ -118,7 +118,8 @@ export class DaytonaStreet implements SceneStreet {
 
   place(s: number, heightAt: (metres: number) => number): void {
     for (const prop of this.props) {
-      const metres = loopMetres(prop.offset, s, LOOP, BEHIND);
+      const metres = prop.fixed ? prop.offset - s : loopMetres(prop.offset, s, LOOP, BEHIND);
+      prop.mesh.visible = !prop.fixed || (metres >= -BEHIND && metres <= LOOP);
       prop.mesh.position.set(prop.x, heightAt(Math.max(metres, 0)), -metres);
     }
     const beachgoers = this.beachgoers;
@@ -350,7 +351,7 @@ export class DaytonaStreet implements SceneStreet {
    * The drag strip's start, once a lap: a start tree on the right with its staged lamps, three
    * ambers and a green that count down on the ride's clock, and a timing board above the beach.
    */
-  private addDragStrip(roadHalf: number): void {
+  private addDragStrip(roadHalf: number, fixed: boolean): void {
     const black = this.material({ color: 0x1b1b1f, roughness: 0.5 });
     const board = this.material({ map: this.track(timingTexture()), roughness: 0.6 });
     const line = this.material({ color: 0xf5f5f0, roughness: 0.8 });
@@ -376,7 +377,7 @@ export class DaytonaStreet implements SceneStreet {
     }
     start.rotation.y = Math.PI;
     this.group.add(start);
-    this.props.push({ mesh: start, offset: START - 2, x: roadHalf + 1.2 });
+    this.props.push({ mesh: start, fixed, offset: START - 2, x: roadHalf + 1.2 });
     // The start line across the sand, and the timing board on its gantry.
     const stripe = new Group();
     const paint = new Mesh(this.unit, line);
@@ -384,7 +385,7 @@ export class DaytonaStreet implements SceneStreet {
     paint.position.set(0.5, 0.01, 0);
     stripe.add(paint);
     this.group.add(stripe);
-    this.props.push({ mesh: stripe, offset: START, x: 0 });
+    this.props.push({ mesh: stripe, fixed, offset: START, x: 0 });
     const gantry = new Group();
     for (const x of [-8, 8]) {
       const leg = new Mesh(this.unit, black);
@@ -398,11 +399,11 @@ export class DaytonaStreet implements SceneStreet {
     panel.rotation.y = Math.PI;
     gantry.add(panel);
     this.group.add(gantry);
-    this.props.push({ mesh: gantry, offset: START + 40, x: roadHalf + 14 });
+    this.props.push({ mesh: gantry, fixed, offset: START + 40, x: roadHalf + 14 });
   }
 
   /** Vintage stock cars standing on the sand by the start, their numbers on the doors. */
-  private addStockCars(roadHalf: number): void {
+  private addStockCars(roadHalf: number, fixed: boolean): void {
     const wheel = new CylinderGeometry(0.36, 0.36, 0.26, 14);
     wheel.rotateZ(Math.PI / 2);
     const cabin = new BoxGeometry(1.5, 0.6, 1.9);
@@ -442,7 +443,12 @@ export class DaytonaStreet implements SceneStreet {
       car.children.forEach((m) => (m.castShadow = true));
       car.rotation.y = 0.35 + k * 0.1;
       this.group.add(car);
-      this.props.push({ mesh: car, offset: START + 10 + k * 7, x: roadHalf + 6 + (k % 2) * 3 });
+      this.props.push({
+        mesh: car,
+        fixed,
+        offset: START + 10 + k * 7,
+        x: roadHalf + 6 + (k % 2) * 3,
+      });
     });
   }
 

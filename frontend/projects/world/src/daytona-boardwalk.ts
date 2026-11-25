@@ -2,19 +2,23 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
   BoxGeometry,
   type BufferGeometry,
+  CanvasTexture,
   Color,
   CylinderGeometry,
   Group,
   InstancedMesh,
   Mesh,
   MeshLambertMaterial,
+  MeshBasicMaterial,
+  PlaneGeometry,
+  SRGBColorSpace,
   Object3D,
   TorusGeometry,
   Vector3,
   type Scene,
 } from 'three/webgpu';
 
-const WHEEL = 3790;
+const WHEEL = 3858;
 function tinted(source: BufferGeometry, tint: number) {
   const g = source.index ? source.toNonIndexed() : source;
   if (g !== source) source.dispose();
@@ -80,12 +84,60 @@ function pickup(tint: number) {
   }
   return batch(parts);
 }
+/** Two open-lattice pylons and the suspended cables of the boardwalk thrill ride. */
+function skyCoaster() {
+  const pieces: BufferGeometry[] = [];
+  const summit = 41;
+  for (const centre of [-12, 12]) {
+    for (let level = 0; level < 10; level++) {
+      const bottom = 2 + level * 3.9;
+      const lower = 1.7 - level * 0.11;
+      const upper = lower - 0.11;
+      const paint = level % 3 === 0 ? 0xb35844 : 0xe8ddbb;
+      for (const side of [-1, 1]) {
+        for (const end of [-1, 1]) {
+          const from = new Vector3(centre + side * lower, bottom, end * lower);
+          const to = new Vector3(centre + side * upper, bottom + 3.9, end * upper);
+          pieces.push(bar(from, to, 0.14, paint));
+          pieces.push(bar(from, new Vector3(centre - side * upper, to.y, to.z), 0.065, paint));
+        }
+      }
+    }
+    pieces.push(bar(new Vector3(centre, summit, 0), new Vector3(0, 12, 0), 0.075, 0x585c5a));
+  }
+  pieces.push(block(0, 11.6, 0, 2.2, 0.85, 1.7, 0xaf513d));
+  return batch(pieces);
+}
+
+/** Print the same local sign once for every ramp that uses it. */
+function sign(face: string, lines: readonly string[], ink: string) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d')!;
+  ctx.fillStyle = face;
+  ctx.fillRect(0, 0, 512, 256);
+  ctx.strokeStyle = ink;
+  ctx.lineWidth = 8;
+  ctx.strokeRect(9, 9, 494, 238);
+  ctx.fillStyle = ink;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  lines.forEach((line, i) => {
+    ctx.font = 'bold ' + (lines.length === 1 ? 86 : 66) + 'px sans-serif';
+    ctx.fillText(line, 256, ((i + 0.5) * 226) / lines.length + 15, 460);
+  });
+  const map = new CanvasTexture(canvas);
+  map.colorSpace = SRGBColorSpace;
+  return new MeshBasicMaterial({ map });
+}
 export class DaytonaBoardwalk {
   private readonly paint = new MeshLambertMaterial({ vertexColors: true });
   private readonly root = new Group();
   private readonly wheel = new Group();
   private readonly rotor = new Group();
   private readonly parts: BufferGeometry[] = [];
+  private readonly signs: MeshBasicMaterial[] = [];
   private readonly cabins;
   private readonly trucks;
   private readonly matrix = new Object3D();
@@ -136,6 +188,37 @@ export class DaytonaBoardwalk {
     this.wheel.add(this.cabins);
     this.wheel.position.set(31, 20.4, -WHEEL);
     this.wheel.rotation.y = -0.39;
+    const coaster = skyCoaster();
+    this.parts.push(coaster);
+    const towers = new Mesh(coaster, this.paint);
+    towers.position.set(54, 0, -3892);
+    this.root.add(towers);
+    const face = new PlaneGeometry(1, 1);
+    this.parts.push(face);
+    const access = sign('#247c88', ['BEACH', 'ACCESS'], '#fff4dc');
+    const speed = sign('#f7f3dd', ['SPEED LIMIT', '10 MPH'], '#313a3b');
+    const restaurant = sign('#e9dfb8', ['JOE’S CRAB SHACK'], '#983c31');
+    this.signs.push(access, speed, restaurant);
+    const restaurantFace = new Mesh(face, restaurant);
+    restaurantFace.scale.set(29, 3.1, 1);
+    restaurantFace.position.set(-58, 14.1, -3907.55);
+    this.root.add(restaurantFace);
+    const posts: BufferGeometry[] = [];
+    for (const d of [680, 1860, 3080, 4930, 6520, 7780]) {
+      for (const [index, material] of [access, speed].entries()) {
+        const board = new Mesh(face, material);
+        board.position.set(12.2 + index * 1.6, 4.06, -d - index * 11);
+        board.scale.set(1.42, 0.94, 1);
+        board.rotation.y = -0.26;
+        this.root.add(board);
+        posts.push(
+          block(board.position.x, 2.9, board.position.z - 0.04, 0.09, 2.42, 0.09, 0x817765),
+        );
+      }
+    }
+    const uprights = batch(posts);
+    this.parts.push(uprights);
+    this.root.add(new Mesh(uprights, this.paint));
     const vehicles = [0x5e94a8, 0xdfbf92, 0xb65b4d].map(pickup);
     this.parts.push(...vehicles);
     this.trucks = vehicles.map((g) => new Mesh(g, this.paint));
@@ -143,7 +226,8 @@ export class DaytonaBoardwalk {
     scene.add(this.root);
   }
   get pickupZ() {
-    return this.trucks[0]?.position.z ?? null;
+    const first = this.trucks[0];
+    return first?.visible ? first.position.z : null;
   }
   get gondolaY() {
     return this.wheel.visible ? this.cabins.instanceMatrix.array[13]! : null;
@@ -173,6 +257,10 @@ export class DaytonaBoardwalk {
     this.root.removeFromParent();
     this.cabins.dispose();
     this.parts.forEach((g) => g.dispose());
+    this.signs.forEach((material) => {
+      material.map?.dispose();
+      material.dispose();
+    });
     this.paint.dispose();
   }
 }
