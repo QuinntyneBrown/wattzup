@@ -3,6 +3,7 @@
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
 // metres they have ridden. `main`'s scenes are drawn by
 // world-renderer.ts; map-renderer.ts picks between the two.
+import type { ChicagoRailway } from './chicago-railway';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -213,6 +214,7 @@ export class CourseRenderer implements WorldRenderer {
   /** Moves the sea's ripples on to a second of the ride's clock. */
   private waterClock: ((seconds: number) => void) | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
+  private railway: ChicagoRailway | null = null;
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private groundEye: GroundEye | null = null;
@@ -240,6 +242,8 @@ export class CourseRenderer implements WorldRenderer {
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
+    trainX: undefined as number | undefined,
+    steamHeight: undefined as number | undefined,
   };
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
@@ -356,7 +360,28 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
-      this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'chicago') {
+        const [{ ChicagoRailway, wabashAsphalt }, { chicagoSpectators }] = await Promise.all([
+          import('./chicago-railway'),
+          import('./chicago-spectators'),
+        ]);
+        if (this.disposed) return false;
+        const asphalt = wabashAsphalt();
+        this.disposables.push(asphalt.tile);
+        this.build(gltf.scene, canvas, asphalt.material);
+        this.railway = new ChicagoRailway(this.course);
+        this.scene.add(this.railway.root);
+        this.disposables.push(this.railway);
+        const crowd = await chicagoSpectators(this.course);
+        if (this.disposed) {
+          crowd.dispose();
+          return false;
+        }
+        this.scene.add(crowd.root);
+        this.disposables.push(crowd);
+      } else {
+        this.build(gltf.scene, canvas);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -421,6 +446,7 @@ export class CourseRenderer implements WorldRenderer {
     // Every wheel on the road turns with the rider's: the riders keep much the same pace.
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
+    this.railway?.update(frame.reducedMotion ? 0 : frame.time);
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
@@ -471,6 +497,7 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    this.railway = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -488,7 +515,7 @@ export class CourseRenderer implements WorldRenderer {
     this.renderer = null;
   }
 
-  private build(map: Object3D, canvas: HTMLCanvasElement): void {
+  private build(map: Object3D, canvas: HTMLCanvasElement, pavement?: Material): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
@@ -580,7 +607,8 @@ export class CourseRenderer implements WorldRenderer {
       new Color(look.haze),
       coloured,
     );
-    materials['Ground'] = ground.material;
+    if (pavement) ground.material.dispose();
+    materials['Ground'] = pavement ?? ground.material;
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
@@ -1107,6 +1135,8 @@ export class CourseRenderer implements WorldRenderer {
     }
     drawn.tier = this.tier;
     drawn.backend = this.backend;
+    drawn.trainX = this.railway?.trainX;
+    drawn.steamHeight = this.railway?.steamHeight;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     hook['course'] = drawn;

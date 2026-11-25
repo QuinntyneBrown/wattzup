@@ -207,4 +207,55 @@ def scenery(k):
             box(x+off*math.cos(h),y+off*math.sin(h),z,.085,.12,.91,0x9CA19F,h)
         if d%18==0:
             box(x,y,z+.32,4.86,.13,.51,rng.choice((0x456B79,0xC7B99F,0xB5684E)),h)
+    # A projecting blade faces the oncoming return leg. The marquee carries actual relief lettering.
+    x,y,h=pose(1225,-10.4)
+    box(x,y,2.0,1.55,4,22.5,0x80362C)
+    box(x+.82,y,5.3,.12,3.5,17.85,0xA6402C)
+    glyphs={
+        'C':('111','100','100','100','111'),'H':('101','101','111','101','101'),
+        'I':('111','010','010','010','111'),'A':('010','101','111','101','101'),
+        'G':('111','100','101','101','111'),'O':('111','101','101','101','111')}
+    for j,letter in enumerate('CHICAGO'):
+        top=22.45-j*2.36
+        for row,line in enumerate(glyphs[letter]):
+            for col,pixel in enumerate(line):
+                if pixel=='1':
+                    box(x+.91,y+(col-1)*.54,top-row*.36,.12,.50,.32,0xF8D990)
+    box(x,y,5.3,7.5,8,.85,0xA54536)
+    box(x,y,5.64,7.59,8.09,.36,0xECD7AD)
+    for j in range(19):
+        box(x+3.82,y+(j-9)*.39,5.40,.09,.11,.10,0xFEE5A5)
+    # Crosswalk bars follow the local lane. At Wabash the elevated track throws alternating stripes.
+    for d in (117,323,521,811,1009,1240,1438,1598):
+        for j in range(13):
+            x,y,h=pose(d,(j-6)*.96)
+            box(x,y,height(d)+.015,3.4,.48,.019,0xD0CCBD,h)
+    for d in range(0,415,3):
+        x,y,h=pose(d)
+        box(x,y,height(d)+.008,.55,13.15,.009,0x655F59,h+.07)
+    for d in (107,326,972,1160,1325,1530):
+        x,y,h=pose(d,-2.5)
+        art.tube((x,y,height(d)+.019),.49,.49,.027,lin(0x5A5954),lin(0x6A6964),24,lin(0x64635D))
+        for j in range(-2,3):
+            box(x+j*.13,y,height(d)+.05,.032,.55,.012,0x494A46)
+    for d in (135,335,505,700,954,1148,1339,1550):
+        x,y,h=pose(d,-8.2);z=height(d)
+        box(x,y,z,.2,.2,5.1,0x6D7369)
+        for j in range(3):
+            box(x,y,z+3.7+j*.35,.36,.45,.34,0x4B4C43,h)
+            box(x-.21*math.cos(h),y-.21*math.sin(h),z+3.74+j*.35,.055,.26,.22,
+                (0x88AB79,0x83704C,0x9C5C50)[j],h)
+        nx,ny,_=pose(d+5,-8.9)
+        box(nx,ny,z,.64,.59,1.08,0x557785,h)
+        box(nx,ny,z+.7,.66,.6,.32,0xA4B3AB,h)
+    for d in (88,160,290,987,1205,1421):
+        x,y,h=pose(d,-9.65);z=height(d)
+        box(x,y,z+.30,4.3,1.75,.77,0xDCA33E,h)
+        box(x,y,z+1.07,2.54,1.48,.62,0x626E70,h)
+        box(x,y,z+1.69,2.34,1.49,.12,0xE1AD51,h)
+        box(x,y,z+1.82,.58,.43,.22,0xF4D497,h)
+        for u in (-1.25,1.25):
+            for v in (-.90,.90):
+                px=x+u*math.cos(h)-v*math.sin(h);py=y+u*math.sin(h)+v*math.cos(h)
+                box(px,py,z+.08,.58,.17,.51,0x414342,h)
     return {'efforts':0}

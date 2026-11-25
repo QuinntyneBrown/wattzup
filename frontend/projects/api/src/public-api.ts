@@ -221,3 +221,4 @@ export {
   type DeviceCheckTrial,
 } from './world/device-check';
 export { GRAPHICS_SUPPORT, type GraphicsApi, type GraphicsSupport } from './world/graphics-support';
+export { chicagoRailPass, chicagoTrainX } from './world/chicago-train';
