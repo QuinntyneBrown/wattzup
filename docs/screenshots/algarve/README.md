@@ -9,3 +9,7 @@ The original GCN *Get Fit in 40* plan has 22 stages. The 16.8 km race climbs 113
 | Cove bend, 0.53 km | [Before](before-cove.jpg) | [After](after-cove.jpg) | Real 04 and 15 inform the sea cave and the lighthouse beyond it. Game 05 informs how the landmark reads against the horizon. |
 
 Caribana keeps buildings readable behind its foreground spectators. Here the road turns inland so the rider can see the offshore rock opening before the bend. The rock strata use coloured vertices, and only the moored boats in the cove move with the swell. The coastal ride compresses the distance between Carvoeiro, Ponta da Piedade, Benagil and Cape St Vincent. [Photo and game credits](../../worlds/algarve/SOURCES.md) · [Caribana comparison](../caribana/README.md)
+
+## Moving-frame measurement
+
+The race crossed the arch, cave and cape during the 60-second sample from 0.12 to 0.95 km. The renderer submitted 120.04 frames/s, and independent display callbacks averaged 119.58/s. The p95 interval between submissions was 9.80 ms, the longest interval was 161.90 ms and draw calls peaked at 21. The average met the nominal 60 FPS criterion, with one long stall still present in the sample. Headed Chromium 159.0.8154.6 ran on an Apple M5 Pro with 24 GB RAM at 1024 × 768, DPR 1, Low/WebGL 2 and 4× CPU throttling after a nine-second warm-up. The GPU ran at its normal speed.
