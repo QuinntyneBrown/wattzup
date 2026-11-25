@@ -25,3 +25,11 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Eastern Eight” Route Details (Watopia)](https://zwiftinsider.com/route/eastern-eight/) (g0038) | © Zwift |
 | game-04.jpg | MyWhoosh: [MicrosoftTeams-image (5)](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2022/12/MicrosoftTeams-image-5.png) (g0898) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Navig8” Route Details (Watopia)](https://zwiftinsider.com/route/navig8/) (g0105) | © Zwift |
+
+| Race detail | Reference and adaptation |
+| --- | --- |
+| Rim road and shuttles | Real 01–03 informed the road width, forest spacing, painted lines and park shuttle. Games 01–03 and 05 informed the alternating enclosed and open approaches. The bus, road markings and trees are original geometry. |
+| Canyon and river | Real 06–12 and 14–15 informed the limestone lip, tiered walls, isolated buttes, distant haze and Colorado River glimpses. Game 04 informed desert silhouettes and horizon colour. The rock texture is an original generated material applied to the modelled strata. |
+| Overlooks and tower | Real 05, 11–13 show terrace railings, people and horizon scale. Real 04 and 13 informed the proportions, masonry, window bands and crown of the original Desert View Watchtower model. |
+
+A second original generated geology image dresses only the distant North Rim mesh. The nearer tiered walls, free-standing temples, limestone lip, river and Watchtower are native geometry. Real 06–09 and 11–12 informed the separation of those layers.

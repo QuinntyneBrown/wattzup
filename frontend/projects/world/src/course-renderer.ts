@@ -30,6 +30,7 @@ import type { gizaPanorama } from './giza-panorama';
 import type { glasgowCircuit } from './glasgow-circuit';
 import type { glastonburyFestival } from './glastonbury-festival';
 import type { goldenGatePark } from './golden-gate-park';
+import type { desertViewDrive } from './desert-view-drive';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -196,6 +197,11 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Land: 950,
   Pave: 180,
   Foliage: 110,
+  CanyonStrata: 5800,
+  GrandviewTemple: 5800,
+  ColoradoBend: 13900,
+  FarRim: 13800,
+  Watchtower: 950,
   Ground: 420,
   Solid: 250,
   Walls: 220,
@@ -545,6 +551,7 @@ export class CourseRenderer implements WorldRenderer {
   private funivia: { holder: Group; span: CourseCableway; pose: CabinPose } | null = null;
   private festival: ReturnType<typeof glastonburyFestival> | null = null;
   private park: ReturnType<typeof goldenGatePark> | null = null;
+  private canyon: ReturnType<typeof desertViewDrive> | null = null;
   private glider: { holder: Group; orbit: CourseGliderOrbit; pose: GliderPose } | null = null;
   /** The blob every rider's shadow is drawn with, and each rider's own. */
   private blob: {
@@ -906,6 +913,13 @@ export class CourseRenderer implements WorldRenderer {
         this.park = goldenGatePark(this.course);
         this.scene.add(this.park.group);
         this.disposables.push(this.park);
+      }
+      if (this.course.file.id === 'grandcanyon') {
+        const { desertViewDrive } = await import('./desert-view-drive');
+        if (this.disposed) return false;
+        this.canyon = desertViewDrive(this.course);
+        this.scene.add(this.canyon.group);
+        this.disposables.push(this.canyon);
       }
       this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material, gizaMaterials);
       if (this.course.file.id === 'aguascalientes') {
@@ -1643,6 +1657,7 @@ export class CourseRenderer implements WorldRenderer {
     this.championship?.update(frame.time, metres, frame.speedKmh, frame.reducedMotion);
     this.festival?.update(frame.time, metres, frame.reducedMotion);
     this.park?.update(frame.time, metres, frame.reducedMotion);
+    this.canyon?.update(frame.time, metres, frame.reducedMotion);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -1767,6 +1782,7 @@ export class CourseRenderer implements WorldRenderer {
     this.quay = null;
     this.festival = null;
     this.park = null;
+    this.canyon = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -2017,12 +2033,14 @@ export class CourseRenderer implements WorldRenderer {
     }
     if (this.festival) Object.assign(materials, this.festival.materials);
     if (this.park) Object.assign(materials, this.park.materials);
+    if (this.canyon) Object.assign(materials, this.canyon.materials);
     const painted: Mesh[] = [];
     map.traverse((part) => {
       const mesh = part as Mesh;
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.canyon?.landmark(group, mesh);
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
           ...glow,
@@ -2053,7 +2071,7 @@ export class CourseRenderer implements WorldRenderer {
         return;
       }
       // The ground is lit smoothly: its normals are worked out here, so the map's file carries none.
-      if (group === 'Ground' || group === 'Pave') mesh.geometry.computeVertexNormals();
+      if (group === 'Ground' || group === 'Pave' || group === 'GrandviewTemple' || group === 'CanyonStrata') mesh.geometry.computeVertexNormals();
       // The map is set once and never moves: its matrices are worked out here, not every frame.
       mesh.matrixAutoUpdate = false;
       mesh.updateMatrix();
@@ -2866,6 +2884,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.championship) Object.assign(drawn, this.championship.measure(this.camera));
     if (this.festival) Object.assign(drawn, this.festival.state);
     if (this.park) Object.assign(drawn, this.park.measure(this.camera));
+    if (this.canyon) Object.assign(drawn, this.canyon.measure(this.camera));
     hook['course'] = drawn;
   }
 

@@ -683,6 +683,8 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             group = 'ParkCrowns'
         elif part.name == 'Rolling park lawns':
             group = 'ParkLawns'
+        elif part.name in ('CanyonStrata','GrandviewTemple','Watchtower','FarRim','ColoradoBend'):
+            group = part.name
         elif part.name in GROUND_PARTS:
             group = "Ground"
         elif part.name == WINDOWS_PART:
@@ -733,7 +735,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos", "ParkCrowns", "FestivalPrint", "Tenements", "RaceBoards", "Relief", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple") or (group == "Ground" and part.uvs is not None):
+                if group in ("Windows", "Fences", "Halos", "CanyonStrata", "GrandviewTemple", "FarRim", "ParkCrowns", "FestivalPrint", "Tenements", "RaceBoards", "Relief", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple") or (group == "Ground" and part.uvs is not None):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -744,7 +746,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences", "Halos", "ParkCrowns", "FestivalPrint", "Tenements", "RaceBoards", "Relief", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple"):
+                    if group in ("Windows", "Fences", "Halos", "CanyonStrata", "GrandviewTemple", "FarRim", "ParkCrowns", "FestivalPrint", "Tenements", "RaceBoards", "Relief", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple"):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
@@ -2327,10 +2329,7 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
-    if (theme or {}).get("road_builder"):
-        theme["road_builder"](road, st, length, col, theme, sys.modules[__name__])
-    else:
-        (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
+    (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
     if (theme or {}).get("builder") == "sellaronda":
         _, height_at = sellaronda.build_terrain(road, col, Builder)
         facts = sellaronda.build_scenery(road, st, length, height_at, course, col, Builder, build_sky)

@@ -63,6 +63,17 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async grandcanyonMotion(
+    part: 'shuttleMetres' | 'cloudShadow' | 'templeX' | 'towerX' | 'riverX',
+  ): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async parkTreeCrowns(): Promise<number> {
     return this.page.evaluate(
       () =>

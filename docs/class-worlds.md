@@ -75,6 +75,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Glasgow World Championships (`glasgow`) | VO2 Max Race Simulation (GCN Training, 30:00) | 13.100 km | 91 m | `public/courses/glasgow.glb` ([ride views](screenshots/glasgow-world-championships/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Glastonbury Fields (`glastonbury`) | Sprint to the Music (GCN Training, 25:00) | 10.515 km | 84 m | `public/courses/glastonbury.glb` ([ride views](screenshots/glastonbury-fields/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Golden Gate Park (`goldengate`) | 15 Minutes HIIT Sprinting Efforts (GCN Training, 15:00) | 6.375 km | 20 m | `public/courses/goldengate.glb` ([ride views](screenshots/golden-gate-park/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Grand Canyon South Rim (`grandcanyon`) | VO2 Max Booster (GCN Training, 30:00) | 13.425 km | 171 m | `public/courses/grandcanyon.glb` ([ride views](screenshots/grand-canyon-south-rim/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

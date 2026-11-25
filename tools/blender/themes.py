@@ -1502,3 +1502,8 @@ import goldengate as _goldengate
 
 THEMES["goldengate"] = _goldengate.THEME
 SCENERY["goldengate"] = _goldengate.scenery
+
+import grandcanyon as _grandcanyon
+
+THEMES["grandcanyon"] = _grandcanyon.THEME
+SCENERY["grandcanyon"] = _grandcanyon.scenery
