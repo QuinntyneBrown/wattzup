@@ -65,6 +65,7 @@ import { type GroundEye, groundMaterial, surfaceTexture } from './ground-materia
 import { haloMaterial } from './halo-material';
 import { colouredGlow, LampGlow } from './lamp-glow';
 import { colourLightMap, lampLightMap } from './lamp-light-map';
+import type { PursuitBoard } from './pursuit-board';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
@@ -199,6 +200,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private timing: PursuitBoard | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -353,6 +355,13 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'aguascalientes') {
+        const { PursuitBoard } = await import('./pursuit-board');
+        if (this.disposed) return false;
+        this.timing = new PursuitBoard();
+        this.scene.add(this.timing.group);
+        this.disposables.push(this.timing);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -396,6 +405,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    this.timing?.update(metres, frame.time);
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
@@ -443,6 +453,7 @@ export class CourseRenderer implements WorldRenderer {
     this.near.clear();
     this.chunks.length = 0;
     this.confetti.length = 0;
+    this.timing = null;
     this.funivia = null;
     this.glider = null;
     for (const d of this.disposables) d.dispose();
