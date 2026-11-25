@@ -131,6 +131,20 @@ export class WorldRideProbe {
     );
   }
 
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+
+  async surfCrest(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { surfCrest?: number } } }).__wzWorldRide
+          ?.course?.surfCrest ?? null,
+    );
+  }
+
   async pin(tier: Tier, backend: 'auto' | 'webgl2' = 'auto'): Promise<void> {
     await this.page.addInitScript(
       ([t, b]) => {
@@ -361,6 +375,13 @@ export class WorldRideProbe {
       () =>
         (window as unknown as { __wzWorldRide?: { course?: { highlandSun?: number } } })
           .__wzWorldRide?.course?.highlandSun ?? null,
+    );
+  }
+  async fallingWater(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { fallingWater?: number } } })
+          .__wzWorldRide?.course?.fallingWater ?? null,
     );
   }
 }

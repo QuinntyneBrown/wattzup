@@ -1354,3 +1354,8 @@ import bealach as _bealach
 
 THEMES["bealach"] = _bealach.THEME
 SCENERY["bealach"] = _bealach.scenery
+
+import bigsur as _bigsur
+
+THEMES["bigsur"] = _bigsur.THEME
+SCENERY["bigsur"] = _bigsur.scenery

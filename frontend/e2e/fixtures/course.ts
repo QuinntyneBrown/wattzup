@@ -9,6 +9,7 @@ import bathshebaElevation from './bathsheba-elevation.json';
 import bayOfIslandsElevation from './bayofislands-elevation.json';
 import beachRoadElevation from './beachroad-elevation.json';
 import bealachElevation from './bealach-elevation.json';
+import bigSurElevation from './bigsur-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -962,6 +963,52 @@ export const bealachCourseMap = {
       seg('work', 60, 22, 60),
       seg('recover', 60, 21, 110),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const bigSurCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'big-sur',
+  name: 'Big Sur',
+  routeName: 'Pacific Coast Highway',
+  place: 'California, USA',
+  world: 'bigsur',
+  distanceKm: 14.075,
+  climbingM: 286,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: bigSurElevation,
+  },
+  thumbnailUrl: 'maps/big-sur.jpg',
+  photoUrl: 'maps/big-sur-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 90),
+      seg('work', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 180, 13, 95),
+      seg('work', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('cool-down', 240, 13, 90),
     ],
   },
 };
