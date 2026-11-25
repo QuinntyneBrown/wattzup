@@ -135,6 +135,7 @@ def beach_house(k,art):
             t=j/max(1,int(math.dist(a,b)/1.7));u=a[0]+(b[0]-a[0])*t;v=a[1]+(b[1]-a[1])*t
             art.tube(p(u,v,3.44),.043,.043,1.11,white,white,6)
     art.face(tuple(p(*a,3.47) for a in outline),(lin(0xC7B9A5),)*len(outline))
+    words(art,"NORTH AVENUE BEACH HOUSE",p(-4,-4.97,2.59),(math.cos(theta),math.sin(theta),0),(0,0,1),.60,19,0x214B65)
     for side in (-1,1):
         for u in range(-16,13,3):
             pts=[p(u+.49*math.cos(j*math.tau/16),side*4.93,1.98+.49*math.sin(j*math.tau/16)) for j in range(16)]
@@ -167,7 +168,7 @@ def scenery(k):
                 top=p[2]-(p[2]-level)*(j+.25)/n
                 art.box((p[0],p[1],top-.72),(17.5,1.31,.72),heading(d),lin(0xADB2AE if j%2 else 0xBBC0B8))
         side=-1
-        off=side*k.rng.uniform(5.3,29);x,y,_=k.road.pos(d,off);z=k.height_at(x,y)-.26
+        off=side*k.rng.uniform(13 if abs(d-3540)<65 else 6,29);x,y,_=k.road.pos(d,off);z=k.height_at(x,y)-.26
         variant=k.rng.randrange(4);u=variant%2*.5;v=variant//2*.5
         h=k.rng.uniform(9,16);half=h*.57
         yaw=heading(d)+k.rng.uniform(-.54,.54);dx,dy=half*math.sin(yaw),half*math.cos(yaw)
