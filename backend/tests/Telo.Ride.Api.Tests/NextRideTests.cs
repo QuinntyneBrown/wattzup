@@ -43,7 +43,7 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
         {
             var progress = MapProgress.Start(riderId, mapId);
             progress.Restore(stars, null);
-            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez" or "amsterdam-canals" or "els-angels" or "angkor-temples" or "alto-angliru" or "antwerp-port-sprint" or "arenberg-forest" or "philadelphia-art-museum" or "atacama-desert" or "atlantic-ocean-road" or "col-aubisque" or "sixth-street-austin" or "bathsheba-barbados" or "bay-of-islands" or "beach-road-melbourne"))
+            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez" or "amsterdam-canals" or "els-angels" or "angkor-temples" or "alto-angliru" or "antwerp-port-sprint" or "arenberg-forest" or "philadelphia-art-museum" or "atacama-desert" or "atlantic-ocean-road" or "col-aubisque" or "sixth-street-austin" or "bathsheba-barbados" or "bay-of-islands" or "beach-road-melbourne" or "bealach-na-ba"))
             {
                 api.Clock.Advance(TimeSpan.FromHours(1));
                 progress.Open(api.Clock.GetUtcNow());
@@ -134,7 +134,8 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
             ("sixth-street-austin", MapStar.All),
             ("bathsheba-barbados", MapStar.All),
             ("bay-of-islands", MapStar.All),
-            ("beach-road-melbourne", MapStar.All));
+            ("beach-road-melbourne", MapStar.All),
+            ("bealach-na-ba", MapStar.All));
 
         Assert.StartsWith("""nextRideMapId="dolomites";""", await Home(browser));
     }

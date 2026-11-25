@@ -20,6 +20,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   bathsheba: 'courses/bathsheba',
   bayofislands: 'courses/bayofislands',
   beachroad: 'courses/beachroad',
+  bealach: 'courses/bealach',
   ibiza: 'courses/ibiza',
   alpe: 'courses/alpe',
   cinqueterre: 'courses/cinqueterre',

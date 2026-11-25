@@ -1860,7 +1860,7 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         "durationSeconds": sum(s["duration"] for s in st),
         "step": STEP,
         "startIndex": int(LEAD_IN / STEP),
-        "roadHalfWidth": course.get("roadHalfWidth", ROAD_HALF),
+        "roadHalfWidth": course.get("roadHalfWidth", (theme or {}).get("road_half_width", ROAD_HALF)),
         "meanLevel": round(mean, 2),
         "gradePerLevel": per_level,
         # The direction the light comes from, as a unit vector in the glb's axes.
@@ -2274,24 +2274,6 @@ def main(argv: list[str] | None = None) -> dict:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
     if (theme or {}).get("road_builder"):
-        theme["road_builder"](road, st, length, col, sys.modules[__name__])
-    else:
-        if (theme or {}).get("road_builder"):
-        theme["road_builder"](road, st, length, col, sys.modules[__name__])
-    else:
-        if (theme or {}).get("road_builder"):
-        theme["road_builder"](road, st, length, col, sys.modules[__name__])
-    else:
-        if (theme or {}).get("road_builder"):
-        theme["road_builder"](road, st, length, col, sys.modules[__name__])
-    else:
-        if (theme or {}).get("road_builder"):
-        theme["road_builder"](road, st, length, col, sys.modules[__name__])
-    else:
-        if (theme or {}).get("road_builder"):
-        theme["road_builder"](road, st, length, col, sys.modules[__name__])
-    else:
-        if theme and theme.get("road_builder"):
         theme["road_builder"](road, st, length, col, sys.modules[__name__])
     else:
         (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)

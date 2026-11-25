@@ -1349,3 +1349,8 @@ import beachroad as _beachroad
 
 THEMES["beachroad"] = _beachroad.THEME
 SCENERY["beachroad"] = _beachroad.scenery
+
+import bealach as _bealach
+
+THEMES["bealach"] = _bealach.THEME
+SCENERY["bealach"] = _bealach.scenery

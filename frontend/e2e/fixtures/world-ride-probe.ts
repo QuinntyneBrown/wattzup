@@ -342,4 +342,25 @@ export class WorldRideProbe {
           ?.course?.cirqueSun ?? null,
     );
   }
+  /** Start at a physical viewpoint after Map Select is open and before the course loads. */
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+  /** Lane of the sheep nearest the riding line. */
+  async sheepLane(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { sheepLane?: number } } }).__wzWorldRide
+          ?.course?.sheepLane ?? null,
+    );
+  }
+  async highlandSun(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { highlandSun?: number } } })
+          .__wzWorldRide?.course?.highlandSun ?? null,
+    );
+  }
 }

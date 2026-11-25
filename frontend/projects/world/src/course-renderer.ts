@@ -100,6 +100,8 @@ import type { AustinPerformers } from './austin-performers';
 import type { BathshebaReef } from './bathsheba-reef';
 import type { BayOfIslandsBoats } from './bay-of-islands-boats';
 import type { BeachRoadBunch } from './beach-road-bunch';
+import type { HighlandWeather } from './bealach-weather';
+import type { HighlandLivestock } from './bealach-livestock';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -276,6 +278,8 @@ export class CourseRenderer implements WorldRenderer {
     ferryX: null as number | null,
     eveningLight: null as number | null,
     clubLane: null as number | null,
+    highlandSun: null as number | null,
+    sheepLane: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -306,6 +310,8 @@ export class CourseRenderer implements WorldRenderer {
   private boats: BayOfIslandsBoats | null = null;
   private evening: ReturnType<typeof eveningUniform> | undefined;
   private bunch: BeachRoadBunch | null = null;
+  private weather: HighlandWeather | null = null;
+  private livestock: HighlandLivestock | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -557,6 +563,17 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.bunch.group);
         this.disposables.push(this.bunch);
       }
+      if (this.course.file.id === 'bealach') {
+        const [{ HighlandLivestock }, { HighlandWeather }] = await Promise.all([
+          import('./bealach-livestock'),
+          import('./bealach-weather'),
+        ]);
+        if (this.disposed) return false;
+        this.livestock = new HighlandLivestock(this.course);
+        this.weather = new HighlandWeather(this.course, this.sun);
+        this.scene.add(this.weather.root, this.livestock.mesh);
+        this.disposables.push(this.livestock, this.weather);
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -658,6 +675,8 @@ export class CourseRenderer implements WorldRenderer {
     this.reef?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boats?.update(metres, frame.reducedMotion ? 0 : frame.time);
 
+    this.weather?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.livestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -746,6 +765,8 @@ export class CourseRenderer implements WorldRenderer {
     this.evening = undefined;
     this.bunch = null;
     this.evening = undefined;
+    this.livestock = null;
+    this.weather = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -1617,6 +1638,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.ferryX = this.boats?.ferryX ?? null;
     drawn.eveningLight = this.evening?.value ?? null;
     drawn.clubLane = this.bunch?.clubLane ?? null;
+    drawn.highlandSun = this.weather ? this.sun.intensity : null;
+    drawn.sheepLane = this.livestock?.sheepLane ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

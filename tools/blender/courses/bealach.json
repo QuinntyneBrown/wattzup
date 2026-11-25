@@ -1,0 +1,115 @@
+{
+  "id": "bealach",
+  "name": "Bealach na Bà",
+  "world": "bealach",
+  "theme": "bealach",
+  "seed": 2080,
+  "layout": 0,
+  "class": {
+    "id": "22-minute-strength-intervals",
+    "title": "22 Minute Strength Intervals",
+    "channel": "GCN",
+    "videoId": "68NzLRMIhpI",
+    "syncOffsetSeconds": 5
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "cool-down",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

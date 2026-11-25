@@ -8,6 +8,7 @@ import aubisqueElevation from './aubisque-elevation.json';
 import bathshebaElevation from './bathsheba-elevation.json';
 import bayOfIslandsElevation from './bayofislands-elevation.json';
 import beachRoadElevation from './beachroad-elevation.json';
+import bealachElevation from './bealach-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -922,6 +923,45 @@ export const beachRoadCourseMap = {
       seg('recover', 30, 13, 80),
       seg('work', 30, 22, 100),
       seg('cool-down', 380, 11, 80),
+    ],
+  },
+};
+
+export const bealachCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'bealach-na-ba',
+  name: 'Bealach na Bà',
+  routeName: 'Applecross pass',
+  place: 'Wester Ross, Scotland',
+  world: 'bealach',
+  distanceKm: 9.05,
+  climbingM: 623,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: bealachElevation,
+  },
+  thumbnailUrl: 'maps/bealach-na-ba.jpg',
+  photoUrl: 'maps/bealach-na-ba-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 60, 22, 60),
+      seg('work', 60, 21, 110),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 22, 60),
+      seg('work', 60, 21, 110),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 22, 60),
+      seg('work', 60, 21, 110),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 22, 60),
+      seg('work', 60, 21, 110),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 22, 60),
+      seg('recover', 60, 21, 110),
+      seg('cool-down', 120, 11, 80),
     ],
   },
 };
