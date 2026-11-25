@@ -828,3 +828,14 @@ Journey 7 currently reaches a generic rolling Cabot class world with its own ben
 Use the existing catalogue and Race Setup path into the lazy authored-course renderer. Read the arc-length course JSON and GLB from the ride's same-origin course assets. Bake cliff strata, roadside wear and canopy shade into shared geometry. Keep the far headlands in fixed coordinates like Caribana’s Toronto skyline. Merge local details into distance-culled sections. Use shared geometry for boat and animal parts on both backends, seed variation at construction, update from race time and dispose on departure. Keep class progression and HUD on the existing race engine.
 
 Measure two sixty-second samples from the normal race entry with the simulated bike, nine seconds of warm-up, Low/WebGL2 and fourfold CPU throttle. Capture matched rider views before and after and record actual submissions, display callbacks, p95, longest interval, peak draw calls and advancing HUD distance. The performance and capture suites stay opt-in.
+### Isle of Man Mountain Course · #2141
+
+Trace the existing Isle of Man registry entry into the race catalogue and its lazy native course (ADRs 0021, 0023, 0030, 0034 and 0035). Restore *Full Gas Sprints*, including the three-second video offset. The condensed A18 covers 8.133 km with its stage distances proportional to target cadence and time. The lower lanes climb toward the Bungalow before the descent to Creg-ny-Baa.
+
+| Section | Rider-height treatment | References |
+| --- | --- | --- |
+| Lower road and Snaefell | Model rough limestone boundaries close to the white-dashed two-lane road. Open the banks to a smooth grassy summit with summit masts. An original heather surface and distant sea occupy separate depth layers. | Real 03, 06, 09–10, 14–15. Games 01, 04 and 05. |
+| Bungalow | Thread the rails obliquely through the tarmac. A red and cream electric tram runs along its own track under catenary poles. Keep the two long staircases, black sponsor fascia and open underside of the bridge recognizable at speed. | Real 02, 04–05, 10, 12–13 and 15. Games 02 and 03. |
+| Creg-ny-Baa and descent | Put the white hotel and grandstand on the outside of the curve. Alternating kerb blocks, wrapped straw, watching spectators and orange marshals read before the corner. Round shoulders show sheep and a sea horizon under broad moving cloud shadows. | Real 01, 07–09, 11 and 14. Games 01, 03–05. |
+
+Use the fixed skyline and batched crowd approach from Caribana. Keep the rails, stairs, pub windows and marshals legible on Low. Release the textures, shared materials and tram geometry when the course leaves the screen. Test the ordinary rider entry, pause and resume through the fixture bike. Compare matching photos and measure two submitted one-minute samples after nine seconds of warm-up.
