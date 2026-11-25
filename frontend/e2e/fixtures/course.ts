@@ -18,6 +18,7 @@ import brightonElevation from './brighton-elevation.json';
 import brooklynElevation from './brooklyn-elevation.json';
 import calobraElevation from './calobra-elevation.json';
 import campolongoElevation from './campolongo-elevation.json';
+import cabotElevation from './cabot-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1452,6 +1453,36 @@ export const campolongoCourseMap = {
       seg('work', 120, 22, 70),
       seg('work', 33, 24, 80),
       seg('cool-down', 200, 11, 80),
+    ],
+  },
+};
+
+export const cabotCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'cabot-trail',
+  name: 'Cabot Trail',
+  routeName: 'The Cabot Trail',
+  place: 'Cape Breton, Nova Scotia',
+  world: 'cabot',
+  distanceKm: 25.075,
+  climbingM: 584,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: cabotElevation,
+  },
+  thumbnailUrl: 'maps/cabot-trail.jpg',
+  photoUrl: 'maps/cabot-trail-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 180, 16, 80),
+      seg('work', 1260, 19, 80),
+      seg('recover', 240, 13, 90),
+      seg('work', 1440, 21, 85),
+      seg('work', 60, 24, 110),
+      seg('cool-down', 300, 11, 85),
     ],
   },
 };

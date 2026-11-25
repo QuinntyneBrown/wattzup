@@ -1419,3 +1419,9 @@ import campolongo as _campolongo
 
 THEMES["campolongo"] = _campolongo.THEME
 SCENERY["campolongo"] = _campolongo.scenery
+
+
+import cabot as _cabot
+
+THEMES["cabot"] = _cabot.THEME
+SCENERY["cabot"] = _cabot.scenery

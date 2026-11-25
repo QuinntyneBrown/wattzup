@@ -205,6 +205,21 @@ export class WorldRideProbe {
     );
   }
 
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+
+  async cabotMotion(part: 'boatHeel' | 'moosePitch'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   /**
    * Call before the page loads: World Ride draws at `tier` and never drops it; with `webgl2`,
    * through three's WebGL2 backend even where WebGPU is offered.

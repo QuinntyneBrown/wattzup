@@ -85,6 +85,7 @@ import type { BrooklynCommute } from './brooklyn-commute';
 import type { BundCruise } from './bund-cruise';
 import type { CalobraCamp } from './calobra-camp';
 import type { CampolongoLifts } from './campolongo-lifts';
+import type { CabotWildlife } from './cabot-wildlife';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -254,6 +255,7 @@ export class CourseRenderer implements WorldRenderer {
   private waterClock: ((seconds: number) => void) | null = null;
   private camp: CalobraCamp | null = null;
   private lifts: CampolongoLifts | null = null;
+  private wildlife: CabotWildlife | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
@@ -301,6 +303,8 @@ export class CourseRenderer implements WorldRenderer {
     coachDistance: undefined as number | undefined,
     chairDistance: undefined as number | undefined,
     cowPitch: undefined as number | undefined,
+    boatHeel: undefined as number | undefined,
+    moosePitch: undefined as number | undefined,
     backend: '' as string,
     ghostSeparationMetres: 0,
     boatHeight: null as number | null,
@@ -612,6 +616,13 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.lifts.root);
         this.disposables.push(this.lifts);
       }
+      if (this.course.file.id === 'cabot') {
+        const { CabotWildlife } = await import('./cabot-wildlife');
+        if (this.disposed) return false;
+        this.wildlife = new CabotWildlife(this.course);
+        this.scene.add(this.wildlife.root);
+        this.disposables.push(this.wildlife);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -857,6 +868,7 @@ export class CourseRenderer implements WorldRenderer {
     this.commute?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.cruise?.update(frame.reducedMotion ? 0 : frame.time);
     this.lifts?.update(frame.reducedMotion ? 0 : frame.time);
+    this.wildlife?.update(frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -975,6 +987,7 @@ export class CourseRenderer implements WorldRenderer {
     this.riderBatch = null;
     this.camp = null;
     this.lifts = null;
+    this.wildlife = null;
     this.rain = null;
     this.shadows.clear();
     this.casting.clear();
@@ -1865,6 +1878,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.coachDistance = this.camp?.coachDistance;
     drawn.chairDistance = this.lifts?.chairDistance;
     drawn.cowPitch = this.lifts?.cowPitch;
+    drawn.moosePitch = this.wildlife?.moosePitch;
+    drawn.boatHeel = this.wildlife?.boatHeel;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
