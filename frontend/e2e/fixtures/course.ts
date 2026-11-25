@@ -54,6 +54,7 @@ import grandcanyonElevation from './grandcanyon-elevation.json';
 import greatoceanElevation from './greatocean-elevation.json';
 import hanriverElevation from './hanriver-elevation.json';
 import hardknottElevation from './hardknott-elevation.json';
+import havanaElevation from './havana-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -3341,6 +3342,45 @@ export const hardknottCourseMap = {
       seg('recover', 120, 13, 80),
       seg('work', 90, 24, 80),
       seg('cool-down', 180, 11, 80),
+    ],
+  },
+};
+
+export const havanaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'havana-malecon',
+  name: 'Havana Malecón',
+  routeName: 'Malecón',
+  place: 'Havana, Cuba',
+  world: 'havana',
+  distanceKm: 8.95,
+  climbingM: 8,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: havanaElevation,
+  },
+  thumbnailUrl: 'maps/havana-malecon.jpg',
+  photoUrl: 'maps/havana-malecon-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 90),
+      seg('cool-down', 60, 11, 80),
     ],
   },
 };

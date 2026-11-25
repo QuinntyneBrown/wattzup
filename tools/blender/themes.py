@@ -1529,3 +1529,9 @@ import hardknott
 
 THEMES['hardknott'] = hardknott.THEME
 SCENERY['hardknott'] = hardknott.scenery
+
+
+import havana
+
+THEMES['havana'] = havana.THEME
+SCENERY['havana'] = havana.scenery

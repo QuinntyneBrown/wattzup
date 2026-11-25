@@ -74,6 +74,7 @@ import {
   greatoceanCourseMap,
   hanRiverCourseMap,
   hardknottCourseMap,
+  havanaCourseMap,
   cinqueTerreCourseMap,
   haleakalaCourseMap,
   ibizaCourseMap,
@@ -233,6 +234,7 @@ test.describe('a course', () => {
     [greatoceanCourseMap.id, 'greatocean', [greatoceanCourseMap]],
     [hanRiverCourseMap.id, 'hanriver', [hanRiverCourseMap]],
     [hardknottCourseMap.id, 'hardknott', [hardknottCourseMap]],
+    [havanaCourseMap.id, 'havana', [havanaCourseMap]],
     ['prairie-paceline', 'prairie', undefined],
     ['vice-city', 'vicecity', undefined],
     [cinqueTerreCourseMap.id, 'cinqueterre', [cinqueTerreCourseMap]],
@@ -243,7 +245,9 @@ test.describe('a course', () => {
       bluetooth,
       api,
       webgl,
+      worldRide,
     }) => {
+      if (id === havanaCourseMap.id) await worldRide.pin('low', 'webgl2');
       await webgl.withoutWebGpu();
       const loaded: string[] = [];
       page.on('requestfinished', (request) => loaded.push(new URL(request.url()).pathname));

@@ -144,6 +144,7 @@ export class HavanaStreet implements SceneStreet {
   private readonly sitters: Sitter[] = [];
   private swell: Texture | null = null;
   private readonly horizon = new Group();
+  private readonly hotel = new Group();
   readonly backdrop = [this.horizon];
   private time = 0;
   private readonly unit = new BoxGeometry(1, 1, 1);
@@ -225,6 +226,7 @@ export class HavanaStreet implements SceneStreet {
     this.addCars(roadHalf);
     this.addPeople(roadHalf);
     this.addMorro(roadHalf);
+    this.addNacional();
     this.addSkyline();
     this.addClouds();
     this.addBoats(roadHalf);
@@ -401,6 +403,14 @@ export class HavanaStreet implements SceneStreet {
       }
     }
     this.horizon.position.set(0, heightAt(0), 0);
+    const hotelAhead = 1600 - s;
+    this.hotel.visible = hotelAhead > -110 && hotelAhead < 580;
+    if (this.hotel.visible)
+      this.hotel.position.set(
+        48,
+        heightAt(Math.max(-20, Math.min(160, hotelAhead))) + 2,
+        -hotelAhead,
+      );
   }
 
   /**
@@ -936,6 +946,7 @@ export class HavanaStreet implements SceneStreet {
       if (ruin) building.add(this.shoring(width, timber));
       else if (!tower) building.add(slabMesh, railMesh);
       this.group.add(building);
+      building.name = `Portales${built}`;
       this.props.push({ mesh: building, offset, x: roadHalf + 4 });
       offset += width;
       // Every few buildings a side street opens off the Malecón into the city.
@@ -1292,6 +1303,7 @@ export class HavanaStreet implements SceneStreet {
       holder.add(signal);
     }
     this.group.add(holder);
+    holder.name = 'ZebraCrossing';
     this.props.push({ mesh: holder, offset, x: 0 });
   }
 
@@ -1732,6 +1744,7 @@ export class HavanaStreet implements SceneStreet {
     const crew = seeded(1619);
     CARS.forEach(([colour, roof], k) => {
       const car = build(colour, roof);
+      car.name = `Almendron${k}`;
       this.occupy(car, crew, 0.0, 0.6, 0.42);
       // Oncoming down the far carriageway, in its two lanes.
       car.rotation.y = Math.PI;
@@ -1741,6 +1754,7 @@ export class HavanaStreet implements SceneStreet {
     });
     // The quinceañera's car: a pink convertible, top down, parked at the kerb beside her shoot.
     const pink = build('#f4a6c6', '#f2f0ea', true);
+    pink.name = 'QuinceaneraConvertible';
     const stand = new Group();
     stand.add(pink);
     this.group.add(stand);
@@ -1879,6 +1893,7 @@ export class HavanaStreet implements SceneStreet {
     for (let i = 0; i < 4; i++) {
       // A coco-taxi: the yellow egg shell over a black seat, on a scooter's three wheels.
       const taxi = new Group();
+      taxi.name = `CocoTaxi${i}`;
       put(taxi, shell, yellow, 0, 0.42, 0.15);
       put(taxi, tub, yellow, 0, 0.42, 0.25);
       // The passengers' bench at the back, and the driver up front on the scooter's saddle.
@@ -2861,6 +2876,7 @@ export class HavanaStreet implements SceneStreet {
         part(head, skin, 0.2, 1.82, 0.28);
       }
       bike.rotation.y = Math.PI;
+      bike.name = `BiciTaxi${i}`;
       bike.position.x = -roadHalf - LANES + 1.2;
       this.group.add(bike);
       this.cars.push({
@@ -2999,6 +3015,56 @@ export class HavanaStreet implements SceneStreet {
     );
     this.crests.frustumCulled = false;
     this.group.add(this.crests);
+  }
+
+  /** Hotel Nacional's two tiled towers rise above its long buff-coloured Vedado frontage. */
+  private addNacional(): void {
+    const plaster = this.material({ color: 0xdac7a4, roughness: 0.91 });
+    const cornice = this.material({ color: 0xebdabb, roughness: 0.86 });
+    const openings = this.material({ color: 0x586967, roughness: 0.75 });
+    const clay = this.material({ color: 0xa96751, roughness: 0.88 });
+    const garden = this.material({ color: 0x738153, roughness: 1 });
+    const box = (
+      x: number,
+      y: number,
+      z: number,
+      w: number,
+      h: number,
+      l: number,
+      m: MeshStandardMaterial,
+    ) => {
+      const part = new Mesh(this.unit, m);
+      part.position.set(x, y + h / 2, z);
+      part.scale.set(w, h, l);
+      this.hotel.add(part);
+    };
+    box(0, -2.8, 0, 42, 6.2, 108, garden);
+    box(0, 3.4, 0, 22, 16, 87, plaster);
+    for (const y of [3.5, 7.5, 11.1, 14.8, 19.3]) box(-0.4, y, 0, 23.1, 0.38, 89, cornice);
+    for (let z = -40; z <= 40; z += 3.7) {
+      for (const y of [5.1, 8.5, 12.1, 15.8]) box(-11.1, y, z, 0.25, 1.78, 1.42, openings);
+      box(-12, 3.55, z, 0.78, 3.45, 0.55, cornice);
+    }
+    for (const z of [-43.55, 43.55])
+      for (const x of [-8, -4, 0, 4, 8])
+        for (const y of [5.1, 8.5, 12.1, 15.8]) box(x, y, z, 1.48, 1.78, 0.23, openings);
+    for (const z of [-28, 28]) {
+      box(-2, 19.5, z, 13, 8.6, 13, plaster);
+      for (const offset of [-4, 0, 4]) box(-8.58, 23, z + offset, 0.2, 3.65, 1.7, openings);
+      for (const dz of [-6.52, 6.52])
+        for (const x of [-5.7, -2, 1.7]) box(x, 22, z + dz, 1.45, 4.6, 0.22, openings);
+      box(-2, 27.8, z, 14, 0.6, 14, cornice);
+      const roof = new ConeGeometry(10, 5.6, 4);
+      this.disposables.push(roof);
+      const cap = new Mesh(roof, clay);
+      cap.rotation.y = Math.PI / 4;
+      cap.position.set(-2, 31, z);
+      this.hotel.add(cap);
+      for (const dx of [-6, 6])
+        for (const dz of [-6, 6]) box(-2 + dx, 28.3, z + dz, 0.5, 1.3, 0.5, cornice);
+    }
+    this.hotel.name = 'HotelNacional';
+    this.group.add(this.hotel);
   }
 
   /**
@@ -3172,6 +3238,7 @@ export class HavanaStreet implements SceneStreet {
     light.position.set(48, 18, 18);
     morro.add(light);
     morro.position.set(-roadHalf - 330, 0, -1100);
+    morro.name = 'ElMorro';
     morro.rotation.y = 0.4;
     this.horizon.add(morro);
     this.group.add(this.horizon);
@@ -3924,6 +3991,7 @@ export class HavanaStreet implements SceneStreet {
     const holder = new Group();
     holder.add(trio);
     this.group.add(holder);
+    holder.name = 'SonTrio';
     this.props.push({ mesh: holder, offset: 57, x: -roadHalf - LANES - 2.6 });
   }
 
@@ -4003,6 +4071,7 @@ export class HavanaStreet implements SceneStreet {
     const holder = new Group();
     holder.add(stop);
     this.group.add(holder);
+    holder.name = 'Parada';
     this.props.push({ mesh: holder, offset: 46, x: roadHalf + 0.9 });
   }
 
@@ -4400,6 +4469,7 @@ export class HavanaStreet implements SceneStreet {
     const holder = new Group();
     holder.add(game);
     this.group.add(holder);
+    holder.name = 'DominoTable';
     this.props.push({ mesh: holder, offset: 39, x: roadHalf + 2.9 });
   }
 
@@ -4701,6 +4771,7 @@ export class HavanaStreet implements SceneStreet {
     cart.position.y = KERB;
     holder.add(cart);
     this.group.add(holder);
+    holder.name = 'FruitCart';
     this.props.push({ mesh: holder, offset: 34.2, x: roadHalf + 1.15 });
   }
 
@@ -5168,6 +5239,7 @@ export class HavanaStreet implements SceneStreet {
     man.position.y = KERB;
     holder.add(man);
     this.group.add(holder);
+    holder.name = 'Manisero';
     this.props.push({ mesh: holder, offset: 31.8, x: roadHalf + 1.3 });
   }
 
@@ -5247,6 +5319,7 @@ export class HavanaStreet implements SceneStreet {
     const holder = new Group();
     holder.add(shoot);
     this.group.add(holder);
+    holder.name = 'PhotoParty';
     this.props.push({ mesh: holder, offset: 35, x: roadHalf + 3.0 });
   }
 
@@ -5319,7 +5392,7 @@ function seaTexture(): CanvasTexture {
  * it: the colonnade's arches at the foot, tall shuttered windows with balconies above, cornice
  * lines, and plaster peeling to the brick.
  */
-function facadeTexture(): CanvasTexture {
+export function facadeTexture(): CanvasTexture {
   return canvasTexture(512, 1024, (g) => {
     // Drawn on a 256 × 512 grid at twice the resolution.
     g.scale(2, 2);
@@ -5416,7 +5489,7 @@ function facadeTexture(): CanvasTexture {
 }
 
 /** One bay of the arcade's front: a round arch cut through the pale wall (transparent). */
-function archTexture(): CanvasTexture {
+export function archTexture(): CanvasTexture {
   return canvasTexture(128, 160, (g) => {
     speckle(g, 128, 160, '#efece6', 983);
     g.fillStyle = 'rgba(150,110,90,0.25)';
@@ -5440,7 +5513,7 @@ function archTexture(): CanvasTexture {
 }
 
 /** The shopfronts at the back of the arcade: doorways, shutters and dim windows. */
-function shopTexture(lit = false): CanvasTexture {
+export function shopTexture(lit = false): CanvasTexture {
   // Two shopfronts per 7 m tile: a painted sign over each, a shop window lit from within, and a
   // doorway, open and dark or shut behind a roller grille; `lit` draws only what glows.
   const names = ['CAFETERÍA', 'BODEGA', 'BARBERÍA', 'PALADAR', 'FARMACIA', 'DULCERÍA'];
@@ -5568,7 +5641,7 @@ function royalFrondTexture(): CanvasTexture {
 }
 
 /** A wrought-iron balcony railing: top rail, bottom rail and balusters with scrolls, open between. */
-function railingTexture(): CanvasTexture {
+export function railingTexture(): CanvasTexture {
   const texture = canvasTexture(256, 64, (g) => {
     g.clearRect(0, 0, 256, 64);
     g.fillStyle = '#1d2024';
@@ -5951,7 +6024,7 @@ function cubanFlag(): CanvasTexture {
  * expansion joint, grime at the promenade's foot, salt bloom on the coping, and the sea face
  * darkened by spray and green with algae toward the water.
  */
-function seawallTexture(): CanvasTexture {
+export function seawallTexture(): CanvasTexture {
   return canvasTexture(256, 384, (g) => {
     speckle(g, 256, 384, '#d8d0c0', 1123);
     const random = seeded(1129);
@@ -5990,7 +6063,7 @@ function seawallTexture(): CanvasTexture {
  * plaster and stone, the windows gaping black and empty of their shutters, a fallen balcony's
  * stub at each floor, and the brick showing where the render has come away.
  */
-function ruinTexture(): CanvasTexture {
+export function ruinTexture(): CanvasTexture {
   return canvasTexture(512, 1024, (g) => {
     g.scale(2, 2);
     speckle(g, 256, 512, '#b8b2a6', 1181);
@@ -6327,7 +6400,7 @@ function boardTexture(top: string, bottom: string, look: number): CanvasTexture 
  * toward the foot, the paint peeling in flakes to bare grey render, salt-damp and grime rising a
  * metre from the pavement.
  */
-function pierTexture(): CanvasTexture {
+export function pierTexture(): CanvasTexture {
   return canvasTexture(128, 512, (g) => {
     speckle(g, 128, 512, '#f0ece4', 1277);
     const random = seeded(1279);
@@ -6444,7 +6517,7 @@ function zebraTexture(): CanvasTexture {
  * and a band of glass and shadow behind it on each floor, the parapets streaked dark by rain,
  * and here and there washing or a screen of blinds.
  */
-function towerTexture(): CanvasTexture {
+export function towerTexture(): CanvasTexture {
   return canvasTexture(256, 512, (g) => {
     speckle(g, 256, 512, '#e4e0d8', 1331);
     const random = seeded(1337);
