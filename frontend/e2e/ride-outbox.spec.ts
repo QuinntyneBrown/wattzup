@@ -7,7 +7,7 @@
 // 429 is sent again when the Retry-After it was given has passed, not on the growing delay.
 import { RIDE_RECORDED } from './fixtures/api';
 import { openResults, soloRace } from './fixtures/results';
-import { ridesWaiting } from './fixtures/rides-waiting';
+import { ridesWaiting, storedAttempts } from './fixtures/rides-waiting';
 import { expect, test } from './fixtures/test';
 import { ResultsPage } from './pages/results.page';
 
@@ -82,11 +82,14 @@ test.describe('Rides waiting on the device', () => {
     await expect.poll(sent).toBeGreaterThan(0);
     const first = sent();
 
+    // The failed HTTP request precedes the IndexedDB commit that starts the retry delay.
+    await expect.poll(() => storedAttempts(page, state.ride.rideId)).toBe(1);
     await page.clock.runFor(29_000);
     expect(sent()).toBe(first);
     await page.clock.runFor(1_000);
     await expect.poll(sent).toBe(first + 1);
 
+    await expect.poll(() => storedAttempts(page, state.ride.rideId)).toBe(2);
     await page.clock.runFor(59_000);
     expect(sent()).toBe(first + 1);
     api.answer('POST', '/api/rides', RIDE_RECORDED);
@@ -116,6 +119,7 @@ test.describe('Rides waiting on the device', () => {
     const first = sent();
     await expect.poll(() => ridesWaiting(page)).toEqual([state.ride.rideId]);
 
+    await expect.poll(() => storedAttempts(page, state.ride.rideId)).toBe(1);
     api.answer('POST', '/api/rides', RIDE_RECORDED);
     await page.clock.runFor(5_000);
     await expect.poll(sent).toBe(first + 1);
