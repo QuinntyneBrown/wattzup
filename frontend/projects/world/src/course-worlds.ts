@@ -25,6 +25,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   blackpool: 'courses/blackpool',
   bluemountains: 'courses/bluemountains',
   blueridge: 'courses/blueridge',
+  bondi: 'courses/bondi',
   ibiza: 'courses/ibiza',
   alpe: 'courses/alpe',
   cinqueterre: 'courses/cinqueterre',

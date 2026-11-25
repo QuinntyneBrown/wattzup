@@ -1375,3 +1375,9 @@ import blueridge as _blueridge
 
 THEMES["blueridge"] = _blueridge.THEME
 SCENERY["blueridge"] = _blueridge.scenery
+
+
+import bondi as _bondi
+
+THEMES["bondi"] = _bondi.THEME
+SCENERY["bondi"] = _bondi.scenery

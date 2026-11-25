@@ -33,6 +33,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Blackpool Illuminations (`blackpool`) | In and Out, Shake It All About (GCN Training, 14:00) | 5.630 km | 3 m | `public/courses/blackpool.glb` ([ride views](screenshots/blackpool-illuminations/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Blue Mountains, Jamaica (`bluemountains`) | Climb & Sprint to the Beat (GCN Training, 35:00) | 14.593 km | 752 m | `public/courses/bluemountains.glb` ([ride views](screenshots/blue-mountains-jamaica/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Blue Ridge Parkway (`blueridge`) | FTP Booster Extended Efforts (GCN Training, 55:00) | 24.250 km | 391 m | `public/courses/blueridge.glb` ([ride views](screenshots/blue-ridge-parkway/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Bondi to Bronte (`bondi`) | 15 Min HIIT Cardio: Belly Fat Loss (GCN Training, 13:30) | 6.150 km | 95 m | `public/courses/bondi.glb` ([ride views](screenshots/bondi-to-bronte/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

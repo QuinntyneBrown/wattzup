@@ -13,6 +13,7 @@ import bigSurElevation from './bigsur-elevation.json';
 import blackpoolElevation from './blackpool-elevation.json';
 import bluemountainsElevation from './bluemountains-elevation.json';
 import blueridgeElevation from './blueridge-elevation.json';
+import bondiElevation from './bondi-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1139,6 +1140,44 @@ export const blueRidgeCourseMap = {
       seg('recover', 120, 13, 80),
       seg('work', 300, 21, 95),
       seg('cool-down', 300, 13, 80),
+    ],
+  },
+};
+
+export const bondiCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'bondi-to-bronte',
+  name: 'Bondi to Bronte',
+  routeName: 'The coast walk',
+  place: 'Sydney, Australia',
+  world: 'bondi',
+  distanceKm: 6.15,
+  climbingM: 95,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: bondiElevation,
+  },
+  thumbnailUrl: 'maps/bondi-to-bronte.jpg',
+  photoUrl: 'maps/bondi-to-bronte-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 120, 21, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 120, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 60, 10, 80),
     ],
   },
 };
