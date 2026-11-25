@@ -1,0 +1,163 @@
+{
+  "id": "dales",
+  "name": "Yorkshire Dales",
+  "world": "dales",
+  "theme": "dales",
+  "seed": 2109,
+  "layout": 0,
+  "class": {
+    "id": "race-winning-intervals",
+    "title": "Race Winning Intervals",
+    "channel": "GCN",
+    "videoId": "cTs2fwpqBbg",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 21,
+        "cadenceAim": 120
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 21,
+        "cadenceAim": 120
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 21,
+        "cadenceAim": 120
+      },
+      {
+        "kind": "recover",
+        "duration": 173,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 220,
+        "level": 21,
+        "cadenceAim": 92
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 190,
+        "level": 21,
+        "cadenceAim": 91
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 190,
+        "level": 21,
+        "cadenceAim": 91
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 190,
+        "level": 21,
+        "cadenceAim": 91
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 190,
+        "level": 21,
+        "cadenceAim": 91
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 190,
+        "level": 21,
+        "cadenceAim": 91
+      },
+      {
+        "kind": "cool-down",
+        "duration": 160,
+        "level": 11,
+        "cadenceAim": 85
+      }
+    ]
+  }
+}

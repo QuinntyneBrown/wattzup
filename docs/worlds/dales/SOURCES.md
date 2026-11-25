@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Wandering Flats” Route Details (Makuri Islands)](https://zwiftinsider.com/route/wandering-flats/) (g0185) | © Zwift |
 | game-04.jpg | Zwift: [“Yorkshire Double Loop” Route Details (Yorkshire)](https://zwiftinsider.com/route/yorkshire-double-loop/) (g0189) | © Zwift |
 | game-05.jpg | Zwift: [“London Loop” Route Details (London)](https://zwiftinsider.com/route/london-loop/) (g0087) | © Zwift |
+
+The original spectator atlas was made with the built-in image generator. The prompt requested four full-length groups of Yorkshire hill-climb spectators under diffuse summer light: locals in waxed jackets, a cheering family in blue and white, marshals in high-visibility vests and three rural spectators with a camera. The broadleaf cutouts adapt the project’s original Lake Como trees. The rose flag, sheep, limestone walls, villages and fell geometry are authored for this course.
+
+The distant fell sides use an original landscape matte. The built-in image generator was prompted for a broad view across Swaledale from Buttertubs Pass, with dry-stone field boundaries, isolated barns, purple-brown heather and drifting patches of sun under a transparent skyline. Both sides stand at fixed world positions behind the authored fields.

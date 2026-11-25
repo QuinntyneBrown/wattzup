@@ -1422,3 +1422,8 @@ import cypress as _cypress  # noqa: E402
 
 THEMES['cypress'] = _cypress.THEME
 SCENERY['cypress'] = _cypress.scenery
+
+import dales as _dales  # noqa: E402
+
+THEMES['dales'] = _dales.THEME
+SCENERY['dales'] = _dales.scenery

@@ -2,6 +2,9 @@ import type { cornwallVisitors } from './cornwall-visitors';
 import type { CornwallHarbour } from './cornwall-harbour';
 import type { cypressForest } from './cypress-forest';
 import type { CypressLift } from './cypress-lift';
+import type { dalesVerges } from './dales-verges';
+import type { DalesSheep } from './dales-sheep';
+import type { DalesFlags } from './dales-flags';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -270,6 +273,9 @@ export class CourseRenderer implements WorldRenderer {
   private forest: Awaited<ReturnType<typeof cypressForest>> | null = null;
   private cypressLift: CypressLift | null = null;
   private readonly climbingRiders: Cyclist[] = [];
+  private verges: Awaited<ReturnType<typeof dalesVerges>> | null = null;
+  private flock: DalesSheep | null = null;
+  private flags: DalesFlags | null = null;
   private course: Course | null = null;
   private timing: PursuitBoard | null = null;
   private disposed = false;
@@ -397,6 +403,8 @@ export class CourseRenderer implements WorldRenderer {
     gullY: null as number | null,
     climberX: null as number | null,
     chairX: null as number | null,
+    flagTip: null as number | null,
+    sheepX: null as number | null,
     groups: {} as Record<string, number>,
     kiteAngle: undefined as number | undefined,
     boatX: undefined as number | undefined,
@@ -910,6 +918,27 @@ export class CourseRenderer implements WorldRenderer {
         }
         this.camera.setViewOffset(1, 1, 0, 0.1, 1, 1);
       }
+      if (this.path === 'courses/dales') {
+        const [{ DalesSheep }, { DalesFlags }, { dalesVerges }] = await Promise.all([
+          import('./dales-sheep'),
+          import('./dales-flags'),
+          import('./dales-verges'),
+        ]);
+        if (this.disposed) return false;
+        const verges = await dalesVerges(this.course);
+        if (this.disposed) {
+          verges.dispose();
+          return false;
+        }
+        this.verges = verges;
+        this.scene.add(verges.root);
+        this.disposables.push(verges);
+        this.flock = new DalesSheep(this.course);
+        this.flags = new DalesFlags(this.course, this.scene);
+        this.scene.add(this.flock.mesh);
+        this.disposables.push(this.flock, this.flags);
+        this.camera.setViewOffset(1, 1, 0, 0.09, 1, 1);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1126,6 +1155,12 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.cypressLift.update(seconds, metres);
     }
+    if (this.verges) {
+      this.verges.follow(metres);
+      this.sun.intensity = 2.13 + 0.66 * Math.sin(metres / 317) + 0.32 * Math.sin(metres / 127);
+    }
+    this.flock?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.flags?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
@@ -2260,6 +2295,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.gullY = this.harbour?.gullY ?? null;
     drawn.climberX = this.climbingRiders[0]?.group.position.x ?? null;
     drawn.chairX = this.cypressLift?.chairX ?? null;
+    drawn.sheepX = this.flock?.sheepX ?? null;
+    drawn.flagTip = this.flags?.tip ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;
