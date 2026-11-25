@@ -384,3 +384,42 @@ export const angelsCourseMap = {
     ],
   },
 };
+
+export const angkorCourseMap = {
+  ...ibizaCourseMap,
+  id: 'angkor-temples',
+  world: 'angkor',
+  name: 'Angkor Temples',
+  routeName: 'Temple Road',
+  place: 'Angkor Wat and Angkor Thom at dawn',
+  distanceKm: 25.15,
+  climbingM: 24,
+  terrain: {
+    grade: { 'warm-up': 0, work: 0.45, recover: -0.35, 'cool-down': 0, steady: 0 },
+    roll: 0.12,
+  },
+  rating: 'Moderate',
+  thumbnailUrl: 'maps/angkor-temples.jpg',
+  photoUrl: 'maps/angkor-temples-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 90),
+      seg('work', 120, 16, 90),
+      seg('recover', 180, 13, 90),
+      seg('work', 60, 24, 100),
+      seg('work', 120, 22, 80),
+      seg('recover', 180, 21, 90),
+      seg('work', 240, 19, 85),
+      seg('recover', 300, 18, 80),
+      seg('work', 360, 16, 80),
+      seg('recover', 180, 13, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 22, 80),
+      seg('work', 180, 21, 90),
+      seg('recover', 240, 19, 85),
+      seg('work', 300, 18, 80),
+      seg('recover', 360, 16, 80),
+      seg('cool-down', 360, 18, 90),
+    ],
+  },
+};

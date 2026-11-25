@@ -1283,3 +1283,10 @@ import angels as _angels  # noqa: E402
 
 THEMES["angels"] = _angels.THEME
 SCENERY["angels"] = _angels.scenery
+
+import angkor as _angkor  # noqa: E402
+
+THEMES["angkor"] = _angkor.THEME
+SCENERY["angkor"] = _angkor.scenery
+
+MATERIALS.update({name: {"color": 0xFFFFFF, "vertex": True} for name in ("tuk-tuk", "touring-bike")})

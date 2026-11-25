@@ -160,4 +160,12 @@ export class WorldRideProbe {
           .__wzWorldRide?.course?.trainingRiderX ?? null,
     );
   }
+  /** Position of the tuk-tuk submitted to the course renderer. */
+  async tukTukX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { tukTukX?: number } } }).__wzWorldRide
+          ?.course?.tukTukX ?? null,
+    );
+  }
 }

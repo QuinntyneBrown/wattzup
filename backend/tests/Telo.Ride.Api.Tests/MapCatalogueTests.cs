@@ -35,6 +35,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Alpe d'Huez", 7.4, 328, "Hard", "The 21 hairpins", "The 21 bends above Bourg-d’Oisans"),
                 new Listed("Amsterdam Canals", 8.0, 28, "Easy", "Herengracht", "The canal quays of Amsterdam"),
                 new Listed("Els Àngels, Girona", 17.05, 505, "Hard", "Santuari dels Àngels", "Girona and the Gavarres"),
+                new Listed("Angkor Temples", 25.15, 24, "Moderate", "Temple Road", "Angkor Wat and Angkor Thom at dawn"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -63,6 +64,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("alpe-dhuez", null),
                 ("amsterdam-canals", null),
                 ("els-angels", null),
+                ("angkor-temples", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -91,6 +93,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("alpe-dhuez", null),
                 ("amsterdam-canals", null),
                 ("els-angels", null),
+                ("angkor-temples", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -114,7 +117,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -133,7 +136,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
@@ -265,6 +268,36 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Segment("work", 120, 10, 80),
                 new Segment("recover", 60, 24, 100),
                 new Segment("cool-down", 120, 10, 80)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Temple_road_rides_the_original_reverse_pyramid()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "angkor-temples");
+        Assert.Equal("angkor", map.World);
+        Assert.Equal(25.15, map.DistanceKm);
+        Assert.Equal(24, map.ClimbingM);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 90),
+                new Segment("work", 120, 16, 90),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("work", 120, 22, 80),
+                new Segment("recover", 180, 21, 90),
+                new Segment("work", 240, 19, 85),
+                new Segment("recover", 300, 18, 80),
+                new Segment("work", 360, 16, 80),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 120, 22, 80),
+                new Segment("work", 180, 21, 90),
+                new Segment("recover", 240, 19, 85),
+                new Segment("work", 300, 18, 80),
+                new Segment("recover", 360, 16, 80),
+                new Segment("cool-down", 360, 18, 90)
             ],
             map.Plan.Segments);
     }

@@ -250,6 +250,7 @@ export class CourseRenderer implements WorldRenderer {
     smokeHeight: null as number | null,
     tourBoatX: null as number | null,
     trainingRiderX: null as number | null,
+    tukTukX: null as number | null,
     groups: {} as Record<string, number>,
   };
   private readonly trainingGroup: Cyclist[] = [];
@@ -260,6 +261,7 @@ export class CourseRenderer implements WorldRenderer {
   private beams: MeshBasicMaterial | null = null;
   private smoke: { mesh: Mesh; x: number; y: number } | null = null;
   private readonly canalTraffic: { holder: Group; boat: boolean; order: number }[] = [];
+  private readonly templeTraffic: { holder: Group; bike: boolean }[] = [];
   private readonly confetti: Mesh[] = [];
   private boats: { mesh: Mesh; waterline: number } | null = null;
   private funivia: { holder: Group; span: CourseCableway; pose: CabinPose } | null = null;
@@ -481,6 +483,8 @@ export class CourseRenderer implements WorldRenderer {
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
     if (this.canalTraffic.length)
       this.placeCanalTraffic(metres, frame.reducedMotion ? 0 : frame.time);
+    if (this.templeTraffic.length)
+      this.placeTempleTraffic(metres, frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -524,6 +528,8 @@ export class CourseRenderer implements WorldRenderer {
     this.smoke = null;
     for (const { holder } of this.canalTraffic) this.scene.remove(holder);
     this.canalTraffic.length = 0;
+    for (const { holder } of this.templeTraffic) this.scene.remove(holder);
+    this.templeTraffic.length = 0;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -723,8 +729,8 @@ export class CourseRenderer implements WorldRenderer {
         materials[group] = mist;
         this.disposables.push(mist);
       }
-      const traffic = group === 'Boats' || group === 'TourBoat' || group === 'Commuter';
-      const material = materials[traffic ? 'Land' : group];
+      const useLandMaterial = group === 'Boats' || group === 'TourBoat' || group === 'Commuter' || group === 'TukTuk' || group === 'TouringBike';
+      const material = materials[useLandMaterial ? 'Land' : group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
       mesh.material = material;
@@ -817,6 +823,17 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(holder);
         this.canalTraffic.push({ holder, boat: name === 'TourBoat', order });
       }
+    }
+    for (const name of ['TukTuk', 'TouringBike']) {
+      const vehicle = map.getObjectByName(name) as Mesh | undefined;
+      if (!vehicle?.isMesh) continue;
+      vehicle.updateMatrixWorld(true);
+      vehicle.matrix.copy(vehicle.matrixWorld);
+      const holder = new Group();
+      holder.add(vehicle);
+      this.scene.add(holder);
+      this.templeTraffic.push({ holder, bike: name === 'TouringBike' });
+      this.disposables.push(vehicle.geometry);
     }
     this.map = map;
     this.scene.add(map);
@@ -1184,6 +1201,21 @@ export class CourseRenderer implements WorldRenderer {
       holder.position.set(at.x, boat ? -1.65 : at.y + 0.04, at.z);
       holder.rotation.y = at.heading;
       if (boat && this.pinned) this.drawn.tourBoatX = holder.position.x;
+    }
+  }
+
+  private placeTempleTraffic(rider: number, time: number): void {
+    const course = this.course!;
+    for (const { holder, bike } of this.templeTraffic) {
+      const spacing = bike ? 480 : 830;
+      const phase = (bike ? 18 : 36) + time * (bike ? 4.4 : 6.5);
+      const metres = phase + Math.round((rider - phase) / spacing) * spacing;
+      holder.visible = metres >= 0 && metres < course.length && Math.abs(metres - rider) < 180;
+      if (!holder.visible) continue;
+      const at = course.place(metres, bike ? 2.65 : 1.65, this.there);
+      holder.position.set(at.x, at.y + 0.025, at.z);
+      holder.rotation.set(at.pitch, at.heading, 0, 'YXZ');
+      if (!bike && this.pinned) this.drawn.tukTukX = holder.position.x;
     }
   }
 
