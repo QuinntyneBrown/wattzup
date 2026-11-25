@@ -35,4 +35,18 @@ test('the Girona training group rides along the course', async ({
       return Math.max(...samples) - Math.min(...samples);
     })
     .toBeGreaterThan(0.4);
+  await race.pause.click();
+  await expect(race.resume).toBeVisible();
+  const held = await worldRide.trainingRiderX();
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+        ),
+      ),
+  );
+  expect(await worldRide.trainingRiderX()).toBe(held);
+  await race.resume.click();
+  await expect.poll(() => worldRide.trainingRiderX()).not.toBe(held);
 });

@@ -11,7 +11,7 @@ def centre_line(course, theme, bc):
     mean = sum((s["to"]-s["from"])*s["level"] for s in stages)/length
     def bearing(d):
         # Broad river bend gives way to shorter turns climbing the Gavarres.
-        return .24*math.sin(d/210) + .82*smooth(-50,130,d)-.82*smooth(140,340,d) + smooth(220,850,d)*(.65*math.sin(d/165)+.24*math.sin(d/74))
+        return .24*math.sin(d/210) - .82*smooth(15,150,d)+.82*smooth(160,350,d) + smooth(220,850,d)*(.65*math.sin(d/165)+.24*math.sin(d/74))
     samples = []
     x,y,z = -bc.LEAD_IN,0,0
     for i in range(math.ceil((bc.LEAD_IN+length+bc.RUN_OUT)/bc.STEP)+1):
@@ -144,15 +144,40 @@ def scenery(k):
                 u=x+a*math.cos(yaw)-face*3.03*math.sin(yaw)
                 v=y+a*math.sin(yaw)+face*3.03*math.cos(yaw)
                 art.box((u,v,z+floor),(1.05,.09,1.45),yaw,window)
+                for sign in (-1,1):
+                    art.box((u+sign*.68*math.cos(yaw),v+sign*.68*math.sin(yaw),z+floor),(.24,.12,1.43),yaw,lin(0x716557))
+                art.box((u,v,z+floor-.11),(1.65,.46,.14),yaw,lin(0xB3A18A))
+                if floor>3 and pane==0:
+                    for post in (-.62,-.30,0,.30,.62):
+                        art.box((u+post*math.cos(yaw)-face*.24*math.sin(yaw),v+post*math.sin(yaw)+face*.24*math.cos(yaw),z+floor),(.042,.042,.65),yaw,window)
+                    art.box((u-face*.24*math.sin(yaw),v+face*.24*math.cos(yaw),z+floor+.65),(1.35,.045,.05),yaw,window)
+        if d<285 and side>0:
+            i=k.road.index(d)
+            reflection=tuple(v*.44 if j<3 else v for j,v in enumerate(colour))
+            for j in range(12):
+                off=31.9-j*1.23
+                cx,cy,_=k.P(i,.36*math.sin(j*1.7),off)
+                art.box((cx,cy,-2.28),(width*(1-j*.048),.93,.02),yaw,reflection)
     ochres = list(map(lin,(0xC99753,0xB76D53,0xDBB878,0xC28364,0xE5D3A4)))
     for d in range(-48,285,8):
         house(d,39,7.9,k.rng.uniform(8,15),k.rng.choice(ochres))
         if d<125: house(d,-13,7.9,k.rng.uniform(8,14),k.rng.choice(ochres))
-    (x,y,z),yaw=site(108,59)
+    (x,y,z),yaw=site(190,52)
     art.box((x,y,z),(33,17,21),yaw,stone)
     art.roof((x,y,z+21),33,17,6,yaw,tile)
-    for level,radius,height in ((0,4.8,23),(23,3.9,9),(32,3.1,5),(37,1.4,3)):
-        art.tube((x+12,y-4,z+level),radius,radius*.93,height,stone,stone,8,stone)
+    # A high octagonal campanile and its open belfry rise above the Onyar roofs.
+    bx=x+12*math.cos(yaw)-7*math.sin(yaw)
+    by=y+12*math.sin(yaw)+7*math.cos(yaw)
+    for level,radius,height in ((0,4.8,23),(23,4.25,8),(31,3.55,5.7),(36.7,2.7,2.3),(39,1.25,2.1)):
+        art.tube((bx,by,z+level),radius,radius*.95,height,stone,stone,8,stone)
+        art.tube((bx,by,z+level+height-.37),radius*1.06,radius*1.05,.37,stone,stone,8,stone)
+    for j in range(8):
+        a=j*math.tau/8
+        wx=bx+4.08*math.cos(a);wy=by+4.08*math.sin(a)
+        art.box((wx,wy,z+24.8),(.14,1.38,4.2),a,lin(0x615D52))
+    for j in range(4):
+        art.box((x-16*math.cos(yaw)+math.sin(yaw)*(j-1.5)*3.55,y-16*math.sin(yaw)-math.cos(yaw)*(j-1.5)*3.55,z+.25),
+                (1.3,.72,19.7),yaw,lin(0xD6C5AB))
     # Medieval walls rise above the quays. The crenellations break the skyline.
     for d in range(38,266,6):
         (x,y,z),yaw=site(d,52)
