@@ -19,7 +19,7 @@ Headed Chromium 159.0.8154.6 on Apple M5 Pro, 1024 × 768 at DPR 1, Low/WebGL 2,
 
 | Section | Scene offset | HUD distance | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak calls |
 | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| Park Boulevard through the Joshua trees | 0 m | 0.12 km to 0.95 km | 120.87 | 120.00 | 9.7 ms | 15.0 ms | 44 |
-| Jumbo Rocks campground and climbing walls | 12050 m | 0.12 km to 0.95 km | 120.85 | 120.00 | 9.7 ms | 16.8 ms | 54 |
+| Park Boulevard through the Joshua trees | 0 m | 0.12 km to 0.95 km | 120.38 | 119.97 | 9.8 ms | 19.6 ms | 44 |
+| Jumbo Rocks campground and climbing walls | 12050 m | 0.12 km to 0.95 km | 120.21 | 119.82 | 9.8 ms | 57.7 ms | 54 |
 
 Reproduce from the frontend workspace with `npm run perf -- joshuatree-tablet --headed`.
