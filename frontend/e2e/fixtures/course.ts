@@ -1,3 +1,4 @@
+import comoElevation from './como-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,48 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const comoCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'lake-como',
+  name: 'Lake Como',
+  routeName: 'The shore road',
+  place: 'The western shore of Lake Como',
+  world: 'como',
+  distanceKm: 12.4,
+  climbingM: 83,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: comoElevation,
+  },
+  thumbnailUrl: 'maps/lake-como.jpg',
+  photoUrl: 'maps/lake-como-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 180, 16, 80),
+      seg('work', 120, 19, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 11, 80),
+      seg('work', 120, 19, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 120, 11, 80),
+    ],
   },
 };
