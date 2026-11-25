@@ -371,7 +371,7 @@ export class CourseRenderer implements WorldRenderer {
           return false;
         }
         this.galibier = hills;
-        this.camera.far = 19500;
+        this.camera.far = 28000;
         this.camera.updateProjectionMatrix();
         this.disposables.push(hills);
         this.scene.add(hills.group);
@@ -594,6 +594,10 @@ export class CourseRenderer implements WorldRenderer {
     const made = this.lampGlow?.light ?? dusk;
     this.disposables.push(...Object.values(materials));
     Object.assign(materials, this.galibier?.materials);
+    if (this.galibier) {
+      materials['Sun']!.vertexColors = false;
+      (materials['Sun'] as MeshBasicMaterial).color.setHex(0xfff9e8);
+    }
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
     const detail = surfaceTexture();

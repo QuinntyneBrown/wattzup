@@ -1765,8 +1765,11 @@ def build_themed_scenery(road: Road, st: list[dict], length: float, height_at, c
     az = theme.get("sun_azimuth", az)
     fx, fy = s[fin]["x"], s[fin]["y"]
     alt = theme.get("sun_altitude", 0.1)
-    dist_, radius = 5200.0, 300.0 if theme.get("night") else 420.0
+    dist_ = 5200.0
+    radius = theme.get("disc_radius", 300.0 if theme.get("night") else 420.0)
     sx, sy, sz = fx + math.cos(az) * dist_, fy + math.sin(az) * dist_, max(160.0, dist_ * alt)
+    if theme.get("disc_above_finish"):
+        sz = s[fin]["z"] + dist_ * math.tan(alt)
     disc = B["moon" if theme.get("night") else "sun"]
     for q in range(32):
         a0, a1 = q * math.tau / 32, (q + 1) * math.tau / 32

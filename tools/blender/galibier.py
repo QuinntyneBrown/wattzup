@@ -182,4 +182,4 @@ def scenery(k):
 THEME=dict(lay=lay,road_builder=road,land_builder=land,road_half_width=4.1,terrain={'sea':False},
            land={'mid':0x787959},sky=[0xc3d9e7,0x94bee0,0x6598d4,0x467bc1,0x3565ac],haze=0xb3c8dc,
            palette={'asphalt':0x545453,'sea':0x798f94},light=[0xfff6e3,3.45],fill=[0xd3e5f5,0x888473],
-           sun_azimuth=-.91,sun_altitude=.86)
+           disc_radius=25,disc_above_finish=True,sun_azimuth=-.91,sun_altitude=.86)

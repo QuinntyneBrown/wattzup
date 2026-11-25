@@ -3,6 +3,8 @@ import {
   BoxGeometry,
   CanvasTexture,
   DoubleSide,
+  CylinderGeometry,
+  MirroredRepeatWrapping,
   Group,
   Mesh,
   MeshBasicMaterial,
@@ -33,6 +35,7 @@ export async function galibierPass(course: Course) {
       'snow',
       'chalets',
       'valloire',
+      'desgrange',
     ]) {
       const map = await loader.loadAsync('courses/galibier-' + name + '.webp');
       map.colorSpace = SRGBColorSpace;
@@ -43,7 +46,7 @@ export async function galibierPass(course: Course) {
     throw e;
   }
   resources.push(...maps);
-  const [peaks, cloud, tarmac, scree, meadow, snow, chalets, valley] = maps;
+  const [peaks, cloud, tarmac, scree, meadow, snow, chalets, valley, portrait] = maps;
   function surface(map: Texture, size: number) {
     map.wrapS = map.wrapT = RepeatWrapping;
     map.anisotropy = 4;
@@ -65,21 +68,16 @@ export async function galibierPass(course: Course) {
     alphaTest: 0.4,
     fog: false,
   });
-  const middle = new PlaneGeometry(10800, 1890);
-  resources.push(foothill, middle);
+  // Mirror the ends of the valley photograph around one connected horizon.
+  // Every neighbouring sector shares a vertex and the same sample at that vertex.
+  valley!.wrapS = MirroredRepeatWrapping;
+  valley!.repeat.x = 8;
+  const middle = new CylinderGeometry(10900, 10900, 3100, 96, 1, true);
   const centre = course.place(12800);
-  for (let i = 0; i < 8; i++) {
-    const angle = (i * Math.PI) / 4;
-    const slopes = new Mesh(middle, foothill);
-    slopes.rotation.y = angle;
-    slopes.scale.x = i % 2 ? -1 : 1;
-    slopes.position.set(
-      centre.x + 10900 * Math.sin(angle),
-      1950 + Math.sin(2 * angle) * 145,
-      centre.z + 10900 * Math.cos(angle),
-    );
-    group.add(slopes);
-  }
+  const slopes = new Mesh(middle, foothill);
+  slopes.position.set(centre.x, 2030, centre.z);
+  group.add(slopes);
+  resources.push(middle, foothill);
   const walls = new MeshLambertMaterial({ map: chalets, side: DoubleSide });
   resources.push(walls);
   for (const [d, l, w, depth, height] of [
@@ -243,18 +241,14 @@ export async function galibierPass(course: Course) {
     '#fbf6e0',
     true,
   );
-  board(
-    22395.7,
-    8.7,
-    'HENRI DESGRANGE',
-    'AU CRÉATEUR DU TOUR',
-    1.62,
-    0.92,
-    2.9,
-    '#968469',
-    '#453e33',
-    false,
-  );
+  const carving = new MeshLambertMaterial({ map: portrait, side: DoubleSide });
+  const memorialFace = new PlaneGeometry(1.58, 2.37);
+  const medallion = new Mesh(memorialFace, carving);
+  const monument = course.place(22395.72, 8.7);
+  medallion.position.set(monument.x, monument.y + 2.66, monument.z);
+  medallion.rotation.y = monument.heading;
+  group.add(medallion);
+  resources.push(carving, memorialFace);
   board(
     25865.7,
     9,
