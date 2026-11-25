@@ -215,6 +215,7 @@ export class CourseRenderer implements WorldRenderer {
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
+  private saltRoad: Material | null = null;
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
   private pipeline: RenderPipeline | null = null;
@@ -356,6 +357,13 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
+      if (this.course.file.id === 'bonneville') {
+        const { saltFlatMaterial } = await import('./bonneville-surface');
+        if (this.disposed) return false;
+        const surface = saltFlatMaterial(this.course.file.roadHalfWidth);
+        this.saltRoad = surface.material;
+        this.disposables.push(...surface.textures);
+      }
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -478,6 +486,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampGlow = null;
     this.sunGlow = null;
     this.groundEye = null;
+    this.saltRoad = null;
     this.riderBatch = null;
     this.rain = null;
     this.shadows.clear();
@@ -580,7 +589,8 @@ export class CourseRenderer implements WorldRenderer {
       new Color(look.haze),
       coloured,
     );
-    materials['Ground'] = ground.material;
+    materials['Ground'] = this.saltRoad ?? ground.material;
+    if (this.saltRoad) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
