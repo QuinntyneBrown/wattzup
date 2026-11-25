@@ -20,7 +20,8 @@ export async function dalesVerges(course: Course) {
     loader.loadAsync('courses/dales-ash.webp'),
     loader.loadAsync('courses/dales-fells.webp'),
   ]);
-  const materials = textures.map((map) => {
+  textures[2]!.colorSpace = SRGBColorSpace;
+  const materials = textures.slice(0, 2).map((map) => {
     map.colorSpace = SRGBColorSpace;
     return new MeshBasicMaterial({ map, alphaTest: 0.49, side: DoubleSide, vertexColors: true });
   });
@@ -126,11 +127,15 @@ export async function dalesVerges(course: Course) {
   // Keep both far valley sides in fixed world space while the near walls and
   // trees pass the camera. Adjacent sections share their end vertices.
   const ridges = new Group();
+  const ridgeAlpha: Float32BufferAttribute[] = [];
   const fellMaterial = new MeshBasicMaterial({
     map: textures[2],
     side: DoubleSide,
     fog: false,
-    alphaTest: 0.48,
+    alphaTest: 0.015,
+    transparent: true,
+    depthWrite: false,
+    vertexColors: true,
     color: 0xd3d5c8,
   });
   for (const side of [-1, 1]) {
@@ -157,6 +162,10 @@ export async function dalesVerges(course: Course) {
     geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
     geometry.setAttribute('uv', new Float32BufferAttribute(uv, 2));
     geometry.setIndex(indices);
+    const rgba = new Float32Array((positions.length / 3) * 4).fill(1);
+    const attr = new Float32BufferAttribute(rgba, 4);
+    geometry.setAttribute('color', attr);
+    ridgeAlpha.push(attr);
     chunks.push(geometry);
     ridges.add(new Mesh(geometry, fellMaterial));
   }
@@ -165,6 +174,15 @@ export async function dalesVerges(course: Course) {
   function follow(d: number) {
     if (Math.abs(d - previous) < 24) return;
     previous = d;
+    for (const alpha of ridgeAlpha) {
+      for (let i = 0; i < alpha.count; i += 2) {
+        const distance = Math.abs((i / 2 - 3) * 600 - d);
+        const opacity = 0.86 * Math.max(0, Math.min(1, (6600 - distance) / 2900));
+        alpha.setW(i, opacity);
+        alpha.setW(i + 1, opacity);
+      }
+      alpha.needsUpdate = true;
+    }
     for (const mesh of root.children)
       if (mesh !== ridges) mesh.visible = Math.abs(Number(mesh.userData['station']) - d) < 520;
   }

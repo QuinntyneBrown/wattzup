@@ -61,7 +61,7 @@ def ground(rows,col,theme,bc):
     for d in range(-80,int(LENGTH)+150,14):
         moor=6850<d<11820
         for sign in (-1,1):
-            for a,c in ((2.76,3.95),(3.95,8),(8,37),(37,92),(92,165)):
+            for a,c in ((2.76,3.95),(3.95,8),(8,37),(37,92),(92,165),(165,245)):
                 green=(0x7c8754,0x819152,0x899653,0x7d8c53)[int((d+300)/287+sign)%4]
                 tint=(0x999789 if a<3 else (0x857655 if moor else green))
                 pts=[pose(t,l,ground_height(t,l)) for t,l in ((d,sign*a),(d,sign*c),(d+14,sign*c),(d+14,sign*a))]
