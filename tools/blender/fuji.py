@@ -42,6 +42,8 @@ def ground(d,l):
     edge=max(0,abs(l)-7.4)
     if d<240 or d>12420:
         return -.12+max(0,edge-42)*.11
+    if l>0 and 9240<d<10380:
+        return -.12-max(0,l-6.1)*.55
     if l>0:
         return -.12-edge*(.31 if d>6500 else .135)
     return -.12+edge*(.14+.04*math.sin(d/350))+min(edge*.072,2.9)*(.5+.5*math.sin(d/35+l/10))
@@ -68,7 +70,7 @@ def road(r,st,length,col,bc):
 
 
 def land(r,col,theme,bc):
-    batches=[bc.Builder(name,mat) for name,mat in [('Forest banks','terrain'),('Black lava','fuji-clinker'),('Oxidised scoria','fuji-scoria'),('Station forecourt','fuji-tarmac')]]
+    batches=[bc.Builder(name,mat) for name,mat in [('Forest banks','fuji-moss'),('Black lava','fuji-clinker'),('Oxidised scoria','fuji-scoria'),('Station forecourt','fuji-tarmac')]]
     for batch in batches:batch.colours=[]
     lanes=(-140,-80,-42,-22,-12,-7,-5.2,5.2,7,12,22,42,80,140)
     for i in range(len(r.s)-1):
@@ -108,6 +110,10 @@ def scenery(k):
         l=rng.choice((-1,1))*rng.uniform(8,48)
         root=r.pos(d,l,ground(d,l)-.20);radius=rng.uniform(.41,1.65)
         rock.tube(root,radius,radius*.57,radius*.73,lin(0x463d38),lin(0x574539),7,lin(0x5b4b43))
+    # Mark individual bus bays with short stripes painted on the arrival terrace.
+    for d in range(12830,13100,16):
+        for l in (-11.8,-17.8):
+            box(d,l,-.10,6,.17,.035,0xe4dfcc)
     # Arrival terrace with the lodge's roof and the neighbouring three-storey shop.
     for d,l,w,dep,h in ((12968,-22,34,13,7.9),(13015,-25,39,15,9.8),(13068,-31,32,15,7.1)):
         box(d,l,-.16,w,dep,h,0xaa9c85)

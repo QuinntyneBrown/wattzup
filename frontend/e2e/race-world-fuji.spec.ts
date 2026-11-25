@@ -9,6 +9,7 @@ import { RacePage } from './pages/race.page';
 
 for (const [actor, metres, part] of [
   ['cloud bank below the road', 9840, 'cloudPosition'],
+  ['visitor leaving the bus', 12910, 'visitorPosition'],
   ['fifth-station bus', 12910, 'shuttlePosition'],
 ] as const) {
   test(`the ${actor} moves and holds still on pause`, async ({

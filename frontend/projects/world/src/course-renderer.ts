@@ -237,6 +237,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly near = new Group();
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
+    visitorPosition: null as number | null,
     cloudPosition: null as number | null,
     shuttlePosition: null as number | null,
     tier: 0 as number,
@@ -369,6 +370,8 @@ export class CourseRenderer implements WorldRenderer {
           return false;
         }
         this.subaru = hills;
+        this.camera.far = 19500;
+        this.camera.updateProjectionMatrix();
         this.disposables.push(hills);
         this.scene.add(hills.group);
         this.camera.setViewOffset(1, 1, 0, 0.025, 1, 1);
@@ -1128,6 +1131,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.visitorPosition = this.subaru?.visitorPosition ?? null;
     drawn.cloudPosition = this.subaru?.cloudPosition ?? null;
     drawn.shuttlePosition = this.subaru?.shuttlePosition ?? null;
     drawn.tier = this.tier;

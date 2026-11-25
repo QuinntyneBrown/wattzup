@@ -1250,7 +1250,7 @@ SCENERY["haleakala"] = _haleakala.scenery
 
 import fuji as _fuji
 
-for name in ("fuji-tarmac", "fuji-clinker", "fuji-scoria"):
+for name in ("fuji-tarmac", "fuji-clinker", "fuji-scoria", "fuji-moss"):
     MATERIALS[name] = {"color": 0x777572, "rough": 1.0, "vertex": True}
 THEMES["fuji"] = _fuji.THEME
 SCENERY["fuji"] = _fuji.scenery

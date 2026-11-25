@@ -1,4 +1,4 @@
-import { positionWorld, texture, vec2 } from 'three/tsl';
+import { positionWorld, smoothstep, texture, uniform, uv, vec2 } from 'three/tsl';
 import {
   BoxGeometry,
   CanvasTexture,
@@ -8,6 +8,7 @@ import {
   InstancedMesh,
   Mesh,
   MeshBasicMaterial,
+  MeshBasicNodeMaterial,
   MeshLambertMaterial,
   MeshLambertNodeMaterial,
   Object3D,
@@ -23,6 +24,7 @@ import { Figures, seeded } from './world-kit';
 function ground(d: number, left: number) {
   const edge = Math.max(0, Math.abs(left) - 7.4);
   if (d < 240 || d > 12420) return -0.12 + Math.max(0, edge - 42) * 0.11;
+  if (left > 0 && d > 9240 && d < 10380) return -0.12 - Math.max(0, left - 6.1) * 0.55;
   if (left > 0) return -0.12 - edge * (d > 6500 ? 0.31 : 0.135);
   return (
     -0.12 +
@@ -47,6 +49,7 @@ export async function subaruLine(course: Course) {
       'scoria',
       'tarmac',
       'cloud',
+      'moss',
     ]) {
       const map = await loader.loadAsync('courses/fuji-' + name + '.webp');
       map.colorSpace = SRGBColorSpace;
@@ -57,7 +60,7 @@ export async function subaruLine(course: Course) {
     throw error;
   }
   resources.push(...maps);
-  const [summit, forest, station, lake, clinker, scoria, tarmac, cloud] = maps;
+  const [summit, forest, station, lake, clinker, scoria, tarmac, cloud, moss] = maps;
   function surface(map: Texture, size: number) {
     map.wrapS = map.wrapT = RepeatWrapping;
     map.anisotropy = 4;
@@ -68,6 +71,7 @@ export async function subaruLine(course: Course) {
     return paint;
   }
   const materials = {
+    Moss: surface(moss!, 2.65),
     Tarmac: surface(tarmac!, 1.45),
     Clinker: surface(clinker!, 3.3),
     Scoria: surface(scoria!, 3.15),
@@ -78,23 +82,26 @@ export async function subaruLine(course: Course) {
     side: DoubleSide,
     fog: false,
   });
-  const mountainGeometry = new PlaneGeometry(8300, 2780),
+  const mountainGeometry = new PlaneGeometry(8300, 2530),
     mountain = new Mesh(mountainGeometry, mountainPaint);
   const end = course.place(course.length),
     start = course.place(0);
   const heading = Math.atan2(start.x - end.x, start.z - end.z);
   mountain.rotation.y = heading;
-  mountain.position.set(end.x - Math.sin(heading) * 2740, 2785, end.z - Math.cos(heading) * 2740);
+  mountain.position.set(end.x - Math.sin(heading) * 4350, 2715, end.z - Math.cos(heading) * 4350);
   group.add(mountain);
   resources.push(mountainGeometry, mountainPaint);
   const outlook = course.place(7470);
-  const lakePaint = new MeshBasicMaterial({
+  const lakeFade = uniform(0);
+  const lakePaint = new MeshBasicNodeMaterial({
     map: lake,
     side: DoubleSide,
     fog: false,
     transparent: true,
     depthWrite: false,
   });
+  const edge = smoothstep(0, 0.12, uv().x).mul(smoothstep(0.88, 1, uv().x).oneMinus());
+  lakePaint.opacityNode = lakeFade.mul(edge).mul(smoothstep(0.51, 0.84, uv().y).oneMinus());
   const lakeGeometry = new PlaneGeometry(4900, 1030),
     basin = new Mesh(lakeGeometry, lakePaint);
   basin.position.set(
@@ -118,16 +125,16 @@ export async function subaruLine(course: Course) {
     });
     const mesh = new Mesh(bankGeometry, paint);
     mesh.rotation.y = inversion.heading + i * 0.065;
-    mesh.scale.set(1600 + i * 290, 250 + i * 27, 1);
+    mesh.scale.set(2300 + i * 380, 425 + i * 32, 1);
     group.add(mesh);
     resources.push(paint);
-    const forward = 780 + i * 300,
-      left = 430 + (i % 3) * 485;
+    const forward = 620 + i * 360,
+      left = 545 + (i % 3) * 495;
     return {
       mesh,
       x: inversion.x - forward * Math.sin(inversion.heading) - left * Math.cos(inversion.heading),
       z: inversion.z - forward * Math.cos(inversion.heading) + left * Math.sin(inversion.heading),
-      y: inversion.y - 44 - i * 15,
+      y: inversion.y - 17 - i * 13,
     };
   });
   resources.push(bankGeometry);
@@ -149,9 +156,9 @@ export async function subaruLine(course: Course) {
     for (let a = 0; a < course.length; a += 220) {
       const mesh = new InstancedMesh(geometry, trees, 140);
       let used = 0;
-      for (let j = 0; j < 70; j++) {
+      for (let j = 0; j < (a < 3880 ? 138 : 78); j++) {
         const d = a + rand() * 220;
-        const side = j % 2 === 0 ? -1 : 1;
+        const side = rand() < 0.5 ? -1 : 1;
         if (
           d > 12420 ||
           (d < 230 && j % 4 !== 0) ||
@@ -162,7 +169,7 @@ export async function subaruLine(course: Course) {
           height = 1;
         if (species < 2) {
           if (d > 5400 || (species === 1 && j % 3 === 0)) continue;
-          height = 9 + rand() * 10;
+          height = 11 + rand() * 13;
           width = height * (species === 0 ? 0.8 : 0.76);
         } else if (species === 2) {
           if (d < 3850 || d > 10500 || (d > 7900 && j % 4 !== 0)) continue;
@@ -173,7 +180,7 @@ export async function subaruLine(course: Course) {
           width = 1.6 + rand() * 4;
           height = width * 0.63;
         }
-        const l = side * (d < 230 ? 20 + rand() * 18 : 8.0 + rand() * 35);
+        const l = side * (d < 230 ? 20 + rand() * 18 : 7.8 + rand() * 34);
         const p = course.place(d, l);
         pose.position.set(p.x, p.y + ground(d, -l) - 0.2, p.z);
         pose.rotation.y = p.heading + (rand() - 0.5) * 1.6;
@@ -278,7 +285,7 @@ export async function subaruLine(course: Course) {
     2121,
     false,
   );
-  for (let i = 0; i < 26; i++) {
+  for (let i = 6; i < 26; i++) {
     const d = 12948 + rand() * 91,
       l = 13 + rand() * 3.4,
       p = course.place(d, l);
@@ -330,22 +337,24 @@ export async function subaruLine(course: Course) {
     signs.push({ g, d });
   }
   board(134, 0, '富士スバルライン', 'FUJI SUBARU LINE', 7.2, 1.57, '#326956', 5.74, false);
-  for (const [d, alt] of [
-    [1165, 1500],
-    [3150, 1600],
-    [4780, 1700],
-    [6300, 1800],
-    [7790, 1900],
-    [9120, 2000],
-    [10480, 2100],
-    [11750, 2200],
-    [12898, 2300],
-  ] as const)
-    board(d, -6.5, '標高 ' + alt + ' m', 'Fuji Subaru Line', 2.25, 0.88, '#73553e', 1.94, true);
+  for (let alt = 1500; alt <= 2300; alt += 100) {
+    // The course rises monotonically. Locate each marker using its actual baked elevation.
+    let low = 0,
+      high = course.length;
+    while (high - low > 1) {
+      const mid = (low + high) * 0.5;
+      if (course.place(mid).y < alt) low = mid;
+      else high = mid;
+    }
+    board(high, -6.5, '標高 ' + alt + ' m', 'Fuji Subaru Line', 2.25, 0.88, '#73553e', 1.94, true);
+  }
   board(12888, 6.9, '富士山五合目', 'Mt. Fuji 5th Station', 4.15, 1.36, '#64533e', 2.5, true);
   return {
     group,
     materials,
+    get visitorPosition() {
+      return crowd.legs.instanceMatrix.array[12];
+    },
     get cloudPosition() {
       return banks[0]!.mesh.position.x;
     },
@@ -355,8 +364,8 @@ export async function subaruLine(course: Course) {
     at(time: number, metres: number) {
       for (const p of plots) p.mesh.visible = Math.abs(p.centre - metres) < 610;
       for (const s of signs) s.g.visible = Math.abs(s.d - metres) < 335;
-      lakePaint.opacity = Math.max(0, Math.min(1, (metres - 6700) / 380, (8280 - metres) / 380));
-      basin.visible = lakePaint.opacity > 0;
+      lakeFade.value = Math.max(0, Math.min(1, (metres - 6700) / 380, (8280 - metres) / 380));
+      basin.visible = lakeFade.value > 0;
       const veil = Math.max(0, Math.min(1, (metres - 8270) / 730, (12050 - metres) / 680));
       for (let i = 0; i < banks.length; i++) {
         const b = banks[i]!;
@@ -370,6 +379,22 @@ export async function subaruLine(course: Course) {
       }
       buildings.visible = metres > 12150;
       if (buildings.visible) {
+        for (let i = 0; i < 6; i++) {
+          const phase = time * 0.078 + i * 0.74;
+          const d = 12944 + i * 4 + 7 * Math.sin(phase),
+            l = 12.4 + i * 0.45 + 1.65 * Math.cos(phase);
+          const person = course.place(d, l);
+          crowd.set(
+            i,
+            person.x,
+            person.y + ground(d, -l),
+            person.z,
+            person.heading + (Math.cos(phase) < 0 ? Math.PI : 0),
+            0.95,
+            0.027 * Math.abs(Math.sin(time * 2.3 + i)),
+          );
+        }
+        crowd.commit();
         const angle = time * 0.042,
           p = course.place(12955 + 38 * Math.sin(angle), 9.2 + 3.5 * Math.cos(angle));
         shuttle.position.set(p.x, p.y + ground(12955 + 38 * Math.sin(angle), -9.2), p.z);
