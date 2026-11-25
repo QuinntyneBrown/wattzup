@@ -159,6 +159,22 @@ describe('WebAudioRideSound', () => {
     expect(FakeContext.made[0]!.closed).toBe(true);
   });
 
+  it('fades the Loop train rumble as the rider leaves the tracks and silences it on pause', () => {
+    const railPass = signal(1);
+    sound().play({ ...source, railPass });
+    TestBed.tick();
+    vi.advanceTimersByTime(100);
+    const context = FakeContext.made[0]!;
+    const rail = context.gains.find((g) => g.gain.value === 0.72);
+    expect(rail).toBeDefined();
+    railPass.set(0);
+    vi.advanceTimersByTime(100);
+    expect(rail!.gain.value).toBe(0);
+    source.running.set(false);
+    TestBed.tick();
+    expect(context.master.gain.value).toBe(0);
+  });
+
   it('closes the context when ride sound is turned off mid-ride, and makes a new one when it comes back (AC3)', () => {
     sound().play(source);
     TestBed.tick();

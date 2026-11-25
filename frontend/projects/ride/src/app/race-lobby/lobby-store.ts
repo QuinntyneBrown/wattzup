@@ -92,7 +92,14 @@ export class LobbyStore {
   /** Leave goes back to Race Setup with the same choice (L2-057 AC1). */
   readonly leaveQuery: Readonly<Record<string, string>> = this.online
     ? { mode: 'online' }
-    : { mode: 'bots', pack: this.pack };
+    : {
+        mode: 'bots',
+        pack: this.pack,
+        ...(this.mapId === 'cherry-blossom-festival-dc' &&
+        this.snapshot.queryParamMap.get('light') === 'sunrise'
+          ? { light: 'sunrise' }
+          : {}),
+      };
 
   constructor() {
     inject(MAPS_API)

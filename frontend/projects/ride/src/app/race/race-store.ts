@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   type Backend,
+  chicagoRailPass,
   BIKE_CONNECTION,
   GHOST_API,
   type MapDto,
@@ -135,6 +136,9 @@ export class RaceStore {
   /** Whether the rider paused the solo race: the clock, the distance and the standings hold (L2-068 AC1). */
   readonly paused = this.pausedByRider.asReadonly();
   /** Race Setup for the map, where Leave and End go (L2-069). */
+  readonly sunrise =
+    this.route.queryParamMap.get('light') === 'sunrise' &&
+    this.route.queryParamMap.get('mode') !== 'online';
   readonly setup: readonly string[] = ['/race', this.mapId];
   readonly elapsed = this.ticker.second;
   /**
@@ -385,6 +389,9 @@ export class RaceStore {
       resistance: this.telemetry.resistance,
       running: this.running,
       videoPlaying: NO_VIDEO,
+      ...(map.world === 'chicago'
+        ? { railPass: computed(() => chicagoRailPass(this.raceMetres(), this.elapsed())) }
+        : {}),
     });
     this.clock.start(at);
     this.ticker.start();

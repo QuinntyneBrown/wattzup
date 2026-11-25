@@ -1,8 +1,18 @@
+import type { cornwallVisitors } from './cornwall-visitors';
+import type { CornwallHarbour } from './cornwall-harbour';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
 // metres they have ridden. `main`'s scenes are drawn by
 // world-renderer.ts; map-renderer.ts picks between the two.
+import type { blossomFestival } from './blossom-festival';
+import type { ChicagoRailway } from './chicago-railway';
+import type { chichenPlaza } from './chichen-plaza';
+import type { ConeyBoardwalk } from './coney-boardwalk';
+import type { copacabanaPromenade } from './copacabana-promenade';
+import type { CopacabanaBeach } from './copacabana-beach';
+import type { copenhagenStreet } from './copenhagen-street';
+import type { CopenhagenCommuters } from './copenhagen-commuters';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -86,12 +96,20 @@ import type { BundCruise } from './bund-cruise';
 import type { CalobraCamp } from './calobra-camp';
 import type { CampolongoLifts } from './campolongo-lifts';
 import type { CabotWildlife } from './cabot-wildlife';
+import type { ParkTraffic } from './park-traffic';
+import type { ChampsParade } from './champs-parade';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
 import { type ShadowShape, shadowLength, shadowShape } from './rider-shadow-shape';
 import { outOfTheSaddle } from './rider-stance';
 import { endShadow, sideShadow } from './shadow-silhouette';
+import type { LigurianCoast } from './ligurian-coast';
+import type { HeadlandSurf } from './headland-surf';
+import type { comoPromenade } from './como-promenade';
+import type { ComoFerries } from './como-ferries';
+import type { ComunaCrews } from './comuna-crews';
+import type { comunaStreets } from './comuna-streets';
 import { SunGlow } from './sun-glow';
 import { vertexFinish } from './rider-finish';
 import { RiderShadows } from './rider-shadows';
@@ -236,10 +254,17 @@ function jerseyColour(element: Element, jersey: string): Color {
 }
 
 export class CourseRenderer implements WorldRenderer {
+  private boardwalk: ConeyBoardwalk | null = null;
+  private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
+  private copacabana: CopacabanaBeach | null = null;
+  private danishStreet: Awaited<ReturnType<typeof copenhagenStreet>> | null = null;
+  private commuters: CopenhagenCommuters | null = null;
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
   private pave: ReturnType<typeof arenbergPave> | null = null;
+  private visitors: Awaited<ReturnType<typeof cornwallVisitors>> | null = null;
+  private harbour: CornwallHarbour | null = null;
   private course: Course | null = null;
   private timing: PursuitBoard | null = null;
   private disposed = false;
@@ -257,7 +282,12 @@ export class CourseRenderer implements WorldRenderer {
   private lifts: CampolongoLifts | null = null;
   private cabotWildlife: CabotWildlife | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
+  private basin: Awaited<ReturnType<typeof blossomFestival>> | null = null;
+  private railway: ChicagoRailway | null = null;
+  private plaza: Awaited<ReturnType<typeof chichenPlaza>> | null = null;
   private rain: Rain | null = null;
+  private parkTraffic: ParkTraffic | null = null;
+  private champsParade: ChampsParade | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private speedWeek: SpeedWeek | null = null;
   private saltRoad: Material | null = null;
@@ -283,6 +313,12 @@ export class CourseRenderer implements WorldRenderer {
     z: number;
     reach: number;
   }[] = [];
+  private ligurianCoast: LigurianCoast | null = null;
+  private headland: HeadlandSurf | null = null;
+  private comoPromenade: Awaited<ReturnType<typeof comoPromenade>> | null = null;
+  private ferries: ComoFerries | null = null;
+  private crews: ComunaCrews | null = null;
+  private barrio: Awaited<ReturnType<typeof comunaStreets>> | null = null;
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -305,6 +341,10 @@ export class CourseRenderer implements WorldRenderer {
     cowPitch: undefined as number | undefined,
     boatHeel: undefined as number | undefined,
     moosePitch: undefined as number | undefined,
+    horseStride: undefined as number | undefined,
+    clubDistance: undefined as number | undefined,
+    flagAngle: undefined as number | undefined,
+    sprintLane: undefined as number | undefined,
     backend: '' as string,
     ghostSeparationMetres: 0,
     boatHeight: null as number | null,
@@ -332,6 +372,13 @@ export class CourseRenderer implements WorldRenderer {
     paddleHeight: null as number | null,
     walkerStride: null as number | null,
     foamAdvance: null as number | null,
+    hikerX: null as number | null,
+    boatRoll: null as number | null,
+    walkerX: null as number | null,
+    breakerHeight: null as number | null,
+    foilX: null as number | null,
+    dancerY: null as number | null,
+    passengerY: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -342,7 +389,14 @@ export class CourseRenderer implements WorldRenderer {
     asturiasFlagAngle: 0,
     echelonLeaderX: null as number | null,
     commissaireX: null as number | null,
+    gullY: null as number | null,
     groups: {} as Record<string, number>,
+    kiteAngle: undefined as number | undefined,
+    boatX: undefined as number | undefined,
+    haze: undefined as number | undefined,
+    trainX: undefined as number | undefined,
+    steamHeight: undefined as number | undefined,
+    wingAngle: undefined as number | undefined,
   };
   private readonly trainingGroup: Cyclist[] = [];
   private portWind: AntwerpWind | null = null;
@@ -363,7 +417,7 @@ export class CourseRenderer implements WorldRenderer {
   private bunch: BeachRoadBunch | null = null;
   private highlandWeather: HighlandWeather | null = null;
   private highlandLivestock: HighlandLivestock | null = null;
-  private coast: BigSurCoast | null = null;
+  private bigSurCoast: BigSurCoast | null = null;
   private trams: BlackpoolTrams | null = null;
   private yard: BlueMountainsYard | null = null;
   private mill: MabryMill | null = null;
@@ -486,7 +540,37 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.body = body;
       this.disposables.push(body);
-      this.course = new Course(parseCourse(file));
+      const parsed = parseCourse(file);
+      this.course = new Course(
+        parsed.id === 'cherryblossom' && options.sunrise
+          ? {
+              ...parsed,
+              sky: ['#f8d0c1', '#efc4ce', '#d5c2d5', '#b7bedc', '#93acd1'],
+              haze: '#f4d5cf',
+              sun: [0.81, 0.2, -0.55],
+              light: { colour: '#ffc1a3', intensity: 2.2 },
+              fill: ['#e4cfe2', '#ba9d97'],
+            }
+          : parsed,
+      );
+      if (this.path === 'courses/cornwall') {
+        const [{ CornwallHarbour }, { cornwallVisitors }] = await Promise.all([
+          import('./cornwall-harbour'),
+          import('./cornwall-visitors'),
+        ]);
+        if (this.disposed) return false;
+        const visitors = await cornwallVisitors(this.course);
+        if (this.disposed) {
+          visitors.dispose();
+          return false;
+        }
+        this.visitors = visitors;
+        this.scene.add(visitors.root);
+        this.disposables.push(visitors);
+        this.camera.setViewOffset(1, 1, 0, 0.09, 1, 1);
+        this.harbour = new CornwallHarbour(this.course, this.scene);
+        this.disposables.push(this.harbour);
+      }
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       if (this.course.file.id === 'atacama') {
@@ -551,7 +635,36 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.fov = 60;
         this.camera.updateProjectionMatrix();
       }
-      this.build(gltf.scene, canvas, clinker, fronts, foliage);
+      const blossomModules =
+        parsed.id === 'cherryblossom'
+          ? await Promise.all([import('./blossom-festival'), import('./cherryblossom-shore')])
+          : null;
+      if (this.disposed) return false;
+      const paving = blossomModules?.[1].promenadeSurface();
+      if (paving) this.disposables.push(paving.tile);
+      const champs = parsed.id === 'champs' ? await import('./champs-parade') : null;
+      if (this.disposed) return false;
+      const parisPaving = champs?.parisPave();
+      if (parisPaving) this.disposables.push(parisPaving.tile);
+      const chicago =
+        parsed.id === 'chicago'
+          ? await Promise.all([import('./chicago-railway'), import('./chicago-spectators')])
+          : null;
+      if (this.disposed) return false;
+      const chicagoPaving = chicago?.[0].wabashAsphalt();
+      if (chicagoPaving) this.disposables.push(chicagoPaving.tile);
+      const chichenModule = parsed.id === 'chichen' ? await import('./chichen-plaza') : null;
+      if (this.disposed) return false;
+      const chichenPaving = chichenModule?.causewaySurface();
+      if (chichenPaving) this.disposables.push(chichenPaving.tile);
+      this.build(
+        gltf.scene,
+        canvas,
+        clinker,
+        fronts,
+        foliage,
+        (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material,
+      );
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
         if (this.disposed) return false;
@@ -620,6 +733,161 @@ export class CourseRenderer implements WorldRenderer {
         this.cabotWildlife = new CabotWildlife(this.course);
         this.scene.add(this.cabotWildlife.root);
         this.disposables.push(this.cabotWildlife);
+      }
+      if (this.course.file.id === 'centralpark') {
+        const { ParkTraffic } = await import('./park-traffic');
+        if (this.disposed) return false;
+        this.parkTraffic = new ParkTraffic(this.course, this.kit!, this.riderBatch!);
+        this.scene.add(this.parkTraffic.root);
+        this.disposables.push(this.parkTraffic);
+        const { parkCanopy } = await import('./park-canopy');
+        const trees = await parkCanopy(this.course);
+        if (this.disposed) {
+          trees.dispose();
+          return false;
+        }
+        this.scene.add(trees.root);
+        this.disposables.push(trees);
+      }
+      if (blossomModules) {
+        const festival = await blossomModules[0].blossomFestival(
+          this.course,
+          options.sunrise === true,
+        );
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.basin = festival;
+        this.scene.add(festival.root);
+        this.disposables.push(festival);
+      }
+      if (champs) {
+        this.champsParade = new champs.ChampsParade(
+          this.course,
+          this.kit!,
+          this.riderBatch!,
+          this.sun,
+        );
+        this.scene.add(this.champsParade.root);
+        this.disposables.push(this.champsParade);
+        const { champsAvenue } = await import('./champs-avenue');
+        const crowd = await champsAvenue(this.course);
+        if (this.disposed) {
+          crowd.dispose();
+          return false;
+        }
+        this.scene.add(crowd.root);
+        this.disposables.push(crowd);
+      }
+      if (chicago) {
+        this.railway = new chicago[0].ChicagoRailway(this.course);
+        this.scene.add(this.railway.root);
+        this.disposables.push(this.railway);
+        const crowd = await chicago[1].chicagoSpectators(this.course);
+        if (this.disposed) {
+          crowd.dispose();
+          return false;
+        }
+        this.scene.add(crowd.root);
+        this.disposables.push(crowd);
+      }
+      if (chichenModule) {
+        const plaza = await chichenModule.chichenPlaza(this.course);
+        if (this.disposed) {
+          plaza.dispose();
+          return false;
+        }
+        this.plaza = plaza;
+        this.scene.add(plaza.root);
+        this.disposables.push(plaza);
+      }
+      if (this.course.file.id === 'cinqueterre' && this.course.file.ligurianCoast) {
+        const { LigurianCoast } = await import('./ligurian-coast');
+        if (this.disposed) return false;
+        this.ligurianCoast = new LigurianCoast(this.course, this.scene, this.sun);
+        this.disposables.push(this.ligurianCoast);
+      }
+      if (this.course.file.id === 'coast' && this.course.file.headland) {
+        const { HeadlandSurf } = await import('./headland-surf');
+        if (this.disposed) return false;
+        this.headland = new HeadlandSurf(this.course, this.scene);
+        this.disposables.push(this.headland);
+      }
+      if (this.course.file.id === 'como') {
+        const [{ ComoFerries }, { comoPromenade }] = await Promise.all([
+          import('./como-ferries'),
+          import('./como-promenade'),
+        ]);
+        const trees = await comoPromenade(this.course);
+        if (this.disposed) {
+          trees.dispose();
+          return false;
+        }
+        this.comoPromenade = trees;
+        this.scene.add(trees.root);
+        this.disposables.push(trees);
+        if (this.disposed) return false;
+        this.ferries = new ComoFerries(this.course, this.scene);
+        this.disposables.push(this.ferries);
+      }
+      if (this.course.file.id === 'comuna13') {
+        const [{ ComunaCrews }, { comunaStreets }] = await Promise.all([
+          import('./comuna-crews'),
+          import('./comuna-streets'),
+        ]);
+        const streets = await comunaStreets(this.course);
+        if (this.disposed) {
+          streets.dispose();
+          return false;
+        }
+        this.barrio = streets;
+        this.scene.add(streets.root);
+        this.crews = new ComunaCrews(this.course, this.scene);
+        this.disposables.push(streets, this.crews);
+      }
+      if (this.course.file.id === 'coney') {
+        const { ConeyBoardwalk } = await import('./coney-boardwalk');
+        if (this.disposed) return false;
+        this.boardwalk = new ConeyBoardwalk(this.course, this.disposables);
+        this.scene.add(this.boardwalk.group);
+        this.camera.setViewOffset(1, 1, 0, 0.025, 1, 1);
+      }
+      if (this.course.file.id === 'copacabana') {
+        const [{ CopacabanaBeach }, { copacabanaPromenade }] = await Promise.all([
+          import('./copacabana-beach'),
+          import('./copacabana-promenade'),
+        ]);
+        if (this.disposed) return false;
+        const promenade = await copacabanaPromenade(this.course);
+        if (this.disposed) {
+          promenade.dispose();
+          return false;
+        }
+        this.copacabanaPromenade = promenade;
+        this.scene.add(promenade.root);
+        this.disposables.push(promenade);
+        this.camera.setViewOffset(1, 1, 0, 0.07, 1, 1);
+        this.copacabana = new CopacabanaBeach(this.course, this.scene);
+        this.disposables.push(this.copacabana);
+      }
+      if (this.course.file.id === 'copenhagen') {
+        const [{ CopenhagenCommuters }, { copenhagenStreet }] = await Promise.all([
+          import('./copenhagen-commuters'),
+          import('./copenhagen-street'),
+        ]);
+        if (this.disposed) return false;
+        const street = await copenhagenStreet(this.course);
+        if (this.disposed) {
+          street.dispose();
+          return false;
+        }
+        this.danishStreet = street;
+        this.scene.add(street.root);
+        this.disposables.push(street);
+        this.commuters = new CopenhagenCommuters(this.course, this.scene);
+        this.disposables.push(this.commuters);
+        this.camera.setViewOffset(1, 1, 0, 0.08, 1, 1);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -719,9 +987,9 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'bigsur') {
         const { BigSurCoast } = await import('./bigsur-coast');
         if (this.disposed) return false;
-        this.coast = new BigSurCoast(this.course);
-        this.scene.add(this.coast.group);
-        this.disposables.push(this.coast);
+        this.bigSurCoast = new BigSurCoast(this.course);
+        this.scene.add(this.bigSurCoast.group);
+        this.disposables.push(this.bigSurCoast);
       }
       if (this.course.file.id === 'blackpool') {
         const { BlackpoolTrams } = await import('./blackpool-trams');
@@ -814,6 +1082,9 @@ export class CourseRenderer implements WorldRenderer {
     // Every wheel on the road turns with the rider's: the riders keep much the same pace.
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
+    this.basin?.update(frame.reducedMotion ? 0 : frame.time);
+    this.railway?.update(frame.reducedMotion ? 0 : frame.time);
+    this.plaza?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.placeRiders(frame, metres);
     this.timing?.update(metres, frame.time);
     if (this.trainingGroup.length) this.placeTrainingGroup(frame, metres);
@@ -821,7 +1092,19 @@ export class CourseRenderer implements WorldRenderer {
     this.camp?.update(frame.time, metres, frame.reducedMotion);
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.champsParade?.update(frame.time, metres, frame.reducedMotion);
     this.riderBatch?.follow();
+    this.visitors?.follow(metres);
+    if (this.harbour) {
+      this.harbour.update(frame.reducedMotion ? 0 : frame.time, metres);
+      this.sun.intensity = 2.1 + 0.62 * Math.sin(metres / 178) + 0.19 * Math.sin(metres / 63);
+    }
+    this.danishStreet?.follow(metres);
+    this.commuters?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.copacabanaPromenade?.follow(metres);
+    this.copacabana?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
       const progress = Math.max(
@@ -851,7 +1134,7 @@ export class CourseRenderer implements WorldRenderer {
 
     this.highlandWeather?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.highlandLivestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
-    this.coast?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.bigSurCoast?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trams?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.yard?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mill?.update(metres, frame.reducedMotion ? 0 : frame.time);
@@ -870,6 +1153,12 @@ export class CourseRenderer implements WorldRenderer {
     const lights = metres < START_LIGHTS;
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
+    this.ligurianCoast?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.headland?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.comoPromenade?.follow(metres);
+    this.ferries?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.barrio?.follow(metres);
+    this.crews?.update(frame.reducedMotion ? 0 : frame.time, metres);
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
     if (this.canalTraffic.length)
       this.placeCanalTraffic(metres, frame.reducedMotion ? 0 : frame.time);
@@ -919,6 +1208,14 @@ export class CourseRenderer implements WorldRenderer {
       const mesh = part as Mesh;
       if (mesh.isMesh) mesh.geometry.dispose();
     });
+    this.boardwalk?.group.removeFromParent();
+    this.boardwalk = null;
+    this.copacabanaPromenade?.root.removeFromParent();
+    this.copacabanaPromenade = null;
+    this.copacabana = null;
+    this.danishStreet?.root.removeFromParent();
+    this.danishStreet = null;
+    this.commuters = null;
     this.map = null;
     // The chunks were taken out of the map: their geometry is released here.
     for (const { mesh } of this.chunks) mesh.geometry.dispose();
@@ -952,11 +1249,20 @@ export class CourseRenderer implements WorldRenderer {
     this.bunch = null;
     this.highlandLivestock = null;
     this.highlandWeather = null;
-    this.coast = null;
+    this.bigSurCoast = null;
     this.trams = null;
     this.yard = null;
     this.mill = null;
     this.surf = null;
+    this.basin = null;
+    this.railway = null;
+    this.plaza = null;
+    this.ligurianCoast = null;
+    this.headland = null;
+    this.ferries = null;
+    this.comoPromenade = null;
+    this.barrio = null;
+    this.crews = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -981,6 +1287,8 @@ export class CourseRenderer implements WorldRenderer {
     this.camp = null;
     this.lifts = null;
     this.cabotWildlife = null;
+    this.parkTraffic = null;
+    this.champsParade = null;
     this.rain = null;
     this.shadows.clear();
     this.casting.clear();
@@ -1003,6 +1311,7 @@ export class CourseRenderer implements WorldRenderer {
     clinker: Texture | null,
     fronts: Texture | null,
     foliage: Texture | null,
+    coursePavement?: Material,
   ): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
@@ -1123,7 +1432,8 @@ export class CourseRenderer implements WorldRenderer {
       this.saltRoad ??
       this.speedwaySurface?.(detail) ??
       this.seafrontSurface?.(detail) ??
-      this.deckSurface;
+      this.deckSurface ??
+      coursePavement;
     materials['Ground'] = pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
@@ -1147,6 +1457,7 @@ export class CourseRenderer implements WorldRenderer {
         this.course!.file.night === true,
         coloured,
         this.evening,
+        this.course!.file.id === 'coast',
       );
       materials['Sea']!.dispose();
       materials['Sea'] = water.material;
@@ -1498,14 +1809,44 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const behind = calobra ? 5.5 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = calobra ? 2.1 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const behind = calobra
+      ? 5.5
+      : this.boardwalk
+        ? 5.0
+        : this.copacabana
+          ? 4.1
+          : this.commuters
+            ? 4.1
+            : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
+    const up = calobra
+      ? 2.1
+      : this.boardwalk
+        ? 2.35
+        : this.copacabana
+          ? 2.05
+          : this.commuters
+            ? 2.0
+            : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
     const back = course.place(metres - behind, sway, this.here);
-    this.camera.position.set(back.x, back.y + up, back.z);
+    const rim = this.plaza ? Math.max(0, 1 - Math.abs(metres - 3180) / 105) : 0;
+    this.camera.position.set(back.x, back.y + up + 1.6 * rim * rim, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), 0, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP), ahead.z);
+    const lap = this.railway ? metres % 1750 : 0;
+    const bridge = this.railway ? Math.max(0, 1 - Math.abs(lap - 460) / 67) : 0;
+    const skyline = this.railway ? Math.max(0, 1 - Math.abs(lap - 670) / 105) : 0;
+    const train = this.railway ? Math.max(0, 1 - Math.abs(lap - 220) / 74) : 0;
+    const view = this.basin?.sightline(metres) ?? this.plaza?.sightline(metres);
+    const ahead = course.place(
+      metres + (calobra ? 24 : LOOK_AHEAD),
+      (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0),
+      this.there,
+    );
+    this.camera.lookAt(
+      ahead.x,
+      ahead.y + (calobra ? 1.2 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train,
+      ahead.z,
+    );
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
@@ -1603,6 +1944,7 @@ export class CourseRenderer implements WorldRenderer {
       this.ride(cyclist, metres + 6 + order, 0);
       cyclist.pose(0);
     }
+    this.parkTraffic?.update(0, metres);
     this.riderBatch?.follow();
     this.aim(metres);
     this.render();
@@ -1852,13 +2194,13 @@ export class CourseRenderer implements WorldRenderer {
     drawn.guitarHand = this.performers?.guitarHand ?? null;
     drawn.reefCrest = this.reef?.crest ?? null;
     drawn.eveningLight = this.evening?.value ?? null;
-    drawn.ferryX = this.bayBoats?.ferryX ?? null;
+    drawn.ferryX = this.bayBoats?.ferryX ?? this.ferries?.ferryX ?? null;
 
     drawn.clubLane = this.bunch?.clubLane ?? null;
     drawn.highlandSun = this.highlandWeather ? this.sun.intensity : null;
     drawn.sheepLane = this.highlandLivestock?.sheepLane ?? null;
-    drawn.fallingWater = this.coast?.fallHeight ?? null;
-    drawn.surfCrest = this.coast?.crest ?? null;
+    drawn.fallingWater = this.bigSurCoast?.fallHeight ?? null;
+    drawn.surfCrest = this.bigSurCoast?.crest ?? null;
     drawn.illumination = this.trams?.illumination ?? null;
     drawn.tramMetres = this.trams?.nearestMetres ?? null;
     drawn.mistPosition = this.yard?.mistPosition ?? null;
@@ -1883,11 +2225,46 @@ export class CourseRenderer implements WorldRenderer {
     drawn.cowPitch = this.lifts?.cowPitch;
     drawn.moosePitch = this.cabotWildlife?.moosePitch;
     drawn.boatHeel = this.cabotWildlife?.boatHeel;
+    drawn.horseStride = this.parkTraffic?.horseStride;
+    drawn.clubDistance = this.parkTraffic?.clubDistance;
+    drawn.flagAngle = this.champsParade?.flagAngle;
+    drawn.sprintLane = this.champsParade?.sprintLane;
+    drawn.hikerX = this.ligurianCoast?.hikerX ?? null;
+    drawn.boatRoll = this.ligurianCoast?.boatRoll ?? this.harbour?.boatRoll ?? null;
+    drawn.walkerX = this.headland?.walkerX ?? this.plaza?.walkerX ?? null;
+    drawn.breakerHeight = this.headland?.breakerHeight ?? null;
+    drawn.foilX = this.ferries?.foilX ?? null;
+    drawn.dancerY = this.crews?.dancerY ?? null;
+    drawn.passengerY = this.crews?.passengerY ?? null;
+    drawn.gullY = this.harbour?.gullY ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
+    drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;
+    drawn.boatX = this.basin?.boatX;
+    drawn.kiteAngle = this.basin?.kiteAngle;
+    drawn.trainX = this.railway?.trainX;
+    drawn.steamHeight = this.railway?.steamHeight;
+    drawn.wingAngle = this.plaza?.wingAngle;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
+    if (this.boardwalk) {
+      Object.assign(drawn, {
+        carRadius: this.boardwalk.street.carRadius,
+        trainX: this.boardwalk.street.trainX,
+      });
+    }
+    if (this.copacabana) {
+      Object.assign(drawn, {
+        volleyballY: this.copacabana.volleyballY,
+        breakerX: this.copacabana.breakerX,
+      });
+    }
+    if (this.commuters)
+      Object.assign(drawn, {
+        cargoPedalY: this.commuters.cargoPedalY,
+        markerCount: this.commuters.markerCount,
+      });
     hook['course'] = drawn;
   }
 

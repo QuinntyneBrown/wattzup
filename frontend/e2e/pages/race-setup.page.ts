@@ -48,6 +48,12 @@ export class RaceSetupPage {
     return this.modes.getByRole('radio', { name: new RegExp(`^${name}`) });
   }
 
+  light(name: string): Locator {
+    return this.page
+      .getByRole('radiogroup', { name: 'Light' })
+      .getByRole('radio', { name, exact: true });
+  }
+
   packStrength(name: string): Locator {
     return this.pack.getByRole('radio', { name, exact: true });
   }

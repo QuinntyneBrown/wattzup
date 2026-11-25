@@ -3600,6 +3600,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     if (this.pipeline) this.pipeline.render();
     else this.renderer.render(this.scene, this.camera);
     if (this.probe) {
+      this.probe.paradeMetres = this.scenery?.paradeMetres;
       this.probe.drawCalls = this.renderer.info.render.drawCalls;
       this.probe.programs = this.renderer.info.memory.programs;
       const gpu = this.probe.gpuMs;

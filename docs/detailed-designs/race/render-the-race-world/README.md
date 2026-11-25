@@ -357,6 +357,184 @@ in `AGENTS.md` and to the ESLint boundaries in the same change.
 The Content Security Policy that admits the Map Tiles API origin is designed by
 security/restrict-third-parties.
 
+### Caribana Parade
+
+The catalogue must expose the historical GCN Training class *Intense Interval Blast*. The existing performance fixture instead copies another map and supplies a Caribana ID. Use the class’s 19 stages for the catalogue, setup, HUD and finish distance. Map Select opens the existing lazy world renderer. The Caribana branch loads the Ride One rider and cadence animation, with the existing chase camera, alternating bends and two rolling rises per 360 m. [Original rider and camera work](https://github.com/QuinntyneBrown/wattzup/pull/2060)
+
+Low loads `worlds/caribana/caribana-tablet.glb`. The 24 m blocks share geometry and materials and draw up to 160 m ahead. The Toronto skyline uses its own material for a fixed backdrop. Higher tiers load `world-caribana.ts` and its crowd module. The detailed street already marches at 0.6 m/s. Low’s street clock currently does nothing. Keep kerbs, spectators and skyline fixed while moving selected band members with ride time. Register new GPU resources with the owning street and keep the actor count bounded across laps and screen exits.
+
+| Rider view | Details to check | Reference |
+| --- | --- | --- |
+| Opening behind the band | Warm hard shadows, road paint, barricades, crowd scale and island flags | Real 01–04, 08–10, 15 and game 01–02 |
+| Moving with the mas band | Feathered backpieces, King or Queen above the band, stilt walkers and steel orchestra | Real 05–07, 10–11 and game 03, 05 |
+| Busy waterfront stretch | Layered crowds, tree cover and water, Gardiner spans, cream pavilion and stable CN Tower beyond the near band | Real 08–09, 12–14 and game 04–05 |
+
+Use paired normal-HUD shots on a simulated bike. Count actual renderer submissions as well as animation callbacks over two moving samples on the production build, with the original benchmark’s viewport, CPU throttle and warm-up. The original 59.65 FPS callback measurement provides historical context. Compare the retained art against the [Caribana iteration record](../../../screenshots/caribana/README.md) and [source credits](../../../worlds/caribana/SOURCES.md).
+
+### Central Park Loop
+
+The historical *15 Minute Cardio HIIT* supplies 16 stages and a 6.450 km finish. The catalogue currently omits the map. The concept street already provides a trotting carriage, joggers, a winged fountain and skyline, but its roadside objects recycle and towers travel with the camera. Map Select and setup must open a single physical Park Drive lap. Compress the park to the class length. The reservoir and Bethesda Fountain occupy separate bodies of water.
+
+| Station | Rider-height target | Sources |
+| --- | --- | --- |
+| Southern carriage drive | Red and ivory hansoms beside painted lanes under mature trees. Driver, shafts, harness and spoked wheels read in profile. | Real 01–06, 12–13, 15 and games 01, 05 |
+| Bethesda Terrace | Bronze wings above two bowls, brick paving, stair balustrades, nearby park furniture and the Lake behind. | Real 10–11 and games 02, 04 |
+| Engineers’ Gate and reservoir | Runners, Citi Bikes and club cyclists pass the black fence and cinder path. The jet and tower reflections break a broad expanse of water. | Real 03, 05, 07–09, 14 and games 01, 03, 05 |
+| West Drive and the southern finish | The two San Remo crowns and distinct slender Midtown towers pass behind autumn gold and green canopy in low pink light. | Real 01, 04, 06, 08–09, 12 and games 02, 04 |
+
+Use the scene’s existing carriage proportions, trotting diagonal pairs and seeded runner speeds. The static Blender export owns terrace, fixed skyline, benches, painted lanes, rail and water reflections. Animated figures follow the physical centre line, advance on ride time, and release all meshes and materials on exit. Instance repeated figures and split static meshes into culled sections. Keep the camera at rider height. Compare identical HUD distances on the original street and the revised lap, then count submitted frames on the production tablet build. [Source credits](../../../worlds/centralpark/SOURCES.md)
+
+### Cherry Blossom Festival, D.C.
+
+The concept registers a blue spring sky and a pink haze around a generic street. Its historic class has 59 stages but no public map. Model five physical circuits of the basin in the class distance, using the same shore and fixed monuments each time. Store the original video, timings, cadence and target resistance with the course. Match the public map and rider HUD to that plan.
+
+| Where to look | Rider-height details on Low | Sources |
+| --- | --- | --- |
+| Yoshino canopy | Low spreading dark limbs frame clusters of white and pale pink flowers. A narrow granite edge separates path and water. | Real 01–05, 11, 13–14 and games 01–02 |
+| Jefferson and the water | White ring of Ionic columns, broad shallow dome and front steps on the opposite shore. Rippled reflections below the portico and trees. | Real 03–06, 14 and games 02, 04 |
+| Mall lawns | Washington Monument’s tapered shaft and pyramidion extend above festival tents, banners, portrait photographers and families flying kites. | Real 01–02, 07–10, 12–13, 15 and games 03, 05 |
+| Boat landing | Blue pedal boats carry passengers in front of the seawall and blossoms. Close visitors move against the fixed horizon. | Real 02–05, 11–14 and games 01, 04 |
+
+Race Setup uses the existing segmented radio group for Daylight and Sunrise on a local ride. Carry the choice on that ride’s route into WorldScene and its renderer options. Store no account preference. The route, static mesh and moving actors are shared by both looks. Batch blossom clusters and visitors, bake distant reflections and animate bounded kite and boat groups on ride time. Compare normal-HUD views and observe real submitted frames on the simulated tablet. [Credited references](../../../worlds/cherryblossom/SOURCES.md)
+
+### Champs-Élysées Finale
+
+The concept street already draws the arc, Haussmann houses, plane trees, barriers, flags and spectators. The bounded street recycles past the rider and the public catalogue omits this class. Open the historical 27-stage sprint session through Race and model three compact laps between Place de la Concorde and Place Charles de Gaulle. Opposing carriageways share the same monument, wide pavement and city block positions throughout. The final gantry lies on the same line on each lap.
+
+| View at rider height | Details to retain in Low | Sources |
+| --- | --- | --- |
+| Lower avenue | Granite setts, railings, shops and cafés beneath limestone balcony bands and slate mansards. Paired clipped plane rows keep the avenue axis open. | Real 01–06, 10, 13–14 and games 03, 05 |
+| Charles de Gaulle turn | Large open main vault, secondary passage, relief panels, frieze, attic and projecting cornice. The bunch rounds the island. | Real 05–07, 10 and games 01–03 |
+| Concorde return | Gold-tipped obelisk, bronze and gilt fountains, evening lamp silhouettes and Eiffel lattice crown beyond the Seine. | Real 08–09, 11–12, 15 and games 04–05 |
+| Final sprint | Rows of moving tricolores, spectators, grandstands, distance boards and the gantry. The moving bunch broadens across the lane. | Real 01–04, 13–14 and games 01–02, 05 |
+
+Bake surface wear and recesses into the shared street meshes. Use fixed skyline geometry and repeated spectator figures as in Caribana. Bound the moving cyclists and wind-driven cloth and animate both on ride time. Release their shared resources with the course. Photograph the original street and the physical route at equivalent HUD distances, then measure actual scene submissions on the production tablet build. [Credited reference folder](../../../worlds/champs/SOURCES.md)
+
+### Chicago Loop Crit
+
+The original Chicago concept supplies a sky and palette. Build one physical 1.75 km circuit shared by five laps of *20 Minute Crit Sprints*. Preserve the historical GCN video offset, target resistance and cadence for all 14 stages. Use eased quarter-circle kerbs at the square corners and fixed coordinates for both river crossings and every building.
+
+| Location | Details at rider height | Reference material |
+| --- | --- | --- |
+| Wabash straight and CTA station | Green and weathered ochre I-columns, riveted gussets, paired girders, closely spaced ties and platform stairs. The moving silver train has dark windows, doors, couplings and bogies. Repeated track shadows break across the road. | Real 01–07 and games 01–02 |
+| North river crossings | Span hinges, red-brown side trusses and grating over green water. Marina City has paired cylindrical concrete balcony stacks. The Sears/Willis silhouette and antennae remain fixed behind masonry and glass blocks. | Real 03–05, 10, 14 and games 02, 04 |
+| State Street return | Chicago Theatre vertical letters and marquee, older stone window bays, modern reflective towers and stoplights. Barrier feet, spectators and sponsor banners delineate corner entry. | Real 07–13, 15 and games 01, 03, 05 |
+| Roadside detail | Tyre-worn crosswalks, utility covers, patched pavement, yellow cabs and newspaper boxes. A shared steam sprite rises above selected grates and holds on pause. | Real 01–03, 06–12, 15 and games 01, 04–05 |
+
+Build and batch static geometry in Blender. Animate short train consists and steam on ride time. Synthesize the rail rumble locally with a bounded audio graph, gated by distance, pause, and the rider’s sound preference. Dispose it when the race closes. Ride from the normal map catalogue to record paired shots and moving submitted-frame samples. [Credited sources](../../../worlds/chicago/SOURCES.md)
+
+### Chichén Itzá
+
+The existing class world repeats a 400 m causeway and paints the nine-terrace pyramid in its horizon. Earlier rider evidence records a uniform canopy and hidden lower terraces, then a fix to keep the pyramid upright on bends. Preserve the raised road, textile patterns, visiting families and flying parrots. Give the cenote, temples and plaza separate, fixed places on the 12.7 km route. Preserve *The Full Pyramid*’s 21 stages and its original video.
+
+| Section | What the rider sees | Source references |
+| --- | --- | --- |
+| Sacbé and shade | Dusty pale road, rubble shoulders, slender trunks and ceiba buttresses at different distances. Hand-painted textiles and visitors stand outside the racing line. | Real 01, 03, 05, 08 and games 01–03 |
+| Cenote rim | Irregular sheer walls with recessed bands, hanging roots, reflected foliage and still green water below the road. The rim curves long enough to reveal the depth. | Real 03, 08, 13 and games 03–04 |
+| Temple approach | Long staggered rows of stone columns, individual drum seams, terraced Warriors temple with carved uprights, serpent heads and low weathered relief platforms. | Real 04, 09–12, 14–15 and games 01, 05 |
+| Plaza finish | Four stairs climb nine stepped terraces to the summit temple. Grey limestone stands in harsh overhead light over grass and pale bare ground beneath towering cumulus. Visitors give the monument scale. | Real 02, 06–07, 09, 14 and games 02, 04–05 |
+
+Use physical centre-line positions for the camera, grade, surfaces and actors. Batch forest cutouts in sections; keep the temples separate from near-road culling. Animate the bounded group of parrots, moving visitors and cloud drift on ride time. Compare normal race entry on the simulated bike with the [earlier scene](../../../screenshots/chichen/README.md) and the [credited sources](../../../worlds/chichen/SOURCES.md).
+
+### Cinque Terre · motion on the SP370
+
+Keep the existing Blender-built corniche, the original 20 class stages and the five village sites. Earlier course passes built the terraced vineyards, capstones, boats on chocks, Doria tower, cafés, balconies, shutters, fishermen’s nets, churches and trail crossings. They also corrected the moving horizon and made the castle visible from the road. Build on those assets. The fishing boats offshore and walkers at the crossings currently stand in baked geometry.
+
+| Sightline | Treatment from the saddle | Credited references |
+| --- | --- | --- |
+| Corniche and terraced hills | Retain capstones, grade, vines, scrub, olives, agaves and the stone stair. Make walkers with packs and separate trekking poles advance at human pace where the path meets the road. | Real 01–03, 11, 14–15 and games 01, 03, 05 |
+| Vernazza | Keep Santa Margherita and the Doria tower fixed over the harbour. Moor original double-ended painted gozzi with a dark gunwale, benches and oars. Animate rocking and nearby broken foam together on ride time. | Real 07–09, 14 and games 02, 04 |
+| Manarola, Corniglia and Riomaggiore | Preserve each village’s original geometry. Dark green shutters, terracotta coping and warm façade colours stand against deeper blue-green sea and cooler headlands. The afternoon light warms approaching the finish. | Real 01, 04–06, 09–13 and games 01, 03, 05 |
+
+Determine boat and path positions from the authored centre line; keep the original fixed boats on their chocks. Use bounded shared geometry and materials for walkers, boats and surf. Sample actual submitted frames and capture the existing and revised race at the same chainages. [Earlier course views](../../../screenshots/cinqueterre/README.md) and [reference credits](../../../worlds/cinqueterre/SOURCES.md).
+
+### Cliffside Coast · Headland Road
+
+The catalogue exposes `cliffside-coast` after the Prairie Paceline bot-race unlock. Race Setup passes world `coast` to the course renderer. The existing Blender course already has guardrails, cottages, scattered pines, an offshore rock field and a banded lighthouse. The long folded road doubles back across the same land. The shoreline loses its place on the right, yellow gorse reads as isolated lumps and there are no moving breakers or occupied overlooks.
+
+| From the saddle | Geometry, material and movement | References |
+| --- | --- | --- |
+| Opening and first surge | Follow the contour with a succession of coves on the right. Keep the stage distances and existing centre-line heights. Model layers of weathered pale cliff over a darker tidal band, with turf overhanging the top. The sun stands low over the sea ahead and to the right. | Real 01–07 and 13, games 01, 02 and 04 |
+| Lookout and lantern | Build out the lay-by beyond the running lane with stone coping, a parked car, walkers and a path to the viewpoint. Keep a single tapered white tower on its promontory with windows, a gallery, glazed lantern, roof and finial. | Real 11, 12, 14 and 15, games 02 and 03 |
+| Coves and lower headlands | Break foam into separate lines that advance and fade where the water reaches the rocks. Keep the distant surf broad and the closest wash finer. Baked silhouettes and material variation define the windward grass, gorse flowers and heather. | Real 05–10 and 13–15, games 03–05 |
+
+Use Caribana’s separation of near surface detail and fixed skyline. Batch the cliff strata and plants into native course sections. Derive the moving surf and lookout positions from the built coast and animate them on ride time. The world owns and disposes the shared actor meshes. Keep both graphics backends and the existing fallback. Compare matched opening, crest, cove, lookout and lighthouse views through the simulated race. Measure two one-minute runs on Low at 4× CPU throttle. [Visual references](../../../worlds/coast/SOURCES.md).
+
+### Lake Como · the shore road
+
+The original Como class scene built villas, launches, ferries, Bellagio’s point and a wooded far shore. Earlier rider feedback fixed the mountains sliding sideways in bends. The race catalogue lacks a Lake Como entry. Restore the original Seated Surges plan and route `lake-como` through Race Setup to the lazy course renderer and `courses/como` assets (ADR 0034 and ADR 0035). Keep the far shore fixed. The western shore and Bellagio and Varenna sightlines compress real distances into the workout.
+
+| View from the saddle | Construction and motion | References |
+| --- | --- | --- |
+| Shore and villages | Set a downhill lake edge behind a narrow coping or iron rail. Vary the pastel buildings, shutters and roofs with site-specific church towers. Keep water close to the road through the bends. | Real 01–06, 11–14 and games 01, 04, 05 |
+| Villas and galleries | Villa Carlotta stands behind linked garden terraces. Balbianello has two slim towers, a loggia and a rocky wooded point. Give the short gallery actual openings at both ends. Plane crowns and cypresses frame the sightlines. | Real 07–09, 11, 14–15 and games 01–03 |
+| Open lake | Use fixed, increasingly pale mountain layers for depth and share materials across landings and vessels. A white two-deck ferry and low hydrofoil follow separate crossings with wakes driven by ride time. | Real 02–04, 06, 09–10, 12–13 and games 02–05 |
+
+Caribana’s foreground, middle distance and fixed skyline inform the rail, moving boats and mountains. Match HUD-visible views to the same chainages before and after. Test pause and resume through Map Select and measure actual Low/WebGL 2 submissions through the promenade and the ferry crossing on the simulated tablet. [Reference credits](../../../worlds/como/SOURCES.md).
+
+### Comuna 13 · the escalator streets
+
+The older class maps `comuna13` to a midday palette and a bending road. It has no dedicated race catalogue entry. Race Setup must pass the restored class stages to the existing engine, with the Blender-built course loaded through the lazy world renderer. Keep the bike on sloping concrete beside the stair and escalator flights. Compress the neighbourhood into a succession of switchback blocks, increasing the rise in the harder stages.
+
+| Section | Construction and movement | Reference IDs |
+| --- | --- | --- |
+| Entrance and painted lanes | Hang pennants between houses. Place original local-scale portraits, birds and flowers on masonry; bake pigment wear and mortar lines. Reuse the texture across distinct wall panels, leaving clear sightlines through the bends. | Real 03–05, 07, 09, 11, 12, 14; games 01–03 |
+| Escalator flights | Place shallow-pitched orange roofs on thin posts and rise from a real lower landing to an upper one. Move riders with the treads. The road and painted stairs keep separate paths. | Real 01, 02, 06, 07, 15; games 02, 04 |
+| Dance terrace and market | Dancers alternate a crouch, a turn and floorwork. Place a watching group beyond the riding line and fruit, griddle and crafts beneath awnings. Use bounded repeated figures and cover the closest faces with artwork at rider scale. | Real 02–05, 08–10; games 01, 02, 05 |
+| Upper hillside | Layer brick homes, sheet-metal roof ribs, rebar, tropical plants, distant city towers and the opposite mountain ridge. Keep the panorama in world coordinates. | Real 06, 08, 13–15; games 03–05 |
+
+As on Caribana, foreground actors move against a separately drawn fixed skyline. Hold motion on the race clock. Use shared meshes for repeating people and release textures and buffers on exit. Measure submitted world frames in two one-minute Low/WebGL 2 samples and match each HUD screenshot to the existing class view at the same distance. [Reference credits](../../../worlds/comuna13/SOURCES.md).
+
+### Coney Island Boardwalk
+
+The course keeps the original boardwalk from [rider feedback #926](https://github.com/QuinntyneBrown/wattzup/issues/926). The physical course supplies distance and elevation. Its scene reuses the existing ConeyStreet plank texture, ribbons, chalk, beach furniture, façades and ride structures. A single owner releases the street geometries, textures and materials on race exit. The ride clock supplies the wheel angle and train position so a pause holds their pose. The landmarks keep their positions along the boardwalk as the rider passes.
+
+| View | Detail at riding speed | References |
+| --- | --- | --- |
+| Planks and promenade | Keep the timber colour variation, nail heads and herringbone scale. Green railings separate the walkway from the Atlantic. | Real 01–03, 06–07 and 14, games 01 and 03 |
+| Clam bars | Ruby’s and Paul’s Daughter carry individual lettered fascias, service windows, counters, awnings and bunting. | Real 03–05, games 01 and 04 |
+| Wonder Wheel | Fixed gondolas stay outside the paired rims. The inner gondolas run on curved tracks and remain upright. | Real 08–09, games 02 and 05 |
+| Cyclone and Thunderbolt | The Cyclone train follows its timber-supported track. The Thunderbolt’s steel lift and orange track give the two rides distinct silhouettes. | Real 04, 10–11 and 15, games 02 and 04 |
+| Beach and horizon | Beachgoers, towels and umbrellas sit in front of the surf. The pier piles lead toward open water and the red tower rises above the sand. | Real 06–07 and 12–14, games 03 and 05 |
+
+### Copacabana Promenade
+
+The red ciclovia follows the bay from the fort towards Leme. Its course takes distance, target resistance and cadence from the original GCN Training Quick Sprint Session. A fixed landmark group carries the granite domes behind the curved shore. The foreground follows Caribana’s separation of nearby activity from its skyline. Limited groups of figures and breakers advance on the ride clock and release their shared buffers when the rider leaves.
+
+| View | Construction and sightline | References |
+| --- | --- | --- |
+| Posto 6 and quiosques | Lay Portuguese-stone wave bands in metres alongside the red cycle lane. Build round kiosks with serving windows, canvas shades and yellow chairs. | Real 01–04, games 01–02 |
+| Beach courts | Tensioned nets and posts stand perpendicular to the water. Players shift their weight and reach to receive the ball through a repeating rally. | Real 05 and 08–09, games 02 and 04 |
+| Avenida Atlântica | Coconut trunks lean toward the water. Broad tropical almond crowns shade the avenue and kiosk tables. Crossings and kerbs separate the cycle lane from traffic. | Real 01–03, 09–10 and 13–14, games 01 and 03 |
+| Copacabana Palace | The white central pavilion, projecting wings, upper cornice, balconies and arched windows interrupt the apartment façades. | Real 09–11 and 14, games 01 and 03 |
+| Leme and Sugarloaf | Pão de Açúcar has a steep granite face above a green base. Nearer headlands overlap it differently round the bay. | Real 05–07, 12 and 15, games 04–05 |
+| Atlantic | Repeated shallow waves fold into strips of foam. Warm sunset reflections stretch toward the beach, opposite the apartment shadows. | Real 05–07, 09, 13–15, games 04–05 |
+
+### Copenhagen Cycle Superhighway
+
+The race follows a condensed Supercykelsti from the commuter avenues to the harbour. The physical route uses the original class stages. Caribana’s fixed skyline and moving parade inform the separation between copper spires, waterfront façades and near-field riders. Repeated bicycle wheels and frames share geometry. The race clock drives pedals, traffic lights and speed markers, including pause and resume.
+
+| View | Construction and riding sightline | References |
+| --- | --- | --- |
+| Protected track | Granite kerb, blue crossing paint, asphalt wear, orange C signs, counter display, public pump and low footrest. Signals face the bike lane. | Real 01–02, 06–07 and 13–14, games 01 and 03 |
+| Commuter rush | High handlebars, coat silhouettes, mudguards and baskets identify upright city bikes. A two-wheeled long-john and three-wheeled front-box cycle have distinct frames, boxes and wheelbases. | Real 01–02 and 06, games 01 and 03–05 |
+| Cykelslangen | The orange running surface rises into an S bend above the water on slender piers with closely spaced rail pickets. | Real 03–05 and 12, games 02 and 04 |
+| Harbour baths | Timber decks and stairs enclose blue water with swimmers, a lookout and a striped red-and-white marker. | Real 10–11 and 15, games 02 and 05 |
+| Nyhavn | Narrow gables, uneven roof heights, windows and awnings rise across a row of wooden vessels. Trees and crowded racks stand in the foreground. | Real 08–09 and 15, games 02 and 03 |
+| Inner harbour bridge | Distinct bridge rails and spans open views towards the distant quays and copper spires in low northern light. | Real 05, 11–12 and 15, games 02 and 04 |
+
+### Cornish Harbour
+
+The same 2.4 km circuit returns to the harbour for three passes during Nasty Pasty Sprint Session. The route draws on Padstow, Mousehole, St Ives and Polperro. Its slate sky and wet grey lanes preserve the earlier minimalist direction. Detail is concentrated where the rider can recognise it, with open water and uncluttered approaches between the quay, shops and headland. The fixed lighthouse and receding cottages use Caribana’s separation of foreground activity from a fixed skyline. [Rider feedback #932](https://github.com/QuinntyneBrown/wattzup/issues/932)
+
+| View | Construction and riding sightline | References |
+| --- | --- | --- |
+| Lane and climb | Pale walls, slate roof pitches, chimneys, granite kerbs and one parked vehicle follow the slope. | Real 03, 06–07, 10, 14–15, games 01 and 03 |
+| Harbour boats | Blue, red and off-white fishing hulls carry small wheelhouses, rails and working gear. Boats in deep water bob, grounded boats heel on the sand. | Real 01, 04–05 and 08–11, games 02 and 05 |
+| Quay wall | Dark wet lower courses line pale granite coping, iron ladders, bollards and coiled pots. Fishermen and a dog share the quay path. | Real 01–02, 04–05 and 09, games 01 and 04 |
+| Shop corner | The pasty shop has a painted fascia and display window, a chalkboard and a hanging basket. Visitors gather in small groups. | Real 03, 06–07 and 13–15, games 01 and 03 |
+| Harbour mouth | A lighthouse ends the stone arm. Gulls with dark wingtips pass the green headland. Low light glints on water, wet sand and stone under a broken cloud layer. | Real 08–12, games 02, 04 and 05 |
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a

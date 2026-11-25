@@ -5,6 +5,7 @@ import {
   Button,
   ModeOptions,
   PackStrength,
+  Segmented,
   SetupGoal,
   SetupHeader,
   SetupMap,
@@ -25,6 +26,7 @@ import { FullscreenButton } from '../fullscreen/fullscreen-button';
     Button,
     ModeOptions,
     PackStrength,
+    Segmented,
     SetupGoal,
     SetupHeader,
     SetupMap,
@@ -35,5 +37,9 @@ import { FullscreenButton } from '../fullscreen/fullscreen-button';
   providers: [RaceSetupStore],
 })
 export default class RaceSetupPage {
+  protected readonly lights = [
+    { value: 'daylight', label: 'Daylight' },
+    { value: 'sunrise', label: 'Sunrise' },
+  ] as const;
   protected readonly store = inject(RaceSetupStore);
 }

@@ -1,97 +1,146 @@
 import { newRiderProgress } from '../fixtures/api';
+import { caribanaCourseMap } from '../fixtures/course';
 import { ECHELON_NOTIFY, echelonBike, resistanceFrame, workoutFrame } from '../fixtures/echelon';
-import { maps } from '../fixtures/maps';
 import { expect, test } from '../fixtures/test';
+import { MapSelectPage } from '../pages/map-select.page';
+import { RaceSetupPage } from '../pages/race-setup.page';
 import { RacePage } from '../pages/race.page';
 import { frameRun } from './frames';
 
 test.use({
   viewport: { width: 1024, height: 768 },
   deviceScaleFactor: 1,
-  hasTouch: true,
   isMobile: true,
+  hasTouch: true,
 });
 
-test('Caribana keeps the simulated tablet ride moving at a nominal 60 Hz', async ({
-  page,
-  bluetooth,
-  api,
-  worldRide,
-}) => {
-  const id = 'caribana-parade';
-  api.answer('GET', '/api/maps', [
-    {
-      ...maps[1],
-      id,
-      world: 'caribana',
-      name: 'Caribana Parade',
-      routeName: 'Lake Shore Boulevard',
-      realPlace: undefined,
-      unlockGoal: null,
-      unlockMapId: null,
+for (const [section, offsetMetres] of [
+  ['Opening band', 0],
+  ['Parade and waterfront', 160],
+] as const) {
+  test(
+    'Caribana Parade sustains 60 FPS through the ' + section,
+    async ({ page, browser, bluetooth, api, worldRide }, info) => {
+      const map = caribanaCourseMap;
+      api.answer('GET', '/api/maps', [map]);
+      api.answer('GET', '/api/progress', { ...newRiderProgress, openMapIds: [map.id] });
+      const cdp = await page.context().newCDPSession(page);
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+      await worldRide.pin('low', 'webgl2');
+      await bluetooth.remember(echelonBike);
+      const race = new RacePage(page);
+      const assets = Promise.all(
+        ['caribana-tablet.glb', 'rider.glb'].map((file) =>
+          page.waitForResponse((r) => r.url().endsWith('/' + file) && r.ok()),
+        ),
+      );
+      const maps = new MapSelectPage(page);
+      const setup = new RaceSetupPage(page);
+      await maps.open();
+      await maps.row(map.name).root.click();
+      await setup.mode('Your best time').click();
+      await setup.start.click();
+      await assets;
+      await expect(race.backend).toBeVisible();
+      let active = true;
+      const pedal = (async () => {
+        while (active) {
+          await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(18));
+          await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(90));
+          await page.waitForTimeout(500);
+        }
+      })();
+      try {
+        await expect
+          .poll(async () => parseFloat((await race.distance.textContent())!) * 1000, {
+            timeout: 90_000,
+          })
+          .toBeGreaterThanOrEqual(offsetMetres);
+        await page.waitForTimeout(9000);
+        const before = await race.distance.textContent();
+        // The street renderer updates drawCalls immediately after each submitted frame.
+        // Sample that publication so skipping a world draw cannot appear as a successful frame.
+        const { intervals, displayIntervals, maxDrawCalls, backend } = await page.evaluate(
+          async () => {
+            interface Report {
+              drawCalls: number;
+              backend: string;
+            }
+            const hook = (window as unknown as { __wzWorldRide: { report: Report } }).__wzWorldRide;
+            const report = hook.report;
+            let latest = report.drawCalls;
+            const start = performance.now();
+            let previous = start;
+            let maxDrawCalls = 0;
+            const intervals: number[] = [];
+            Object.defineProperty(report, 'drawCalls', {
+              configurable: true,
+              get: () => latest,
+              set(value: number) {
+                latest = value;
+                const now = performance.now();
+                intervals.push(now - previous);
+                previous = now;
+                maxDrawCalls = Math.max(maxDrawCalls, value);
+              },
+            });
+            const displayIntervals: number[] = [];
+            let previousTick = 0;
+            try {
+              await new Promise<void>((resolve) => {
+                function tick(now: number) {
+                  if (previousTick) displayIntervals.push(now - previousTick);
+                  previousTick = now;
+                  if (now - start >= 60000) resolve();
+                  else requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+              });
+              intervals.push(performance.now() - previous);
+            } finally {
+              Object.defineProperty(report, 'drawCalls', {
+                configurable: true,
+                writable: true,
+                value: latest,
+              });
+            }
+            return { intervals, displayIntervals, maxDrawCalls, backend: report.backend };
+          },
+        );
+        // Include any stall at either end. The two partial intervals span one frame interval together.
+        intervals[0] += intervals.pop()!;
+        const { averageFps } = frameRun(intervals);
+        const sorted = intervals.sort((a, b) => a - b);
+        const result = {
+          section,
+          offsetMetres,
+          averageFps,
+          displayFps: frameRun(displayIntervals).averageFps,
+          p95Ms: sorted[Math.floor(sorted.length * 0.95)],
+          longestMs: sorted.at(-1),
+          maxDrawCalls,
+          backend,
+          browser: browser.version(),
+          platform: process.platform,
+          arch: process.arch,
+          fromKm: before,
+          toKm: await race.distance.textContent(),
+        };
+        await info.attach('tablet-frames', {
+          body: JSON.stringify(result, null, 2),
+          contentType: 'application/json',
+        });
+        console.log(JSON.stringify(result));
+        expect(result.toKm).not.toBe(before);
+        expect(backend).toBe('webgl2');
+        expect(maxDrawCalls).toBeGreaterThan(0);
+        expect(Math.round(result.displayFps)).toBeGreaterThanOrEqual(60);
+        expect(Math.round(averageFps)).toBeGreaterThanOrEqual(60);
+      } finally {
+        active = false;
+        await pedal;
+        await cdp.detach();
+      }
     },
-  ]);
-  api.answer('GET', '/api/progress', { ...newRiderProgress, openMapIds: [id] });
-  const cdp = await page.context().newCDPSession(page);
-  await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
-  await worldRide.pin('low', 'webgl2');
-  await bluetooth.remember(echelonBike);
-  const race = new RacePage(page);
-  const assets = Promise.all(
-    ['rider.glb', 'caribana-tablet.glb'].map((name) =>
-      page.waitForResponse((response) => response.url().endsWith('/' + name) && response.ok(), {
-        timeout: 90_000,
-      }),
-    ),
   );
-  await race.open(id, 'mode=solo');
-  await assets;
-  await expect(race.backend).toBeVisible({ timeout: 90_000 });
-  let riding = true;
-  const pedalling = (async () => {
-    while (riding) {
-      await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(18));
-      await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(90));
-      await page.waitForTimeout(500);
-    }
-  })();
-  try {
-    await page.waitForTimeout(9_000);
-    const startDistance = await race.distance.textContent();
-    const intervals = await page.evaluate(
-      () =>
-        new Promise<number[]>((done) => {
-          const intervals: number[] = [];
-          let first = 0;
-          let previous = 0;
-          function frame(now: number) {
-            if (previous) intervals.push(now - previous);
-            else first = now;
-            previous = now;
-            if (now - first >= 60_000) done(intervals);
-            else requestAnimationFrame(frame);
-          }
-          requestAnimationFrame(frame);
-        }),
-    );
-    expect(await race.distance.textContent()).not.toBe(startDistance);
-    expect((await worldRide.report())?.drawCalls).toBeGreaterThan(0);
-    const { averageFps } = frameRun(intervals);
-    const sorted = [...intervals].sort((a, b) => a - b);
-    const p95 = sorted[Math.floor(0.95 * sorted.length)]!;
-    test.info().annotations.push({
-      type: 'frames',
-      description:
-        averageFps.toFixed(2) +
-        ' FPS, p95 ' +
-        p95.toFixed(2) +
-        ' ms, longest ' +
-        sorted.at(-1)!.toFixed(2) +
-        ' ms',
-    });
-    expect(Math.round(averageFps)).toBeGreaterThanOrEqual(60);
-  } finally {
-    riding = false;
-    await pedalling;
-  }
-});
+}

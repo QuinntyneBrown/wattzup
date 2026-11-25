@@ -1,0 +1,181 @@
+{
+  "id": "champs",
+  "name": "Champs-Élysées Finale",
+  "world": "champs",
+  "theme": "champs",
+  "seed": 2096,
+  "layout": 0,
+  "class": {
+    "id": "quick-and-sharp-sprinting-efforts",
+    "title": "Quick & Sharp Sprinting Efforts",
+    "channel": "GCN Training",
+    "videoId": "QR-cFEYn0FM",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 12,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 17,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 150,
+        "level": 12,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

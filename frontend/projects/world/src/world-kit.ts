@@ -42,6 +42,8 @@ export interface SceneStreet {
    * bend is squeezed towards the bend's centre into a sheer wall.
    */
   readonly backdrop?: readonly Object3D[];
+  /** Rendered displacement of the leading mas band relative to its original kerb. */
+  readonly paradeMetres?: number;
   build(roadHalf: number, points: number): void;
   lay(points: readonly StreetPoint[], s: number): void;
   place(s: number, heightAt: (metres: number) => number): void;

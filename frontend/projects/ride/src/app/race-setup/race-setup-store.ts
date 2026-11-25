@@ -112,6 +112,12 @@ export class RaceSetupStore {
   );
 
   /** The start the choice leads to, and its button's label (L2-050). */
+  readonly light = signal<'daylight' | 'sunrise'>(
+    this.snapshot.queryParamMap.get('light') === 'sunrise' ? 'sunrise' : 'daylight',
+  );
+  readonly hasLightChoice = computed(
+    () => this.map()?.world === 'cherryblossom' && this.mode() !== 'online',
+  );
   readonly raceStart = computed(() => RaceStartPlanner.plan(this.mapId, this.mode(), this.pack()));
 
   private readonly router = inject(Router);
@@ -166,6 +172,11 @@ export class RaceSetupStore {
   start(): void {
     enterFullScreenOnStart(this.settings(), this.fullscreen);
     const { route, queryParams } = this.raceStart();
-    void this.router.navigate([...route], { queryParams });
+    void this.router.navigate([...route], {
+      queryParams:
+        this.hasLightChoice() && this.light() === 'sunrise'
+          ? { ...queryParams, light: 'sunrise' }
+          : queryParams,
+    });
   }
 }

@@ -25,6 +25,7 @@ interface Voices {
   readonly freewheel: Voice;
   readonly wind: Voice;
   readonly tyre: Voice;
+  readonly rail: Voice | null;
   readonly pump: ReturnType<typeof setInterval>;
 }
 
@@ -120,7 +121,8 @@ export class WebAudioRideSound implements RideSound {
     const noise = noiseBuffer(context);
     const wind = voice(context, master, 'lowpass', 300);
     const tyre = voice(context, master, 'bandpass', 150);
-    for (const bed of [wind, tyre]) {
+    const rail = this.source()?.railPass ? voice(context, master, 'lowpass', 160) : null;
+    for (const bed of rail ? [wind, tyre, rail] : [wind, tyre]) {
       const source = context.createBufferSource();
       source.buffer = noise;
       source.loop = true;
@@ -135,6 +137,7 @@ export class WebAudioRideSound implements RideSound {
       freewheel: voice(context, master, 'highpass', 3000),
       wind,
       tyre,
+      rail,
       pump: setInterval(() => this.schedule(), PUMP_MS),
     };
     this.setMaster(untracked(() => this.level()));
@@ -176,6 +179,10 @@ export class WebAudioRideSound implements RideSound {
     this.ticks(voices, voices.freewheel, p.freewheel.clicksPerSecond, p.freewheel.gain);
     this.follow(voices, voices.wind, p.wind.cutoffHz, p.wind.gain);
     this.follow(voices, voices.tyre, p.tyre.centreHz, p.tyre.gain);
+    if (voices.rail) {
+      const pass = source.railPass?.() ?? 0;
+      this.follow(voices, voices.rail, 85 + 155 * pass, 0.72 * pass);
+    }
   }
 
   /** Moves a noise bed's filter and gain towards the speed's values. */

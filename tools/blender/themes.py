@@ -13,6 +13,8 @@ from __future__ import annotations
 import math
 import random
 
+import headland_road
+
 # Materials the themes add to build_course.MATERIALS: name -> colour, roughness, glow.
 MATERIALS: dict[str, dict] = {
     "verge": {"color": 0x6E8F3E, "rough": 1.0},
@@ -148,6 +150,8 @@ THEMES: dict[str, dict] = {
         "reach": 1100.0,
     },
     "coast": {
+        "lay": headland_road.lay, "land_builder": headland_road.terrain,
+        "sun_azimuth": -0.36,
         "sky": [0xFFC89A, 0xF6A87E, 0xC88AA0, 0x6A78B0, 0x2E3E78],
         "haze": 0xE8B494,
         "light": [0xFFB078, 2.8],
@@ -798,73 +802,6 @@ def oldtown(k: Kit) -> dict:
     return {"efforts": efforts, "houses": houses, "cathedral": placed}
 
 
-def coast(k: Kit) -> dict:
-    """A clifftop road above the sea at sunset: a guard rail over the drop, gorse and pines, a lighthouse, cottages."""
-    B, s, rng = k.B, k.s, k.rng
-    k.guardrail(k.kerb + 1.6)
-    # Stone walls on the landward side, broken by gates.
-    for i in range(2, k.n - 2):
-        if (i // 12) % 4 == 3:
-            continue
-        a, b_ = k.road.at(i, -(k.kerb + 3.0)), k.road.at(i + 1, -(k.kerb + 3.0))
-        B["stone"].quad(a, b_, (b_[0], b_[1], b_[2] + 1.1), (a[0], a[1], a[2] + 1.1))
-        B["stone"].quad((a[0], a[1], a[2] + 1.1), (b_[0], b_[1], b_[2] + 1.1), b_, a)
-    # Gorse and pines on the headland, rocks at the cliff edge.
-    for i in range(3, k.n - 3, 3):
-        x, y, z = k.road.at(i, k.kerb + rng.uniform(3, 8))
-        if k.road.clear_of_road(x, y, 9.0, i):
-            k.blob(B["rock"], (x, y, z - rng.uniform(1.5, 3.5)), rng.uniform(1.0, 2.6))
-        off = -(k.kerb + rng.uniform(6, 30))
-        x, y, _ = k.road.at(i, off)
-        if k.road.clear_of_road(x, y, 9.0, i):
-            if rng.random() < 0.35:
-                k.pine(x, y, k.ground(x, y, i, off), rng.uniform(0.8, 1.2))
-            else:
-                k.blob(B["bush"], (x, y, k.ground(x, y, i, off) + 0.3), rng.uniform(0.7, 1.5))
-                if rng.random() < 0.4:
-                    k.blob(B["arrow"], (x + 0.6, y, k.ground(x, y, i, off) + 0.7), 0.5)
-    # White cottages now and then.
-    i = 20
-    cottages = 0
-    while i < k.n - 20:
-        off = -(k.kerb + rng.uniform(16, 26))
-        if k.straight(i, 3, 1 / 70) and k.room(i, off, 14.0) and rng.random() < 0.35:
-            yaw = s[i]["h"]
-            x, y, _ = k.road.at(i, off)
-            z = k.height_at(x, y)
-            B["whitewash"].box((x, y, z - 2), (11, 6, 6.8), yaw)
-            k.gable(B["roof-slate"], (x, y, z + 4.8), 11, 6, 2.6, yaw)
-            B["glow-window"].box(k.P(i, -2, off + 3.05, z - s[i]["z"] + 1.4), (1.0, 0.1, 1.1), yaw)
-            B["glow-window"].box(k.P(i, 2, off + 3.05, z - s[i]["z"] + 1.4), (1.0, 0.1, 1.1), yaw)
-            cottages += 1
-            i += 40
-        else:
-            i += 5
-    # The lighthouse on the point nearest the sea, mid-course.
-    best = None
-    for i in range(k.n // 4, 3 * k.n // 4, 4):
-        x, y, _ = k.road.at(i, k.kerb + 30)
-        h = k.height_at(x, y)
-        if k.road.clear_of_road(x, y, 18.0, i) and h > 2 and (best is None or h > best[0]):
-            best = (h, x, y)
-    if best:
-        h, x, y = best
-        k.prism(B["lighthouse"], (x, y, h - 2), 3.4, 26, 12, 2.4)
-        k.prism(B["kerb-red"], (x, y, h + 8), 3.05, 5, 12, 2.85)
-        k.prism(B["dark"], (x, y, h + 24), 2.6, 0.6, 12)
-        k.prism(B["glow-lamp"], (x, y, h + 24.6), 1.8, 2.6, 12)
-        k.cone(B["kerb-red"], (x, y, h + 27.2), 2.3, 2.4, 12)
-    # The sea stacks offshore.
-    cx, cy, reach = k.centre()
-    for _ in range(int(120 * k.scale)):
-        a, r = rng.uniform(0, math.tau), reach + rng.uniform(60, 600)
-        x, y = cx + math.cos(a) * r, cy + math.sin(a) * r
-        if k.height_at(x, y) < -4:
-            k.prism(B["rock"], (x, y, -6), rng.uniform(5, 12), rng.uniform(14, 34), 7, rng.uniform(2, 6))
-    efforts = k.gates("accent", "accent-2", CROWD)
-    return {"efforts": efforts, "cottages": cottages, "lighthouse": best is not None}
-
-
 def docklands(k: Kit) -> dict:
     """A harbour city after dark: brick warehouses with lit windows and neon, cranes and containers on the quay."""
     B, s, rng = k.B, k.s, k.rng
@@ -1227,7 +1164,7 @@ def granite(k: Kit) -> dict:
 SCENERY = {
     "prairie": prairie,
     "oldtown": oldtown,
-    "coast": coast,
+    "coast": headland_road.scenery,
     "docklands": docklands,
     "dolomites": dolomites,
     "vicecity": vicecity,
@@ -1425,3 +1362,58 @@ import cabot as _cabot
 
 THEMES["cabot"] = _cabot.THEME
 SCENERY["cabot"] = _cabot.scenery
+
+import centralpark as _centralpark
+
+THEMES["centralpark"] = _centralpark.THEME
+SCENERY["centralpark"] = _centralpark.scenery
+
+import cherryblossom as _cherryblossom
+
+THEMES["cherryblossom"] = _cherryblossom.THEME
+SCENERY["cherryblossom"] = _cherryblossom.scenery
+
+import champs as _champs
+
+THEMES["champs"] = _champs.THEME
+SCENERY["champs"] = _champs.scenery
+
+import chicago as _chicago
+
+THEMES["chicago"] = _chicago.THEME
+SCENERY["chicago"] = _chicago.scenery
+
+import chichen as _chichen
+
+THEMES["chichen"] = _chichen.THEME
+SCENERY["chichen"] = _chichen.scenery
+
+import como as _como  # noqa: E402
+
+THEMES["como"] = _como.THEME
+SCENERY["como"] = _como.scenery
+
+import comuna13 as _comuna13  # noqa: E402
+
+THEMES["comuna13"] = _comuna13.THEME
+SCENERY["comuna13"] = _comuna13.scenery
+
+import coney as _coney  # noqa: E402
+
+THEMES["coney"] = _coney.THEME
+SCENERY["coney"] = _coney.scenery
+
+import copacabana as _copacabana  # noqa: E402
+
+THEMES['copacabana'] = _copacabana.THEME
+SCENERY['copacabana'] = _copacabana.scenery
+
+import copenhagen as _copenhagen  # noqa: E402
+
+THEMES['copenhagen'] = _copenhagen.THEME
+SCENERY['copenhagen'] = _copenhagen.scenery
+
+import cornwall as _cornwall  # noqa: E402
+
+THEMES['cornwall'] = _cornwall.THEME
+SCENERY['cornwall'] = _cornwall.scenery

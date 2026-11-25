@@ -384,7 +384,7 @@ GROVE_SPOTS: list[tuple[int, int, int]] = []  # where terraces() left a step fre
 
 
 def in_grove(k, i: int) -> bool:
-    return any(GROVE[0] <= abs(i - site["i"]) <= GROVE[1] for site in village_sites(k.s))
+    return any(GROVE[0] <= abs(i - site["i"]) <= GROVE[1] for site in k.village_sites)
 
 
 def lemon_groves(k) -> int:
@@ -397,7 +397,7 @@ def lemon_groves(k) -> int:
     for i, level, side in GROVE_SPOTS:
         off = k.kerb + TERRACE_FOOT + (level + rng.uniform(0.4, 0.6)) * TERRACE_DEPTH
         x, y, z = k.road.at(i, off * side, (level + 1) * TERRACE_RISE)
-        ends = any(abs(i - site["i"]) in (GROVE[0] + 1, GROVE[1] - 2) for site in village_sites(s))
+        ends = any(abs(i - site["i"]) in (GROVE[0] + 1, GROVE[1] - 2) for site in k.village_sites)
         if ends and level == 0:
             for dx in (-1.3, 1.3):
                 cx, cy = x + math.cos(s[i]["h"]) * dx, y + math.sin(s[i]["h"]) * dx
@@ -633,15 +633,37 @@ def umbrella_pine(k, x: float, y: float, z: float, lean: float) -> None:
     rng, B = k.rng, k.B
     tall = rng.uniform(7.5, 11.5)
     top = (x + math.cos(lean) * tall * 0.18, y + math.sin(lean) * tall * 0.18, z + tall)
-    k.prism(B["trunk-dark"], (x, y, z - 0.6), 0.34, tall * 0.62 + 0.6, 5, 0.24)
+    # Hexagonal rings join at the crotch. The old fork started to one side of the
+    # vertical trunk and its two flat triangles disappeared when seen edge-on.
+    wood = B["trunk-dark"]
+    def limb(base, end, foot, tip):
+        rings = [[(point[0] + radius * math.cos(q * math.tau / 6),
+                   point[1] + radius * math.sin(q * math.tau / 6), point[2])
+                  for q in range(6)] for point, radius in ((base, foot), (end, tip))]
+        for q in range(6):
+            j = (q + 1) % 6
+            wood.quad(rings[0][q], rings[0][j], rings[1][j], rings[1][q])
+
     fork = (x + (top[0] - x) * 0.5, y + (top[1] - y) * 0.5, z + tall * 0.62)
-    for q in range(3):
-        a = lean + q * math.tau / 3
-        tip = (top[0] + math.cos(a) * 1.5, top[1] + math.sin(a) * 1.5, top[2] - 0.5)
-        B["trunk-dark"].tri((fork[0] - 0.16, fork[1], fork[2]), (fork[0] + 0.16, fork[1], fork[2]), tip)
-        B["trunk-dark"].tri((fork[0] + 0.16, fork[1], fork[2]), (fork[0] - 0.16, fork[1], fork[2]), tip)
+    limb((x, y, z - 0.6), fork, 0.38, 0.24)
+    for q in range(4):
+        a = lean + q * math.tau / 4
+        elbow = (fork[0] + math.cos(a) * 0.95, fork[1] + math.sin(a) * 0.95, fork[2] + tall * 0.14)
+        tip = (top[0] + math.cos(a) * 1.8, top[1] + math.sin(a) * 1.8, top[2] + 0.18)
+        limb(fork, elbow, 0.19, 0.13)
+        limb(elbow, tip, 0.13, 0.07)
     lens(B["ct-pine"], top, rng.uniform(3.4, 4.8), 2.6, rng)
     lens(B["ct-pine-dark"], (top[0] + rng.uniform(-1.6, 1.6), top[1] + rng.uniform(-1.6, 1.6), top[2] - 0.7), rng.uniform(2.4, 3.4), 2.0, rng)
+
+    # Overlapping sprays give the umbrella its scalloped edge in silhouette.
+    # The secondary seed varies needles without moving any of the older plantings.
+    needles = random.Random(round(x * 19 + y * 31))
+    for q in range(7):
+        angle = lean + q * math.tau / 7
+        radius = needles.uniform(2.6, 3.7)
+        centre = (top[0] + math.cos(angle) * radius, top[1] + math.sin(angle) * radius,
+                  top[2] + needles.uniform(-0.4, 0.55))
+        lens(B["ct-pine-dark" if q % 3 == 0 else "ct-pine"], centre, needles.uniform(1.5, 2.1), 1.4, needles, 6)
 
 
 def olive(k, x: float, y: float, z: float) -> None:
@@ -1377,7 +1399,8 @@ def footpath(k) -> dict:
     paint, rng, s = Painted(k), k.rng, k.s
     stone, tread, wood, white, red = _lin(0x978E79), _lin(0xB4AB96), _lin(0x7A5A3A), _lin(0xF2EEE2), _lin(0xC8322C)
     sites = [site["i"] for site in village_sites(s)]
-    crossings = walkers = 0
+    crossings = []
+    walkers = 0
 
     def clear(i: int) -> bool:
         return 12 < i < k.n - 12 and all(abs(s[q]["k"]) < 1 / 90 for q in range(i - 8, i + 9)) and all(abs(i - v) > 30 for v in sites)
@@ -1430,7 +1453,7 @@ def footpath(k) -> dict:
             bx, by = x + math.cos(yaw) * reach, y + math.sin(yaw) * reach
             paint.box((bx, by, z + up), (0.9, 0.06, 0.2), yaw, white, 1.0)
             paint.box((bx + math.cos(yaw) * reach * 0.75, by + math.sin(yaw) * reach * 0.75, z + up - 0.005), (0.24, 0.075, 0.21), yaw, red, 1.0)
-        crossings += 1
+        crossings.append(round(s[i]["d"], 2))
         walkers += party(i + 4, rng.randint(2, 4))
         # Where the path crosses: a zebra painted over the road, and on the sea's side a bench under the
         # parapet with the trail's map board beside it and somebody looking at it.
@@ -1464,10 +1487,29 @@ def footpath(k) -> dict:
         j = i + rng.randrange(40)
         if rng.random() < 0.55 and clear(j):
             walkers += party(j, rng.randint(1, 3))
-    return {"crossings": crossings, "walkers": walkers}
+    return {"crossings": len(crossings), "walkers": walkers,
+            "ligurianCoast": {"crossings": crossings, "harbours": harbour_sites(s, k.height_at)}}
+
+
+def harbour_sites(s, height_at) -> list[dict]:
+    # Each mooring sits on the sheltered side of a headland, in enough water to float.
+    harbours = []
+    for site in village_sites(s):
+        shore = []
+        for dx in (-100, -82, -64, -46, -28):
+            x = site["x"] + dx
+            for dy in range(0, 1000, 2):
+                y = site["y"] + dy
+                if height_at(x, y) < -1.6:
+                    shore.append([round(x, 2), round(-y, 2)])
+                    break
+        if len(shore) == 5:
+            harbours.append({"station": round(s[site["i"]]["d"], 2), "shore": shore})
+    return harbours
 
 
 def scenery(k) -> dict:
+    k.village_sites = village_sites(k.s)
     parapet(k)
     GROVE_SPOTS.clear()
     stepped = terraces(k)
