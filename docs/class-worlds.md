@@ -112,7 +112,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 82 | Flat Out Efforts | Silverstone Track Day | 35% |  | Flat-out sweeps of the British circuit with the grandstands empty. |
 | 83 | Sprint to the Music | Glastonbury Fields | 78% |  | Tents, flags and the Pyramid Stage; sprint between music stages. |
 | 84 | Sprints for Climbing | Mur de Huy | 35% |  | The Ardennes' brutal wall, climbing past chapels toward the finish. |
-| 85 | Don't Get Dropped | Arenberg Forest | 35% |  | Paris-Roubaix cobbles through the trees; hold the wheel or lose it. |
+| 85 | Don't Get Dropped | Arenberg Forest | 35% | [Race views](screenshots/arenberg-forest/README.md) | Paris-Roubaix cobbles through the trees; hold the wheel or lose it. |
 | 86 | Wake Up and Smell the Lactic | Pike Place at Dawn | 77% |  | Coffee steam and fish-market crowds at sunrise over Seattle's Elliott Bay. |
 | 87 | 25 Minute Sprint Intervals | Chicago Lakefront Trail | 35% |  | Lake Michigan beaches and the skyline along the waterfront trail. |
 | 88 | 25 Minute High Intensity Intervals | Diwali, Marine Drive | 35% |  | Mumbai's Queen's Necklace lit with lamps and fireworks over the Arabian Sea. |

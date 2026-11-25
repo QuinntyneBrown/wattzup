@@ -171,7 +171,8 @@ def scenery(k):
         # Colliery fence and bollards lead the eye to the steel lattice.
         x,y,z=k.road.at(k.road.index(d),6.8)
         art.box((x,y,z),(.19,.22,1.54),0,iron)
-        art.box((x+8.8,y,z+.72),(17.7,.13,.09),0,iron)
+        x2,y2,z2=k.road.pos(d+19,6.8)
+        beam(art,(x,y,z+.72),(x2,y2,z2+.72),.11,iron)
     for d in range(210,int(k.length),8):
         for side in (-1,1):
             if d>EXIT and (d//280)%3==1 and side>0:continue
@@ -197,7 +198,7 @@ def scenery(k):
         side=k.rng.choice((-1,1));i=k.road.index(d)
         length=k.rng.uniform(1.4,4.1);wide=k.rng.uniform(.12,.31);left=side*k.rng.uniform(2.55,2.94)
         pts=tuple(k.P(i,length*math.cos(j*math.tau/8),left+wide*math.sin(j*math.tau/8),-.075) for j in range(8))
-        art.face(pts,(lin(0x899490),)*8)
+        art.face(pts,(lin(k.rng.choice((0x6F7975,0x808A84,0x778078))),)*8)
     for d in range(ENTRY+9,1040,19):
         i=k.road.index(d);side=k.rng.choice((-1,1));left=side*4.5
         x,y,z=k.P(i,0,left)

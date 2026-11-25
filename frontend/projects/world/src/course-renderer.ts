@@ -1057,7 +1057,10 @@ export class CourseRenderer implements WorldRenderer {
       const d = nearest - (moto ? 0 : 18);
       holder.visible = d >= 0 && d < this.course!.length && Math.abs(d - rider) < 170;
       if (!holder.visible) continue;
-      const at = this.course!.place(d, moto ? -1.22 : -1.05, this.there);
+      // A vehicle being passed moves out onto the muddy shoulder before it reaches the rider.
+      const passing = Math.max(0, 1 - Math.abs(d - rider) / 23);
+      const lane = (moto ? -1.22 : -1.05) - passing * (moto ? 0.75 : 1.43);
+      const at = this.course!.place(d, lane, this.there);
       holder.position.set(at.x, at.y + 0.035, at.z);
       holder.rotation.set(at.pitch, at.heading, 0, 'YXZ');
       if (moto) {
