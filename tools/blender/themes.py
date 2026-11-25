@@ -1552,3 +1552,7 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+import jaipur as _jaipur
+
+THEMES['jaipur'] = _jaipur.THEME
+SCENERY['jaipur'] = _jaipur.scenery

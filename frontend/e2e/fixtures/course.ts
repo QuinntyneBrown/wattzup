@@ -3598,7 +3598,7 @@ export const jaipurCourseMap = {
   place: 'Jaipur, Rajasthan',
   world: 'jaipur',
   distanceKm: 8.625,
-  climbingM: 15,
+  climbingM: 57,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
