@@ -19,7 +19,7 @@ Headed Chromium 159.0.8154.6 on Apple M5 Pro, 1024 × 768 at DPR 1, Low/WebGL 2,
 
 | Section | Scene offset | HUD distance | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak calls |
 | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| Sanganeri Gate and Johari Bazaar | 0 m | 0.12 km to 0.95 km | 120.49 | 120.00 | 9.6 ms | 14.3 ms | 36 |
-| Gulal throwers and market traffic | 4350 m | 0.12 km to 0.95 km | 120.45 | 120.00 | 9.7 ms | 21.4 ms | 30 |
+| Sanganeri Gate and Johari Bazaar | 0 m | 0.12 km to 0.95 km | 120.44 | 120.00 | 9.6 ms | 15.5 ms | 36 |
+| Gulal throwers and market traffic | 4350 m | 0.12 km to 0.95 km | 120.31 | 120.00 | 9.7 ms | 13.2 ms | 30 |
 
 Reproduce from the frontend workspace with `npm run perf -- jaipur-tablet --headed`.
