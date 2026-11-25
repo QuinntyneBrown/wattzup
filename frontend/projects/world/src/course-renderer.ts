@@ -5,6 +5,8 @@ import type { CypressLift } from './cypress-lift';
 import type { dalesVerges } from './dales-verges';
 import type { DalesSheep } from './dales-sheep';
 import type { DalesFlags } from './dales-flags';
+import type { DaytonaBoardwalk } from './daytona-boardwalk';
+import type { DaytonaTideLine } from './daytona-tide-line';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -276,6 +278,8 @@ export class CourseRenderer implements WorldRenderer {
   private verges: Awaited<ReturnType<typeof dalesVerges>> | null = null;
   private flock: DalesSheep | null = null;
   private flags: DalesFlags | null = null;
+  private boardwalk: DaytonaBoardwalk | null = null;
+  private shore: DaytonaTideLine | null = null;
   private course: Course | null = null;
   private timing: PursuitBoard | null = null;
   private disposed = false;
@@ -405,6 +409,8 @@ export class CourseRenderer implements WorldRenderer {
     chairX: null as number | null,
     flagTip: null as number | null,
     sheepX: null as number | null,
+    pickupZ: null as number | null,
+    gondolaY: null as number | null,
     groups: {} as Record<string, number>,
     kiteAngle: undefined as number | undefined,
     boatX: undefined as number | undefined,
@@ -939,6 +945,18 @@ export class CourseRenderer implements WorldRenderer {
         this.disposables.push(this.flock, this.flags);
         this.camera.setViewOffset(1, 1, 0, 0.09, 1, 1);
       }
+      if (this.path === 'courses/daytona') {
+        const [{ DaytonaTideLine }, { DaytonaBoardwalk }] = await Promise.all([
+          import('./daytona-tide-line'),
+          import('./daytona-boardwalk'),
+        ]);
+        if (this.disposed) return false;
+        this.boardwalk = new DaytonaBoardwalk(this.scene);
+        this.disposables.push(this.boardwalk);
+        this.shore = new DaytonaTideLine(this.course, this.disposables);
+        this.scene.add(this.shore.group);
+        this.camera.setViewOffset(1, 1, 0, 0.053, 1, 1);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1161,6 +1179,8 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.flock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.flags?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.boardwalk?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.shore?.place(metres, frame.reducedMotion ? 0 : frame.time);
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
@@ -2297,6 +2317,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.chairX = this.cypressLift?.chairX ?? null;
     drawn.sheepX = this.flock?.sheepX ?? null;
     drawn.flagTip = this.flags?.tip ?? null;
+    drawn.pickupZ = this.boardwalk?.pickupZ ?? null;
+    drawn.gondolaY = this.boardwalk?.gondolaY ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;

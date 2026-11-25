@@ -1427,3 +1427,8 @@ import dales as _dales  # noqa: E402
 
 THEMES['dales'] = _dales.THEME
 SCENERY['dales'] = _dales.scenery
+
+import daytona as _daytona  # noqa: E402
+
+THEMES['daytona'] = _daytona.THEME
+SCENERY['daytona'] = _daytona.scenery

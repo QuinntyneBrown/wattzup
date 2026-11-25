@@ -55,6 +55,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   cornwall: 'courses/cornwall',
   cypress: 'courses/cypress',
   dales: 'courses/dales',
+  daytona: 'courses/daytona',
   docklands: 'courses/docklands',
   dolomites: 'courses/dolomites',
   granite: 'courses/granite',

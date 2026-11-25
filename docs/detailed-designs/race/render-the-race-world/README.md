@@ -858,3 +858,18 @@ The class-world inventory rates Yorkshire Dales at 35%. The existing scene sets 
 | Muker, 22.88 km | Stone cottages and pubs rise above the valley floor | Real 08–11, 14–15 and games 01 and 04 |
 
 Bake the far fells and field walls in stable coordinates so they stay fixed behind the moving verge, as Caribana’s skyline does behind the parade. Chunk near walls and use shared bounded geometry for sheep, cloth and the crowd. Preserve the gate openings and grazing scale on Low. Release the scene, material and animation state on leaving the race. Compare six matched rider views. Count submitted frames over a minute at Hawes and again with the crowd visible, with the tablet settings in the performance design.
+
+## Daytona Beach Sand (#2110)
+
+The inventory records 74% implementation and a 33/100 visual score. DaytonaStreet already has packed tyre tracks, wet and soft sand ribbons, moving foam, lifeguard towers, umbrellas, strollers, stock cars and a start tree. Its 400 m loop repeats the pier and hotel silhouettes. [Rider feedback #905](https://github.com/QuinntyneBrown/wattzup/issues/905) praises the low-memory ride. Keep its pooled surface and people. Give the stepped Hilton, Bandshell, pier and amusement rides separate positions along Tide Line. Map Select → Race Setup → Race loads the original Drag Race plan and its dedicated course. The same flat physical centre line positions the cyclist, HUD and nearby props.
+
+| Rider view | Composition on Low | Reference |
+| --- | --- | --- |
+| Start, 0.08 km | Grooves and low reflected sunlight on packed sand | Real 01–04, games 01–02 |
+| Beach traffic, 0.71 km | Slow cars on the shore side of the ramp, separated from the tide-line race | Real 01–02 and 06, games 01 and 03 |
+| Hilton, 2.33 km | The stepped mass and balcony rows rise landward of umbrellas | Real 04–06, 09–10 and 12, games 03 and 05 |
+| Bandshell, 3.48 km | Coquina arch and towers, seating terrace and boardwalk approaches | Real 06, 12–13 and 15, games 03–05 |
+| Pier, 3.83 km | Low diagonal pilings and the restaurant cross the surf, backed by the wheel and Sky Coaster | Real 03, 07–08, 11, 13–14 and games 01, 03 and 05 |
+| Southern shore, 6.62 km | Lifeguard huts, ramps, loungers and Atlantic breakers continue beyond the pier district | Real 01–04, 09–10 and 12, games 01–02 |
+
+As in Caribana, the foreground follows race time while the skyline remains fixed. Use packed static geometry for the pier and hotels, bounded pools for cars and waves and shared materials for repeating beach furniture. Dispose the loaded assets with the course. L1 Race, the ride-a-map journey, L2-064–066, L2-159–160, the performance design and ADRs 0021, 0023, 0030, 0034 and 0035 apply. Capture the six viewpoints before and after and measure actual moving frames at 45 m and 3,370 m.

@@ -60,7 +60,7 @@ interface Stroller {
 export class DaytonaStreet implements SceneStreet {
   readonly group = new Group();
   private readonly ribbons: Ribbons;
-  private readonly props: { mesh: Group; offset: number; x: number }[] = [];
+  private readonly props: { mesh: Group; offset: number; x: number; fixed?: boolean }[] = [];
   private readonly strollers: Stroller[] = [];
   private beachgoers: Figures | null = null;
   private foam: Texture | null = null;
@@ -75,15 +75,17 @@ export class DaytonaStreet implements SceneStreet {
     this.ribbons = new Ribbons(this.group, disposables);
   }
 
-  build(roadHalf: number, points: number): void {
+  build(roadHalf: number, points: number, fixedLandmarks = false): void {
     this.disposables.push(this.unit);
-    this.addBeach(roadHalf, points);
-    this.addUmbrellasAndTowers(roadHalf);
+    this.addBeach(roadHalf, points, fixedLandmarks);
+    this.addUmbrellasAndTowers(roadHalf, fixedLandmarks);
     this.addDunes(roadHalf);
-    this.addHotels(roadHalf);
-    this.addPier(roadHalf);
-    this.addDragStrip(roadHalf);
-    this.addStockCars(roadHalf);
+    if (!fixedLandmarks) {
+      this.addHotels(roadHalf);
+      this.addPier(roadHalf);
+    }
+    this.addDragStrip(roadHalf, fixedLandmarks);
+    this.addStockCars(roadHalf, fixedLandmarks);
     this.addBeachgoers(roadHalf);
   }
 
@@ -116,7 +118,8 @@ export class DaytonaStreet implements SceneStreet {
 
   place(s: number, heightAt: (metres: number) => number): void {
     for (const prop of this.props) {
-      const metres = loopMetres(prop.offset, s, LOOP, BEHIND);
+      const metres = prop.fixed ? prop.offset - s : loopMetres(prop.offset, s, LOOP, BEHIND);
+      prop.mesh.visible = !prop.fixed || (metres >= -BEHIND && metres <= LOOP);
       prop.mesh.position.set(prop.x, heightAt(Math.max(metres, 0)), -metres);
     }
     const beachgoers = this.beachgoers;
@@ -142,11 +145,14 @@ export class DaytonaStreet implements SceneStreet {
    * The packed sand the rider takes with its tyre tracks, the wet sand and the surf on the left
    * and the ocean beyond, and the soft dry sand rising on the right.
    */
-  private addBeach(roadHalf: number, points: number): void {
+  private addBeach(roadHalf: number, points: number, sunrise: boolean): void {
     const r = roadHalf;
-    const packed = this.material({ map: this.repeat(packedTexture(), 7, 8), roughness: 0.9 });
+    const packed = this.material({
+      map: this.repeat(packedTexture(), 7, 8),
+      roughness: sunrise ? 0.4 : 0.9,
+    });
     const wet = this.material({
-      map: this.repeat(wetTexture(), 9, 10),
+      map: this.repeat(wetTexture(sunrise), 9, 10),
       roughness: 0.25,
       metalness: 0.15,
     });
@@ -184,7 +190,7 @@ export class DaytonaStreet implements SceneStreet {
   }
 
   /** Striped umbrellas and towels on the dry sand, and lifeguard towers along it. */
-  private addUmbrellasAndTowers(roadHalf: number): void {
+  private addUmbrellasAndTowers(roadHalf: number, sunrise: boolean): void {
     const random = seeded(601);
     const pole = new CylinderGeometry(0.03, 0.03, 2.3, 6);
     pole.translate(0, 1.15, 0);
@@ -193,9 +199,13 @@ export class DaytonaStreet implements SceneStreet {
     const towel = new BoxGeometry(0.9, 0.02, 1.8);
     this.disposables.push(pole, canopy, towel);
     const white = this.material({ color: 0xf5f5f0, roughness: 0.6 });
-    const stripes = ['#ff6b5a', '#2ec4b6', '#ffd23f', '#3a86ff', '#f15bb5'].map((c) =>
+    const colours = sunrise
+      ? ['#4c75ae', '#f0c849', '#478d9e', '#ffd75c', '#315593']
+      : ['#ff6b5a', '#2ec4b6', '#ffd23f', '#3a86ff', '#f15bb5'];
+    const stripes = colours.map((c) =>
       this.material({ map: this.track(stripeTexture(c)), roughness: 0.8, side: 2 }),
     );
+    const chairPair = sunrise ? this.chairPair() : undefined;
     for (let offset = 6; offset < LOOP; offset += 10 + random() * 14) {
       if (Math.abs(offset - START) < 25) continue;
       const spot = new Group();
@@ -206,6 +216,13 @@ export class DaytonaStreet implements SceneStreet {
       const t = new Mesh(towel, m);
       t.position.set(1.2, 0.02, 0.3);
       t.rotation.y = random() - 0.5;
+      if (chairPair) {
+        const lounger = new Group();
+        lounger.add(new Mesh(chairPair.canvas, m), new Mesh(chairPair.legs, white));
+        lounger.rotation.y = -1.21;
+        lounger.position.x = -0.95;
+        spot.add(lounger);
+      }
       spot.add(u, t);
       spot.children.forEach((c) => (c.castShadow = true));
       this.group.add(spot);
@@ -252,6 +269,23 @@ export class DaytonaStreet implements SceneStreet {
       this.group.add(tower);
       this.props.push({ mesh: tower, offset, x: roadHalf + 12 });
     }
+  }
+
+  /** A pair of reclining beach chairs shares two meshes at every umbrella. */
+  private chairPair() {
+    const seats: BufferGeometry[] = [];
+    const feet: BufferGeometry[] = [];
+    for (const x of [-0.84, 0.84]) {
+      seats.push(new BoxGeometry(0.69, 0.09, 1.29).translate(x, 0.38, 0.22));
+      seats.push(new BoxGeometry(0.69, 0.08, 0.82).rotateX(0.57).translate(x, 0.59, -0.72));
+      for (const z of [-0.34, 0.74])
+        feet.push(new BoxGeometry(0.58, 0.36, 0.055).translate(x, 0.18, z));
+    }
+    const canvas = mergeGeometries(seats)!;
+    const legs = mergeGeometries(feet)!;
+    for (const part of [...seats, ...feet]) part.dispose();
+    this.disposables.push(canvas, legs);
+    return { canvas, legs };
   }
 
   /** Sea-oat dunes in a ridge behind the beach, merged into tiles. */
@@ -348,7 +382,7 @@ export class DaytonaStreet implements SceneStreet {
    * The drag strip's start, once a lap: a start tree on the right with its staged lamps, three
    * ambers and a green that count down on the ride's clock, and a timing board above the beach.
    */
-  private addDragStrip(roadHalf: number): void {
+  private addDragStrip(roadHalf: number, fixed: boolean): void {
     const black = this.material({ color: 0x1b1b1f, roughness: 0.5 });
     const board = this.material({ map: this.track(timingTexture()), roughness: 0.6 });
     const line = this.material({ color: 0xf5f5f0, roughness: 0.8 });
@@ -374,7 +408,7 @@ export class DaytonaStreet implements SceneStreet {
     }
     start.rotation.y = Math.PI;
     this.group.add(start);
-    this.props.push({ mesh: start, offset: START - 2, x: roadHalf + 1.2 });
+    this.props.push({ mesh: start, fixed, offset: START - 2, x: roadHalf + 1.2 });
     // The start line across the sand, and the timing board on its gantry.
     const stripe = new Group();
     const paint = new Mesh(this.unit, line);
@@ -382,7 +416,7 @@ export class DaytonaStreet implements SceneStreet {
     paint.position.set(0.5, 0.01, 0);
     stripe.add(paint);
     this.group.add(stripe);
-    this.props.push({ mesh: stripe, offset: START, x: 0 });
+    this.props.push({ mesh: stripe, fixed, offset: START, x: 0 });
     const gantry = new Group();
     for (const x of [-8, 8]) {
       const leg = new Mesh(this.unit, black);
@@ -396,11 +430,11 @@ export class DaytonaStreet implements SceneStreet {
     panel.rotation.y = Math.PI;
     gantry.add(panel);
     this.group.add(gantry);
-    this.props.push({ mesh: gantry, offset: START + 40, x: roadHalf + 14 });
+    this.props.push({ mesh: gantry, fixed, offset: START + 40, x: roadHalf + 14 });
   }
 
   /** Vintage stock cars standing on the sand by the start, their numbers on the doors. */
-  private addStockCars(roadHalf: number): void {
+  private addStockCars(roadHalf: number, fixed: boolean): void {
     const wheel = new CylinderGeometry(0.36, 0.36, 0.26, 14);
     wheel.rotateZ(Math.PI / 2);
     const cabin = new BoxGeometry(1.5, 0.6, 1.9);
@@ -440,7 +474,12 @@ export class DaytonaStreet implements SceneStreet {
       car.children.forEach((m) => (m.castShadow = true));
       car.rotation.y = 0.35 + k * 0.1;
       this.group.add(car);
-      this.props.push({ mesh: car, offset: START + 10 + k * 7, x: roadHalf + 6 + (k % 2) * 3 });
+      this.props.push({
+        mesh: car,
+        fixed,
+        offset: START + 10 + k * 7,
+        x: roadHalf + 6 + (k % 2) * 3,
+      });
     });
   }
 
@@ -492,9 +531,25 @@ function packedTexture(): CanvasTexture {
 }
 
 /** Wet sand at the tide line, shining with the sky. */
-function wetTexture(): CanvasTexture {
+function wetTexture(sunrise: boolean): CanvasTexture {
   return canvasTexture(256, 256, (g) => {
-    speckle(g, 256, 256, '#8f7a5e', 641);
+    speckle(g, 256, 256, sunrise ? '#b19c92' : '#8f7a5e', 641);
+    if (sunrise) {
+      const reflection = g.createLinearGradient(0, 0, 256, 0);
+      for (const [position, tint] of [
+        [0, '#d7b19c'],
+        [0.21, '#b2b4b7'],
+        [0.48, '#dfc5ab'],
+        [0.68, '#f3d9b1'],
+        [0.84, '#c7b6ae'],
+        [1, '#d7b19c'],
+      ] as const)
+        reflection.addColorStop(position, tint);
+      g.globalAlpha = 0.68;
+      g.fillStyle = reflection;
+      g.fillRect(0, 0, 256, 256);
+      g.globalAlpha = 1;
+    }
     const random = seeded(643);
     for (let i = 0; i < 160; i++) {
       g.fillStyle = `rgba(200,225,240,${0.12 + random() * 0.2})`;
