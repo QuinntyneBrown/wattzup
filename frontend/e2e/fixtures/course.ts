@@ -1,3 +1,4 @@
+import isleofmanElevation from './isleofman-elevation.json';
 import angliruElevation from './angliru-elevation.json';
 import artMuseumElevation from './artmuseum-elevation.json';
 
@@ -2052,6 +2053,48 @@ export const cornwallCourseMap = {
       seg('recover', 20, 10, 80),
       seg('work', 10, 24, 100),
       seg('cool-down', 140, 10, 80),
+    ],
+  },
+};
+
+export const isleofmanCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'isle-of-man-mountain-course',
+  name: 'Isle of Man Mountain Course',
+  routeName: 'The Mountain Course',
+  place: 'The A18, the Bungalow and Creg-ny-Baa',
+  world: 'isleofman',
+  distanceKm: 8.133,
+  climbingM: 206,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: isleofmanElevation,
+  },
+  thumbnailUrl: 'maps/isle-of-man-mountain-course.jpg',
+  photoUrl: 'maps/isle-of-man-mountain-course-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 11, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('work', 50, 14, 80),
+      seg('recover', 180, 10, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('cool-down', 360, 10, 80),
     ],
   },
 };
