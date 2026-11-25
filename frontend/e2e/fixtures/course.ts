@@ -1,3 +1,4 @@
+import bluemountainsElevation from './bluemountains-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -158,11 +159,12 @@ export const blueMountainsCourseMap = {
   place: 'Jamaica',
   world: 'bluemountains',
   distanceKm: 14.593,
-  climbingM: 0,
+  climbingM: 752,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: bluemountainsElevation,
   },
   thumbnailUrl: 'maps/blue-mountains-jamaica.jpg',
   photoUrl: 'maps/blue-mountains-jamaica-photo.jpg',
