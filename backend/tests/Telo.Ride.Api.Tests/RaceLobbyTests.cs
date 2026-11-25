@@ -11,12 +11,9 @@
 // carries to the API hosted in memory; the fake clock drives the ticker.
 using System.Net;
 using System.Net.Http.Json;
-using MediatR;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.DependencyInjection;
-using Telo.Ride.Application.Races;
 
 namespace Telo.Ride.Api.Tests;
 
@@ -303,25 +300,4 @@ public sealed class RaceLobbyTests(RaceLobbyApi api) : IClassFixture<RaceLobbyAp
 }
 
 /// <summary>A sign-in host of its own for the race lobby tests, so its sessions and seats are no other test's.</summary>
-public sealed class RaceLobbyApi : SignInApi
-{
-    /// <summary>The riders whose lost connection the server has handled, so a test moves the clock only after.</summary>
-    public EventProbe<Guid> ConnectionsLost { get; } = new(rider => rider.ToString());
-
-    protected override void ConfigureServices(IServiceCollection services)
-    {
-        base.ConfigureServices(services);
-        services.AddSingleton<IPipelineBehavior<RaceConnectionLostCommand, Unit>>(new ConnectionLostProbe(ConnectionsLost));
-    }
-
-    /// <summary>Records each lost connection once its handler has run.</summary>
-    private sealed class ConnectionLostProbe(EventProbe<Guid> probe) : IPipelineBehavior<RaceConnectionLostCommand, Unit>
-    {
-        public async Task<Unit> Handle(RaceConnectionLostCommand request, RequestHandlerDelegate<Unit> next, CancellationToken cancellationToken)
-        {
-            var handled = await next(cancellationToken);
-            probe.Record(request.RiderId);
-            return handled;
-        }
-    }
-}
+public sealed class RaceLobbyApi : RaceDisconnectApi;
