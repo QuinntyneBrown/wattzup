@@ -29,7 +29,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Sella Ronda", 11.7, 357, "Hard", "Over/Under Intervals on the Passo Sella", "Four Dolomite passes circling the Sella massif"),
                 new Listed("Cinque Terre", 17.1, 335, "Hard", "3 Mins On, 2 Mins Off", "The corniche above the Ligurian Sea"),
                 new Listed("Haleakalā", 15.8, 923, "Brutal", "Maximum Intensity Hill Climb Efforts", "The summit road from the Pacific coast to the crater rim"),
-                new Listed("Algarve Cliffs", 16.8, 182, "Hard", "The clifftop road", "The limestone headlands of southern Portugal"),
+                new Listed("Algarve Cliffs", 16.8, 113, "Hard", "The clifftop road", "The limestone headlands of southern Portugal"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -152,7 +152,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     {
         var map = Assert.Single(await ReadMaps(), m => m.Id == "algarve-cliffs");
         Assert.Equal("algarve", map.World);
-        Assert.Equal(182, map.ClimbingM);
+        Assert.Equal(113, map.ClimbingM);
         Assert.Equal(16.8, map.DistanceKm);
         Assert.Equal(2400, map.Plan.Segments.Sum(s => s.Duration));
         Assert.Equal(new Segment("warm-up", 120, 11, 80), map.Plan.Segments[0]);

@@ -235,6 +235,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    boatHeight: null as number | null,
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
@@ -245,6 +246,7 @@ export class CourseRenderer implements WorldRenderer {
   private startGreen: Mesh | null = null;
   private beams: MeshBasicMaterial | null = null;
   private readonly confetti: Mesh[] = [];
+  private boats: { mesh: Mesh; waterline: number } | null = null;
   private funivia: { holder: Group; span: CourseCableway; pose: CabinPose } | null = null;
   private glider: { holder: Group; orbit: CourseGliderOrbit; pose: GliderPose } | null = null;
   /** The blob every rider's shadow is drawn with, and each rider's own. */
@@ -442,6 +444,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh } of this.chunks) mesh.geometry.dispose();
     this.near.clear();
     this.chunks.length = 0;
+    this.boats = null;
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
@@ -602,7 +605,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
-      const material = materials[group];
+      const material = materials[group === 'Boats' ? 'Land' : group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
       mesh.material = material;
@@ -617,6 +620,7 @@ export class CourseRenderer implements WorldRenderer {
       // The map is set once and never moves: its matrices are worked out here, not every frame.
       mesh.matrixAutoUpdate = false;
       mesh.updateMatrix();
+      if (group === 'Boats') this.boats = { mesh, waterline: mesh.position.y };
       if (group === 'Confetti') this.confetti.push(mesh);
       if (group === 'StartRed') this.startRed = mesh;
       if (group === 'StartGreen') this.startGreen = mesh;
@@ -980,6 +984,11 @@ export class CourseRenderer implements WorldRenderer {
     if (this.beams) this.beams.opacity = 0.17 + 0.06 * Math.sin(time * 1.7);
     this.skyClock?.(time);
     this.waterClock?.(time);
+    if (this.boats) {
+      const { mesh, waterline } = this.boats;
+      mesh.position.y = waterline + 0.17 * Math.sin(time * 1.18) + 0.045 * Math.sin(time * 2.09);
+      mesh.updateMatrix();
+    }
     this.rain?.at(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
@@ -1079,6 +1088,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.boatHeight = this.boats?.mesh.position.y ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

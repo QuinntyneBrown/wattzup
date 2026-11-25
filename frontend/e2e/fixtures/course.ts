@@ -162,7 +162,7 @@ export const algarveCourseMap = {
     roll: 1.2,
   },
   distanceKm: 16.8,
-  climbingM: 182,
+  climbingM: 113,
   photoUrl: 'maps/algarve-cliffs-photo.jpg',
   thumbnailUrl: 'maps/algarve-cliffs.jpg',
   plan: {

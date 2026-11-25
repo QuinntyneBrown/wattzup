@@ -96,6 +96,15 @@ export class WorldRideProbe {
     });
   }
 
+  /** Height of the moored boats in the frame just submitted, when the course has them. */
+  async boatHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { boatHeight?: number } } })
+          .__wzWorldRide?.course?.boatHeight ?? null,
+    );
+  }
+
   /** The renderer's latest report, or null before the scene has started. */
   async report(): Promise<WorldRideReport | null> {
     return this.page.evaluate(
