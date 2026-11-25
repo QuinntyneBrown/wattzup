@@ -1,3 +1,4 @@
+import edinburghElevation from './edinburgh-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,45 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const edinburghCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'edinburgh-fringe',
+  name: 'Edinburgh Fringe',
+  routeName: 'The Royal Mile',
+  place: 'Edinburgh, Scotland',
+  world: 'edinburgh',
+  distanceKm: 8.655,
+  climbingM: 90,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: edinburghElevation,
+  },
+  thumbnailUrl: 'maps/edinburgh-fringe.jpg',
+  photoUrl: 'maps/edinburgh-fringe-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 17, 85),
+      seg('work', 120, 19, 90),
+      seg('work', 10, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 10, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 10, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 10, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 10, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('cool-down', 130, 12, 82),
+    ],
   },
 };
