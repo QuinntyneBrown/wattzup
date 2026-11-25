@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“InnsbruckConti” Route Details (Innsbruck)](https://zwiftinsider.com/route/innsbruckconti/) (g0068) | © Zwift |
 | game-04.jpg | MyWhoosh: [2 11](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/05/2-11.png) (g0552) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Waisted 8” Route Details (Watopia)](https://zwiftinsider.com/route/waisted-8/) (g0184) | © Zwift |
+
+The visitor and tree atlas adapts original cutouts from the project’s Caribana and Lake Como courses. The cottages, fishing boats, harbour walls, gulls and lighthouse are original geometry.

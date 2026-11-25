@@ -1,3 +1,4 @@
+import type { cornwallVisitors } from './cornwall-visitors';
 import type { CornwallHarbour } from './cornwall-harbour';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
@@ -201,6 +202,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
+  private visitors: Awaited<ReturnType<typeof cornwallVisitors>> | null = null;
   private harbour: CornwallHarbour | null = null;
   private course: Course | null = null;
   private disposed = false;
@@ -358,8 +360,20 @@ export class CourseRenderer implements WorldRenderer {
       this.disposables.push(body);
       this.course = new Course(parseCourse(file));
       if (this.path === 'courses/cornwall') {
-        const { CornwallHarbour } = await import('./cornwall-harbour');
+        const [{ CornwallHarbour }, { cornwallVisitors }] = await Promise.all([
+          import('./cornwall-harbour'),
+          import('./cornwall-visitors'),
+        ]);
         if (this.disposed) return false;
+        const visitors = await cornwallVisitors(this.course);
+        if (this.disposed) {
+          visitors.dispose();
+          return false;
+        }
+        this.visitors = visitors;
+        this.scene.add(visitors.root);
+        this.disposables.push(visitors);
+        this.camera.setViewOffset(1, 1, 0, 0.09, 1, 1);
         this.harbour = new CornwallHarbour(this.course, this.scene);
         this.disposables.push(this.harbour);
       }
@@ -434,6 +448,7 @@ export class CourseRenderer implements WorldRenderer {
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
+    this.visitors?.follow(metres);
     this.harbour?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.aim(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).

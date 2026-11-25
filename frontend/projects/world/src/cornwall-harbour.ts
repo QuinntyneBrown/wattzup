@@ -131,10 +131,10 @@ export class CornwallHarbour {
     this.boats = Array.from({ length: 32 }, (_, i) => {
       const station = 554 + i * 21 + Math.sin(i * 4) * 7;
       const beached = i % 5 === 2;
-      const lane = beached ? 13 + (i % 8) : 37 + ((i * 19) % 46);
+      const lane = beached ? 9 + (i % 5) : 19 + ((i * 19) % 31);
       const p = course.place(station, lane);
       const mesh = new Mesh(this.hulls[i % 4], this.material);
-      mesh.position.set(p.x, beached ? 1.71 : 1.05, p.z);
+      mesh.position.set(p.x, beached ? 1.69 : 0.39, p.z);
       mesh.rotation.y = p.heading + 0.31 * Math.sin(i * 5.9);
       mesh.scale.setScalar(0.67 + (i % 4) * 0.17);
       this.root.add(mesh);
