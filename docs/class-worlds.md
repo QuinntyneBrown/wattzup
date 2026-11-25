@@ -182,7 +182,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 152 | Ramp It Up: Punchy Intervals | La Redoute | 84% |  | Liège-Bastogne-Liège's punchy Ardennes wall, painted with fan names. |
 | 153 | Spin Those Legs | Okinawa Coast Road | 35% |  | Coral beaches and turquoise shallows along a subtropical island road. |
 | 154 | Get Fit in 40 | Algarve Cliffs | 35% |  | Golden sea cliffs, coves and fishing villages on Portugal's south coast. |
-| 155 | 5 Gruelling Minutes | Angliru | 82% |  | Asturian ramps so steep the crowd pushes in on the road. |
+| 155 | 5 Gruelling Minutes | Angliru | 82% | [Race views](screenshots/alto-angliru/README.md) | Asturian ramps so steep the crowd pushes in on the road. |
 | 156 | Repeat Your Max | Mulholland Drive | 35% |  | Hollywood Hills ridge road with city views on repeat. |
 | 157 | Get Fit Fast: 40 Minute Sweet Spot | Provence Lavender | 35% |  | Purple lavender rows and stone farmhouses on the Valensole plateau. |
 | 158 | 3 Mins On, 2 Mins Off | Cinque Terre | 80% |  | Cliffside villages in pastel colours above the Ligurian Sea. |
