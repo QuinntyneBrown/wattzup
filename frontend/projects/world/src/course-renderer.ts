@@ -356,6 +356,12 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
+      if (this.course.file.id === 'calobra') {
+        // The original Sa Calobra class's chase lens and unshifted horizon (#921).
+        this.camera.clearViewOffset();
+        this.camera.fov = 60;
+        this.camera.updateProjectionMatrix();
+      }
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -424,7 +430,7 @@ export class CourseRenderer implements WorldRenderer {
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
-    this.aim(metres);
+    this.aim(metres, frame.reducedMotion);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -878,7 +884,7 @@ export class CourseRenderer implements WorldRenderer {
   }
 
   /** The chase camera behind the rider, looking up the road, with the sky and the sun's light around it. */
-  private aim(metres: number): void {
+  private aim(metres: number, reducedMotion = true): void {
     const course = this.course!;
     // Close in on the rider at the start line and at the finish line.
     const near = Math.max(
@@ -887,13 +893,15 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
-    const back = course.place(metres - behind, 0, this.here);
+    const calobra = course.file.id === 'calobra';
+    const behind = calobra ? 5.5 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
+    const up = calobra ? 2.1 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
+    const back = course.place(metres - behind, sway, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
+    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), 0, this.there);
+    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP), ahead.z);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
