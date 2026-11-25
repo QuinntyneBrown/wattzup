@@ -116,18 +116,41 @@ def plants(k):
 
 def scenery(k):
     art=Painted(k);rng=k.rng
+    rock_builder=type(k.B['terrain'])('MojaveGranite','terrain')
+    k.B['MojaveGranite']=rock_builder
+    stone=Painted(k,'MojaveGranite')
     for distance in (640,2900,4270,4460,7110,9808,10030,11550,12400,12650,14620,19010,21100):
         for j in range(30):
             side=1 if distance in (4270,9808,12400) else (-1 if j%3 else 1)
             d=distance+rng.uniform(-85,105)
             off=side*rng.uniform(22,91)
             x,y,_=k.road.pos(d,off);z=k.height_at(x,y)
+            if distance in (4270,12400) and abs(d-distance)<43 and abs(off)<41:continue
             if distance==9808 and abs(d-9818)<24 and 0<off<48:continue
             scale=rng.uniform(2.4,9.1)
-            granite(art,(x,y,z-.9),(scale*rng.uniform(.9,1.55),scale*rng.uniform(.7,1.2),scale),rng.random()*8)
-            if j%3==0:granite(art,(x+scale*.23,y-scale*.15,z+scale*1.38),(scale*.91,scale*.83,scale*.63),rng.random()*8)
+            granite(stone,(x,y,z-.9),(scale*rng.uniform(.9,1.55),scale*rng.uniform(.7,1.2),scale),rng.random()*8)
+            if j%3==0:granite(stone,(x+scale*.23,y-scale*.15,z+scale*1.38),(scale*.91,scale*.83,scale*.63),rng.random()*8)
     x,y,_=k.road.pos(9818,12.3)
-    granite(art,(x,y,k.height_at(x,y)-1.05),(6.7,8.55,6.25),.6,True)
+    granite(stone,(x,y,k.height_at(x,y)-1.05),(6.7,8.55,6.25),.6,True)
+    # The climbers follow these actual roadside crack faces, at the same stations and lateral offsets.
+    for d in (4272,12396):
+        front=[]
+        for along,top in ((-7,5),(-5,7.8),(-1.8,8.6),(1.3,8.3),(4.8,7.7),(7.4,5.6)):
+            foot=k.road.pos(d+along,10.8,-.4);rim=k.road.pos(d+along,11.35,top)
+            rear=k.road.pos(d+along,17.2,top-1.0);base=k.road.pos(d+along,20,-.45)
+            front.append((foot,rim,rear,base))
+        for a,b in zip(front,front[1:]):
+            for i,tint in enumerate((0xCDA67E,0xD6B691,0xA18574)):
+                coords=(a[i],b[i],b[i+1],a[i+1])
+                stone.face(coords,[lin(tint)]*4);stone.face(coords[::-1],[lin(tint)]*4)
+        for j in range(14):
+            h=j*.54
+            u=d+.16*h+.22*math.sin(h*1.3)
+            a=k.road.pos(u,10.75+.06*h,h)
+            b=k.road.pos(u+.09,10.75+.06*h,h)
+            c=k.road.pos(u+.17+.11*math.cos(h),10.79+.06*h,h+.54)
+            e=k.road.pos(u+.09+.11*math.cos(h),10.79+.06*h,h+.54)
+            stone.face((a,b,c,e),[lin(0x6D5649)]*4);stone.face((e,c,b,a),[lin(0x6D5649)]*4)
     plants(k)
     from joshuatree_camp import campground, ranges
     campground(k,art);ranges(k,Painted(k,'peaks'))

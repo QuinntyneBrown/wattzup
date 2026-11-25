@@ -169,6 +169,7 @@ import type { HighlandWeather } from './bealach-weather';
 import type { HighlandLivestock } from './bealach-livestock';
 import type { BigSurCoast } from './bigsur-coast';
 import type { BlackpoolTrams } from './blackpool-trams';
+import type { MojaveClimbers } from './mojave-climbers';
 import type { BlueMountainsYard } from './blue-mountains-yard';
 import type { MabryMill } from './mabry-mill';
 import type { BondiSurf } from './bondi-surf';
@@ -527,6 +528,8 @@ export class CourseRenderer implements WorldRenderer {
     fallingWater: null as number | null,
     tramMetres: null as number | null,
     illumination: null as number | null,
+    handHeight: null as number | null,
+    belayHand: null as number | null,
     mistPosition: null as number | null,
     speakerDepth: null as number | null,
     valleyMist: null as number | null,
@@ -597,6 +600,7 @@ export class CourseRenderer implements WorldRenderer {
   private highlandLivestock: HighlandLivestock | null = null;
   private bigSurCoast: BigSurCoast | null = null;
   private trams: BlackpoolTrams | null = null;
+  private climbers: MojaveClimbers | null = null;
   private mojaveFlora: MeshBasicMaterial | null = null;
   private yard: BlueMountainsYard | null = null;
   private mill: MabryMill | null = null;
@@ -782,6 +786,16 @@ export class CourseRenderer implements WorldRenderer {
         }
       }
       if (this.course.file.id === 'joshuatree') {
+        const { MojaveClimbers } = await import('./mojave-climbers');
+        if (this.disposed) return false;
+        const climbers = await MojaveClimbers.load(this.course);
+        if (this.disposed) {
+          climbers.dispose();
+          return false;
+        }
+        this.climbers = climbers;
+        this.scene.add(climbers.group);
+        this.disposables.push(climbers);
         const atlas = await new TextureLoader().loadAsync('courses/joshuatree-yuccas.webp');
         if (this.disposed) {
           atlas.dispose();
@@ -1836,6 +1850,7 @@ export class CourseRenderer implements WorldRenderer {
     this.highlandLivestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.bigSurCoast?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trams?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.climbers?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.yard?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mill?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.surf?.update(metres, frame.reducedMotion ? 0 : frame.time);
@@ -1979,6 +1994,7 @@ export class CourseRenderer implements WorldRenderer {
     this.mountain = null;
     this.trainingHighlands = null;
     this.trams = null;
+    this.climbers = null;
     this.mojaveFlora = null;
     this.yard = null;
     this.mill = null;
@@ -2210,6 +2226,7 @@ export class CourseRenderer implements WorldRenderer {
       this.seafrontSurface?.(detail) ??
       this.deckSurface ??
       coursePavement;
+    if (this.climbers) materials['MojaveGranite'] = this.climbers.granite;
     if (this.mojaveFlora) materials['MojavePlants'] = this.mojaveFlora;
     materials['Ground'] = pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
@@ -2793,6 +2810,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
+    this.climbers?.aim(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
       ahead.y +
@@ -3164,6 +3182,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.surfCrest = this.bigSurCoast?.crest ?? null;
     drawn.illumination = this.trams?.illumination ?? null;
     drawn.tramMetres = this.trams?.nearestMetres ?? null;
+    drawn.handHeight = this.climbers?.handHeight ?? null;
+    drawn.belayHand = this.climbers?.belayHand ?? null;
     drawn.mistPosition = this.yard?.mistPosition ?? null;
     drawn.speakerDepth = this.yard?.speakerDepth ?? null;
     drawn.valleyMist = this.mill?.valleyMist ?? null;
