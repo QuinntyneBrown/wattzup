@@ -1417,3 +1417,7 @@ import cornwall as _cornwall  # noqa: E402
 
 THEMES['cornwall'] = _cornwall.THEME
 SCENERY['cornwall'] = _cornwall.scenery
+import iten as _iten
+
+THEMES['iten'] = _iten.THEME
+SCENERY['iten'] = _iten.scenery
