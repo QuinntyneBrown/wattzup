@@ -1,0 +1,109 @@
+{
+  "id": "deathvalley",
+  "name": "Death Valley",
+  "world": "deathvalley",
+  "theme": "deathvalley",
+  "seed": 2111,
+  "layout": 0,
+  "class": {
+    "id": "sufferfest-20-minute-session",
+    "title": "Sufferfest 20 Minute Session",
+    "channel": "GCN",
+    "videoId": "xKZQ4PYP9n0",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 18,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 135,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 225,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 50,
+        "level": 21,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
