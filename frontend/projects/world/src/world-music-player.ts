@@ -17,12 +17,12 @@ export class WorldMusicPlayer {
   ) {}
 
   /** Sets the world's track, once (L2-128 AC2). */
-  load(id: WorldId): void {
+  load(id: WorldId, source = worldTrack(id)): void {
     if (this.audio) return;
     const audio = this.makeAudio();
     audio.loop = true;
     audio.volume = 0.5;
-    audio.setAttribute('src', worldTrack(id));
+    audio.setAttribute('src', source);
     this.audio = audio;
     if (this.wanted) this.start();
   }

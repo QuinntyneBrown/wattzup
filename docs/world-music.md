@@ -215,3 +215,7 @@ Overseas Highway's track, Saint Kitts Bay, is the best music of any world
 Beautiful Boom Bap, the third best
 ([#938](https://github.com/QuinntyneBrown/wattzup/issues/938)). Keep both tracks, and use them as
 the reference when choosing music for other worlds.
+
+## Ghent Six-Day race
+
+The Ghent race plays *Kuipke March*, an original 16-bar brass march in B-flat major at 126 BPM. Cornet carries the tune above offbeat horns, tuba and snare. The score and synthesizer are in `tools/video-audio/kuipke.py`. The race loops `music/ghent-six-day.ogg` while World music is enabled. The Ghent class uses the tAUREON recording credited above.

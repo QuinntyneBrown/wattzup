@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [UCI_d_1_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/02/UCI_d_1_optimized.png) (g0608) | © MyWhoosh |
 | game-04.jpg | MyWhoosh: [Crit_race_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/07/Crit_race_optimized.png) (g0702) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Going Coastal” Route Details (Watopia)](https://zwiftinsider.com/route/going-coastal/) (g0056) | © Zwift |
+
+The infield crowd and bandstand atmosphere informed *Kuipke March*, an original race arrangement for synthesized brass and snare. The score is in `tools/video-audio/kuipke.py`.
