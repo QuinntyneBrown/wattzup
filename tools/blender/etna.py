@@ -40,15 +40,18 @@ def surface(d,l):
 
 def road(r,st,length,col,bc):
     b=bc.Builder('SP92 dark bitumen, central markings and basalt kerbs','terrain');b.colours=[]
+    asphalt=bc.Builder('SP92 bitumen','etna-bitumen');asphalt.colours=[]
     for i in range(len(r.s)-1):
         for a,c,h,k,t in ((-6.1,-5.65,.15,.15,0x777270),(-5.65,-5.52,.15,.01,0x555554),(-5.52,-5.38,.035,.035,0xe2dfd4),(-5.38,-.075,.034,.092,0x48474a),(-.075,.075,.092,.092,0xcdccc6 if i%3 else 0x48474a),(.075,5.38,.092,.034,0x48474a),(5.38,5.52,.035,.035,0xe2dfd4),(5.52,5.65,.01,.15,0x555554),(5.65,6.1,.15,.15,0x777270)):
             pts=[r.at(j,l,z) for j,l,z in ((i,c,k),(i,a,h),(i+1,a,h),(i+1,c,k))]
-            b.faces.append(tuple(b.v(p) for p in pts));b.colours.extend([lin(t)]*4)
-    b.build(col)
+            batch=asphalt if t==0x48474a else b
+            batch.faces.append(tuple(batch.v(p) for p in pts));batch.colours.extend([lin(t)]*4)
+    b.build(col);asphalt.build(col)
 
 
 def land(r,col,theme,bc):
-    b=bc.Builder('Slopes of clinker, ash and oxidised scoria','terrain');b.colours=[]
+    b=bc.Builder('Basalt clinker','etna-clinker');b.colours=[]
+    red=bc.Builder('Rust-coloured scoria','etna-scoria');red.colours=[]
     lanes=(-160,-97,-56,-33,-18,-9.4,-5.9,5.9,9.4,18,33,56,97,160)
     def row(i):
         d=r.s[i]['d'];return [r.at(i,l,surface(d,l)) for l in lanes]
@@ -58,13 +61,14 @@ def land(r,col,theme,bc):
         for j,l in enumerate(lanes[:-1]):
             scoria=7650<d<9550 and abs(l)>17
             tone=(0x864b36 if scoria else 0x454341) if abs(l)>18 else 0x56504b
-            b.faces.append(tuple(b.v(v) for v in (a[j+1],a[j],c[j],c[j+1])));b.colours.extend([lin(tone)]*4)
+            batch=red if scoria else b
+            batch.faces.append(tuple(batch.v(v) for v in (a[j+1],a[j],c[j],c[j+1])));batch.colours.extend([lin(tone)]*4)
         a=c
-    b.build(col);return None,lambda x,y:r.s[r.tree.find((x,y,0))[1]]['z']
+    b.build(col);red.build(col);return None,lambda x,y:r.s[r.tree.find((x,y,0))[1]]['z']
 
 
 def scenery(k):
-    r=k.road;art=Painted(k);rng=random.Random(2118)
+    r=k.road;art=Painted(k);clinker=Painted(k,'etna-clinker');scoria=Painted(k,'etna-scoria');rng=random.Random(2118)
     def box(d,l,z,w,depth,h,tint):art.box(r.pos(d,l,z),(w,depth,h),bearing(d),lin(tint))
     def tube(d,l,z,ra,rb,h,tone,n=8):art.tube(r.pos(d,l,z),ra,rb,h,lin(tone),lin(tone),n,lin(tone))
     # Individual pieces break the flow ridges into angular blocks, grounded on the authored section.
@@ -79,8 +83,8 @@ def scenery(k):
             lo=[(x+u,y+v,h-.17) for u,v in a];hi=[(x+u*.67+.16,y+v*.72,h+rh*rng.uniform(.65,1.13)) for u,v in a]
             for j in range(7):
                 n=(j+1)%7;c=lin(rng.choice((0x29292c,0x333234,0x484440,0x50413b)))
-                art.face((lo[j],lo[n],hi[n],hi[j]),(c,)*4)
-            c=lin(0x504a46);art.face(hi,(c,)*7)
+                clinker.face((lo[j],lo[n],hi[n],hi[j]),(c,)*4)
+            c=lin(0x504a46);clinker.face(hi,(c,)*7)
     # Broom carries bright small flowers above dark woody stems; birches only take root on old lava.
     for d in range(25,7560,25):
         off=rng.choice((-1,1))*rng.uniform(9,28);z=surface(d,off)
@@ -102,13 +106,19 @@ def scenery(k):
             for n in range(48):
                 a=n*math.tau/48;w=1+.06*math.sin(a*5)+.03*math.cos(a*7)
                 u=rx*ratio*w*math.cos(a);v=ry*ratio*w*math.sin(a)
-                ring.append((x+u*math.cos(yaw)-v*math.sin(yaw),y+u*math.sin(yaw)+v*math.cos(yaw),z+h+2.1*math.sin(a*3)))
+                wx=x+u*math.cos(yaw)-v*math.sin(yaw);wy=y+u*math.sin(yaw)+v*math.cos(yaw)
+                height=z+h+2.1*math.sin(a*3)
+                if ratio==1.55:
+                    near=r.s[r.tree.find((wx,wy,0))[1]]
+                    lane=-(wx-near['x'])*math.sin(near['h'])+(wy-near['y'])*math.cos(near['h'])
+                    height=min(height,near['z']+surface(near['d'],lane)-1.4)
+                ring.append((wx,wy,height))
             rings.append(ring)
         for layer,(a,b) in enumerate(zip(rings,rings[1:])):
             for n in range(48):
                 c=lin(rng.choice(((0x944c31,0xa65b3a,0x854930) if layer<2 else (0x693b30,0x714236,0x573b36))))
-                art.face((a[n],a[(n+1)%48],b[(n+1)%48],b[n]),(c,)*4)
-        art.face(rings[-1],(lin(0x51332c),)*48)
+                scoria.face((a[n],a[(n+1)%48],b[(n+1)%48],b[n]),(c,)*4)
+        scoria.face(rings[-1],(lin(0x51332c),)*48)
     # Summit terrace, businesses and a refuge with a timber upper storey and stone base.
     for d,l,w,dep,h in ((10890,-34,46,15,8),(10820,-20,15,10,4.8),(10950,-26,21,13,5.4),(11010,-31,27,14,6),(12190,-25,30,13,6.8)):
         box(d,l,-.15,w,dep,h*.53,0x8d877d);box(d,l,h*.53-.15,w,dep,h*.47,0x9a6a4b)

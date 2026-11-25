@@ -8,6 +8,7 @@ import { RaceSetupPage } from './pages/race-setup.page';
 import { RacePage } from './pages/race.page';
 
 for (const [actor, metres, part] of [
+  ['refuge tour bus', 10740, 'busPosition'],
   ['summit plume', 80, 'plumeHeight'],
   ['Silvestri crater walker', 8380, 'walkerPosition'],
   ['Sapienza gondola', 12180, 'gondolaPosition'],

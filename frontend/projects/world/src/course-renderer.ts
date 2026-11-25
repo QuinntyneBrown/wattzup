@@ -239,6 +239,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    busPosition: null as number | null,
     plumeHeight: null as number | null,
     gondolaPosition: null as number | null,
     walkerPosition: null as number | null,
@@ -361,7 +362,6 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
-      this.build(gltf.scene, canvas);
       if (this.course.file.id === 'etna') {
         const { etnaAscent } = await import('./etna-ascent');
         if (this.disposed) return false;
@@ -377,6 +377,7 @@ export class CourseRenderer implements WorldRenderer {
         ascent.at(0, 0);
       }
 
+      this.build(gltf.scene, canvas);
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
@@ -590,6 +591,7 @@ export class CourseRenderer implements WorldRenderer {
     const coloured = this.lampGlow?.coloured ?? dusk;
     const made = this.lampGlow?.light ?? dusk;
     this.disposables.push(...Object.values(materials));
+    Object.assign(materials, this.etna?.rocks);
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
     const detail = surfaceTexture();
@@ -1128,6 +1130,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.busPosition = this.etna?.busPosition ?? null;
     drawn.plumeHeight = this.etna?.plumeHeight ?? null;
     drawn.gondolaPosition = this.etna?.gondolaPosition ?? null;
     drawn.walkerPosition = this.etna?.walkerPosition ?? null;

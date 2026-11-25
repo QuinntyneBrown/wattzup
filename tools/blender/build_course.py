@@ -582,6 +582,8 @@ def group_of(mat: str) -> tuple[str, bool]:
     spec = MATERIALS[mat]
     if mat == "confetti":
         return "Confetti", True
+    if mat in ("etna-clinker","etna-scoria","etna-bitumen"):
+        return mat.split("-")[1].capitalize(), True
     if mat == "terrain":
         return "Land", True
     if "alpha" in spec:

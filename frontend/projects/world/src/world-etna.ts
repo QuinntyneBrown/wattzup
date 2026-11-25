@@ -13,6 +13,7 @@ import {
   type BufferAttribute,
   type BufferGeometry,
   type CanvasTexture,
+  type Material,
   ConeGeometry,
   CylinderGeometry,
   DodecahedronGeometry,
@@ -335,28 +336,7 @@ export class EtnaStreet implements SceneStreet {
       [60, 4, 1],
       [240, -6, -1],
     ] as const) {
-      const bus = new Group();
-      const body = new Mesh(this.unit, white);
-      body.scale.set(2.4, 2.4, 6.5);
-      body.position.y = 1.9;
-      const band = new Mesh(this.unit, stripe);
-      band.scale.set(2.42, 0.3, 6.52);
-      band.position.y = 1.3;
-      const windows = new Mesh(this.unit, glass);
-      windows.scale.set(2.44, 0.8, 5.6);
-      windows.position.y = 2.4;
-      bus.add(body, band, windows);
-      for (const [wx, wz] of [
-        [-1.2, -2.2],
-        [1.2, -2.2],
-        [-1.2, 2.2],
-        [1.2, 2.2],
-      ] as const) {
-        const w = new Mesh(wheel, tyre);
-        w.position.set(wx, 0.55, wz);
-        bus.add(w);
-      }
-      bus.children.forEach((c) => (c.castShadow = true));
+      const bus = etnaTourBus(this.unit, wheel, white, glass, tyre, stripe);
       bus.position.x = x * (roadHalf - 1.6);
       bus.rotation.y = speed > 0 ? 0 : Math.PI;
       this.group.add(bus);
@@ -515,4 +495,38 @@ function summitTexture(): CanvasTexture {
     g.fillStyle = 'rgba(240,242,245,0.75)';
     g.fillRect(0, 0, 512, 18);
   });
+}
+
+export function etnaTourBus(
+  unit: BoxGeometry,
+  wheel: CylinderGeometry,
+  white: Material,
+  glass: Material,
+  tyre: Material,
+  stripe: Material,
+): Group {
+  const bus = new Group();
+  const body = new Mesh(unit, white);
+  body.scale.set(2.4, 2.4, 6.5);
+  body.position.y = 1.9;
+  const band = new Mesh(unit, stripe);
+  band.scale.set(2.42, 0.3, 6.52);
+  band.position.y = 1.3;
+  const windows = new Mesh(unit, glass);
+  windows.scale.set(2.44, 0.8, 5.6);
+  windows.position.y = 2.4;
+  bus.add(body, band, windows);
+  for (const [wx, wz] of [
+    [-1.2, -2.2],
+    [1.2, -2.2],
+    [-1.2, 2.2],
+    [1.2, 2.2],
+  ] as const) {
+    const w = new Mesh(wheel, tyre);
+    w.position.set(wx, 0.55, wz);
+    bus.add(w);
+  }
+  bus.children.forEach((c) => (c.castShadow = true));
+
+  return bus;
 }

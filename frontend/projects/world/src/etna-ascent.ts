@@ -1,6 +1,12 @@
+import { positionWorld, texture, vec2 } from 'three/tsl';
 import {
   BoxGeometry,
   CanvasTexture,
+  CylinderGeometry,
+  DoubleSide,
+  RepeatWrapping,
+  MeshLambertNodeMaterial,
+  type Texture,
   Group,
   Mesh,
   MeshBasicMaterial,
@@ -14,7 +20,7 @@ import {
 } from 'three/webgpu';
 import type { Course } from './course';
 import { Figures, seeded } from './world-kit';
-import { etnaWalkerWear, plumePhase } from './world-etna';
+import { etnaTourBus, etnaWalkerWear, plumePhase } from './world-etna';
 
 /** Soft, overlapping steam banks retain their detail when the race runs on WebGL 2. */
 function vapour() {
@@ -38,11 +44,57 @@ function vapour() {
 }
 
 export async function etnaAscent(course: Course) {
-  const summitMap = await new TextureLoader().loadAsync('courses/etna-summit.webp');
-  summitMap.colorSpace = SRGBColorSpace;
+  const maps: Texture[] = [],
+    loader = new TextureLoader();
+  try {
+    for (const name of ['summit', 'clinker', 'scoria', 'refuge', 'coast']) {
+      const map = await loader.loadAsync('courses/etna-' + name + '.webp');
+      map.colorSpace = SRGBColorSpace;
+      maps.push(map);
+    }
+  } catch (error) {
+    for (const map of maps) map.dispose();
+    throw error;
+  }
+  const [summitMap, clinker, scoria, refuge, coast] = maps;
   const group = new Group(),
-    resources: { dispose(): void }[] = [summitMap],
-    rock = new MeshBasicMaterial({ map: summitMap, alphaTest: 0.42, fog: false });
+    resources: { dispose(): void }[] = [...maps];
+  const rock = new MeshBasicMaterial({
+    map: summitMap,
+    alphaTest: 0.42,
+    side: DoubleSide,
+    fog: false,
+  });
+  const grain = document.createElement('canvas');
+  grain.width = grain.height = 192;
+  const ctx = grain.getContext('2d')!,
+    pixels = ctx.createImageData(192, 192),
+    random = seeded(2118);
+  for (let i = 0; i < pixels.data.length; i += 4) {
+    const tone = 78 + 32 * random() + (random() > 0.988 ? 30 : 0);
+    pixels.data[i] = tone;
+    pixels.data[i + 1] = tone;
+    pixels.data[i + 2] = tone + 1;
+    pixels.data[i + 3] = 255;
+  }
+  ctx.putImageData(pixels, 0, 0);
+  const asphalt = new CanvasTexture(grain);
+  asphalt.colorSpace = SRGBColorSpace;
+  resources.push(asphalt);
+  function surface(map: Texture, size: number) {
+    map.wrapS = map.wrapT = RepeatWrapping;
+    map.anisotropy = 4;
+    const material = new MeshLambertNodeMaterial({ flatShading: true, side: DoubleSide });
+    const projection = positionWorld.xz.add(positionWorld.y.mul(vec2(0.23, 0.71))).div(size);
+    material.colorNode = texture(map, projection).rgb;
+    resources.push(material);
+    return material;
+  }
+  const rocks = {
+    Clinker: surface(clinker!, 3.6),
+    Scoria: surface(scoria!, 3.4),
+    Bitumen: surface(asphalt, 1.3),
+  };
   const plane = new PlaneGeometry(7200, 2200),
     summit = new Mesh(plane, rock);
   resources.push(plane, rock);
@@ -154,9 +206,62 @@ export async function etnaAscent(course: Course) {
     car.rotation.y = cableStart.heading;
     return car;
   });
+  const white = new MeshLambertMaterial({ color: 0xf2f2ee }),
+    glass = new MeshLambertMaterial({ color: 0x354953 }),
+    tyre = new MeshLambertMaterial({ color: 0x29282a }),
+    stripe = new MeshLambertMaterial({ color: 0xb74c37 });
+  const wheel = new CylinderGeometry(0.55, 0.55, 0.35, 10).rotateZ(Math.PI / 2);
+  const bus = etnaTourBus(unit, wheel, white, glass, tyre, stripe);
+  resources.push(white, glass, tyre, stripe, wheel);
+  group.add(bus);
+  const refugeMaterial = new MeshBasicMaterial({ map: refuge, side: DoubleSide });
+  resources.push(refugeMaterial);
+  for (const [d, l, w, depth, height, tile] of [
+    [10890, 34, 46, 15, 8, 0],
+    [10820, 20, 15, 10, 4.8, 1],
+    [10950, 26, 21, 13, 5.4, 1],
+    [11010, 31, 27, 14, 6, 1],
+    [12190, 25, 30, 13, 6.8, 2],
+  ] as const) {
+    for (const end of [false, true]) {
+      const p = course.place(end ? d - w / 2 - 0.21 : d, end ? l : l - depth / 2 - 0.35);
+      const g = new PlaneGeometry(end ? depth : w, height),
+        mesh = new Mesh(g, refugeMaterial),
+        uv = g.getAttribute('uv');
+      for (let j = 0; j < uv.count; j++) uv.setX(j, (tile + uv.getX(j)) / 3);
+      mesh.rotation.y = p.heading + (end ? 0 : Math.PI / 2);
+      mesh.position.set(p.x, p.y + height / 2 - 0.12, p.z);
+      group.add(mesh);
+      resources.push(g);
+    }
+  }
+  const coastalMaterial = new MeshBasicMaterial({
+    map: coast,
+    alphaTest: 0.44,
+    side: DoubleSide,
+    fog: false,
+    color: 0xc3ced1,
+  });
+  const coastalGeometry = new PlaneGeometry(3850, 670),
+    outlook = new Mesh(coastalGeometry, coastalMaterial),
+    view = course.place(4760);
+  const forwardX = -Math.sin(view.heading),
+    forwardZ = -Math.cos(view.heading);
+  outlook.position.set(
+    view.x + forwardX * 1620 + forwardZ * 910,
+    view.y - 170,
+    view.z + forwardZ * 1620 - forwardX * 910,
+  );
+  outlook.rotation.y = view.heading - 0.4;
+  group.add(outlook);
+  resources.push(coastalGeometry, coastalMaterial);
   const firstWalker = new Vector3();
   return {
     group,
+    rocks,
+    get busPosition() {
+      return bus.position.x;
+    },
     get plumeHeight() {
       return steam[0]!.position.y;
     },
@@ -178,6 +283,12 @@ export async function etnaAscent(course: Course) {
         );
         p.scale.set(spread, spread * 0.67, 1);
         p.material.opacity = 0.64 * (1 - t);
+      }
+      bus.visible = Math.abs(metres - 10850) < 530;
+      if (bus.visible) {
+        const p = course.place(10840 + 65 * Math.sin(time * 0.062), 9);
+        bus.position.set(p.x, p.y + 0.08, p.z);
+        bus.rotation.y = p.heading + (Math.cos(time * 0.062) < 0 ? Math.PI : 0);
       }
       hikers.visible = Math.abs(metres - 8495) < 530;
       if (hikers.visible) {
