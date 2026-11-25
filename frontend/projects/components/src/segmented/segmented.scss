@@ -6,7 +6,9 @@
   align-self: flex-start;
   max-width: 100%;
   flex-wrap: wrap;
-  gap: var(--space-0-5);
+  column-gap: var(--space-0-5);
+  // Keep the 44 px hit areas of adjacent rows from covering one another when choices wrap.
+  row-gap: calc(var(--target-comfortable) - var(--target-min));
   border-radius: var(--radius-lg);
   background: var(--color-raised);
   padding: var(--space-0-5);
