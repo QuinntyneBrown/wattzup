@@ -1507,3 +1507,8 @@ import grandcanyon as _grandcanyon
 
 THEMES["grandcanyon"] = _grandcanyon.THEME
 SCENERY["grandcanyon"] = _grandcanyon.scenery
+
+import north_face as _north_face
+
+THEMES["granite"].update(lay=_north_face.lay, land_builder=_north_face.land, road_builder=_north_face.road_surface)
+SCENERY["granite"] = _north_face.scenery

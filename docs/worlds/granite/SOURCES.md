@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Zwift Medio Fondo 2022” Route Details (Watopia)](https://zwiftinsider.com/route/zwift-medio-fondo-2022/) (g0195) | © Zwift |
 | game-04.jpg | Zwift: [“One Ride To Rule Them All” Route Details (Watopia)](https://zwiftinsider.com/route/one-ride-to-rule-them-all/) (g0113) | © Zwift |
 | game-05.jpg | MyWhoosh: [Hill_Climb_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/07/Hill_Climb_optimized.png) (g0704) | © MyWhoosh |
+
+The runtime rock surface and the two isolated conifers are original generated artwork. The grey rock, snow gullies and warm rim follow the character of real 03, 05–06, 08–09 and 12. The foliage sheet depicts a European larch and Swiss stone pine. Original Blender meshes supply the mountain silhouettes, road, streambed, roadside masonry and summit refuge. The borne atlas is drawn from the baked route elevation and the following kilometre’s measured gradient.

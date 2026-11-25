@@ -1158,3 +1158,13 @@ Model the rim as a pale overhanging limestone cap, followed by alternating stair
 Move a shuttle and passing cloud shadows from the ride clock. Batch repeated props by course section, retain the distant canyon skyline on Low and release the buffers and materials on exit. Verify six matched rider views, pause and resume, original stage fidelity, and two one-minute headed tablet samples.
 
 [forest](../../../mocks/pages/race/grandcanyon-forest.html) · [grandview](../../../mocks/pages/race/grandcanyon-grandview.html) · [moran](../../../mocks/pages/race/grandcanyon-moran.html) · [lipan](../../../mocks/pages/race/grandcanyon-lipan.html) · [navajo](../../../mocks/pages/race/grandcanyon-navajo.html) · [tower](../../../mocks/pages/race/grandcanyon-tower.html)
+
+## Col du Granit (#2131)
+
+The existing catalogue unlocks Col du Granit after three stars on Dolomites. Keep its existing course key, 16.1 km physical distance, 1,240 m climbing and 17-stage 30:00 race plan. The course file already drives the rider, clock and grade. Preserve its stage boundaries and elevation while shaping the horizontal road into stacked turns.
+
+Build a shadowed granite face with sloping joints and a broken crest. Baked first light picks out the distant ridges. Place short battered stone retaining walls below the upper branches of the road and parapets over the drop. Bornes display sampled altitude and the next kilometre’s grade. Worn rider names, patched tarmac, red-white posts and drainage paths give scale. Replace the lower larches progressively with scree, boulders and isolated late snow. Run shallow meltwater from the gullies and let thin mist drift on the ride clock. The saddle opens to a cairn, refuge and col sign.
+
+Keep distant peaks visible on Low. Batch walls, posts, branches and road lettering by section. Release the course materials and animated water on exit. Verify entry with the earned unlock, six comparable rider views, pause/resume and the two headed tablet samples.
+
+[forest](../../../mocks/pages/race/granite-forest.html) · [hairpins](../../../mocks/pages/race/granite-hairpins.html) · [face](../../../mocks/pages/race/granite-face.html) · [gully](../../../mocks/pages/race/granite-gully.html) · [parapet](../../../mocks/pages/race/granite-parapet.html) · [saddle](../../../mocks/pages/race/granite-saddle.html)

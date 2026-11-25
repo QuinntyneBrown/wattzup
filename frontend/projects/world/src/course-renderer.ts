@@ -168,6 +168,7 @@ import type { BlackpoolTrams } from './blackpool-trams';
 import type { BlueMountainsYard } from './blue-mountains-yard';
 import type { MabryMill } from './mabry-mill';
 import type { BondiSurf } from './bondi-surf';
+import type { northFace } from './north-face';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -194,6 +195,7 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  NorthFace: 5200,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -326,6 +328,7 @@ export class CourseRenderer implements WorldRenderer {
   private shore: Awaited<ReturnType<typeof engadinShore>> | null = null;
   private lakes: Awaited<ReturnType<typeof engadinLakes>> | null = null;
   private etna: Awaited<ReturnType<typeof etnaAscent>> | null = null;
+  private northFace: ReturnType<typeof northFace> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -920,6 +923,13 @@ export class CourseRenderer implements WorldRenderer {
         this.canyon = desertViewDrive(this.course);
         this.scene.add(this.canyon.group);
         this.disposables.push(this.canyon);
+      }
+      if (this.course.file.id === 'granite') {
+        const { northFace } = await import('./north-face');
+        if (this.disposed) return false;
+        this.northFace = northFace(this.course);
+        this.scene.add(this.northFace.group);
+        this.disposables.push(this.northFace);
       }
       this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material, gizaMaterials);
       if (this.course.file.id === 'aguascalientes') {
@@ -1689,6 +1699,7 @@ export class CourseRenderer implements WorldRenderer {
       this.joggers.mesh.visible = Math.abs(you.group.position.x + 39) < 200;
       if (this.joggers.mesh.visible) this.joggers.update(frame.reducedMotion ? 0 : frame.time);
     }
+    this.northFace?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -2025,6 +2036,7 @@ export class CourseRenderer implements WorldRenderer {
       sunDisc.vertexColors = false;
       sunDisc.color.setHex(0xfff6df);
     }
+    if (this.northFace) Object.assign(materials, this.northFace.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     Object.assign(materials, localMaterials);
     if (this.championship) {
@@ -2040,6 +2052,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
@@ -2885,6 +2898,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.festival) Object.assign(drawn, this.festival.state);
     if (this.park) Object.assign(drawn, this.park.measure(this.camera));
     if (this.canyon) Object.assign(drawn, this.canyon.measure(this.camera));
+    if (this.northFace) Object.assign(drawn, this.northFace.report(this.camera));
     hook['course'] = drawn;
   }
 
