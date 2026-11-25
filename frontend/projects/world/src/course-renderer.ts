@@ -69,6 +69,7 @@ import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
+import type { CabotWildlife } from './cabot-wildlife';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -212,6 +213,7 @@ export class CourseRenderer implements WorldRenderer {
   private skyClock: ((seconds: number) => void) | null = null;
   /** Moves the sea's ripples on to a second of the ride's clock. */
   private waterClock: ((seconds: number) => void) | null = null;
+  private wildlife: CabotWildlife | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
@@ -236,6 +238,8 @@ export class CourseRenderer implements WorldRenderer {
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
     tier: 0 as number,
+    boatHeel: undefined as number | undefined,
+    moosePitch: undefined as number | undefined,
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
@@ -357,6 +361,13 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'cabot') {
+        const { CabotWildlife } = await import('./cabot-wildlife');
+        if (this.disposed) return false;
+        this.wildlife = new CabotWildlife(this.course);
+        this.scene.add(this.wildlife.root);
+        this.disposables.push(this.wildlife);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -425,6 +436,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.wildlife?.update(frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -479,6 +491,7 @@ export class CourseRenderer implements WorldRenderer {
     this.sunGlow = null;
     this.groundEye = null;
     this.riderBatch = null;
+    this.wildlife = null;
     this.rain = null;
     this.shadows.clear();
     this.casting.clear();
@@ -1105,6 +1118,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.moosePitch = this.wildlife?.moosePitch;
+    drawn.boatHeel = this.wildlife?.boatHeel;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
