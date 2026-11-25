@@ -42,6 +42,7 @@ import etnaElevation from './etna-elevation.json';
 import fensElevation from './fens-elevation.json';
 import fishhillElevation from './fishhill-elevation.json';
 import fujiElevation from './fuji-elevation.json';
+import furkaElevation from './furka-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -2806,6 +2807,44 @@ export const fujiCourseMap = {
       seg('work', 15, 24, 100),
       seg('recover', 300, 21, 90),
       seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
+
+export const furkaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'furka-pass',
+  name: 'Furka Pass',
+  routeName: 'The Furka hairpins',
+  place: 'Valais, Switzerland',
+  world: 'furka',
+  distanceKm: 20.025,
+  climbingM: 672,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: furkaElevation,
+  },
+  thumbnailUrl: 'maps/furka-pass.jpg',
+  photoUrl: 'maps/furka-pass-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 14, 80),
+      seg('work', 120, 23, 100),
+      seg('recover', 180, 13, 85),
+      seg('work', 120, 23, 100),
+      seg('recover', 180, 13, 85),
+      seg('work', 120, 23, 100),
+      seg('recover', 180, 13, 85),
+      seg('work', 120, 23, 100),
+      seg('recover', 180, 13, 85),
+      seg('work', 120, 23, 100),
+      seg('recover', 180, 13, 85),
+      seg('work', 120, 23, 100),
+      seg('recover', 180, 13, 85),
+      seg('work', 300, 22, 90),
+      seg('cool-down', 300, 11, 85),
     ],
   },
 };

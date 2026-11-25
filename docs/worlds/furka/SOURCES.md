@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Zwift Medio Fondo 2022” Route Details (Watopia)](https://zwiftinsider.com/route/zwift-medio-fondo-2022/) (g0195) | © Zwift |
 | game-04.jpg | MyWhoosh: [iTT](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/07/iTT-scaled.jpg) (g0698) | © MyWhoosh |
 | game-05.jpg | Zwift: [“One Ride To Rule Them All” Route Details (Watopia)](https://zwiftinsider.com/route/one-ride-to-rule-them-all/) (g0113) | © Zwift |
+
+## Race artwork
+
+The Bernese skyline, Rhône Glacier basin and four surface textures are original generated artwork for this course. Real 04 and 15 informed the ice tongue, protective blankets and meltwater. Real 03, 05, 08, 09 and 12–14 informed the granite, worn asphalt, pasture and snow. The valley cloud reuses the original stratus artwork created for Mount Fuji Road. The weathered hotel stucco, green shutters and timber frames use an original two-facade atlas. The Gletsch buildings and Hotel Belvédère are original Blender geometry based on real 01, 02, 06, 10 and 11. The six matched rider views identify the game references used for sightlines and scale at each location.

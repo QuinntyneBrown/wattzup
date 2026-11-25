@@ -1456,3 +1456,10 @@ for name in ("fuji-tarmac", "fuji-clinker", "fuji-scoria", "fuji-moss"):
     MATERIALS[name] = {"color": 0x777572, "rough": 1.0, "vertex": True}
 THEMES["fuji"] = _fuji.THEME
 SCENERY["fuji"] = _fuji.scenery
+
+import furka as _furka
+
+for name in ("furka-pasture", "furka-scree", "furka-snow", "furka-tarmac"):
+    MATERIALS[name] = {"color": 0x82817b, "rough": 1.0, "vertex": True}
+THEMES["furka"] = _furka.THEME
+SCENERY["furka"] = _furka.scenery
