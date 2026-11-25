@@ -55,6 +55,7 @@ for (const [actor, metres, part] of [
 }
 
 for (const [feature, metres, point] of [
+  ['Colorado River at Lipan Point', 7220, 'riverX'],
   ['Grandview temple', 2050, 'templeX'],
   ['Desert View Watchtower', 13240, 'towerX'],
 ] as const) {

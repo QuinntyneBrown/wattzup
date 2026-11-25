@@ -62,7 +62,7 @@ export class WorldRideProbe {
   }
 
   async grandcanyonMotion(
-    part: 'shuttleMetres' | 'cloudShadow' | 'templeX' | 'towerX',
+    part: 'shuttleMetres' | 'cloudShadow' | 'templeX' | 'towerX' | 'riverX',
   ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>

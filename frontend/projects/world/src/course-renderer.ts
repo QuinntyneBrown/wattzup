@@ -111,6 +111,7 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Land: 950,
   CanyonStrata: 5800,
   GrandviewTemple: 5800,
+  ColoradoBend: 3800,
   FarRim: 6900,
   Watchtower: 950,
   Ground: 420,

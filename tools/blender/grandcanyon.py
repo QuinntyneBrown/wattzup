@@ -105,7 +105,7 @@ def land(road,col,theme,bc):
     for d,off,radius,top in ((1730,620,156,-28),(2440,478,116,15),(4620,550,172,49),(4960,910,155,75),
                (7380,580,132,36),(7950,790,213,56),(10190,605,174,69),(11210,810,146,38),(13380,590,165,58)):
         x,y,z=shore(d);y+=off;last=None
-        foreground={2440:(2050,595,55),4620:(4480,675,-82),7380:(7220,625,100),10190:(10160,710,44),13380:(13240,610,94)}
+        foreground={2440:(2050,595,55),4620:(4480,675,-82),7380:(7220,625,215),10190:(10160,710,44),13380:(13240,610,94)}
         peak=foreground.get(d);batch=temple if d==2440 else strata
         if peak:
             station,forward,across=peak;u,v=pos(station);h=direction(station+9)
@@ -125,7 +125,20 @@ def land(road,col,theme,bc):
         for k in range(1,73):
             points=(last[0],last[k],last[k+1]);batch.tri(*points);batch.colours.extend([lin(0xCBAD88)]*3)
             batch.uvs.extend([(u/40,v/40) for u,v,_ in points])
-    for b in (apron,strata,temple,far,water):b.build(col)
+    # At Lipan the channel turns towards the rider between two dipping rock terraces.
+    bend=bc.Builder('ColoradoBend','terrain');bend.colours=[]
+    x,y=pos(7220);h=direction(7230)+.20;level=elevation(7220)-112
+    along=(math.cos(h),math.sin(h));cross=(-along[1],along[0])
+    def channel(u,v,z):
+        a=1020+v+42*math.sin(u/122)+22*math.cos(u/48)
+        return (x+a*along[0]+u*cross[0],y+a*along[1]+u*cross[1],level+z)
+    for u in range(-225,226,9):
+        q=u+9
+        face(bend,(channel(u,-12,0),channel(q,-12,0),channel(q,12,0),channel(u,12,0)),0x448B79)
+        for side in (-1,1):
+            for near,outer,lo,hi,tone in ((12,16,-.6,.6,0xBDA882),(16,32,.6,1.7,0xA98A6A),(32,62,1.7,6.5,0xB79575),(62,88,6.5,14,0xA27C65)):
+                face(strata,(channel(u,near*side,lo),channel(q,near*side,lo),channel(q,outer*side,hi),channel(u,outer*side,hi)),tone,True)
+    for b in (apron,strata,temple,far,water,bend):b.build(col)
     return None,lambda x,y:road.s[road.tree.find((x,y,0))[1]]['z']-.21
 
 def road_surface(road,st,length,col,theme,bc):
@@ -198,6 +211,9 @@ def scenery(k):
             art.box(q(0,0,.4),(4.25,1.83,.72),h,colour)
             art.box(q(-.2,0,1.1),(2.27,1.54,.7),h,lin(0x596B71))
             art.box(q(-.2,0,1.78),(2.27,1.55,.12),h,colour)
+        if point!=13240:
+            for j in range(8):
+                q,h=frame(point+7+j*2.7,6.8);art.box(q(0,0,-.24),(2.61,2.1,.34),h,lin(0xC1AF93))
     # Colter's Desert View tower has a weathered taper, narrow irregular windows and a crenellated crown.
     tower=Painted(k,'paint');tower.b.name='Watchtower'
     pt,h=frame(13342,14)

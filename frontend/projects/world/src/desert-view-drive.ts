@@ -71,10 +71,10 @@ export function desertViewDrive(course: Course) {
   const marks = new Map<string, Vector3>(),
     projected = new Vector3();
   function landmark(kind: string, mesh: Mesh) {
-    if (!['GrandviewTemple', 'Watchtower'].includes(kind)) return;
+    if (!['GrandviewTemple', 'Watchtower', 'ColoradoBend'].includes(kind)) return;
     const box = new Box3().setFromObject(mesh, true),
       target = box.getCenter(new Vector3());
-    target.y = box.max.y - (kind === 'Watchtower' ? 6 : 16);
+    target.y = kind === 'ColoradoBend' ? box.max.y : box.max.y - (kind === 'Watchtower' ? 6 : 16);
     const prev = marks.get(kind);
     if (!prev || target.y > prev.y) marks.set(kind, target);
   }
@@ -182,7 +182,13 @@ export function desertViewDrive(course: Course) {
     return { mesh, anchor, phase: i * 1.88 };
   });
   const position = course.place(0);
-  const state = { shuttleMetres: 0, cloudShadow: 0, templeX: Infinity, towerX: Infinity };
+  const state = {
+    shuttleMetres: 0,
+    cloudShadow: 0,
+    templeX: Infinity,
+    towerX: Infinity,
+    riverX: Infinity,
+  };
   function update(seconds: number, metres: number, reduced: boolean) {
     const t = reduced ? 0 : seconds;
     shadowOffset.value = t * 0.043;
@@ -207,12 +213,19 @@ export function desertViewDrive(course: Course) {
     group,
     landmark,
     measure(camera: Camera) {
+      state.riverX = screenX('ColoradoBend', camera);
       state.templeX = screenX('GrandviewTemple', camera);
       state.towerX = screenX('Watchtower', camera);
       return state;
     },
     update,
-    materials: { CanyonStrata: cliff, GrandviewTemple: cliff, Watchtower: stone, FarRim: far },
+    materials: {
+      CanyonStrata: cliff,
+      GrandviewTemple: cliff,
+      Watchtower: stone,
+      FarRim: far,
+      ColoradoBend: stone,
+    },
     dispose() {
       group.removeFromParent();
       for (const item of owned) item.dispose();
