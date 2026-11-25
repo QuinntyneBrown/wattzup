@@ -1247,3 +1247,10 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import fishhill as _fishhill
+
+for name in ("fishhill-lane", "fishhill-meadow", "fishhill-wall", "fishhill-slate"):
+    MATERIALS[name] = {"color": 0x99937b, "rough": 1.0, "vertex": True}
+THEMES["fishhill"] = _fishhill.THEME
+SCENERY["fishhill"] = _fishhill.scenery
