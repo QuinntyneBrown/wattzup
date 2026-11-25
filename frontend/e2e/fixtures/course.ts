@@ -3598,7 +3598,7 @@ export const kwaremontCourseMap = {
   place: 'Kwaremont, Kluisbergen, Belgium',
   world: 'kwaremont',
   distanceKm: 16.2,
-  climbingM: 116,
+  climbingM: 231,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

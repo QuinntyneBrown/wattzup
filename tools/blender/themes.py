@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import kwaremont
+
+THEMES['kwaremont'] = kwaremont.THEME
+SCENERY['kwaremont'] = kwaremont.scenery
