@@ -363,6 +363,7 @@ export class CourseRenderer implements WorldRenderer {
         if (this.disposed) return false;
         this.boardwalk = new ConeyBoardwalk(this.course, this.disposables);
         this.scene.add(this.boardwalk.group);
+        this.camera.setViewOffset(1, 1, 0, 0.025, 1, 1);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -897,8 +898,8 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const behind = this.boardwalk ? 5.0 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
+    const up = this.boardwalk ? 2.35 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
@@ -1119,6 +1120,12 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    if (this.boardwalk) {
+      Object.assign(drawn, {
+        carRadius: this.boardwalk.street.carRadius,
+        trainX: this.boardwalk.street.trainX,
+      });
+    }
     hook['course'] = drawn;
   }
 

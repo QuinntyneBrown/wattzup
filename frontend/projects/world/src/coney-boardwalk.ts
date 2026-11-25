@@ -5,7 +5,7 @@ import type { Course, CoursePlace } from './course';
 import { ConeyStreet } from './world-coney';
 
 export class ConeyBoardwalk {
-  private readonly street: ConeyStreet;
+  readonly street: ConeyStreet;
   private readonly sample: CoursePlace = { x: 0, y: 0, z: 0, heading: 0, pitch: 0 };
   private readonly points = Array.from({ length: 161 }, (_, i) => ({
     metres: (i - 10) * 2,
@@ -37,6 +37,7 @@ export class ConeyBoardwalk {
     for (const p of this.points) p.height = this.height(p.metres);
     this.street.lay(this.points, distance);
     this.street.place(distance, this.height);
+    this.street.alignPark(distance);
     this.group.position.z = -distance;
   }
 }

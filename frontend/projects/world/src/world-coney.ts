@@ -123,15 +123,24 @@ const ROAD_SLOGANS: readonly (readonly [string, string])[] = [
 ];
 /** The arcades and clam bars along the boardwalk: their signs and their colours. */
 const STALLS: readonly (readonly [string, string, string])[] = [
-  ['CLAM BAR', '#f4ece0', '#d8283a'],
+  ['PAUL’S DAUGHTER', '#faf1cf', '#bb3024'],
   ['ARCADE', '#3ac8e8', '#1b1e24'],
   ['HOT DOGS', '#f2c230', '#d8283a'],
   ['ICE CREAM', '#ffb8d0', '#1d3c8f'],
   ['SOUVENIRS', '#ffffff', '#1f8a5a'],
   ['FRIED CLAMS', '#ff8a1a', '#ffffff'],
-  ['BEER', '#1f8a5a', '#ffffff'],
+  ['RUBY’S BAR & GRILL', '#982826', '#fff3c9'],
   ['GAMES', '#d8283a', '#f2c230'],
 ];
+
+/** Height of the Cyclone's lift hill and camelbacks along its out-and-back track. */
+function cycloneHeight(u: number): number {
+  return (
+    3 +
+    25 * Math.exp(-(((u - 0.12) / 0.11) ** 2)) +
+    (u > 0.3 ? Math.min(1, (u - 0.3) / 0.08) * (6 + 12 * Math.abs(Math.sin(u * 8))) : 0)
+  );
+}
 
 interface Prop {
   readonly mesh: Group;
@@ -147,7 +156,27 @@ export class ConeyStreet implements SceneStreet {
   private readonly horizon = new Group();
   private readonly sea = new Group();
   private wheel: Group | null = null;
+  private readonly gondolas: Group[] = [];
+  private readonly train: Group[] = [];
+  private readonly wheelStand = new Group();
+  private readonly coaster = new Group();
+  private tower: Group | null = null;
   private time = 0;
+
+  get carRadius(): number {
+    return this.gondolas[1]?.position.length() ?? 0;
+  }
+
+  get trainX(): number {
+    return this.train[0]?.position.x ?? 0;
+  }
+
+  /** Bring the three Brooklyn landmarks into view at their own chainage. */
+  alignPark(distance: number): void {
+    this.wheelStand.position.z = distance - 1710 + AHEAD;
+    this.coaster.position.z = distance - 2700 + AHEAD;
+    if (this.tower) this.tower.position.z = distance - 8090 + AHEAD;
+  }
   private readonly flagMaterials = ['#d8283a', '#ffffff', '#1d3c8f', '#f2c230'].map(
     (colour) => new MeshStandardMaterial({ color: colour, side: DoubleSide, roughness: 0.8 }),
   );
@@ -190,7 +219,24 @@ export class ConeyStreet implements SceneStreet {
   setTime(seconds: number): void {
     this.time = seconds;
     // The Wonder Wheel turns slowly.
-    if (this.wheel) this.wheel.rotation.z = seconds * 0.05;
+    const turn = seconds * 0.05;
+    if (this.wheel) this.wheel.rotation.z = turn;
+    for (const [i, cabin] of this.gondolas.entries()) {
+      const angle = (i * Math.PI * 2) / this.gondolas.length;
+      // Gravity carries the inner cars between the two ends of their radial tracks.
+      const radius = i % 3 === 0 ? 23 : 17.5 - 3.5 * Math.sin(angle + turn);
+      cabin.position.set(radius * Math.cos(angle), radius * Math.sin(angle), 0);
+      cabin.rotation.z = -turn;
+    }
+    for (const [i, carriage] of this.train.entries()) {
+      const phase = seconds * 0.19 - i * 0.12;
+      const u = (1 - Math.cos(phase)) / 2;
+      const lane = (1 - Math.tanh(7 * Math.sin(phase))) / 2;
+      const x = 6 + 40 * u;
+      const height = cycloneHeight(u) * (1 - 0.15 * lane);
+      carriage.position.set(x, height + 0.78, 75 - 15 * u - 5 * lane);
+      carriage.rotation.z = Math.atan2(cycloneHeight(u + 0.001) - cycloneHeight(u - 0.001), 0.08);
+    }
   }
 
   lay(points: readonly StreetPoint[], s: number): void {
@@ -641,18 +687,38 @@ export class ConeyStreet implements SceneStreet {
     const cars = ['#d8283a', '#1d3c8f', '#f2c230', '#1f8a5a', '#ff8a1a', '#3ac8e8'].map((c) =>
       hazedMaterial(this.disposables, haze, c, 0.15),
     );
-    const car = new BoxGeometry(2.2, 2.4, 2.6);
+    const car = new BoxGeometry(2.2, 1.15, 2.6);
+    const glazing = new BoxGeometry(1.94, 0.93, 2.32);
+    const roof = new BoxGeometry(2.34, 0.18, 2.72);
+    const glass = hazedMaterial(this.disposables, haze, 0x506269, 0.12);
+    const track = new BoxBuilder();
+    this.disposables.push(glazing, roof);
     this.disposables.push(car);
     for (let k = 0; k < 24; k++) {
       const a = (k / 24) * Math.PI * 2;
-      const r = k % 2 ? R : R * 0.78;
-      const m = new Mesh(car, cars[k % cars.length]!);
-      m.position.set(r * Math.cos(a), r * Math.sin(a) - 1.4, 0);
-      wheel.add(m);
+      const cabin = new Group();
+      const shell = cars[k % cars.length]!;
+      const seat = new Mesh(car, shell);
+      seat.position.y = -0.9;
+      const windows = new Mesh(glazing, glass);
+      const cap = new Mesh(roof, shell);
+      cap.position.y = 0.53;
+      cabin.add(seat, windows, cap);
+      this.gondolas.push(cabin);
+      wheel.add(cabin);
+      if (k % 3 !== 0) {
+        for (const side of [-1, 1]) {
+          const x = 17.5 * Math.cos(a) - side * 0.8 * Math.sin(a);
+          const y = 17.5 * Math.sin(a) + side * 0.8 * Math.cos(a);
+          track.box(white, [7.5, 0.14, 0.18], [x, y, 0], a);
+        }
+      }
     }
+    wheel.add(track.build(this.disposables));
     wheel.position.set(48, HUB, -40);
     wheel.rotation.y = -0.25;
-    h.add(wheel);
+    this.wheelStand.add(wheel);
+    h.add(this.wheelStand, this.coaster);
     this.wheel = wheel;
     const legs = new BoxBuilder();
     for (const dz of [-3, 3]) {
@@ -661,20 +727,16 @@ export class ConeyStreet implements SceneStreet {
         legs.box(white, [0.6, len, 0.6], [48 + dx / 2, HUB / 2, -40 + dz], Math.atan2(dx, HUB));
       }
     }
-    h.add(legs.build(this.disposables));
+    this.wheelStand.add(legs.build(this.disposables));
     // The Cyclone: the white wooden lattice of its out-and-back track, beside the boardwalk on
     // the right in front of the Wonder Wheel, broadside to the rider: climbing to its lift hill
     // at the boardwalk's end and dropping through its hills toward the amusement park.
     const cyclone = new BoxBuilder();
     const rails = hazedMaterial(this.disposables, haze, 0x7a2a22, 0.1);
     const lattice = hazedMaterial(this.disposables, haze, 0xf6f2ea, 0.08);
-    const hills = (u: number) =>
-      3 +
-      25 * Math.exp(-(((u - 0.12) / 0.11) ** 2)) +
-      (u > 0.3 ? 6 + 12 * Math.abs(Math.sin(u * 8)) : 0);
     for (const t of [0, 1]) {
       const at = (u: number) =>
-        [6 + 40 * u, hills(t ? 1 - u : u) * (t ? 0.85 : 1), 75 - 15 * u - 5 * t] as const;
+        [6 + 40 * u, cycloneHeight(u) * (t ? 0.85 : 1), 75 - 15 * u - 5 * t] as const;
       // The track: the rails sloping from one point of its line to the next, finely, so its
       // hills read as curves.
       for (let u = 0; u < 1; u += 0.007) {
@@ -698,7 +760,18 @@ export class ConeyStreet implements SceneStreet {
         }
       }
     }
-    h.add(cyclone.build(this.disposables));
+    this.coaster.add(cyclone.build(this.disposables));
+    for (let i = 0; i < 4; i++) {
+      const body = new BoxBuilder();
+      body.box(cars[0]!, [2.1, 0.65, 1.55], [0, 0, 0]);
+      for (const end of [-0.8, 0.2]) {
+        body.box(glass, [0.2, 0.55, 1.38], [end, 0.5, 0]);
+        body.box(white, [0.1, 0.1, 1.42], [end + 0.54, 0.45, 0]);
+      }
+      const carriage = body.build(this.disposables);
+      this.coaster.add(carriage);
+      this.train.push(carriage);
+    }
     // The Parachute Jump: a red tapering lattice tower, the ring of arms at its crown.
     const red = hazedMaterial(this.disposables, haze, 0xc8302a, 0.3, {
       transparent: true,
@@ -736,6 +809,7 @@ export class ConeyStreet implements SceneStreet {
     crown.box(solid, [2.6, 6, 2.6], [0, 67, 0]);
     jump.add(crown.build(this.disposables));
     jump.position.set(-38, 0, -260);
+    this.tower = jump;
     h.add(jump);
   }
 
