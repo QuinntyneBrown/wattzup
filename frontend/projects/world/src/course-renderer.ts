@@ -1,3 +1,4 @@
+import type { CornwallHarbour } from './cornwall-harbour';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -200,6 +201,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
+  private harbour: CornwallHarbour | null = null;
   private course: Course | null = null;
   private disposed = false;
   private readonly scene = new Scene();
@@ -239,6 +241,8 @@ export class CourseRenderer implements WorldRenderer {
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
+    boatRoll: null as number | null,
+    gullY: null as number | null,
     groups: {} as Record<string, number>,
   };
   private readonly chosenAt = new Vector3();
@@ -353,6 +357,12 @@ export class CourseRenderer implements WorldRenderer {
       this.body = body;
       this.disposables.push(body);
       this.course = new Course(parseCourse(file));
+      if (this.path === 'courses/cornwall') {
+        const { CornwallHarbour } = await import('./cornwall-harbour');
+        if (this.disposed) return false;
+        this.harbour = new CornwallHarbour(this.course, this.scene);
+        this.disposables.push(this.harbour);
+      }
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
@@ -424,6 +434,7 @@ export class CourseRenderer implements WorldRenderer {
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
+    this.harbour?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.aim(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
@@ -1105,6 +1116,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.boatRoll = this.harbour?.boatRoll ?? null;
+    drawn.gullY = this.harbour?.gullY ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
