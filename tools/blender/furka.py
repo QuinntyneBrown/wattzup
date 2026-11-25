@@ -16,7 +16,7 @@ def bearing(d):
     heading=.55+.13*math.sin(d/455)
     for station,change,width in ((1300,.42,110),(2920,2.60,41),(3920,-2.56,49),(5390,2.75,40),
         (6340,-2.71,39),(6830,2.73,39),(7790,-2.66,41),(9460,2.66,51),(10940,-2.75,43),
-        (12364,2.91,43),(13840,-2.50,52),(14650,.68,120),(16080,1.70,74),(17430,-1.78,88)):
+        (12416,2.91,43),(13840,-2.50,52),(14650,.68,120),(16080,1.70,74),(17430,-1.78,88)):
         heading+=change*(1+math.tanh((d-station)/width))/2
     return heading
 
@@ -138,9 +138,9 @@ def scenery(k):
                          (206,23,17,8,7,0x56595c),(260,-20,22,9,7,0x6b4f42),(349,22,14,8,5,0x514b42)):
         house(d,l,a,b,h,c,d==128)
     # Inside the Belvédère bend a glazed octagonal gallery projects from the stone hotel wing.
-    d=12358
+    d=12402
     yaw=bearing(d)
-    x,y,z=r.pos(d,22,0)
+    x,y,z=r.pos(d,19,0)
     def hotel(u,v,w):
         return (x+u*math.cos(yaw)-v*math.sin(yaw),y+u*math.sin(yaw)+v*math.cos(yaw),z+w)
     def block(u,v,w,a,b,c,t):
@@ -168,7 +168,19 @@ def scenery(k):
             l=rng.choice((-1,1))*rng.uniform(8,45)
             rad=rng.uniform(.47,2.3)
             rock.tube(r.pos(d,l,surface(d,l)-.25),rad,rad*.45,rad*.8,lin(0x787674),lin(0xa6a39b),7,lin(0xaaa7a1))
-    for turn in (2920,3920,5390,6340,6830,7790,9460,10940,12364,13840):
+    # The plough leaves a steep cut face towards the road and a sloping back.
+    drift=Painted(k,'furka-snow')
+    for start,end,side in ((16325,16520,1),(17810,18080,-1),(19100,19385,1),(19645,19830,-1)):
+        previous=None
+        for d in range(start,end+1,4):
+            phase=(d-start)/(end-start)
+            height=2.4*max(0,math.sin(phase*math.pi))**.43*(.85+.15*math.sin(d/13))
+            line=[r.pos(d,side*l,z) for l,z in ((5.2,-.18),(5.45,height),(6.8,height+.18),(9.2,-.12))]
+            if previous:
+                for i,tone in enumerate((0xafbdc8,0xf4f1e8,0xd6dcd9)):
+                    drift.face((previous[i],line[i],line[i+1],previous[i+1]),(lin(tone),)*4)
+            previous=line
+    for turn in (2920,3920,5390,6340,6830,7790,9460,10940,12416,13840):
         for d in range(turn-74,turn+78,3):
             side=-1 if bearing(d+1)>bearing(d-1) else 1
             art.box(r.pos(d,side*4.84,-.21),(2.94,.56,.94),bearing(d),lin(0x9a9385))

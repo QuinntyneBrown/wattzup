@@ -61,7 +61,9 @@ export class WorldRideProbe {
     }, metres);
   }
 
-  async furkaMotion(part: 'cowHead' | 'postbusPosition' | 'cloudHeight'): Promise<number | null> {
+  async furkaMotion(
+    part: 'cowHead' | 'postbusPosition' | 'cloudHeight' | 'postbusDistance',
+  ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide

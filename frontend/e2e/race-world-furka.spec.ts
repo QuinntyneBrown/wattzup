@@ -37,6 +37,11 @@ for (const [actor, metres, part] of [
     await expect(race.backend).toBeVisible();
 
     await expect.poll(() => worldRide.furkaMotion(part)).not.toBeNull();
+    if (part === 'postbusPosition') {
+      await expect
+        .poll(async () => (await worldRide.furkaMotion('postbusDistance')) ?? Infinity)
+        .toBeLessThan(85);
+    }
     const first = await worldRide.furkaMotion(part);
     await expect.poll(() => worldRide.furkaMotion(part)).not.toBe(first);
     await race.pause.click();

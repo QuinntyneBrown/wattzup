@@ -24,7 +24,17 @@ export async function furkaPass(course: Course) {
   const loader = new TextureLoader(),
     maps: Texture[] = [];
   try {
-    for (const name of ['bernese', 'rhone', 'scree', 'tarmac', 'pasture', 'snow', 'cloud']) {
+    for (const name of [
+      'bernese',
+      'rhone',
+      'scree',
+      'tarmac',
+      'pasture',
+      'snow',
+      'cloud',
+      'belvedere',
+      'gletsch',
+    ]) {
       const map = await loader.loadAsync('courses/furka-' + name + '.webp');
       map.colorSpace = SRGBColorSpace;
       maps.push(map);
@@ -34,7 +44,7 @@ export async function furkaPass(course: Course) {
     throw error;
   }
   resources.push(...maps);
-  const [peaks, glacier, scree, tarmac, meadow, snow, cloud] = maps;
+  const [peaks, glacier, scree, tarmac, meadow, snow, cloud, hotelFront, villageFront] = maps;
   function surface(map: Texture, size: number) {
     map.wrapS = map.wrapT = RepeatWrapping;
     map.anisotropy = 4;
@@ -81,13 +91,15 @@ export async function furkaPass(course: Course) {
   glacialPaint.opacityNode = smoothstep(0, 0.15, uv().x)
     .mul(smoothstep(0.88, 1, uv().x).oneMinus())
     .mul(smoothstep(0.85, 1, uv().y).oneMinus());
-  const glacialGeo = new PlaneGeometry(950, 340),
+  const glacialGeo = new PlaneGeometry(444, 180, 16, 6),
     basin = new Mesh(glacialGeo, glacialPaint);
-  const side = course.place(14600, -175);
-  basin.position.set(side.x, lookout.y - 34, side.z);
+  const h = lookout.heading;
+  const sideX = lookout.x - 650 * Math.sin(h) - 216 * Math.cos(h);
+  const sideZ = lookout.z - 650 * Math.cos(h) + 216 * Math.sin(h);
+  basin.position.set(sideX, lookout.y - 34, sideZ);
   basin.rotation.order = 'YXZ';
-  basin.rotation.y = lookout.heading - 0.5;
-  basin.rotation.x = -0.66;
+  basin.rotation.y = lookout.heading + 0.28;
+  basin.rotation.x = -0.82;
   group.add(basin);
   resources.push(glacialGeo, glacialPaint);
   const mistGeo = new PlaneGeometry(460, 69);
@@ -99,10 +111,42 @@ export async function furkaPass(course: Course) {
     side: DoubleSide,
   });
   const mist = new Mesh(mistGeo, mistPaint);
-  const drift = course.place(14660, -245);
+  const drift = { x: sideX - 105 * Math.cos(h), y: lookout.y + 75, z: sideZ + 105 * Math.sin(h) };
   mist.rotation.y = lookout.heading;
   group.add(mist);
   resources.push(mistGeo, mistPaint);
+  // Give all four faces of each inn consistent wall scale, including the end seen from the bike.
+  for (const [d, l, w, depth, height, base, map] of [
+    [12402, -19, 29, 11, 15.1, -3, hotelFront],
+    [161, 22, 44, 11, 11, -1, villageFront],
+    [206, -23, 17, 8, 8, -1, villageFront],
+  ] as const) {
+    const site = course.place(d, l);
+    const inn = new Group();
+    inn.position.set(site.x, site.y + base, site.z);
+    inn.rotation.y = site.heading;
+    const wallPaint = new MeshLambertMaterial({ map: map!, side: DoubleSide });
+    resources.push(wallPaint);
+    for (let face = 0; face < 4; face++) {
+      const end = face % 2 === 0;
+      const plane = new PlaneGeometry(end ? depth : w, height);
+      if (end) {
+        const coords = plane.getAttribute('uv');
+        for (let i = 0; i < coords.count; i++) coords.setX(i, 0.1 + (coords.getX(i) * depth) / w);
+      }
+      const wall = new Mesh(plane, wallPaint);
+      const angle = (face * Math.PI) / 2;
+      wall.position.set(
+        Math.sin(angle) * (depth / 2 + 0.26),
+        height / 2,
+        Math.cos(angle) * (w / 2 + 0.26),
+      );
+      wall.rotation.y = angle;
+      inn.add(wall);
+      resources.push(plane);
+    }
+    group.add(inn);
+  }
   const unit = new BoxGeometry(),
     wheel = new CylinderGeometry(0.55, 0.55, 0.27, 12).rotateZ(Math.PI / 2);
   resources.push(unit, wheel);
@@ -148,6 +192,7 @@ export async function furkaPass(course: Course) {
     return bus;
   }
   const postbus = coach();
+  let postbusDistance = 0;
   const cows = new Group();
   group.add(cows);
   const heads: Group[] = [];
@@ -224,6 +269,9 @@ export async function furkaPass(course: Course) {
     get cowHead() {
       return heads[0]!.rotation.x;
     },
+    get postbusDistance() {
+      return postbusDistance;
+    },
     get postbusPosition() {
       return postbus.position.x;
     },
@@ -238,10 +286,12 @@ export async function furkaPass(course: Course) {
           heads[i]!.rotation.x = -0.32 + 0.46 * Math.sin(time * 0.85 + i * 2.7);
       postbus.visible = metres > 11600 && metres < 13000;
       if (postbus.visible) {
-        const cycle = (time * 4.15) % 480;
-        const p = course.place(12585 - cycle, -2.3);
+        const cycle = 96 * Math.sin(time * 0.031);
+        const p = course.place(12342 - cycle, -2.3);
         postbus.position.set(p.x, p.y + 0.04, p.z);
-        postbus.rotation.y = p.heading + Math.PI;
+        postbus.rotation.y = p.heading + (Math.cos(time * 0.031) > 0 ? Math.PI : 0);
+        const rider = course.place(metres);
+        postbusDistance = Math.hypot(p.x - rider.x, p.z - rider.z);
       }
       basin.visible = metres > 13100 && metres < 15450;
       mist.visible = basin.visible;

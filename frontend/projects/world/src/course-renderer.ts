@@ -237,6 +237,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly near = new Group();
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
+    postbusDistance: null as number | null,
     cowHead: null as number | null,
     cloudHeight: null as number | null,
     postbusPosition: null as number | null,
@@ -1131,6 +1132,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.postbusDistance = this.furka?.postbusDistance ?? null;
     drawn.cowHead = this.furka?.cowHead ?? null;
     drawn.cloudHeight = this.furka?.cloudHeight ?? null;
     drawn.postbusPosition = this.furka?.postbusPosition ?? null;
