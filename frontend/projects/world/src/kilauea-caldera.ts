@@ -1,14 +1,16 @@
 import { SkyMesh } from 'three/addons/objects/SkyMesh.js';
-import { color, positionWorld, texture, vertexColor } from 'three/tsl';
+import { color, mix, positionWorld, texture, vertexColor } from 'three/tsl';
 import {
   DoubleSide,
   Group,
   MeshBasicMaterial,
   MeshBasicNodeMaterial,
   RepeatWrapping,
+  MirroredRepeatWrapping,
   SRGBColorSpace,
   TextureLoader,
   Vector3,
+  type Node,
   type Texture,
 } from 'three/webgpu';
 import type { Course } from './course';
@@ -25,10 +27,13 @@ export class KilaueaCaldera {
   });
   private readonly basalt = new MeshBasicNodeMaterial({ side: DoubleSide });
   private readonly cliffs = new MeshBasicMaterial({ side: DoubleSide, vertexColors: true });
+  private readonly walls = new MeshBasicMaterial({ side: DoubleSide, fog: false, color: 0xbbadb9 });
   readonly materials = {
     OhiaForest: this.trees,
     KilaueaBasalt: this.basalt,
-    CalderaWalls: this.cliffs,
+    TubeBasalt: this.basalt,
+    CalderaWalls: this.walls,
+    MaunaLoaShield: this.cliffs,
   };
   private readonly flow = canvasTexture(512, 512, (g) => {
     let seed = 2147;
@@ -55,12 +60,24 @@ export class KilaueaCaldera {
   });
   static async load(course: Course) {
     const forest = await new TextureLoader().loadAsync('courses/kilauea-forest.webp');
-    return new KilaueaCaldera(course, forest);
+    const caldera = new KilaueaCaldera(course, forest);
+    try {
+      const walls = await new TextureLoader().loadAsync('courses/kilauea-walls.webp');
+      walls.colorSpace = SRGBColorSpace;
+      walls.flipY = false;
+      walls.wrapS = MirroredRepeatWrapping;
+      caldera.walls.map = walls;
+      return caldera;
+    } catch (error) {
+      caldera.dispose();
+      throw error;
+    }
   }
   private constructor(
     course: Course,
     private readonly forest: Texture,
   ) {
+    forest.flipY = false;
     forest.colorSpace = SRGBColorSpace;
     this.trees.map = forest;
     this.flow.wrapS = this.flow.wrapT = RepeatWrapping;
@@ -79,6 +96,12 @@ export class KilaueaCaldera {
       -Math.cos(az) * Math.cos(elev),
     );
     this.sky.sunPosition.value.applyAxisAngle(new Vector3(0, 1, 0), course.place(0).heading);
+    // Preserve the light scattered by the low sun while lifting the black cloud base into violet vog.
+    this.sky.material.colorNode = mix(
+      (this.sky.material.colorNode as Node<'vec4'>).rgb,
+      color(0x756387),
+      0.31,
+    );
     this.sky.renderOrder = -1;
   }
   dispose() {
@@ -89,5 +112,7 @@ export class KilaueaCaldera {
     this.trees.dispose();
     this.basalt.dispose();
     this.cliffs.dispose();
+    this.walls.map?.dispose();
+    this.walls.dispose();
   }
 }

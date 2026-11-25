@@ -439,6 +439,10 @@ export class WorldRideProbe {
 
   /** A pose from the submitted course frame, present only while its mesh is drawn. */
   async itenDetail(part: string): Promise<number | null> {
+    return this.coursePose(part);
+  }
+
+  async coursePose(part: string): Promise<number | null> {
     return this.page.evaluate((key) => {
       const course = (window as unknown as { __wzWorldRide: { course?: Record<string, unknown> } })
         .__wzWorldRide.course;
