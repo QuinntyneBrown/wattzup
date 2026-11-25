@@ -94,6 +94,17 @@ def village(k,art,fronts):
             variant=(i+side)%4;u=variant%2*.5;v=variant//2*.5
             picture(fronts,(at(-w/2,-.25),at(w/2,-.25),at(w/2,h),at(-w/2,h)),
                     ((u,v),(u+.5,v),(u+.5,v+.5),(u,v+.5)))
+            # The rider sees the gable before the street front. Give its windows real reveals.
+            for end in (-1,1):
+                sx=x+along[0]*(w*.5+.018)*end;sy=y+along[1]*(w*.5+.018)*end
+                for across in (-1.65,1.65):
+                    bx=sx+face[0]*across;by=sy+face[1]*across
+                    for sill in (.84,3.42):
+                        art.box((bx,by,z+sill),(.11,1.32,1.48),yaw,lin(0xD1C2A7))
+                        art.box((bx+along[0]*.07*end,by+along[1]*.07*end,z+sill+.11),
+                                (.045,1.06,1.22),yaw,lin(0x526169))
+                        art.box((bx+along[0]*.10*end,by+along[1]*.10*end,z+sill+.11),
+                                (.03,.045,1.22),yaw,lin(0xE0D4BD))
             art.box(at(w*.28,h+1.3),(1,.76,1.7),yaw,lin(0x886550))
             if 13470<d<13650 and i%3==0:
                 art.box(at(0,2.86,.53),(w*.72,1.08,.22),yaw,lin(0x356455))
@@ -135,10 +146,29 @@ def scenery(k):
             dx,dy=w*math.sin(angle),w*math.cos(angle)
             picture(trees,((x-dx,y-dy,z),(x+dx,y+dy,z),(x+dx,y+dy,z+h),(x-dx,y-dy,z+h)),
                     ((u,v),(u+.5,v),(u+.5,v+.5),(u,v+.5)))
-    for d in (12838,13480,14035,14590):
-        yaw=heading(d);x,y,z=k.road.pos(d,0,.115)
-        words(art,'ALLEZ!' if d<14000 else 'KWAREMONT',(x,y,z),(math.sin(yaw),-math.cos(yaw),0),
-              (math.cos(yaw),math.sin(yaw),0),1.45,4.65,0xEBEBCE)
+    # Field boundaries, furrows and distant farms are visible through gaps after the upper drag.
+    for d in range(30,16300,29):
+        if 13000<d<15000:continue
+        side=1 if int(d/180)%2 else -1
+        if d%5==0:continue
+        off=side*(15+5*math.sin(d/93))
+        x,y,_=k.road.pos(d,off);z=k.height_at(x,y)
+        art.box((x,y,z-.30),(22.8,1.4,1.25),heading(d),lin(0x546846))
+        art.roof((x,y,z+.93),22.9,1.45,.36,heading(d),lin(0x64784F))
+    for start in (40,15200):
+        for shift in range(0,219,8):
+            for off in range(21,94,3):
+                x,y,_=k.road.pos(start+shift,off)
+                x1,y1,_=k.road.pos(start+shift+8,off)
+                z=k.height_at(x,y);z1=k.height_at(x1,y1)
+                art.face(((x,y-.28,z+.04),(x1,y1-.28,z1+.04),(x1,y1+.28,z1+.04),(x,y+.28,z+.04)),
+                         (lin(0x755F4F),)*4)
+    for d,label in ((12862,'ALLEZ!'),(13583,'ELISE'),(14058,'WOUT'),(14669,'LOTTE'),(14772,'KWAREMONT')):
+        yaw=heading(d);x,y,z=k.road.pos(d,0,.125)
+        # The letter surface follows the grade so the uphill edge stays above the cobbles.
+        slope=k.road.s[k.road.index(d)]['g']/100
+        words(art,label,(x,y,z),(math.sin(yaw),-math.cos(yaw),0),
+              (math.cos(yaw),math.sin(yaw),slope),1.52,4.7,0xEAE4C7)
     steel=lin(0x9DA4A0)
     for d in range(13270,14860,4):
         for side in (-1,1):
@@ -147,6 +177,11 @@ def scenery(k):
             for step in (0,.95,1.95,2.95,3.9):
                 x,y,z=k.road.pos(d+step,side*3.48)
                 art.tube((x,y,z-.1),.022,.022,1.1,steel,steel,5)
+    for i,d in enumerate(range(13266,14871,17)):
+        # Native course coordinates point left, while the rider's lane points right.
+        side=-1 if i%2 else 1
+        x,y,z=k.road.pos(d,side*3.84)
+        art.tube((x,y,z-.24),.045,.038,3.62,steel,steel,7)
     for d,label in ((12802,'OUDE KWAREMONT'),(13998,'1 KM'),(14990,'KWAREMONT')):
         yaw=heading(d);x,y,z=k.road.pos(d)
         for side in (-1,1):

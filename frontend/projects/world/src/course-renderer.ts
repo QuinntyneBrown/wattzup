@@ -151,6 +151,7 @@ import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
 import type { ManxMountain } from './manx-mountain';
+import type { KwaremontVillage } from './kwaremont-village';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -354,6 +355,7 @@ export class CourseRenderer implements WorldRenderer {
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
   private mountain: ManxMountain | null = null;
+  private kwaremontVillage: KwaremontVillage | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -850,6 +852,20 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'kwaremont') {
+        const { KwaremontVillage } = await import('./kwaremont-village');
+        if (this.disposed) return false;
+        const village = await KwaremontVillage.load(this.course);
+        if (this.disposed) {
+          village.dispose();
+          return false;
+        }
+        this.camera.setViewOffset(1, 1, 0, 0.045, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.kwaremontVillage = village;
+        this.scene.add(village.root);
+        this.disposables.push(village);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1802,6 +1818,7 @@ export class CourseRenderer implements WorldRenderer {
       this.camera.position.y,
       this.camera.position.z,
     );
+    this.kwaremontVillage?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -1962,6 +1979,7 @@ export class CourseRenderer implements WorldRenderer {
     this.icelandCoast = null;
     this.divide = null;
     this.mountain = null;
+    this.kwaremontVillage = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.yard = null;
@@ -2201,6 +2219,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
+    if (this.kwaremontVillage) Object.assign(materials, this.kwaremontVillage.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -2775,6 +2794,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
     this.mountain?.frameView(metres, this.camera.position, ahead);
+    this.kwaremontVillage?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
@@ -3284,6 +3304,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
     if (this.mountain) Object.assign(drawn, this.mountain.report());
+    if (this.kwaremontVillage) Object.assign(drawn, this.kwaremontVillage.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }
