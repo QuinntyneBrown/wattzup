@@ -1417,3 +1417,7 @@ import cornwall as _cornwall  # noqa: E402
 
 THEMES['cornwall'] = _cornwall.THEME
 SCENERY['cornwall'] = _cornwall.scenery
+import isleofman as _isleofman
+
+THEMES['isleofman'] = _isleofman.THEME
+SCENERY['isleofman'] = _isleofman.scenery
