@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [Group_ride_50](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/02/Group_ride_50.jpeg) (g0700) | © MyWhoosh |
 | game-04.jpg | MyWhoosh: [UCI_V03 (1) (1)](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/01/UCI_V03-1-1.jpg) (g0765) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Rolling Highlands” Route Details (Scotland)](https://zwiftinsider.com/route/rolling-highlands/) (g0130) | © Zwift |
+
+## Original race artwork
+
+The original generated Bernina skyline, autumn tree atlas, sgraffito façades, St. Moritz hillside, alpine lake ripples and forest-floor texture live in `frontend/projects/ride/public/courses/engadin-*.webp`. The lake levels, shore meshes, fences, rail corridor and train are native race geometry. The road aggregate and place-name plates are drawn at load time. Real 01–04 supplied road and house proportions, 05–10 the water and bank colours, and 11–15 the hillside settlements and valley relief. The five game views guided the spacing around a moving rider.

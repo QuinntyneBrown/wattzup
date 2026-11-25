@@ -447,7 +447,7 @@ export class CourseRenderer implements WorldRenderer {
       if (typeof from === 'number') this.benchFrom = from;
     }
     const metres = Math.min(ridden + this.benchFrom, course.end);
-    this.shore?.at(metres);
+    this.shore?.at(metres, frame.reducedMotion ? 0 : frame.time);
     this.lakes?.at(frame.reducedMotion ? 0 : frame.time, metres);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
@@ -527,7 +527,8 @@ export class CourseRenderer implements WorldRenderer {
   private build(map: Object3D, canvas: HTMLCanvasElement): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
-    this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
+    const clearValley = this.course!.file.id === 'engadin';
+    this.scene.fog = new Fog(look.haze, clearValley ? 750 : FOG[0], clearValley ? 5000 : FOG[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
     this.sun.intensity = look.light.intensity;

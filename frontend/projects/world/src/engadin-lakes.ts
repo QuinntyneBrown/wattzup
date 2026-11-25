@@ -105,11 +105,12 @@ export async function engadinLakes(course: Course) {
   group.add(...train);
   const kites: Group[] = [];
   for (const [i, tone] of [0xe64f3d, 0x28a999, 0xf2bb34, 0x4356bc, 0xe85c86].entries()) {
-    const d = 13010 + i * 29,
-      p = course.place(d, -58 - (i % 3) * 12);
+    const d = 13040 + i * 26,
+      p = course.place(d, -45 - (i % 3) * 8);
     const base = new Group();
     base.position.set(p.x, 1790.11, p.z);
     base.rotation.y = p.heading;
+    base.scale.setScalar(1.22);
     group.add(base);
     const sail = new Group();
     base.add(sail);
@@ -120,7 +121,7 @@ export async function engadinLakes(course: Course) {
     for (let j = 0; j <= 12; j++) {
       const t = (j - 6) / 6,
         x = 6.8 * t,
-        y = 21 - 4 * t * t;
+        y = 28 - 4 * t * t;
       pos.push(x, y, 0, x, y + 1.8 * (1 - 0.55 * Math.abs(t)), 1.15);
       const tint = new Color(j % 6 === 1 ? 0xf5e8c9 : tone);
       col.push(tint.r, tint.g, tint.b, tint.r, tint.g, tint.b);
@@ -137,11 +138,11 @@ export async function engadinLakes(course: Course) {
     geometries.push(wing);
     sail.add(new Mesh(wing, painted));
     for (const side of [-1, 1]) {
-      const g = new BoxGeometry(0.033, 17.7, 0.033);
+      const g = new BoxGeometry(0.05, 25.2, 0.05);
       geometries.push(g);
       const line = new Mesh(g, rigging);
       line.rotation.z = -side * 0.35;
-      line.position.set(side * 3.02, 9.05, 0);
+      line.position.set(side * 3.02, 12.6, 0);
       sail.add(line);
     }
     const board = new BoxGeometry(2.1, 0.14, 0.55),

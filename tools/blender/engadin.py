@@ -14,7 +14,7 @@ def level(d):
 
 
 def bearing(d):
-    return .55+.34*math.sin(d/890)+.15*math.sin(d/360)
+    return .55+.47*math.sin(d/890)+.23*math.sin(d/360)+sum(.46*math.exp(-((d-v)/285)**2) for v in (140,3150,12840,23890))
 
 
 def lay(course,theme,bc):
@@ -47,13 +47,14 @@ def land(r,col,theme,bc):
     b=bc.Builder('Lake shores, pastures and high valley shoulders','terrain');b.colours=[]
     def row(i):
         d=r.s[i]['d'];base=r.s[i]['z'];edge,width,water=banks(d)
-        pts=[(-800,base+205),(-330,base+78),(-110,base+27),(-46,base+6),(-19,base+(.19 if 17700<d<21110 else .8)),(-7.25,base-.02),(7.25,base-.02),(edge,water+.34),(edge+2,water),(edge+min(9,width*.2),water),(edge+width,water),(edge+width+5,water+.43),(edge+width+65,water+18),(edge+width+280,water+156)]
+        pts=[(-800,base+205),(-330,base+78),(-110,base+27),(-46,base+6),(-19,base+(.19 if 17700<d<21110 else .8)),(-7.25,base-.02),(7.25,base-.02),(edge,water+.34),(edge+2,water),(edge+min(9,width*.2),water),(edge+width,water),(edge+width+5,water+.43),(edge+width+65,water+18),(edge+width+280,water+92+48*math.sin(d/430)+21*math.cos(d/193))]
         return [(*r.at(i,x)[:2],z) for x,z in pts]
     colours=(0x697e55,0x526b46,0x71845a,0x84945c,0x94a561,0x738448,0x8b9b61,0xaba78d,0x629896,0x286b80,0x9a9980,0x697e4d,0x5a704c)
     a=row(0)
     for i in range(1,len(r.s)):
         c=row(i)
         for j,tone in enumerate(colours):
+            if j>=11:continue  # The textured far-bank slopes share the physical section in engadin-shore.ts.
             b.faces.append(tuple(b.v(v) for v in (a[j+1],a[j],c[j],c[j+1])));b.colours.extend([lin(tone)]*4)
         a=c
     b.build(col)
@@ -81,29 +82,18 @@ def scenery(k):
         box(d,-16.4,.28,.24,2.45,.17,0x655448)
         if (d-17700)%40==0:
             box(d,-18.4,.28,.23,.26,6.3,0x616668);box(d,-17.5,6.13,.17,2.22,.12,0x71767a);box(d+20,-16.5,6.0,40.2,.048,.06,0x585957)
-    for d in range(0,24600,115):
-        for side in (-1,1):
-            if 7620<d<8020 or 22330<d:continue
-            for n in range(2):
-                off=side*rng.uniform(14,31);at=d+rng.uniform(-28,28);z=.42 if side>0 else max(.65,(abs(off)-14)*.13)
-                if side>0 and abs(off)>banks(at)[0]-2:continue
-                if side>0:z=-(abs(off)-7)/max(1,banks(at)[0]-7)*(level(at)-banks(at)[2])
-                h=rng.uniform(7.0,13.0);gold=(d+n*65)%470<245
-                tube(at,off,z,.24,.12,h*.78,0x685540)
-                for tier in range(3):
-                    colour=(0xd6a935,0xd2a542,0xb99838)[tier] if gold else (0x365941,0x456748,0x55784d)[tier]
-                    tube(at,off,z+h*(.19+.19*tier),h*(.21-.041*tier),.08,h*(.53-.054*tier),colour,8)
     # White limewashed houses with deep-set openings and sgraffito bands at both villages.
     for centre in (7440,12910,23400):
         for j in range(-6,12):
             d=centre+j*29;side=-1 if j%4 else 1;l=side*(19+j%3*3);h=(9 if centre==23400 else 6.8)+j%3
+            if centre==12910 and side>0:continue
             box(d,l,0,15,10,h,0xe0d8bd);art.roof(r.pos(d,l,h),(16),11,3.0,bearing(d),lin(0x646360))
             for f in (1.15,4.2):
                 for along in (-5,-1.8,1.8,5):
                     box(d+along,l-side*5.08,f,1.55,.18,1.96,0xb8a98c)
                     box(d+along,l-side*5.21,f+.21,1.08,.13,1.47,0x465251)
             box(d,l-side*5.12,h-.6,14.8,.16,.24,0xa6977b)
-    for d,l,lean in ((24000,-44,True),(24160,-59,False)):
+    for d,l,lean in ((24295,-67,True),(24380,-75,False)):
         for n in range(9):box(d+n*.13 if lean else d,l,8+n*2.5,5.8,5.5,2.55,0xc8b99a)
         tube(d+1 if lean else d,l,30.5,3.7,.07,8.0,0x73746a,8)
     for d in range(450,24600,550):

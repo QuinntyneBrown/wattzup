@@ -62,7 +62,7 @@ export async function engadinShore(course: Course) {
   const textures: Texture[] = [],
     loader = new TextureLoader();
   try {
-    for (const name of ['larches', 'sgraffito']) {
+    for (const name of ['larches', 'sgraffito', 'moritz', 'water', 'hillside']) {
       const map = await loader.loadAsync('courses/engadin-' + name + '.webp');
       map.colorSpace = SRGBColorSpace;
       textures.push(map);
@@ -71,9 +71,16 @@ export async function engadinShore(course: Course) {
     for (const t of textures) t.dispose();
     throw error;
   }
-  textures.push(chipseal(), placeNames());
+  textures.splice(2, 0, chipseal(), placeNames());
+  const waterMap = textures[5]!;
+  waterMap.wrapS = waterMap.wrapT = RepeatWrapping;
+  waterMap.anisotropy = 4;
+  const hillMap = textures[6]!;
+  hillMap.wrapS = hillMap.wrapT = RepeatWrapping;
+  hillMap.anisotropy = 4;
   const materials = textures.map(
-    (map, i) => new MeshBasicMaterial({ map, side: DoubleSide, alphaTest: i === 0 ? 0.52 : 0 }),
+    (map, i) =>
+      new MeshBasicMaterial({ map, side: DoubleSide, alphaTest: i === 0 || i === 4 ? 0.52 : 0 }),
   );
   const glints = new MeshBasicMaterial({
     vertexColors: true,
@@ -84,18 +91,19 @@ export async function engadinShore(course: Course) {
   });
   const geometries: BufferGeometry[] = [],
     group = new Group();
-  const sections: { centre: number; node: Group; facades: number }[] = [];
+  const sections: { centre: number; node: Group; terrain: Group; facades: number }[] = [];
   const random = seeded(2117),
     tint = new Color();
   for (let start = 0; start < course.length; start += 160) {
     const end = Math.min(start + 160, course.length),
-      node = new Group();
-    group.add(node);
+      node = new Group(),
+      terrain = new Group();
+    group.add(node, terrain);
     const positions: number[] = [],
       uv: number[] = [],
       index: number[] = [],
       colours: number[] = [];
-    function finish(material: MeshBasicMaterial) {
+    function finish(material: MeshBasicMaterial, parent = node) {
       if (!index.length) return;
       const g = new BufferGeometry();
       g.setAttribute('position', new Float32BufferAttribute(positions, 3));
@@ -103,7 +111,7 @@ export async function engadinShore(course: Course) {
       if (colours.length) g.setAttribute('color', new Float32BufferAttribute(colours, 3));
       g.setIndex([...index]);
       geometries.push(g);
-      node.add(new Mesh(g, material));
+      parent.add(new Mesh(g, material));
       positions.length = uv.length = index.length = colours.length = 0;
     }
     function quad() {
@@ -173,6 +181,7 @@ export async function engadinShore(course: Course) {
           l = side * (19 + (((j % 3) + 3) % 3) * 3),
           h = (centre === 23400 ? 9 : 6.8) + (((j % 3) + 3) % 3),
           sideU = (((j % 4) + 4) % 4) / 4;
+        if (centre === 12910 && side > 0) continue;
         const floor = course.place(d).y;
         upright(
           d,
@@ -218,6 +227,48 @@ export async function engadinShore(course: Course) {
           : start > 18140
             ? [18140, 25210, 1766]
             : null;
+    // The shore, roadcut and high valley wall use the same cross-section as the authored land.
+    function slopes(m: number) {
+      const base = course.place(m).y,
+        edge = 14 + 5 * (1 + Math.sin(m / 237)) + 4 * (1 + Math.cos(m / 465));
+      const t = lake ? Math.max(0, Math.min(1, (m - lake[0]!) / (lake[1]! - lake[0]!))) : 0;
+      const coast = lake ? edge : 60,
+        width = lake ? 28 + 630 * Math.sin(Math.PI * t) ** 0.65 : 4,
+        z = lake ? lake[2]! : base - 2;
+      return [
+        [7.38, base - 0.015],
+        [19, base + (m > 17700 && m < 21110 ? 0.19 : 0.8)],
+        [46, base + 6],
+        [110, base + 27],
+        [330, base + 78],
+        [800, base + 205],
+        [-7.38, base - 0.015],
+        [-coast, z + 0.34],
+        [-coast - width - 5, z + 0.43],
+        [-coast - width - 65, z + 18],
+        [-coast - width - 280, z + 92 + 48 * Math.sin(m / 430) + 21 * Math.cos(m / 193)],
+      ];
+    }
+    for (let m = start; m < end; m += 10) {
+      const b = Math.min(end, m + 10),
+        rows = [slopes(m), slopes(b)];
+      for (const j of [0, 1, 2, 3, 4, 6, 8, 9]) {
+        for (const [k, v] of [
+          [0, j],
+          [0, j + 1],
+          [1, j + 1],
+          [1, j],
+        ] as const) {
+          const [lane, z] = rows[k]![v]!,
+            d = k ? b : m,
+            p = course.place(d, lane);
+          positions.push(p.x, z! + 0.1, p.z);
+          uv.push(p.x / 72, p.z / 72);
+        }
+        quad();
+      }
+    }
+    finish(materials[6]!, terrain);
     for (let i = 0; i < 40; i++) {
       const d = start + random() * (end - start),
         centre = course.place(d),
@@ -250,6 +301,7 @@ export async function engadinShore(course: Course) {
         l > -38
       )
         continue;
+      if (d > 23860 && d < 24190 && l > 0 && l < 78) continue;
       if (l > 10 && l < 23 && d > 17650 && d < 21150) continue;
       const tile = Math.floor(random() * 4),
         h = (far ? 7 : 6) + random() * 9;
@@ -265,7 +317,29 @@ export async function engadinShore(course: Course) {
       );
     }
     finish(materials[0]!);
+    if (start <= 24175 && end > 24175) {
+      upright(24175, 52, course.place(24175).y + 0.5, 116, 46, 0.65, 0, 1);
+      finish(materials[4]!);
+    }
     if (lake) {
+      for (let d = Math.max(start, lake[0]!); d < Math.min(end, lake[1]!); d += 10) {
+        const b = Math.min(d + 10, end, lake[1]!);
+        for (const [m, far] of [
+          [d, false],
+          [d, true],
+          [b, true],
+          [b, false],
+        ] as const) {
+          const t = Math.min(1, Math.max(0, (m - lake[0]!) / (lake[1]! - lake[0]!)));
+          const edge = 14 + 5 * (1 + Math.sin(m / 237)) + 4 * (1 + Math.cos(m / 465));
+          const lane = edge + (far ? 27 + 630 * Math.sin(t * Math.PI) ** 0.65 : 2.1);
+          const p = course.place(m, -lane);
+          positions.push(p.x, lake[2]! + 0.036, p.z);
+          uv.push(p.x / 11, p.z / 11);
+        }
+        quad();
+      }
+      finish(materials[5]!);
       for (let i = 0; i < 55; i++) {
         const d = start + random() * (end - start),
           edge = 14 + 5 * (1 + Math.sin(d / 237)) + 4 * (1 + Math.cos(d / 465));
@@ -280,14 +354,16 @@ export async function engadinShore(course: Course) {
       }
       finish(glints);
     }
-    sections.push({ centre: start + 80, node, facades });
+    sections.push({ centre: start + 80, node, terrain, facades });
   }
   return {
     group,
     villageFronts: 0,
-    at(metres: number) {
+    at(metres: number, time = 0) {
+      waterMap.offset.x = (time * 0.009) % 1;
       this.villageFronts = 0;
       for (const s of sections) {
+        s.terrain.visible = Math.abs(metres - s.centre) < 1850;
         s.node.visible = Math.abs(metres - s.centre) < 580;
         if (s.node.visible) this.villageFronts += s.facades;
       }
