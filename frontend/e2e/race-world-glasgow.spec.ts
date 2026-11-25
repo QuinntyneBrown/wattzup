@@ -35,6 +35,8 @@ for (const [actor, metres, part] of [
     await setup.start.click();
     await expect(race.backend).toBeVisible();
     if (part === 'sprayHeight') {
+      await expect.poll(() => worldRide.drawnCourseSections('Tenements')).toBeGreaterThan(0);
+      await expect.poll(() => worldRide.drawnCourseSections('RaceBoards')).toBeGreaterThan(0);
       await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(18));
       await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(90));
     }

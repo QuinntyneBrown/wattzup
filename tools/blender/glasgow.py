@@ -180,7 +180,7 @@ def scenery(k):
     art.roof(local(0,-9.6,11.5),13.1,29,4.6,yaw+math.pi/2,lin(0xAAA194))
     mount(art,r,at-24,-10.3)
     # Steel barriers backed by rainbow panels near the finish and at championship viewing areas.
-    sponsors=Painted(k,'asphalt');sponsors.b.name='RaceBoards';sponsors.b.uvs=[]
+    sponsors=Painted(k,'paint');sponsors.b.name='RaceBoards';sponsors.b.uvs=[]
     for start,end in ((-190,170),(1320,1490),(3460,3670),(6090,6285),(9120,9370),(12680,12890)):
         for d in range(start,end,3):
             for side in (-1,1):
