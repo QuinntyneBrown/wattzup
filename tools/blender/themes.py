@@ -1260,3 +1260,9 @@ import aguascalientes as _aguascalientes
 
 THEMES["aguascalientes"] = _aguascalientes.THEME
 SCENERY["aguascalientes"] = _aguascalientes.scenery
+
+import algarve as _algarve
+
+MATERIALS["moored-boats"] = {"color": 0xFFFFFF, "rough": 0.85, "vertex": True}
+THEMES["algarve"] = _algarve.THEME
+SCENERY["algarve"] = _algarve.scenery
