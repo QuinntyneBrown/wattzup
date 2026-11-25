@@ -152,4 +152,12 @@ export class WorldRideProbe {
           ?.report ?? null) as WorldRideReport | null,
     );
   }
+  /** Position of the first local training rider drawn in Girona. */
+  async trainingRiderX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { trainingRiderX?: number } } })
+          .__wzWorldRide?.course?.trainingRiderX ?? null,
+    );
+  }
 }

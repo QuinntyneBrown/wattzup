@@ -193,7 +193,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 158 | 3 Mins On, 2 Mins Off | Cinque Terre | 80% |  | Cliffside villages in pastel colours above the Ligurian Sea. |
 | 159 | A Little Bit of Everything | Cherry Blossom Festival, D.C. | 35% |  | The National Mall and Tidal Basin under pink blossoms and kites. |
 | 160 | Cobbled Mayhem | Oude Kwaremont | 35% |  | Tour of Flanders cobbles, beer tents and roaring Flemish fans. |
-| 161 | Drop Ollie at All Costs | Els Àngels, Girona | 81% |  | A favourite pro training climb above Girona's old town. |
+| 161 | Drop Ollie at All Costs | Els Àngels, Girona | 81% |  | Follow the Onyar, climb through cork oaks with local training groups and finish at the sanctuary. The 17.05 km race preserves all 22 class stages. [Rider views](screenshots/els-angels/README.md). |
 | 162 | FTP Builder | Oregon Coast | 35% |  | Highway 101 past sea stacks, lighthouses and misty spruce. |
 | 163 | Ramp Workout: From Threshold to Sprints | Cypress Mountain | 35% |  | Vancouver's ski-hill road ramping above the city and ocean. |
 | 164 | Aerobic Efforts With Max Sprints | Winterlude, Ottawa | 85% |  | Snow sculptures and skaters on the frozen Rideau Canal. |

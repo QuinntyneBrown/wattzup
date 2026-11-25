@@ -2096,6 +2096,167 @@
         },
         "roll": 0.15
       }
+    },
+    {
+      "id": "els-angels",
+      "name": "Els Àngels, Girona",
+      "routeName": "Santuari dels Àngels",
+      "place": "Girona and the Gavarres",
+      "distanceKm": 17.05,
+      "climbingM": 505,
+      "rating": "Hard",
+      "world": "angels",
+      "thumbnailUrl": "maps/els-angels.jpg",
+      "photoUrl": "maps/els-angels-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 240,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 14,
+            "cadenceAim": 82
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 19,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 22,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 240,
+            "level": 18,
+            "cadenceAim": 88
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 300,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 20,
+            "cadenceAim": 92
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 22,
+            "cadenceAim": 97
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 25,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 10,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 25,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 25,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 10,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 25,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "cool-down",
+            "duration": 120,
+            "level": 10,
+            "cadenceAim": 80
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 1,
+          "work": 4.4,
+          "recover": 2.3,
+          "cool-down": 1,
+          "steady": 3
+        },
+        "roll": 0.25
+      }
     }
   ]
 }

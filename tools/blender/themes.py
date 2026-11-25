@@ -1278,3 +1278,8 @@ import amsterdam as _amsterdam
 MATERIALS.update({name: {"color": 0xFFFFFF, "vertex": True} for name in ("tour-boat", "commuter", "canal-front", "elm-leaves", "elm-shade")})
 THEMES["amsterdam"] = _amsterdam.THEME
 SCENERY["amsterdam"] = _amsterdam.scenery
+
+import angels as _angels  # noqa: E402
+
+THEMES["angels"] = _angels.THEME
+SCENERY["angels"] = _angels.scenery
