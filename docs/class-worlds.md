@@ -30,6 +30,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Beach Road, Melbourne (`beachroad`) | 45 Minute Sprint Training (GCN, 45:50) | 19.613 km | 17 m | `public/courses/beachroad.glb` ([ride views](screenshots/beach-road-melbourne/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Bealach na Bà (`bealach`) | 22 Minute Strength Intervals (GCN, 22:00) | 9.050 km | 623 m | `public/courses/bealach.glb` ([ride views](screenshots/bealach-na-ba/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Big Sur (`bigsur`) | Under Over Power Blocks (GCN Training, 30:00) | 14.075 km | 286 m | `public/courses/bigsur.glb` ([ride views](screenshots/big-sur/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Blackpool Illuminations (`blackpool`) | In and Out, Shake It All About (GCN Training, 14:00) | 5.630 km | 3 m | `public/courses/blackpool.glb` ([ride views](screenshots/blackpool-illuminations/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

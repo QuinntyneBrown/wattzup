@@ -145,6 +145,20 @@ export class WorldRideProbe {
     );
   }
 
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+
+  async tramMetres(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { tramMetres?: number } } })
+          .__wzWorldRide?.course?.tramMetres ?? null,
+    );
+  }
+
   async pin(tier: Tier, backend: 'auto' | 'webgl2' = 'auto'): Promise<void> {
     await this.page.addInitScript(
       ([t, b]) => {
@@ -382,6 +396,13 @@ export class WorldRideProbe {
       () =>
         (window as unknown as { __wzWorldRide?: { course?: { fallingWater?: number } } })
           .__wzWorldRide?.course?.fallingWater ?? null,
+    );
+  }
+  async illumination(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { illumination?: number } } })
+          .__wzWorldRide?.course?.illumination ?? null,
     );
   }
 }

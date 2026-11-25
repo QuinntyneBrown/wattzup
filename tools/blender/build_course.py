@@ -646,7 +646,9 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             data.from_pydata(part.verts, [], part.faces)
             film.objects.link(bpy.data.objects.new(part.name, data))
         group, chunked = group_of(part.mat)
-        if part.name in GROUND_PARTS:
+        if part.name == 'LandmarkLights':
+            group, chunked = 'Glow', False
+        elif part.name in GROUND_PARTS:
             group = "Ground"
         elif part.name == WINDOWS_PART:
             group = "Windows"
@@ -2274,6 +2276,9 @@ def main(argv: list[str] | None = None) -> dict:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
     if (theme or {}).get("road_builder"):
+        theme["road_builder"](road, st, length, col, sys.modules[__name__])
+    else:
+        if (theme or {}).get("road_builder"):
         theme["road_builder"](road, st, length, col, sys.modules[__name__])
     else:
         if (theme or {}).get("road_builder"):

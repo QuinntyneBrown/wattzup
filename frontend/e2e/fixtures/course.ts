@@ -10,6 +10,7 @@ import bayOfIslandsElevation from './bayofislands-elevation.json';
 import beachRoadElevation from './beachroad-elevation.json';
 import bealachElevation from './bealach-elevation.json';
 import bigSurElevation from './bigsur-elevation.json';
+import blackpoolElevation from './blackpool-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1009,6 +1010,38 @@ export const bigSurCourseMap = {
       seg('recover', 60, 19, 90),
       seg('work', 60, 24, 100),
       seg('cool-down', 240, 13, 90),
+    ],
+  },
+};
+
+export const blackpoolCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'blackpool-illuminations',
+  name: 'Blackpool Illuminations',
+  routeName: 'The Promenade',
+  place: 'Lancashire, England',
+  world: 'blackpool',
+  distanceKm: 5.63,
+  climbingM: 3,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: blackpoolElevation,
+  },
+  thumbnailUrl: 'maps/blackpool-illuminations.jpg',
+  photoUrl: 'maps/blackpool-illuminations-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 75),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 19, 85),
+      seg('work', 30, 22, 90),
+      seg('recover', 30, 11, 80),
+      seg('work', 420, 19, 78),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 24, 95),
+      seg('cool-down', 90, 10, 80),
     ],
   },
 };

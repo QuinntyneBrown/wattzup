@@ -1359,3 +1359,8 @@ import bigsur as _bigsur
 
 THEMES["bigsur"] = _bigsur.THEME
 SCENERY["bigsur"] = _bigsur.scenery
+
+import blackpool as _blackpool
+
+THEMES["blackpool"] = _blackpool.THEME
+SCENERY["blackpool"] = _blackpool.scenery
