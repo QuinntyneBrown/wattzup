@@ -6,7 +6,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 
 | Course | Class | Length | Climbing | Model | Status |
 | --- | --- | --- | --- | --- | --- |
-| Adelaide Hills (`adelaide`) | HIIT Fat Burn With Mitchelton-Scott (GCN, 30:00) | 12.975 km | 201 m | `public/courses/adelaide.glb` ([captures](screenshots/adelaide/)) | Built and ridden; open from the start in Map Select |
+| Adelaide Hills (`adelaide`) | HIIT Fat Burn With Mitchelton-Scott (GCN, 30:00) | 17.11 km | 265 m | `public/courses/adelaide.glb` ([captures](screenshots/adelaide/)) | Built and ridden; open from the start in Map Select |
 | Ibiza Sunset Strip (`ibiza`) | Intervals to the Beat (GCN Training, 20:00) | 8.4 km | 159 m | `public/courses/ibiza.glb` ([captures](screenshots/courses/ibiza/)) | Built and ridden; open from the start on the map catalogue |
 | Sella Ronda (`sellaronda`) | Over/Under Intervals on the Passo Sella (GCN Training, 28:00) | 11.7 km | 357 m | `public/courses/sellaronda.glb` ([captures](screenshots/courses/sellaronda/)) | Built and ridden; open from the start on the map catalogue |
 | Prairie Paceline (`prairie`) | The catalogue's 30:00 intervals (placeholder) | 18.4 km | 90 m | `public/courses/prairie.glb` ([film](../blender/prairie.mp4)) | Built in Blender (ADR 0035) and ridden in races |

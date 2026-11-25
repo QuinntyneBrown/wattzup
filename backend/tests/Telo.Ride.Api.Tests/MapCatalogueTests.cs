@@ -29,7 +29,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Sella Ronda", 11.7, 357, "Hard", "Over/Under Intervals on the Passo Sella", "Four Dolomite passes circling the Sella massif"),
                 new Listed("Cinque Terre", 17.1, 335, "Hard", "3 Mins On, 2 Mins Off", "The corniche above the Ligurian Sea"),
                 new Listed("Haleakalā", 15.8, 923, "Brutal", "Maximum Intensity Hill Climb Efforts", "The summit road from the Pacific coast to the crater rim"),
-                new Listed("Adelaide Hills", 12.975, 201, "Moderate", "The Willunga road", "Summer vineyards and gum trees on the climb to Willunga Hill"),
+                new Listed("Adelaide Hills", 17.11, 265, "Moderate", "The Willunga road", "Summer vineyards and gum trees on the climb to Willunga Hill"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -153,7 +153,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var map = Assert.Single(await ReadMaps(), m => m.Id == "adelaide-hills");
         Assert.Equal("adelaide", map.World);
         Assert.Equal("The Willunga road", map.RouteName);
-        Assert.Equal(201, map.ClimbingM);
+        Assert.Equal(265, map.ClimbingM);
         Assert.Equal(1800, map.Plan.Segments.Sum(s => s.Duration));
         Assert.Equal(new Segment("warm-up", 270, 14, 80), map.Plan.Segments[0]);
         Assert.Equal(5, map.Plan.Segments.Count(s => s == new Segment("work", 30, 24, 100)));

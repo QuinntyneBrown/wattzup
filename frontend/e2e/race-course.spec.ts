@@ -142,3 +142,35 @@ test('Adelaide shows its Willunga road panorama when neither graphics backend ca
     .poll(() => race.panorama.evaluate((image: HTMLImageElement) => image.naturalWidth))
     .toBeGreaterThan(0);
 });
+
+test('the Adelaide race climbs Old Willunga Hill for three kilometres before the cooldown', async ({
+  api,
+  bluetooth,
+  page,
+  webgl,
+  worldRide,
+}) => {
+  await webgl.withoutWebGpu();
+  await worldRide.pin('low');
+  const data = page.waitForResponse((response) =>
+    response.url().endsWith('/courses/adelaide.course.json'),
+  );
+  const race = await startRace(page, bluetooth, api, adelaideCourseMap.id, 'mode=solo', {
+    catalogue: [adelaideCourseMap],
+    world: true,
+  });
+  await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
+  const { stages, points, step, startIndex } = (await (await data).json()) as {
+    stages: { kind: string; from: number; to: number }[];
+    points: number[];
+    step: number;
+    startIndex: number;
+  };
+  const summit = stages.at(-1)!.from;
+  const effort = stages.at(-3)!.from;
+  expect(summit - effort).toBeCloseTo(3000, -1);
+  const height = (metres: number) => points[(startIndex + Math.round(metres / step)) * 3 + 1]!;
+  for (let d = effort; d + 100 <= summit; d += 100) {
+    expect(height(d + 100)).toBeGreaterThan(height(d));
+  }
+});
