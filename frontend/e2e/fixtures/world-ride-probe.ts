@@ -118,4 +118,11 @@ export class WorldRideProbe {
           ?.course?.horseLane ?? null,
     );
   }
+  async cirqueSun(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { cirqueSun?: number } } }).__wzWorldRide
+          ?.course?.cirqueSun ?? null,
+    );
+  }
 }

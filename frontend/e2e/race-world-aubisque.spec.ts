@@ -27,6 +27,8 @@ test('a horse steps aside near the riding line and holds still on pause', async 
   await setup.mode('Your best time').click();
   await setup.start.click();
   await expect(race.backend).toBeVisible();
+  const firstSun = await worldRide.cirqueSun();
+  expect(firstSun).toBeGreaterThan(0);
   const samples: number[] = [];
   await expect
     .poll(async () => {
@@ -35,8 +37,10 @@ test('a horse steps aside near the riding line and holds still on pause', async 
       return Math.max(...samples) - Math.min(...samples);
     })
     .toBeGreaterThan(0.09);
+  await expect.poll(() => worldRide.cirqueSun()).not.toBe(firstSun);
   await race.pause.click();
   await expect(race.resume).toBeVisible();
+  const shade = await worldRide.cirqueSun();
   const held = await worldRide.horseLane();
   await page.evaluate(
     () =>
@@ -46,6 +50,7 @@ test('a horse steps aside near the riding line and holds still on pause', async 
         ),
       ),
   );
+  expect(await worldRide.cirqueSun()).toBe(shade);
   expect(await worldRide.horseLane()).toBe(held);
   await race.resume.click();
   await expect.poll(() => worldRide.horseLane()).not.toBe(held);

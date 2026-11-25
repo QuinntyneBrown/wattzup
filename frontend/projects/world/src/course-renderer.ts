@@ -81,6 +81,7 @@ import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
+import type { AubisqueWeather } from './aubisque-weather';
 import type { AubisqueLivestock } from './aubisque-livestock';
 import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
@@ -238,11 +239,13 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    cirqueSun: null as number | null,
     horseLane: null as number | null,
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
   };
+  private weather: AubisqueWeather | null = null;
   private livestock: AubisqueLivestock | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
@@ -363,11 +366,15 @@ export class CourseRenderer implements WorldRenderer {
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (this.course.file.id === 'aubisque') {
-        const { AubisqueLivestock } = await import('./aubisque-livestock');
+        const [{ AubisqueLivestock }, { AubisqueWeather }] = await Promise.all([
+          import('./aubisque-livestock'),
+          import('./aubisque-weather'),
+        ]);
         if (this.disposed) return false;
         this.livestock = new AubisqueLivestock(this.course);
-        this.scene.add(this.livestock.mesh);
-        this.disposables.push(this.livestock);
+        this.weather = new AubisqueWeather(this.course, this.sun);
+        this.scene.add(this.weather.root, this.livestock.mesh);
+        this.disposables.push(this.livestock, this.weather);
       }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
@@ -435,6 +442,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.weather?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.livestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
@@ -483,6 +491,7 @@ export class CourseRenderer implements WorldRenderer {
     this.funivia = null;
     this.glider = null;
     this.livestock = null;
+    this.weather = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -1117,6 +1126,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.cirqueSun = this.weather ? this.sun.intensity : null;
     drawn.horseLane = this.livestock?.horseLane ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
