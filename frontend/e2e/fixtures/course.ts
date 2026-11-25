@@ -5,6 +5,7 @@ import atlanticElevation from './atlantic-elevation.json';
 
 import aubisqueElevation from './aubisque-elevation.json';
 
+import bathshebaElevation from './bathsheba-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -770,6 +771,38 @@ export const austinCourseMap = {
       seg('recover', 60, 13, 90),
       seg('work', 60, 21, 90),
       seg('cool-down', 160, 12, 84),
+    ],
+  },
+};
+
+export const bathshebaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'bathsheba-barbados',
+  name: 'Bathsheba, Barbados',
+  routeName: 'East Coast Road',
+  place: 'Saint Joseph, Barbados',
+  world: 'bathsheba',
+  distanceKm: 10.7,
+  climbingM: 31,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: bathshebaElevation,
+  },
+  thumbnailUrl: 'maps/bathsheba-barbados.jpg',
+  photoUrl: 'maps/bathsheba-barbados-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 14, 80),
+      seg('work', 60, 18, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 14, 90),
+      seg('recover', 240, 16, 90),
+      seg('work', 300, 18, 90),
+      seg('work', 120, 19, 90),
+      seg('cool-down', 240, 13, 80),
     ],
   },
 };

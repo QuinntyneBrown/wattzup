@@ -25,6 +25,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Atlantic Ocean Road (`atlanticroad`) | FTP HIIT Booster for Longer Efforts (GCN Training, 30:00) | 13.125 km | 65 m | `public/courses/atlanticroad.glb` ([ride views](screenshots/atlantic-ocean-road/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Col d'Aubisque (`aubisque`) | 35 Minute Torque Power Intervals (GCN, 33:00) | 12.600 km | 361 m | `public/courses/aubisque.glb` ([ride views](screenshots/col-aubisque/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Sixth Street, Austin (`austin`) | Get Pumped With Grace (GCN Training, 33:40) | 15.450 km | 0 m | `public/courses/austin.glb` ([ride views](screenshots/sixth-street-austin/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Bathsheba, Barbados (`bathsheba`) | Take It Easy (GCN Training, 25:00) | 10.700 km | 31 m | `public/courses/bathsheba.glb` ([ride views](screenshots/bathsheba-barbados/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

@@ -1334,3 +1334,8 @@ import austin as _austin
 
 THEMES["austin"] = _austin.THEME
 SCENERY["austin"] = _austin.scenery
+
+import bathsheba as _bathsheba
+
+THEMES["bathsheba"] = _bathsheba.THEME
+SCENERY["bathsheba"] = _bathsheba.scenery

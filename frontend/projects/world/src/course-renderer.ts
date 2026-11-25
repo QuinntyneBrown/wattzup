@@ -102,6 +102,8 @@ import type { AubisqueLivestock } from './aubisque-livestock';
 import { heldFps } from './held-fps';
 import type { AustinPerformers } from './austin-performers';
 import { heldFps } from './held-fps';
+import type { BathshebaReef } from './bathsheba-reef';
+import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -272,6 +274,7 @@ export class CourseRenderer implements WorldRenderer {
     cirqueSun: null as number | null,
     horseLane: null as number | null,
     guitarHand: null as number | null,
+    reefCrest: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -297,6 +300,7 @@ export class CourseRenderer implements WorldRenderer {
   private weather: AubisqueWeather | null = null;
   private livestock: AubisqueLivestock | null = null;
   private performers: AustinPerformers | null = null;
+  private reef: BathshebaReef | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -527,6 +531,13 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.performers.mesh);
         this.disposables.push(this.performers);
       }
+      if (this.course.file.id === 'bathsheba') {
+        const { BathshebaReef } = await import('./bathsheba-reef');
+        if (this.disposed) return false;
+        this.reef = new BathshebaReef(this.course);
+        this.scene.add(this.reef.group);
+        this.disposables.push(this.reef);
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -608,6 +619,7 @@ export class CourseRenderer implements WorldRenderer {
     this.weather?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.livestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.performers?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.reef?.update(metres, frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -691,6 +703,7 @@ export class CourseRenderer implements WorldRenderer {
     this.livestock = null;
     this.weather = null;
     this.performers = null;
+    this.reef = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -1548,6 +1561,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.cirqueSun = this.weather ? this.sun.intensity : null;
     drawn.horseLane = this.livestock?.horseLane ?? null;
     drawn.guitarHand = this.performers?.guitarHand ?? null;
+    drawn.reefCrest = this.reef?.crest ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

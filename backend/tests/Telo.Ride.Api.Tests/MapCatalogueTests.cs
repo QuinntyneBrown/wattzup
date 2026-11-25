@@ -300,6 +300,25 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     }
 
     [Fact]
+    public async Task Bathsheba_preserves_every_stage_of_Take_It_Easy()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "bathsheba-barbados");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 14, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 14, 90),
+                new Segment("recover", 240, 16, 90),
+                new Segment("work", 300, 18, 90),
+                new Segment("work", 120, 19, 90),
+                new Segment("cool-down", 240, 13, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task The_catalogue_lists_its_maps_in_unlock_order_without_a_session()
     {
         var maps = await ReadMaps();
@@ -332,6 +351,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Atlantic Ocean Road", 13.125, 65, "Hard", "Storseisundet Bridge", "Møre og Romsdal, Norway"),
                 new Listed("Col d'Aubisque", 12.6, 361, "Hard", "Cirque du Litor", "Pyrénées-Atlantiques, France"),
                 new Listed("Sixth Street, Austin", 15.45, 0, "Moderate", "Sixth Street night crit", "Austin, Texas"),
+                new Listed("Bathsheba, Barbados", 10.7, 31, "Easy", "East Coast Road", "Saint Joseph, Barbados"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -369,6 +389,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("atlantic-ocean-road", null),
                 ("col-aubisque", null),
                 ("sixth-street-austin", null),
+                ("bathsheba-barbados", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -406,6 +427,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("atlantic-ocean-road", null),
                 ("col-aubisque", null),
                 ("sixth-street-austin", null),
+                ("bathsheba-barbados", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -429,7 +451,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "sixth-street-austin" => 2020, "col-aubisque" => 1980, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "bathsheba-barbados" => 1500, "sixth-street-austin" => 2020, "col-aubisque" => 1980, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -448,7 +470,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
