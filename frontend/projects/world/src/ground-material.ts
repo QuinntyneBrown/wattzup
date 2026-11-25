@@ -26,6 +26,7 @@ import {
   type Material,
   MeshStandardNodeMaterial,
   type Node,
+  type Texture,
   RepeatWrapping,
   RGBAFormat,
   UnsignedByteType,
@@ -77,6 +78,7 @@ export function groundMaterial(
   wet = 0,
   haze: Color | null = null,
   coloured: Node<'vec3'> | null = null,
+  clinker: Texture | null = null,
 ): { material: Material; eye: GroundEye } {
   // glTF keeps a UV's second number upside down: the metres from the start line come back as 1 - v.
   const left = uv().x;
@@ -118,7 +120,10 @@ export function groundMaterial(
     .mul(grain.mul(0.7).add(0.5))
     .mul(mix(0.6, 1.05, broad.g))
     .mul(middle.b.mul(0.5).oneMinus());
-  const dry = mix(mix(beside, asphalt, onRoad), paint, painted);
+  const road = clinker
+    ? texture(clinker, place.mul(1 / 2.4)).rgb.mul(worn.mul(0.13).add(1))
+    : asphalt;
+  const dry = mix(mix(beside, road, onRoad), paint, painted);
   // Standing water: it lies in the broad patches and the wheel tracks' hollows, more of it the wetter the ground.
   const water =
     wet > 0

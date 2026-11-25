@@ -33,6 +33,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Aguascalientes Velodrome", 12.875, 0, "Hard", "The pursuit line", "A banked timber pursuit track in a high-altitude Mexican arena"),
                 new Listed("Algarve Cliffs", 16.8, 113, "Hard", "The clifftop road", "The limestone headlands of southern Portugal"),
                 new Listed("Alpe d'Huez", 7.4, 328, "Hard", "The 21 hairpins", "The 21 bends above Bourg-d’Oisans"),
+                new Listed("Amsterdam Canals", 8.0, 28, "Easy", "Herengracht", "The canal quays of Amsterdam"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -59,6 +60,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("aguascalientes", null),
                 ("algarve-cliffs", null),
                 ("alpe-dhuez", null),
+                ("amsterdam-canals", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -85,6 +87,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("aguascalientes", null),
                 ("algarve-cliffs", null),
                 ("alpe-dhuez", null),
+                ("amsterdam-canals", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -108,7 +111,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -127,7 +130,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
@@ -204,6 +207,28 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.Equal(1200, map.Plan.Segments.Sum(s => s.Duration));
         Assert.Equal(14, map.Plan.Segments.Count);
         Assert.Equal(new Segment("warm-up", 120, 11, 80), map.Plan.Segments[0]);
+    }
+
+    [Fact]
+    public async Task Herengracht_rides_the_original_beginner_training_session()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "amsterdam-canals");
+        Assert.Equal("amsterdam", map.World);
+        Assert.Equal(8.0, map.DistanceKm);
+        Assert.Equal(28, map.ClimbingM);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 12, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 120, 16, 80),
+                new Segment("work", 120, 18, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 120, 16, 80),
+                new Segment("cool-down", 120, 13, 80)
+            ],
+            map.Plan.Segments);
     }
 
     [Fact]

@@ -1272,3 +1272,9 @@ import alpe as _alpe
 MATERIALS["orange-smoke"] = {"color": 0xFFFFFF, "vertex": True}
 THEMES["alpe"] = _alpe.THEME
 SCENERY["alpe"] = _alpe.scenery
+
+import amsterdam as _amsterdam
+
+MATERIALS.update({name: {"color": 0xFFFFFF, "vertex": True} for name in ("tour-boat", "commuter", "canal-front", "elm-leaves", "elm-shade")})
+THEMES["amsterdam"] = _amsterdam.THEME
+SCENERY["amsterdam"] = _amsterdam.scenery

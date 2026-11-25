@@ -309,3 +309,34 @@ export const alpeCourseMap = {
     ],
   },
 };
+
+export const amsterdamCourseMap = {
+  ...ibizaCourseMap,
+  id: 'amsterdam-canals',
+  name: 'Amsterdam Canals',
+  routeName: 'Herengracht',
+  place: 'The canal quays of Amsterdam',
+  world: 'amsterdam',
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0.5, recover: -0.5, 'cool-down': 0, steady: 0 },
+    roll: 0.15,
+  },
+  distanceKm: 8,
+  climbingM: 28,
+  photoUrl: 'maps/amsterdam-canals-photo.jpg',
+  thumbnailUrl: 'maps/amsterdam-canals.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 120, 16, 80),
+      seg('work', 120, 18, 80),
+      seg('work', 120, 19, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 120, 16, 80),
+      seg('cool-down', 120, 13, 80),
+    ],
+  },
+};
