@@ -21,6 +21,7 @@ import type { engadinLakes } from './engadin-lakes';
 import type { etnaAscent } from './etna-ascent';
 import type { fenland } from './fenland';
 import type { broadwayEscarpment } from './broadway-escarpment';
+import type { subaruLine } from './subaru-line';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -330,6 +331,7 @@ export class CourseRenderer implements WorldRenderer {
   private plaza: Awaited<ReturnType<typeof chichenPlaza>> | null = null;
   private fen: Awaited<ReturnType<typeof fenland>> | null = null;
   private escarpment: Awaited<ReturnType<typeof broadwayEscarpment>> | null = null;
+  private subaru: Awaited<ReturnType<typeof subaruLine>> | null = null;
   private rain: Rain | null = null;
   private parkTraffic: ParkTraffic | null = null;
   private champsParade: ChampsParade | null = null;
@@ -384,6 +386,9 @@ export class CourseRenderer implements WorldRenderer {
     walkerPosition: null as number | null,
     leafAngle: null as number | null,
     sheepHead: null as number | null,
+    visitorPosition: null as number | null,
+    cloudPosition: null as number | null,
+    shuttlePosition: null as number | null,
     tier: 0 as number,
     pushCarPosition: undefined as number | undefined,
     mirageHeight: undefined as number | undefined,
@@ -773,6 +778,22 @@ export class CourseRenderer implements WorldRenderer {
           return false;
         }
         this.escarpment = hills;
+        this.disposables.push(hills);
+        this.scene.add(hills.group);
+        this.camera.setViewOffset(1, 1, 0, 0.025, 1, 1);
+        hills.at(0, 0);
+      }
+      if (this.course.file.id === 'fuji') {
+        const { subaruLine } = await import('./subaru-line');
+        if (this.disposed) return false;
+        const hills = await subaruLine(this.course);
+        if (this.disposed) {
+          hills.dispose();
+          return false;
+        }
+        this.subaru = hills;
+        this.camera.far = 19500;
+        this.camera.updateProjectionMatrix();
         this.disposables.push(hills);
         this.scene.add(hills.group);
         this.camera.setViewOffset(1, 1, 0, 0.025, 1, 1);
@@ -1374,6 +1395,7 @@ export class CourseRenderer implements WorldRenderer {
     this.etna?.at(frame.reducedMotion ? 0 : frame.time, metres);
     this.fen?.at(frame.reducedMotion ? 0 : frame.time, metres);
     this.escarpment?.at(frame.reducedMotion ? 0 : frame.time, metres);
+    this.subaru?.at(frame.reducedMotion ? 0 : frame.time, metres);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
     const standing = this.ride(you, metres, 0);
@@ -1630,6 +1652,7 @@ export class CourseRenderer implements WorldRenderer {
     this.etna = null;
     this.fen = null;
     this.escarpment = null;
+    this.subaru = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -1760,6 +1783,7 @@ export class CourseRenderer implements WorldRenderer {
     Object.assign(materials, this.etna?.rocks);
     Object.assign(materials, this.fen?.materials);
     Object.assign(materials, this.escarpment?.materials);
+    Object.assign(materials, this.subaru?.materials);
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
     const detail = surfaceTexture();
@@ -2153,8 +2177,8 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : this.lakes ? 4.65 : this.etna ? 4.55 : this.fen ? 4.4 : this.escarpment ? 4.45 : CAMERA_BACK;
-    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : this.lakes ? 2.65 : this.etna ? 2.42 : this.fen ? 2.1 : this.escarpment ? 2.2 : CAMERA_UP;
+    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : this.lakes ? 4.65 : this.etna ? 4.55 : this.fen ? 4.4 : this.escarpment ? 4.45 : this.subaru ? 4.45 : CAMERA_BACK;
+    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : this.lakes ? 2.65 : this.etna ? 2.42 : this.fen ? 2.1 : this.escarpment ? 2.2 : this.subaru ? 2.2 : CAMERA_UP;
     const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : this.commuters ? 4.1 : distance + (CLOSE_BACK - distance) * close;
     const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : this.commuters ? 2.0 : eye + (CLOSE_UP - eye) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
@@ -2603,6 +2627,9 @@ export class CourseRenderer implements WorldRenderer {
     drawn.walkerPosition = this.escarpment?.walkerPosition ?? null;
     drawn.leafAngle = this.escarpment?.leafAngle ?? null;
     drawn.sheepHead = this.escarpment?.sheepHead ?? null;
+    drawn.visitorPosition = this.subaru?.visitorPosition ?? null;
+    drawn.cloudPosition = this.subaru?.cloudPosition ?? null;
+    drawn.shuttlePosition = this.subaru?.shuttlePosition ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;

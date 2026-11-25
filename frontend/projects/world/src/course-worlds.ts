@@ -41,6 +41,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   etna: 'courses/etna',
   fens: 'courses/fens',
   fishhill: 'courses/fishhill',
+  fuji: 'courses/fuji',
   ibiza: 'courses/ibiza',
   alpe: 'courses/alpe',
   dubai: 'courses/dubai',

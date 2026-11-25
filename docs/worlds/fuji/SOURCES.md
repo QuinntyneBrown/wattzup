@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Elevation Evaluation” Route Details (Watopia)](https://zwiftinsider.com/route/elevation-evaluation/) (g0041) | © Zwift |
 | game-04.jpg | Zwift: [“Kappa Quest Reverse” Route Details (Makuri Islands)](https://zwiftinsider.com/route/kappa-quest-reverse/) (g0076) | © Zwift |
 | game-05.jpg | Zwift: [“Kappa Quest” Route Details (Makuri Islands)](https://zwiftinsider.com/route/kappa-quest/) (g0077) | © Zwift |
+
+## Original race artwork
+
+The reference photographs, game views and their original credits were recovered from repository history. The fixed Fuji skyline, Lake Kawaguchi basin, cloud bank, woodland atlas, forest floor, volcanic cinder and fifth-station shop fronts were generated for this race. The asphalt uses the original Fish Hill aggregate tile. Real 01–05 and 14 informed the road, markers and transition from conifers to larch. Real 07–11 and 15 informed the mountain and views from the upper road. Real 06, 09 and 12–14 informed the station, where buses and pedestrians use original geometry. Game 01–05 informed the opening, forest enclosure, moving sightlines and upper-road scale.

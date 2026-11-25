@@ -41,6 +41,7 @@ import engadinElevation from './engadin-elevation.json';
 import etnaElevation from './etna-elevation.json';
 import fensElevation from './fens-elevation.json';
 import fishhillElevation from './fishhill-elevation.json';
+import fujiElevation from './fuji-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -2771,6 +2772,40 @@ export const fishhillCourseMap = {
       seg('work', 60, 21, 100),
       seg('recover', 180, 19, 80),
       seg('cool-down', 300, 13, 78),
+    ],
+  },
+};
+
+export const fujiCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mount-fuji-road',
+  name: 'Mount Fuji Road',
+  routeName: 'The Subaru Line',
+  place: 'Yamanashi, Japan',
+  world: 'fuji',
+  distanceKm: 13.25,
+  climbingM: 855,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: fujiElevation,
+  },
+  thumbnailUrl: 'maps/mount-fuji-road.jpg',
+  photoUrl: 'maps/mount-fuji-road-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 16, 90),
+      seg('work', 60, 10, 60),
+      seg('recover', 15, 24, 100),
+      seg('work', 300, 21, 90),
+      seg('work', 15, 24, 100),
+      seg('recover', 300, 21, 90),
+      seg('work', 15, 24, 100),
+      seg('recover', 300, 21, 90),
+      seg('work', 15, 24, 100),
+      seg('recover', 300, 21, 90),
+      seg('cool-down', 180, 10, 80),
     ],
   },
 };

@@ -1023,3 +1023,18 @@ The class defines a strong effort grade and tight bends. Its renderer uses amber
 | Tower, 11.37 km | Three round turrets and a crenellated parapet identify Broadway Tower on the ridge. Real 10–11, game 04 for the approaching sightline. |
 
 Place Broadway Tower at a fixed position, as Caribana does with the CN Tower. Build the turrets and battlements in three dimensions for the final approach. Separate the near wall, wooded scarp and distant patchwork vale. Batch cottages, coping stones, signs, gateposts and garden planting by section. Keep sheep movement and leaf motion deterministic on ride time and hold them on pause or reduced motion. Load the course, materials and moving figures on entry, then release each on exit. Follow ADRs 0021, 0023, 0030, 0034 and 0035. The performance design measures submitted frames on the High Street and in the beech cutting after nine seconds of warm-up.
+
+## Mount Fuji Road (#2121)
+
+The class defines a 3–7% ramp, repeated bends and a cool forest palette. Map Select has no Subaru Line race. Preserve the 11 intervals of 30 Minute HIIT Ramp Session on a 13.25 km course, beginning at 1,450 m and finishing at 2,305 m. Condense the lower approach and place signs at the physical elevations the rider passes. The fifteen photographs, five game views and source credits were recovered from Git history before choosing these compositions.
+
+| Rider viewpoint | Composition and source |
+| --- | --- |
+| Toll, 0.08 km | The toll canopy spans the broad Subaru Line, with Japanese lane signs and dense forest behind it. Real 01–02 and 14, games 01 and 04. |
+| Forest, 2.21 km | Conifers and pale birch trunks crowd the smooth first switchbacks. Real 01 and 04–05, games 04–05. |
+| Okuniwa, 5.36 km | Gold larch and dwarf trees reveal the pale summit above rust-red scoria. Real 03–05, 07 and 09, games 01 and 03. |
+| Lakes, 7.47 km | An open slope looks down over Lake Kawaguchi and the Yamanashi plain. Real 07–08 and 15, games 02–03. |
+| Clouds, 9.84 km | Layered cloud lies below the road, with the summit clear beyond the scoria verge. Real 08–11, games 02–03. |
+| Station, 12.91 km | Buses, timber-clad shops, waiting visitors and the red shrine gate mark the fifth station. Real 06, 09 and 12–14, games 01 and 03. |
+
+As with Caribana’s CN Tower, fix Fuji in world coordinates so nearby branches move across its outline on bends. The near forest, far lake basin and cone occupy separate depths. Batch road furniture, birches and larch, swap to lower growth at the scoria shoulder, and keep small details near the bike. Draw a few translucent cloud layers below the overlook and keep the fifth-station shuttle on a short forecourt loop. Advance movement on ride time, freeze it on pause, and suppress motion for reduced motion. Load and dispose of course-specific geometry and textures with the world. Follow ADRs 0021, 0023, 0030, 0034 and 0035. Use the performance design’s nine-second warm-up and sixty-second submitted-frame samples in the forest and on the station approach.

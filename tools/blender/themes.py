@@ -1449,3 +1449,10 @@ for name in ("fishhill-lane", "fishhill-meadow", "fishhill-wall", "fishhill-slat
     MATERIALS[name] = {"color": 0x99937b, "rough": 1.0, "vertex": True}
 THEMES["fishhill"] = _fishhill.THEME
 SCENERY["fishhill"] = _fishhill.scenery
+
+import fuji as _fuji
+
+for name in ("fuji-tarmac", "fuji-clinker", "fuji-scoria", "fuji-moss"):
+    MATERIALS[name] = {"color": 0x777572, "rough": 1.0, "vertex": True}
+THEMES["fuji"] = _fuji.THEME
+SCENERY["fuji"] = _fuji.scenery

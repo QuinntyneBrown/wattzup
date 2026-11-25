@@ -593,6 +593,8 @@ def group_of(mat: str) -> tuple[str, bool]:
         return ("Facades" if mat == "canal-front" else "Elms"), True
     if mat == "confetti":
         return "Confetti", True
+    if mat.startswith("fuji-"):
+        return mat.split("-")[1].capitalize(), True
     if mat.startswith("fishhill-"):
         return mat.split("-")[1].capitalize(), True
     if mat.startswith("fen-"):
