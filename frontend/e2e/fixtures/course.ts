@@ -159,7 +159,7 @@ export const cabotCourseMap = {
   place: 'Cape Breton, Nova Scotia',
   world: 'cabot',
   distanceKm: 25.075,
-  climbingM: 578,
+  climbingM: 584,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

@@ -114,7 +114,7 @@ export class CabotWildlife {
   private readonly hull = fishingBoat();
   private readonly heads: Mesh[] = [];
   private readonly boats: Mesh[] = [];
-  private readonly seaLevel: number;
+  private readonly seaLevel = 0;
   get moosePitch() {
     return this.heads[0]!.rotation.z;
   }
@@ -122,8 +122,6 @@ export class CabotWildlife {
     return this.boats[1]!.rotation.z;
   }
   constructor(course: Course) {
-    // Blender elevations survive export in the course's Y coordinates.
-    this.seaLevel = course.place(0).y - 9;
     for (const [d, lane] of [
       [10483, 7.3],
       [10502, 9.8],
