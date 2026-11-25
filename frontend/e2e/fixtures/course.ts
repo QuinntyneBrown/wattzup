@@ -149,3 +149,38 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const brightonCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'brighton-pride',
+  name: 'Brighton Pride',
+  routeName: 'Madeira Drive',
+  place: 'Brighton, England',
+  world: 'brighton',
+  distanceKm: 13.075,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/brighton-pride.jpg',
+  photoUrl: 'maps/brighton-pride-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 11, 80),
+      seg('work', 180, 14, 80),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 21, 90),
+      seg('recover', 90, 16, 85),
+      seg('work', 180, 18, 85),
+      seg('work', 120, 19, 90),
+      seg('work', 120, 22, 100),
+      seg('recover', 90, 16, 85),
+      seg('work', 180, 18, 85),
+      seg('work', 180, 21, 90),
+      seg('work', 180, 22, 100),
+      seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
