@@ -12,10 +12,14 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env['CI'],
   retries: 0,
-  workers: process.env['CI'] ? '100%' : undefined,
+  // Concurrent software-rendered worlds compete for one GPU on a developer machine.
+  workers: process.env['CI'] ? '100%' : 2,
   reporter: process.env['CI'] ? 'github' : 'list',
   use: {
     ...devices['Desktop Chrome'],
+    // The macOS headless shell uses SwiftShader. Full headless Chromium exercises Metal
+    // and can advance the fake ride clock without rasterizing the world on the CPU.
+    channel: !process.env['CI'] && process.platform === 'darwin' ? 'chromium' : undefined,
     baseURL: `http://localhost:${port}`,
     locale: 'en-US',
     timezoneId: 'UTC',
