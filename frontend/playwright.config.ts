@@ -6,6 +6,16 @@ const developmentPort = port + 1;
 
 // Behaviour specs only, Chromium only, never retried (AGENTS.md). e2e/fixtures/test.ts fails a spec on a page error,
 // a request off localhost, an unanswered backend or hub request, or an unexpected Bluetooth call.
+// On macOS the headless shell rasterizes 3D in SwiftShader. Give the race rendering
+// checks full headless Chromium with Metal, while ordinary browser fixtures keep their shell.
+const metal = !process.env['CI'] && process.platform === 'darwin';
+const worldSpecs = [
+  '**/race-world*.spec.ts',
+  '**/race-course.spec.ts',
+  '**/pursuit-timing.spec.ts',
+  '**/coastal-boats.spec.ts',
+];
+
 export default defineConfig({
   testDir: './e2e',
   testMatch: '**/*.spec.ts',
@@ -17,9 +27,6 @@ export default defineConfig({
   reporter: process.env['CI'] ? 'github' : 'list',
   use: {
     ...devices['Desktop Chrome'],
-    // The macOS headless shell uses SwiftShader. Full headless Chromium exercises Metal
-    // and can advance the fake ride clock without rasterizing the world on the CPU.
-    channel: !process.env['CI'] && process.platform === 'darwin' ? 'chromium' : undefined,
     baseURL: `http://localhost:${port}`,
     locale: 'en-US',
     timezoneId: 'UTC',
@@ -31,7 +38,10 @@ export default defineConfig({
   },
   projects: [
     // The production build, as riders get it.
-    { name: 'chromium', testIgnore: '**/*.development.spec.ts' },
+    { name: 'chromium', testIgnore: ['**/*.development.spec.ts', ...(metal ? worldSpecs : [])] },
+    ...(metal
+      ? [{ name: 'chromium-metal', testMatch: worldSpecs, use: { channel: 'chromium' } }]
+      : []),
     // The development build, the only one that honours ?simulate (L2-024).
     {
       name: 'development',
