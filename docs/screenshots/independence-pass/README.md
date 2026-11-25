@@ -19,7 +19,7 @@ Headed Chromium 159.0.8154.6 on Apple M5 Pro, 1024 × 768 at DPR 1, Low/WebGL 2,
 
 | Section | Scene offset | HUD distance | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak calls |
 | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| Aspen grove and the Roaring Fork | 0 m | 0.12 km to 0.95 km | 120.35 | 120.00 | 9.7 ms | 19.7 ms | 62 |
-| Upper switchback, snowbank and Continental Divide sign | 14370 m | 0.12 km to 0.95 km | 120.35 | 119.97 | 9.7 ms | 25.5 ms | 39 |
+| Aspen grove and the Roaring Fork | 0 m | 0.12 km to 0.95 km | 120.33 | 119.98 | 9.6 ms | 18.9 ms | 62 |
+| Upper switchback, snowbank and Continental Divide sign | 14370 m | 0.12 km to 0.95 km | 120.12 | 120.00 | 9.5 ms | 12.7 ms | 39 |
 
 Reproduce from the frontend workspace with `npm run perf -- independence-tablet --headed`.
