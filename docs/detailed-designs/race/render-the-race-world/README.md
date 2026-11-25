@@ -218,7 +218,7 @@ built-in world in place and the panel says so.
 
 ### Han River Parks, Seoul · L2-2134
 
-Model the broad Han as a continuous water surface. Keep the 63 Building’s gold taper, paired red Parc1 frames and the IFC slabs on the far bank. Place N Seoul Tower on a separate Namsan ridge. Real 04–05 and 12–14 establish their relative silhouettes. Game 01, 03 and 05 set their riding scale behind the cycleway.
+Model the broad Han as a continuous water surface. Keep the 63 Building’s gold taper, paired red Parc1 frames and the IFC slabs on the far bank. Place N Seoul Tower on a separate Namsan ridge. Real 05 and 12–14 establish their relative silhouettes. Real 04 shows the Hàn River in Vietnam and informs only the light reflected on water. Game 01, 03 and 05 set their riding scale behind the cycleway.
 
 The path dips below the lit concrete bridge deck and passes its fountain face on a bend. Preserve clearance under the deck. Alternate warm pier lights and cool fascia lights, reflected in narrow broken streaks. Model Banpo’s jets as shared curved ribbons with ride-clock colour and flow. Real 02–03 and 08–09 show the arc spacing and the open space between piers. Game 04 guides the approaching sightline.
 

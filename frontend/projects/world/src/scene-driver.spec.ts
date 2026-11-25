@@ -49,6 +49,17 @@ describe('SceneDriver (L2-110)', () => {
     expect(renderer.frames.map((f) => f.s)).toEqual([0, 1]);
   });
 
+  it('returns to the race distance after missing frames and interpolates between telemetry ticks', () => {
+    const renderer = new FakeRenderer();
+    const driver = new SceneDriver(renderer);
+    driver.frame(0, input({ raceMetres: 20 }));
+    driver.frame(200, input({ raceMetres: 20 }));
+    driver.frame(60_000, input({ raceMetres: 620 }));
+    driver.frame(60_100, input({ raceMetres: 620 }));
+    driver.frame(60_200, input({ raceMetres: 620, running: false }));
+    expect(renderer.frames.map((frame) => frame.s)).toEqual([20, 22, 620, 621, 620]);
+  });
+
   it('holds the rider still while not running', () => {
     const renderer = new FakeRenderer();
     const driver = new SceneDriver(renderer);

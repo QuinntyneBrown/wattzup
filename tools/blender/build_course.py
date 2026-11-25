@@ -637,6 +637,9 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
         group, chunked = group_of(part.mat)
         if part.name in GROUND_PARTS:
             group = "Ground"
+        elif part.name in ("YeouidoCity", "BanpoJets", "BanpoNear", "HanCyclists", "HanReflections", "HanWater", "NamsanTower"):
+            group = part.name
+            chunked = group not in ("YeouidoCity", "HanWater", "NamsanTower", "BanpoNear", "HanCyclists")
         elif part.name == WINDOWS_PART:
             group = "Windows"
         elif part.name == FENCES_PART:
@@ -2205,7 +2208,10 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
-    build_road(road, st, length, col, theme)
+    if (theme or {}).get("road_builder"):
+        theme["road_builder"](road, st, length, col, theme, sys.modules[__name__])
+    else:
+        build_road(road, st, length, col, theme)
     if (theme or {}).get("builder") == "sellaronda":
         _, height_at = sellaronda.build_terrain(road, col, Builder)
         facts = sellaronda.build_scenery(road, st, length, height_at, course, col, Builder, build_sky)

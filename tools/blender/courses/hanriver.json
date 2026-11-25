@@ -1,0 +1,109 @@
+{
+  "id": "hanriver",
+  "name": "Han River Parks, Seoul",
+  "world": "hanriver",
+  "theme": "hanriver",
+  "seed": 2134,
+  "layout": 0,
+  "class": {
+    "id": "20-minute-high-intensity-workout",
+    "title": "20 Minute High Intensity Workout",
+    "channel": "GCN",
+    "videoId": "gGGvKt8vWho",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 280,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 55,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 97,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 41,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "cool-down",
+        "duration": 177,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
