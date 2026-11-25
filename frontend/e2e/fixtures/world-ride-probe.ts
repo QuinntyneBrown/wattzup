@@ -97,6 +97,21 @@ export class WorldRideProbe {
   }
 
   /** The renderer's latest report, or null before the scene has started. */
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+
+  async engadinMotion(part: 'kiteHeight' | 'trainPosition'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async report(): Promise<WorldRideReport | null> {
     return this.page.evaluate(
       () =>
