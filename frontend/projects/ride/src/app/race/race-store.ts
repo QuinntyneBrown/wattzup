@@ -135,6 +135,9 @@ export class RaceStore {
   /** Whether the rider paused the solo race: the clock, the distance and the standings hold (L2-068 AC1). */
   readonly paused = this.pausedByRider.asReadonly();
   /** Race Setup for the map, where Leave and End go (L2-069). */
+  readonly sunrise =
+    this.route.queryParamMap.get('light') === 'sunrise' &&
+    this.route.queryParamMap.get('mode') !== 'online';
   readonly setup: readonly string[] = ['/race', this.mapId];
   readonly elapsed = this.ticker.second;
   /**

@@ -352,7 +352,19 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.body = body;
       this.disposables.push(body);
-      this.course = new Course(parseCourse(file));
+      const parsed = parseCourse(file);
+      this.course = new Course(
+        parsed.id === 'cherryblossom' && options.sunrise
+          ? {
+              ...parsed,
+              sky: ['#f8d0c1', '#efc4ce', '#d5c2d5', '#b7bedc', '#93acd1'],
+              haze: '#f4d5cf',
+              sun: [0.81, 0.2, -0.55],
+              light: { colour: '#ffc1a3', intensity: 2.2 },
+              fill: ['#e4cfe2', '#ba9d97'],
+            }
+          : parsed,
+      );
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;

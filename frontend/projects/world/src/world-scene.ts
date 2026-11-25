@@ -45,6 +45,7 @@ import { SceneDriver } from './scene-driver';
 })
 export class WorldScene implements AfterViewInit {
   /** The map's world (`MapDto.world`). */
+  readonly sunrise = input(false);
   readonly worldId = input.required<string>();
   readonly segments = input.required<readonly Segment[]>();
   readonly raceMetres = input<number>();
@@ -208,6 +209,7 @@ export class WorldScene implements AfterViewInit {
             untracked(this.timed),
             {
               tier: quality.tier ?? undefined,
+              ...(untracked(this.sunrise) ? { sunrise: true } : {}),
               stepDown: quality.stepDown,
               forceWebGL: quality.forceWebGL,
             },

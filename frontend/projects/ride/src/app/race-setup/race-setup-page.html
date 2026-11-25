@@ -29,6 +29,15 @@
           @if (store.mode() === 'bots') {
             <wz-pack-strength [selected]="store.pack()" (choose)="store.pack.set($event)" />
           }
+          @if (store.hasLightChoice()) {
+            <h2 class="setup-ride__title" id="spring-light">Light</h2>
+            <wz-segmented
+              aria-labelledby="spring-light"
+              [options]="lights"
+              [value]="store.light()"
+              (chosen)="store.light.set($event)"
+            />
+          }
           <!-- The label is the button's whole text: spaces around it would join its accessible name. -->
           <!-- prettier-ignore -->
           <button
