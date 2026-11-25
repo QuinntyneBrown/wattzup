@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Koppenberg Cobbles (#2150)
+
+Load the native course from Map Select and Race Setup. Preserve the ten original stages of GCN Training’s Low Cadence Strength Builder and its three-second video offset. Base the long climbs on the hard stages, concentrating their ascent in short, signposted ramps where the terrain reaches 22%. Ease the settling grade between ramps. Sample that same line for the race profile and riders, spectators and cobbles.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Melden farm lanes, 0.08 km | Real 05, 07, 11, 13–14 and game 05 | Brick farmhouses and pollarded poplars flank a patched approach through ploughed fields. |
+| Foot of the Koppenberg, 1.06 km | Real 01, 04, 06, 08 and games 01–02 | Concrete gives way to wet, domed setts. Moss collects at the verges and polished crowns pick out the riding line. |
+| Steep chute, 2.39 km | Real 01–04, 08, 15 and games 01–03 | A short 22% pitch narrows between undercut grass banks. Only two riders fit abreast. |
+| Race crowds, 3.74 km | Real 01–03, 06, 09–10 and games 02–04 | Fans lean over the metal barriers and wave yellow Flemish lion flags. Race signs and a canvas beer tent break up the banks. |
+| Wooded crest, 4.90 km | Real 02–03, 08, 11, 14–15 and games 02 and 05 | Bare branches and early leaf buds close above the last wet stones. Spring mist softens the trees across the next field. |
+| Melden overlook, 5.32 km | Real 05, 07, 11–14 and games 04–05 | Beyond a row of poplars, Sint-Martinus has a dark rectangular tower, pointed spire and pitched nave above the Scheldt fields. |
+
+Real 01–03 are Koppenberg race views. Real 04–10 show the neighbouring Paterberg and inform barrier scale, cobble patterns and temporary race infrastructure. Real 12–13 establish Melden’s church and the surrounding sightline. Adapt Caribana’s fixed landmark and depth layers to the church, trees and foreground banks. Keep flag deformation, spectator gestures and drifting mist on race time. Batch the crowd and flags, bake stone wear and release all course resources on exit.
