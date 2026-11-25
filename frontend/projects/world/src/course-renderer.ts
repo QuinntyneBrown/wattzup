@@ -437,6 +437,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -734,6 +735,7 @@ export class CourseRenderer implements WorldRenderer {
       mesh.matrix.copy(mesh.matrixWorld);
       const holder = new Group();
       holder.add(mesh);
+      if (name === 'Commissaire' && this.pave) holder.add(this.pave.trail);
       this.scene.add(holder);
       this.convoy.push({ holder, moto: name === 'Commissaire' });
       this.disposables.push(mesh.geometry);
@@ -1058,7 +1060,10 @@ export class CourseRenderer implements WorldRenderer {
       const at = this.course!.place(d, moto ? -1.22 : -1.05, this.there);
       holder.position.set(at.x, at.y + 0.035, at.z);
       holder.rotation.set(at.pitch, at.heading, 0, 'YXZ');
-      if (moto) this.drawn.commissaireX = holder.position.x;
+      if (moto) {
+        this.drawn.commissaireX = holder.position.x;
+        this.pave?.updateTrail(d, time, time > 0);
+      }
     }
   }
 

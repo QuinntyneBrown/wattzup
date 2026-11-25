@@ -1,4 +1,11 @@
-import { DoubleSide, MeshLambertMaterial, RepeatWrapping } from 'three/webgpu';
+import {
+  DoubleSide,
+  Group,
+  MeshLambertMaterial,
+  RepeatWrapping,
+  Sprite,
+  SpriteMaterial,
+} from 'three/webgpu';
 import { canvasTexture } from './world-kit';
 
 /** A seamless 3.2 m square of local, uneven setts. The same atlas serves every sector chunk. */
@@ -82,10 +89,42 @@ export function arenbergPave() {
     side: DoubleSide,
     alphaTest: 0.46,
   });
+  const dust = canvasTexture(32, 32, (g) => {
+    const haze = g.createRadialGradient(16, 17, 1, 16, 17, 15);
+    haze.addColorStop(0, 'rgba(181,171,143,.30)');
+    haze.addColorStop(0.55, 'rgba(171,162,143,.14)');
+    haze.addColorStop(1, 'rgba(170,163,154,0)');
+    g.fillStyle = haze;
+    g.fillRect(0, 0, 32, 32);
+  });
+  const sprayMaterial = new SpriteMaterial({ map: dust, transparent: true, depthWrite: false });
+  const trail = new Group();
+  const puffs = Array.from({ length: 5 }, () => new Sprite(sprayMaterial));
+  trail.add(...puffs);
+  const sector = (distance: number) => distance >= 320 && distance < 2720;
   return {
     material,
     foliage,
+    trail,
+    wheelRise(distance: number) {
+      return sector(distance)
+        ? 0.012 * Math.sin(distance * 11.3) + 0.006 * Math.sin(distance * 17.9)
+        : 0;
+    },
+    updateTrail(distance: number, time: number, moving: boolean) {
+      trail.visible = moving && sector(distance);
+      if (!trail.visible) return;
+      puffs.forEach((puff, i) => {
+        const t = (time * 1.36 + i / puffs.length) % 1;
+        const size = 0.67 * Math.sin(Math.PI * t);
+        puff.scale.set(size * 1.4, size, 1);
+        puff.position.set(0.11 * Math.sin(i * 2.3) + 0.24 * t, 0.13 + 0.57 * t, 0.79 + 2.05 * t);
+      });
+    },
     dispose() {
+      trail.removeFromParent();
+      sprayMaterial.dispose();
+      dust.dispose();
       leaves.dispose();
       foliage.dispose();
       texture.dispose();
