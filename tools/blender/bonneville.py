@@ -63,8 +63,12 @@ def route(config,theme,bc):
 
 def land(road,col,theme,bc):
     b=bc.Builder('Open salt plain','terrain');b.colours=[]
-    b.quad((-9000,-8200,.04),(17500,-8200,.04),(17500,8200,.04),(-9000,8200,.04))
-    b.colours.extend([lin(0xEEECE5)]*4)
+    # Keep the broad salt polygons out of the scored riding strip. Long shallow faces
+    # over the road lose depth precision when the camera looks across kilometres of salt.
+    for x in range(-1000,11001,240):
+        for a,c in ((-5400,-225),(225,5400)):
+            b.quad((x,a,.04),(x+240,a,.04),(x+240,c,.04),(x,c,.04))
+            b.colours.extend([lin(0xEEECE5)]*4)
     return b.build(col),lambda *_:.04
 
 
@@ -86,7 +90,7 @@ THEME={'lay':route,'land_builder':land,'road_builder':roadway,'road_half_width':
 
 def sign(art,x,y,z,w,h,word,fill,ink):
     art.box((x,y,z),(.15,w,h),0,lin(fill))
-    words(art,word,(x-.080,y,z+h*.69),(0,-1,0),(0,0,1),h*.65,w*.88,ink)
+    words(art,word,(x-.105,y,z+h*.26),(0,-1,0),(0,0,1),h*.78,w*.88,ink)
 
 
 def board(art,mile):
@@ -197,18 +201,24 @@ def scenery(k):
     # Profiles are anchored in map space, with lower, dust-hazed folds behind the northwest range.
     for row in range(3):
         previous=None
-        for i in range(162):
-            a=i/161*math.tau
-            r=8300+row*1220
-            x=4050+r*math.cos(a);y=r*math.sin(a)
-            mountain=max(0,math.cos(a-.60))**2
-            h=55+mountain*(570+205*math.sin(5*a+.4)+110*math.cos(a*17+row*.5)+76*math.sin(39*a)) + row*65
-            shape=((x*.995,y*.996,.31),(x,y,h*.41),(x+27*math.sin(a*11),y+19*math.cos(a*7),h*.73),(x,y,h))
+        for i in range(105):
+            y=-8100+i*155
+            x=11500+row*540+210*math.sin(y/1430+row*.9)
+            ridge=math.exp(-((y-1250)/3500)**2)
+            h=62+row*54+ridge*(390+121*math.sin(y/680+row*.57)+71*math.sin(y/310)+26*math.cos(y/110))
+            fold=math.sin(y/260+row)*math.cos(y/850-row*.35)
+            shape=((x-990-130*fold,y,.06),(x-480-190*fold,y+70*fold,h*(.24+.10*fold)),(x-180-100*fold,y-23*fold,h*(.63+.08*fold)),(x,y,h))
             if previous:
                 for band in range(3):
-                    tone=lin(((0x897D77,0x9A8C84,0x8C8080),(0x9B9694,0xADA5A0,0x9A9598),(0xB2B1AD,0xB9B5AF,0xAAA9AC))[row][band])
-                    face=(previous[band],shape[band],shape[band+1],previous[band+1])
-                    distant.face(face,(tone,)*4);distant.face(face[::-1],(tone,)*4)
+                    tint=((0x827570,0xA2968C,0x8F8180),(0x96918F,0xABA3A1,0x9E989A),(0xAAA8AB,0xB9B5B3,0xB1ABAB))[row][band]
+                    tone=lin(tint)
+                    face=(previous[band],previous[band+1],shape[band+1],shape[band])
+                    # One rider-facing surface per facet. Duplicate opposite faces make
+                    # invalid polygons when the exporter welds their shared vertices.
+                    slope=.96+.095*math.sin(y/245+row)+.035*math.sin(y/105+band*.7)
+                    shade=lambda value:tuple(v*value for v in tone[:3])+(1.0,)
+                    distant.face(face[:3],(shade(slope),shade(slope+.04),shade(slope+.02)))
+                    distant.face((face[0],face[2],face[3]),(shade(slope-.025),shade(slope),shade(slope-.04)))
             previous=shape
     # I-80 sits on a low embankment south of the course, with a shelter and pull-off by its near bend.
     for d in range(2610,5120,10):

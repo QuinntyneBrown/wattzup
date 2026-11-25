@@ -77,6 +77,10 @@ export class SpeedWeek {
   readonly pushCar = new Mesh(vehicle(0xb54832, true), this.paint);
   private readonly racer = new Mesh(vehicle(0xcfa83b, false), this.paint);
   private readonly freight = new Mesh(vehicle(0x536e80, false, true), this.paint);
+  private readonly saltWake = new Mesh(
+    new SphereGeometry(1, 12, 5),
+    new MeshBasicMaterial({ color: 0xe5e2d7, transparent: true, opacity: 0.32, depthWrite: false }),
+  );
   readonly mirage: Mesh<ShapeGeometry, MeshBasicMaterial>;
   private readonly place;
   constructor(private readonly course: Course) {
@@ -110,15 +114,21 @@ export class SpeedWeek {
       }),
     );
     this.mirage.rotation.y = Math.PI / 2;
-    this.root.add(this.pushCar, this.racer, this.freight, this.mirage);
+    this.root.add(this.pushCar, this.racer, this.freight, this.mirage, this.saltWake);
     this.update(0, 0);
   }
   update(seconds: number, metres: number): void {
     const pushAt = 685 + 57 * Math.sin(seconds / 50);
     const raceAt = (seconds * 61 + 175) % 8500;
     const truckAt = 2620 + ((seconds * 25 + 1150) % 2440);
-    this.position(this.pushCar, pushAt, -7.2, metres, 600);
+    this.position(this.pushCar, pushAt, 7.2 + 1.3 * Math.cos(seconds / 50), metres, 600);
+    this.pushCar.rotation.y -= 0.15 * Math.cos(seconds / 50);
     this.position(this.racer, raceAt, 30, metres, 950);
+    this.saltWake.position.copy(this.racer.position);
+    this.saltWake.position.x -= 10;
+    this.saltWake.position.y += 0.46;
+    this.saltWake.scale.set(7.1, 0.62 + 0.13 * Math.sin(seconds * 5), 1.1);
+    this.saltWake.visible = this.racer.visible;
     this.position(
       this.freight,
       truckAt,
@@ -142,6 +152,8 @@ export class SpeedWeek {
       mesh.geometry.dispose();
     this.paint.dispose();
     this.mirage.material.dispose();
+    this.saltWake.material.dispose();
+    this.saltWake.geometry.dispose();
     this.root.clear();
   }
 }
