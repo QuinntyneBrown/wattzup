@@ -1,3 +1,4 @@
+import kyotoElevation from './kyoto-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3585,6 +3586,40 @@ export const itenCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 60, 24, 110),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const kyotoCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'kyoto-hanami',
+  name: 'Kyoto Hanami',
+  routeName: "the Philosopher's Path",
+  place: 'Kyoto, Japan',
+  world: 'kyoto',
+  distanceKm: 10.4,
+  climbingM: 25,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: kyotoElevation,
+  },
+  thumbnailUrl: 'maps/kyoto-hanami.jpg',
+  photoUrl: 'maps/kyoto-hanami-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 12, 80),
+      seg('work', 60, 16, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 240, 19, 85),
+      seg('recover', 120, 11, 80),
+      seg('work', 240, 19, 85),
+      seg('recover', 120, 11, 80),
+      seg('work', 240, 19, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 21, 100),
+      seg('cool-down', 60, 11, 80),
     ],
   },
 };
