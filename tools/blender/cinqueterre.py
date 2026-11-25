@@ -384,7 +384,7 @@ GROVE_SPOTS: list[tuple[int, int, int]] = []  # where terraces() left a step fre
 
 
 def in_grove(k, i: int) -> bool:
-    return any(GROVE[0] <= abs(i - site["i"]) <= GROVE[1] for site in village_sites(k.s))
+    return any(GROVE[0] <= abs(i - site["i"]) <= GROVE[1] for site in k.village_sites)
 
 
 def lemon_groves(k) -> int:
@@ -397,7 +397,7 @@ def lemon_groves(k) -> int:
     for i, level, side in GROVE_SPOTS:
         off = k.kerb + TERRACE_FOOT + (level + rng.uniform(0.4, 0.6)) * TERRACE_DEPTH
         x, y, z = k.road.at(i, off * side, (level + 1) * TERRACE_RISE)
-        ends = any(abs(i - site["i"]) in (GROVE[0] + 1, GROVE[1] - 2) for site in village_sites(s))
+        ends = any(abs(i - site["i"]) in (GROVE[0] + 1, GROVE[1] - 2) for site in k.village_sites)
         if ends and level == 0:
             for dx in (-1.3, 1.3):
                 cx, cy = x + math.cos(s[i]["h"]) * dx, y + math.sin(s[i]["h"]) * dx
@@ -633,15 +633,37 @@ def umbrella_pine(k, x: float, y: float, z: float, lean: float) -> None:
     rng, B = k.rng, k.B
     tall = rng.uniform(7.5, 11.5)
     top = (x + math.cos(lean) * tall * 0.18, y + math.sin(lean) * tall * 0.18, z + tall)
-    k.prism(B["trunk-dark"], (x, y, z - 0.6), 0.34, tall * 0.62 + 0.6, 5, 0.24)
+    # Hexagonal rings join at the crotch. The old fork started to one side of the
+    # vertical trunk and its two flat triangles disappeared when seen edge-on.
+    wood = B["trunk-dark"]
+    def limb(base, end, foot, tip):
+        rings = [[(point[0] + radius * math.cos(q * math.tau / 6),
+                   point[1] + radius * math.sin(q * math.tau / 6), point[2])
+                  for q in range(6)] for point, radius in ((base, foot), (end, tip))]
+        for q in range(6):
+            j = (q + 1) % 6
+            wood.quad(rings[0][q], rings[0][j], rings[1][j], rings[1][q])
+
     fork = (x + (top[0] - x) * 0.5, y + (top[1] - y) * 0.5, z + tall * 0.62)
-    for q in range(3):
-        a = lean + q * math.tau / 3
-        tip = (top[0] + math.cos(a) * 1.5, top[1] + math.sin(a) * 1.5, top[2] - 0.5)
-        B["trunk-dark"].tri((fork[0] - 0.16, fork[1], fork[2]), (fork[0] + 0.16, fork[1], fork[2]), tip)
-        B["trunk-dark"].tri((fork[0] + 0.16, fork[1], fork[2]), (fork[0] - 0.16, fork[1], fork[2]), tip)
+    limb((x, y, z - 0.6), fork, 0.38, 0.24)
+    for q in range(4):
+        a = lean + q * math.tau / 4
+        elbow = (fork[0] + math.cos(a) * 0.95, fork[1] + math.sin(a) * 0.95, fork[2] + tall * 0.14)
+        tip = (top[0] + math.cos(a) * 1.8, top[1] + math.sin(a) * 1.8, top[2] + 0.18)
+        limb(fork, elbow, 0.19, 0.13)
+        limb(elbow, tip, 0.13, 0.07)
     lens(B["ct-pine"], top, rng.uniform(3.4, 4.8), 2.6, rng)
     lens(B["ct-pine-dark"], (top[0] + rng.uniform(-1.6, 1.6), top[1] + rng.uniform(-1.6, 1.6), top[2] - 0.7), rng.uniform(2.4, 3.4), 2.0, rng)
+
+    # Overlapping sprays give the umbrella its scalloped edge in silhouette.
+    # The secondary seed varies needles without moving any of the older plantings.
+    needles = random.Random(round(x * 19 + y * 31))
+    for q in range(7):
+        angle = lean + q * math.tau / 7
+        radius = needles.uniform(2.6, 3.7)
+        centre = (top[0] + math.cos(angle) * radius, top[1] + math.sin(angle) * radius,
+                  top[2] + needles.uniform(-0.4, 0.55))
+        lens(B["ct-pine-dark" if q % 3 == 0 else "ct-pine"], centre, needles.uniform(1.5, 2.1), 1.4, needles, 6)
 
 
 def olive(k, x: float, y: float, z: float) -> None:
@@ -1487,6 +1509,7 @@ def harbour_sites(s, height_at) -> list[dict]:
 
 
 def scenery(k) -> dict:
+    k.village_sites = village_sites(k.s)
     parapet(k)
     GROVE_SPOTS.clear()
     stepped = terraces(k)
