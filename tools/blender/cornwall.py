@@ -78,7 +78,15 @@ def ground(road,col,theme,bc):
                               (-5.2,-7,.045,.02,0xa5a092),(-7,-15,-3.30,-3.68,0xc2b695),(-15,-23,-3.68,-5.12,0xa9a78c),
                               (-23,-110,-5.12,-5.9,0x80aaa1)):
             if not quay and l<=-7:up,far,c=-.27,-2,0x6b7a65
-            face([pose(d,l,up),pose(d,r,far),pose(d+4,r,far),pose(d+4,l,up)],c)
+            def bank(station,side,height):
+                # On the tight return above the shops the inside radius is shorter
+                # than the full hillside. Stop the slope before it crosses the road below.
+                if side==85:
+                    neck=max(0,1-abs(station-1235)/145)
+                    side-=53*neck
+                    height-=4.25*neck
+                return pose(station,side,height)
+            face([bank(d,l,up),bank(d,r,far),bank(d+4,r,far),bank(d+4,l,up)],c)
         if quay:
             face([pose(d,-7,.03),pose(d,-7,-3.3),pose(d+4,-7,-3.3),pose(d+4,-7,.03)],0x64716b)
     # The bay and the hills are seen past the steep lanes.
