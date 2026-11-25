@@ -1,0 +1,35 @@
+{
+  "version": "kokoro-82m-1.0-1939ad2-ort-1.31.1",
+  "files": [
+    {
+      "path": "kokoro.onnx",
+      "bytes": 92361116,
+      "sha256": "fbae9257e1e05ffc727e951ef9b9c98418e6d79f1c9b6b13bd59f5c9028a1478"
+    },
+    {
+      "path": "tokenizer.json",
+      "bytes": 3497,
+      "sha256": "77a02c8e164413299b4b4c403b14f8e0e1c1b727db4d46a09d6327b861060a34"
+    },
+    {
+      "path": "af_bella.bin",
+      "bytes": 522240,
+      "sha256": "f69d836209b78eb8c66e75e3cda491e26ea838a3674257e9d4e5703cbaf55c8b"
+    },
+    {
+      "path": "af_heart.bin",
+      "bytes": 522240,
+      "sha256": "d583ccff3cdca2f7fae535cb998ac07e9fcb90f09737b9a41fa2734ec44a8f0b"
+    },
+    {
+      "path": "bm_george.bin",
+      "bytes": 522240,
+      "sha256": "c4b235a4c1f2cd3b939fed08b899ce9385638b763f7b73a59616c4fc9bd6c9bc"
+    },
+    {
+      "path": "ort-wasm-simd-threaded.wasm",
+      "bytes": 14848852,
+      "sha256": "4b884c203b0fa48d057be3332c65513ff85aa3c5bddd6946acc0fab7ecda001d"
+    }
+  ]
+}

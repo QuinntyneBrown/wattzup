@@ -36,6 +36,11 @@
                 "glob": "draco_*",
                 "input": "node_modules/three/examples/jsm/libs/draco/gltf",
                 "output": "draco"
+              },
+              {
+                "glob": "ort-wasm-simd-threaded.wasm",
+                "input": "node_modules/onnxruntime-web/dist",
+                "output": "models/voice-announcer"
               }
             ],
             "styles": [

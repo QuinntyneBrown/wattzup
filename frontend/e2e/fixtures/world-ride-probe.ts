@@ -206,6 +206,18 @@ export class WorldRideProbe {
     );
   }
 
+  async parkMotion(
+    part: 'carRadius' | 'trainX' | 'horseStride' | 'clubDistance',
+  ): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+
   async drawnCourseSections(group: string): Promise<number> {
     return this.page.evaluate(
       (name) =>

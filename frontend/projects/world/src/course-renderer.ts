@@ -335,7 +335,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 
 export class CourseRenderer implements WorldRenderer {
   private boardwalk: ConeyBoardwalk | null = null;
-  private promenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
+  private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
   private danishStreet: Awaited<ReturnType<typeof copenhagenStreet>> | null = null;
   private commuters: CopenhagenCommuters | null = null;
@@ -429,9 +429,9 @@ export class CourseRenderer implements WorldRenderer {
     z: number;
     reach: number;
   }[] = [];
-  private coast: LigurianCoast | null = null;
+  private ligurianCoast: LigurianCoast | null = null;
   private headland: HeadlandSurf | null = null;
-  private promenade: Awaited<ReturnType<typeof comoPromenade>> | null = null;
+  private comoPromenade: Awaited<ReturnType<typeof comoPromenade>> | null = null;
   private ferries: ComoFerries | null = null;
   private crews: ComunaCrews | null = null;
   private barrio: Awaited<ReturnType<typeof comunaStreets>> | null = null;
@@ -563,7 +563,6 @@ export class CourseRenderer implements WorldRenderer {
     trainX: undefined as number | undefined,
     steamHeight: undefined as number | undefined,
     wingAngle: undefined as number | undefined,
-    walkerX: undefined as number | undefined,
   };
   private readonly trainingGroup: Cyclist[] = [];
   private portWind: AntwerpWind | null = null;
@@ -584,7 +583,7 @@ export class CourseRenderer implements WorldRenderer {
   private bunch: BeachRoadBunch | null = null;
   private highlandWeather: HighlandWeather | null = null;
   private highlandLivestock: HighlandLivestock | null = null;
-  private coast: BigSurCoast | null = null;
+  private bigSurCoast: BigSurCoast | null = null;
   private trams: BlackpoolTrams | null = null;
   private yard: BlueMountainsYard | null = null;
   private mill: MabryMill | null = null;
@@ -824,8 +823,7 @@ export class CourseRenderer implements WorldRenderer {
       if (this.disposed) return false;
       const paving = blossomModules?.[1].promenadeSurface();
       if (paving) this.disposables.push(paving.tile);
-      const champs =
-        parsed.id === 'champs' ? await import('./champs-parade') : null;
+      const champs = parsed.id === 'champs' ? await import('./champs-parade') : null;
       if (this.disposed) return false;
       const parisPaving = champs?.parisPave();
       if (parisPaving) this.disposables.push(parisPaving.tile);
@@ -1118,7 +1116,10 @@ export class CourseRenderer implements WorldRenderer {
         this.disposables.push(trees);
       }
       if (blossomModules) {
-        const festival = await blossomModules[0].blossomFestival(this.course, options.sunrise === true);
+        const festival = await blossomModules[0].blossomFestival(
+          this.course,
+          options.sunrise === true,
+        );
         if (this.disposed) {
           festival.dispose();
           return false;
@@ -1128,7 +1129,12 @@ export class CourseRenderer implements WorldRenderer {
         this.disposables.push(festival);
       }
       if (champs) {
-        this.champsParade = new champs.ChampsParade(this.course, this.kit!, this.riderBatch!, this.sun);
+        this.champsParade = new champs.ChampsParade(
+          this.course,
+          this.kit!,
+          this.riderBatch!,
+          this.sun,
+        );
         this.scene.add(this.champsParade.root);
         this.disposables.push(this.champsParade);
         const { champsAvenue } = await import('./champs-avenue');
@@ -1165,8 +1171,8 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'cinqueterre' && this.course.file.ligurianCoast) {
         const { LigurianCoast } = await import('./ligurian-coast');
         if (this.disposed) return false;
-        this.coast = new LigurianCoast(this.course, this.scene, this.sun);
-        this.disposables.push(this.coast);
+        this.ligurianCoast = new LigurianCoast(this.course, this.scene, this.sun);
+        this.disposables.push(this.ligurianCoast);
       }
       if (this.course.file.id === 'coast' && this.course.file.headland) {
         const { HeadlandSurf } = await import('./headland-surf');
@@ -1184,7 +1190,7 @@ export class CourseRenderer implements WorldRenderer {
           trees.dispose();
           return false;
         }
-        this.promenade = trees;
+        this.comoPromenade = trees;
         this.scene.add(trees.root);
         this.disposables.push(trees);
         if (this.disposed) return false;
@@ -1224,7 +1230,7 @@ export class CourseRenderer implements WorldRenderer {
           promenade.dispose();
           return false;
         }
-        this.promenade = promenade;
+        this.copacabanaPromenade = promenade;
         this.scene.add(promenade.root);
         this.disposables.push(promenade);
         this.camera.setViewOffset(1, 1, 0, 0.07, 1, 1);
@@ -1565,9 +1571,9 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'bigsur') {
         const { BigSurCoast } = await import('./bigsur-coast');
         if (this.disposed) return false;
-        this.coast = new BigSurCoast(this.course);
-        this.scene.add(this.coast.group);
-        this.disposables.push(this.coast);
+        this.bigSurCoast = new BigSurCoast(this.course);
+        this.scene.add(this.bigSurCoast.group);
+        this.disposables.push(this.bigSurCoast);
       }
       if (this.course.file.id === 'blackpool') {
         const { BlackpoolTrams } = await import('./blackpool-trams');
@@ -1718,7 +1724,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.danishStreet?.follow(metres);
     this.commuters?.update(metres, frame.reducedMotion ? 0 : frame.time);
-    this.promenade?.follow(metres);
+    this.copacabanaPromenade?.follow(metres);
     this.copacabana?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
@@ -1750,7 +1756,7 @@ export class CourseRenderer implements WorldRenderer {
 
     this.highlandWeather?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.highlandLivestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
-    this.coast?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.bigSurCoast?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trams?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.yard?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mill?.update(metres, frame.reducedMotion ? 0 : frame.time);
@@ -1776,9 +1782,9 @@ export class CourseRenderer implements WorldRenderer {
     const lights = metres < START_LIGHTS;
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
-    this.coast?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.ligurianCoast?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.headland?.update(frame.reducedMotion ? 0 : frame.time, metres);
-    this.promenade?.follow(metres);
+    this.comoPromenade?.follow(metres);
     this.ferries?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.barrio?.follow(metres);
     this.crews?.update(frame.reducedMotion ? 0 : frame.time, metres);
@@ -1845,8 +1851,8 @@ export class CourseRenderer implements WorldRenderer {
     this.boardwalk = null;
     this.daytonaBoardwalk = null;
     this.daytonaShore = null;
-    this.promenade?.root.removeFromParent();
-    this.promenade = null;
+    this.copacabanaPromenade?.root.removeFromParent();
+    this.copacabanaPromenade = null;
     this.copacabana = null;
     this.danishStreet?.root.removeFromParent();
     this.danishStreet = null;
@@ -1888,7 +1894,7 @@ export class CourseRenderer implements WorldRenderer {
     this.bunch = null;
     this.highlandLivestock = null;
     this.highlandWeather = null;
-    this.coast = null;
+    this.bigSurCoast = null;
     this.icelandCoast = null;
     this.trams = null;
     this.yard = null;
@@ -1898,10 +1904,10 @@ export class CourseRenderer implements WorldRenderer {
     this.desertBasin = null;
     this.railway = null;
     this.plaza = null;
-    this.coast = null;
+    this.ligurianCoast = null;
     this.headland = null;
     this.ferries = null;
-    this.promenade = null;
+    this.comoPromenade = null;
     this.barrio = null;
     this.crews = null;
     this.quay = null;
@@ -2102,7 +2108,12 @@ export class CourseRenderer implements WorldRenderer {
       coloured,
       clinker,
     );
-    const pavement = this.saltRoad ?? this.speedwaySurface?.(detail) ?? this.seafrontSurface?.(detail) ?? this.deckSurface ?? coursePavement;
+    const pavement =
+      this.saltRoad ??
+      this.speedwaySurface?.(detail) ??
+      this.seafrontSurface?.(detail) ??
+      this.deckSurface ??
+      coursePavement;
     materials['Ground'] = pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
@@ -2906,13 +2917,13 @@ export class CourseRenderer implements WorldRenderer {
     drawn.guitarHand = this.performers?.guitarHand ?? null;
     drawn.reefCrest = this.reef?.crest ?? null;
     drawn.eveningLight = this.evening?.value ?? null;
-    drawn.ferryX = this.bayBoats?.ferryX ?? null;
+    drawn.ferryX = this.bayBoats?.ferryX ?? this.ferries?.ferryX ?? null;
 
     drawn.clubLane = this.bunch?.clubLane ?? null;
     drawn.highlandSun = this.highlandWeather ? this.sun.intensity : null;
     drawn.sheepLane = this.highlandLivestock?.sheepLane ?? null;
-    drawn.fallingWater = this.coast?.fallHeight ?? null;
-    drawn.surfCrest = this.coast?.crest ?? null;
+    drawn.fallingWater = this.bigSurCoast?.fallHeight ?? null;
+    drawn.surfCrest = this.bigSurCoast?.crest ?? null;
     drawn.illumination = this.trams?.illumination ?? null;
     drawn.tramMetres = this.trams?.nearestMetres ?? null;
     drawn.mistPosition = this.yard?.mistPosition ?? null;
@@ -2923,7 +2934,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.foamAdvance = this.surf?.foamAdvance ?? null;
     drawn.pushCarPosition = this.speedWeek?.pushCar.position.x;
     drawn.mirageHeight = this.speedWeek?.mirage.scale.y;
-    drawn.flagTip = this.speedway?.flagTip;
+    drawn.flagTip = this.speedway?.flagTip ?? this.dalesFlags?.tip ?? null;
     drawn.balloonHeight = this.speedway?.balloonHeight;
     drawn.bannerTip = this.parade?.bannerTip;
     drawn.floatPosition = this.parade?.floatPosition;
@@ -2939,22 +2950,19 @@ export class CourseRenderer implements WorldRenderer {
     drawn.boatHeel = this.cabotWildlife?.boatHeel;
     drawn.horseStride = this.parkTraffic?.horseStride;
     drawn.clubDistance = this.parkTraffic?.clubDistance;
-    drawn.flagAngle = this.champsParade?.flagAngle;
+    drawn.flagAngle = this.champsParade?.flagAngle ?? this.galibier?.flagAngle ?? null;
     drawn.sprintLane = this.champsParade?.sprintLane;
-    drawn.hikerX = this.coast?.hikerX ?? null;
-    drawn.boatRoll = this.coast?.boatRoll ?? null;
-    drawn.walkerX = this.headland?.walkerX ?? null;
+    drawn.hikerX = this.ligurianCoast?.hikerX ?? null;
+    drawn.boatRoll = this.ligurianCoast?.boatRoll ?? this.harbour?.boatRoll ?? null;
+    drawn.walkerX = this.headland?.walkerX ?? this.plaza?.walkerX ?? null;
     drawn.breakerHeight = this.headland?.breakerHeight ?? null;
-    drawn.ferryX = this.ferries?.ferryX ?? null;
     drawn.foilX = this.ferries?.foilX ?? null;
     drawn.dancerY = this.crews?.dancerY ?? null;
     drawn.passengerY = this.crews?.passengerY ?? null;
-    drawn.boatRoll = this.harbour?.boatRoll ?? null;
     drawn.gullY = this.harbour?.gullY ?? null;
     drawn.climberX = this.climbingRiders[0]?.group.position.x ?? null;
     drawn.chairX = this.cypressLift?.chairX ?? null;
     drawn.sheepX = this.flock?.sheepX ?? null;
-    drawn.flagTip = this.dalesFlags?.tip ?? null;
     drawn.pickupZ = this.daytonaBoardwalk?.pickupZ ?? null;
     drawn.gondolaY = this.daytonaBoardwalk?.gondolaY ?? null;
     drawn.mirageOpacity = this.desertBasin?.mirageOpacity ?? null;
@@ -2968,28 +2976,23 @@ export class CourseRenderer implements WorldRenderer {
     drawn.busPosition = this.etna?.busPosition ?? null;
     drawn.plumeHeight = this.etna?.plumeHeight ?? null;
     drawn.gondolaPosition = this.etna?.gondolaPosition ?? null;
-    drawn.walkerPosition = this.etna?.walkerPosition ?? null;
+    drawn.walkerPosition = this.etna?.walkerPosition ?? this.escarpment?.walkerPosition ?? null;
     drawn.cloudBearing = this.fen?.cloudBearing ?? null;
     drawn.dustPosition = this.fen?.dustPosition ?? null;
     drawn.turbineAngle = this.fen?.turbineAngle ?? null;
     drawn.shadowOffset = this.fen?.shadowOffset ?? null;
-    drawn.walkerPosition = this.escarpment?.walkerPosition ?? null;
     drawn.leafAngle = this.escarpment?.leafAngle ?? null;
     drawn.sheepHead = this.escarpment?.sheepHead ?? null;
     drawn.visitorPosition = this.subaru?.visitorPosition ?? null;
-    drawn.cloudPosition = this.subaru?.cloudPosition ?? null;
+    drawn.cloudPosition = this.subaru?.cloudPosition ?? this.galibier?.cloudPosition ?? this.gardena?.cloudPosition ?? null;
     drawn.shuttlePosition = this.subaru?.shuttlePosition ?? null;
     drawn.iceAboveLake = this.furka?.iceAboveLake ?? null;
     drawn.postbusDistance = this.furka?.postbusDistance ?? null;
-    drawn.cowHead = this.furka?.cowHead ?? null;
+    drawn.cowHead = this.furka?.cowHead ?? this.gardena?.cowHead ?? null;
     drawn.cloudHeight = this.furka?.cloudHeight ?? null;
     drawn.postbusPosition = this.furka?.postbusPosition ?? null;
     drawn.spectatorHeight = this.galibier?.spectatorHeight ?? null;
-    drawn.cloudPosition = this.galibier?.cloudPosition ?? null;
     drawn.streamOffset = this.galibier?.streamOffset ?? null;
-    drawn.flagAngle = this.galibier?.flagAngle ?? null;
-    drawn.cowHead = this.gardena?.cowHead ?? null;
-    drawn.cloudPosition = this.gardena?.cloudPosition ?? null;
     drawn.nearestRider = this.gardena?.nearestRider ?? null;
     drawn.cyclistPosition = this.gardena?.cyclistPosition ?? null;
     drawn.tier = this.tier;
@@ -3000,7 +3003,6 @@ export class CourseRenderer implements WorldRenderer {
     drawn.trainX = this.railway?.trainX;
     drawn.steamHeight = this.railway?.steamHeight;
     drawn.wingAngle = this.plaza?.wingAngle;
-    drawn.walkerX = this.plaza?.walkerX;
     drawn.ferryRoll = this.quay?.ferry.rotation.z ?? null;
     drawn.walkerZ = this.quay?.walkerZ ?? null;
     drawn.cabinHeight = this.funivia?.holder.position.y ?? null;

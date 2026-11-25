@@ -110,14 +110,19 @@ export class RaceAnnouncerController {
   private async activate(): Promise<void> {
     this.loading = true;
     try {
-      const { LocalRaceAnnouncer } = await import('@telo/ai');
+      const { LocalRaceAnnouncer, OpfsVoicePackStore } = await import('@telo/ai');
       if (this.disposed) return;
+      const voicePack = new OpfsVoicePackStore();
+      void voicePack.refresh();
       const announcer = new LocalRaceAnnouncer(this.injector);
       this.instance.set(announcer);
       announcer.start({
         snapshot: this.snapshot,
         audioEnabled: computed(
-          () => this.settingsStore.settings().raceAnnouncer && !this.mutedSignal(),
+          () =>
+            voicePack.state().status === 'ready' &&
+            this.settingsStore.settings().raceAnnouncer &&
+            !this.mutedSignal(),
         ),
         captionsEnabled: computed(() => this.settingsStore.settings().announcerCaptions),
         voice: computed(() => this.settingsStore.settings().announcerVoice),

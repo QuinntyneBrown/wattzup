@@ -19,5 +19,8 @@ public sealed class HostedAppApi : TeloRideApiFactory
                 ["ngsw.json"] = "{\"configVersion\":1}",
                 ["manifest.webmanifest"] = "{\"name\":\"Telo Ride\"}",
                 ["icons/icon-192.png"] = "png",
+                ["models/voice-announcer/kokoro.onnx"] = "weights",
+                ["models/voice-announcer/af_bella.bin"] = "voice",
+                ["models/voice-announcer/ort-wasm-simd-threaded.wasm"] = "runtime",
             }));
 }

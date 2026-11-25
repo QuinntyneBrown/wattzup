@@ -86,3 +86,16 @@ are:
 To read the riders' feedback, run `dotnet out/Telo.Ride.Api.dll feedback` with
 `ConnectionStrings__TeloRide` set to the database: it writes every report, oldest first, as JSON
 Lines and exits. A report names its rider by id, never by email, and carries no setting of its own.
+
+### Optional race announcer voice pack
+
+The ride build serves the quantized Kokoro-82M weights, tokenizer, three voice embeddings and
+the pinned ONNX Runtime Web WASM binary at `/models/voice-announcer/`. Settings fetches the pack
+after opt-in and verifies each file against the SHA-256 manifest before storing it in OPFS. Include
+the entire directory in the deployed ride build. When updating a pack file or the runtime
+dependency, update the manifest version, byte counts and hashes together.
+
+- Kokoro model files are distributed under Apache 2.0 from the pinned ONNX Community release.
+  [Model source](https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX/tree/1939ad2a8e416c0acfeecc08a694d14ef25f2231)
+- The WASM file is copied from the pinned ONNX Runtime Web package, which is distributed under MIT.
+  [Runtime license](https://github.com/microsoft/onnxruntime/blob/v1.31.1/LICENSE)
