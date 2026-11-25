@@ -19,7 +19,7 @@ Headed Chromium 159.0.8154.6 on Apple M5 Pro, 1024 × 768 at DPR 1, Low/WebGL 2,
 
 | Section | Scene offset | HUD distance | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak calls |
 | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| Linn Cove Viaduct | 970 m | 0.12 km to 0.95 km | 120.53 | 120.00 | 9.7 ms | 16.3 ms | 30 |
-| Mabry Mill pond and wheel | 5950 m | 0.12 km to 0.95 km | 120.29 | 119.71 | 9.7 ms | 157.4 ms | 21 |
+| Linn Cove Viaduct | 970 m | 0.12 km to 0.95 km | 120.24 | 119.87 | 9.9 ms | 34.2 ms | 30 |
+| Mabry Mill pond and wheel | 5950 m | 0.11 km to 0.95 km | 120.54 | 120.00 | 9.6 ms | 12.5 ms | 32 |
 
 Reproduce from the frontend workspace with `npm run perf -- blueridge-tablet --headed`.
