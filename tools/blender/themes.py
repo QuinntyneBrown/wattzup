@@ -1425,3 +1425,6 @@ import cabot as _cabot
 
 THEMES["cabot"] = _cabot.THEME
 SCENERY["cabot"] = _cabot.scenery
+import iceland as _iceland
+THEMES['iceland'] = _iceland.THEME
+SCENERY['iceland'] = _iceland.scenery
