@@ -103,7 +103,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 73 | Festive Spin With Surprise Sprints | Strasbourg Christmas Market | 35% |  | Lights, gingerbread stalls and carols; surprise sprints between market squares. |
 | 74 | Quick & Sharp Sprinting Efforts | Champs-Élysées Finale | 80% |  | Final-day cobbles toward the Arc de Triomphe; sharp sprints for the line. |
 | 75 | Cadence Training to Improve Pedalling | Kyoto Hanami | 35% |  | The Philosopher's Path under pink sakura petals during cherry-blossom season. |
-| 76 | Take It Easy | Bathsheba, Barbados | 35% |  | A calm coast road past rum shacks, palms and white sand. |
+| 76 | Take It Easy | Bathsheba, Barbados | 35% | [Ride views](screenshots/bathsheba-barbados/README.md) | A calm coast road past rum shacks, palms and white sand. |
 | 77 | Easy Cadence Workout | Dutch Tulip Fields | 78% |  | Flat roads through striped bulb fields and windmills near Lisse. |
 | 78 | Step It Up | Machu Picchu Road | 35% |  | Switchbacks climbing through cloud to the Inca citadel. |
 | 79 | Running on Empty | Outback Highway | 35% |  | Endless red earth and road trains toward Uluru, fuel stops far apart. |
