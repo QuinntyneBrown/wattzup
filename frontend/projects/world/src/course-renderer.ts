@@ -69,6 +69,7 @@ import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
+import type { seafrontAsphalt } from './seafront-asphalt';
 import type { BrightonParade } from './brighton-parade';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
@@ -216,6 +217,7 @@ export class CourseRenderer implements WorldRenderer {
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
+  private seafrontSurface: typeof seafrontAsphalt | null = null;
   private parade: BrightonParade | null = null;
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
@@ -360,6 +362,11 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
+      if (this.course.file.id === 'brighton') {
+        const { seafrontAsphalt } = await import('./seafront-asphalt');
+        if (this.disposed) return false;
+        this.seafrontSurface = seafrontAsphalt;
+      }
       this.build(gltf.scene, canvas);
       if (this.course.file.id === 'brighton') {
         const { BrightonParade } = await import('./brighton-parade');
@@ -489,6 +496,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lamplit.clear();
     this.lampGlow = null;
     this.sunGlow = null;
+    this.seafrontSurface = null;
     this.parade = null;
     this.groundEye = null;
     this.riderBatch = null;
@@ -593,7 +601,8 @@ export class CourseRenderer implements WorldRenderer {
       new Color(look.haze),
       coloured,
     );
-    materials['Ground'] = ground.material;
+    materials['Ground'] = this.seafrontSurface?.(detail) ?? ground.material;
+    if (this.seafrontSurface) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
