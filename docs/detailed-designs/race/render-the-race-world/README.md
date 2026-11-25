@@ -888,3 +888,18 @@ Select Death Valley in Map Select, open Race Setup and start Badwater Road. The 
 | 9.07 km | The Furnace Creek thermometer rises beside the shaded race aid stop. | Real 03, 09, 13 and games 02 and 05 |
 
 Use Caribana’s fixed skyline technique to separate the Panamints from the near alluvial fans and roadside salt edges. Bake canyon strata and dune lee slopes into vertex colours. Pool foreground scrub and wildlife, update the mirage and wingbeats on the ride clock, and release geometry, maps and materials when the course closes. The valley landmarks are condensed to the original workout. L1 Race, the ride-a-map journey, L2-064–066 and L2-159–160 trace to the performance budget and ADRs 0021, 0023, 0030, 0034 and 0035. Measure submitted frames beginning at 540 m and 8,560 m and capture six paired rider-height views with the HUD.
+
+## Diwali, Marine Drive (#2112)
+
+The world inventory lists a 35% concept. The original workout exists in the historical class catalogue, while the race has no dedicated Blender course or physical seafront. Map Select → Race Setup → Race must load the 22 stages and the authored centre line together. Use the historical 25:05 workout length and extend the arc of Marine Drive along its 10.163 km ride. A search of the repository’s GitHub feedback for Marine Drive located the feature issue and no separate rider report.
+
+| Rider view | Composition on Low | References |
+| --- | --- | --- |
+| 0.08 km | Nariman Point towers and the first gold lamps frame the dark bay. | Real 01–04, 07–08 and games 01–02 |
+| 1.27 km | Rounded balconies, vertical fins and pastel walls overlook parked black-and-yellow taxis. | Real 04–07, 14 and games 02–04 |
+| 2.68 km | Akash kandil lanterns, oil lamps and rangoli cluster outside the apartment entrances. | Real 05–06, 11–13, 15 and games 03 and 05 |
+| 4.84 km | The sodium lamps arc around the bay, with visible gaps between them and the far skyline. | Real 01–03, 07–08 and games 01 and 05 |
+| 6.46 km | Fireworks rise above the sea wall and colour the water behind families on the promenade. | Real 03–04, 08–12 and games 01, 03–04 |
+| 9.21 km | Malabar Hill rises across the water beyond Chowpatty and the last light-wrapped palms. | Real 01–03, 07–08, 11 and games 03 and 05 |
+
+Bake bevels, balcony shadows, tetrapods and the far silhouettes into section geometry. Give the recessed round balcony corners and stepping rooflines the same attention Caribana gives its CN Tower. Reuse static lamp pools and reflections at Low. Bound the festive crowd, firework trails and taxi draws, move them with ride time, and dispose their shared assets with the renderer. Roadside lamp spacing and fixed views across the bay should read at riding speed. Capture the six views before and after and measure submitted frames at 55 m and 6,040 m. Apply L1 Race, the ride-a-map journey, L2-064–066 and L2-159–160, the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.

@@ -569,4 +569,13 @@ export class WorldRideProbe {
       part,
     );
   }
+
+  async festivalMotion(part: 'taxiZ' | 'sparkY'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
 }

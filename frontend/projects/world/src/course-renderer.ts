@@ -9,6 +9,8 @@ import type { DaytonaBoardwalk } from './daytona-boardwalk';
 import type { DaytonaTideLine } from './daytona-tide-line';
 import type { badwaterGeology } from './badwater-geology';
 import type { DeathValleyStreet } from './world-deathvalley';
+import type { diwaliPromenade } from './diwali-promenade';
+import type { DiwaliFestival } from './diwali-festival';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -286,6 +288,8 @@ export class CourseRenderer implements WorldRenderer {
   private timing: PursuitBoard | null = null;
   private geology: Awaited<ReturnType<typeof badwaterGeology>> | null = null;
   private basin: DeathValleyStreet | null = null;
+  private promenade: Awaited<ReturnType<typeof diwaliPromenade>> | null = null;
+  private festival: DiwaliFestival | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -417,6 +421,8 @@ export class CourseRenderer implements WorldRenderer {
     gondolaY: null as number | null,
     mirageOpacity: null as number | null,
     ravenHeading: null as number | null,
+    taxiZ: null as number | null,
+    sparkY: null as number | null,
     groups: {} as Record<string, number>,
     kiteAngle: undefined as number | undefined,
     boatX: undefined as number | undefined,
@@ -985,6 +991,23 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.basin.group, geology.group);
         this.camera.setViewOffset(1, 1, 0, 0.05, 1, 1);
       }
+      if (this.path === 'courses/diwali') {
+        const { DiwaliFestival } = await import('./diwali-festival');
+        if (this.disposed) return false;
+        this.festival = new DiwaliFestival(this.course, this.scene);
+        this.disposables.push(this.festival);
+        const { diwaliPromenade } = await import('./diwali-promenade');
+        if (this.disposed) return false;
+        const promenade = await diwaliPromenade(this.course);
+        if (this.disposed) {
+          promenade.dispose();
+          return false;
+        }
+        this.promenade = promenade;
+        this.disposables.push(promenade);
+        this.scene.add(promenade.group);
+        this.camera.setViewOffset(1, 1, 0, 0.062, 1, 1);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1211,6 +1234,8 @@ export class CourseRenderer implements WorldRenderer {
     this.shore?.place(metres, frame.reducedMotion ? 0 : frame.time);
     this.geology?.follow(metres);
     this.basin?.followBasin(course, metres, frame.reducedMotion ? 0 : frame.time);
+    this.promenade?.follow(metres, frame.reducedMotion ? 0 : frame.time);
+    this.festival?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
@@ -2356,6 +2381,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.gondolaY = this.boardwalk?.gondolaY ?? null;
     drawn.mirageOpacity = this.basin?.mirageOpacity ?? null;
     drawn.ravenHeading = this.basin?.ravenHeading ?? null;
+    drawn.taxiZ = this.festival?.taxiZ ?? null;
+    drawn.sparkY = this.festival?.sparkY ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;

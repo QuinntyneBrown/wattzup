@@ -1437,3 +1437,8 @@ import deathvalley as _deathvalley  # noqa: E402
 
 THEMES['deathvalley'] = _deathvalley.THEME
 SCENERY['deathvalley'] = _deathvalley.scenery
+
+import diwali as _diwali  # noqa: E402
+
+THEMES['diwali'] = _diwali.THEME
+SCENERY['diwali'] = _diwali.scenery

@@ -34,6 +34,7 @@ import cypressElevation from './cypress-elevation.json';
 import dalesElevation from './dales-elevation.json';
 import daytonaElevation from './daytona-elevation.json';
 import deathvalleyElevation from './deathvalley-elevation.json';
+import diwaliElevation from './diwali-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -2217,6 +2218,51 @@ export const deathValleyCourseMap = {
       seg('recover', 60, 13, 80),
       seg('work', 30, 22, 100),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const diwaliCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'diwali-marine-drive',
+  name: 'Diwali, Marine Drive',
+  routeName: 'Marine Drive',
+  place: 'Mumbai, India',
+  world: 'diwali',
+  distanceKm: 10.163,
+  climbingM: 4,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: diwaliElevation,
+  },
+  thumbnailUrl: 'maps/diwali-marine-drive.jpg',
+  photoUrl: 'maps/diwali-marine-drive-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 150, 13, 80),
+      seg('work', 90, 18, 68),
+      seg('work', 60, 21, 68),
+      seg('recover', 120, 18, 85),
+      seg('work', 30, 22, 65),
+      seg('recover', 30, 19, 75),
+      seg('work', 30, 22, 65),
+      seg('recover', 30, 19, 75),
+      seg('work', 30, 22, 65),
+      seg('recover', 30, 19, 75),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 14, 80),
+      seg('work', 120, 18, 100),
+      seg('recover', 60, 13, 80),
+      seg('work', 180, 19, 82),
+      seg('work', 60, 22, 80),
+      seg('work', 20, 23, 100),
+      seg('recover', 60, 22, 80),
+      seg('work', 20, 23, 100),
+      seg('recover', 60, 22, 80),
+      seg('work', 20, 23, 100),
+      seg('cool-down', 185, 11, 80),
     ],
   },
 };
