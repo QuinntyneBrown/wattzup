@@ -1247,3 +1247,9 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import arenberg as _arenberg
+
+THEMES['arenberg'] = _arenberg.THEME
+SCENERY['arenberg'] = _arenberg.scenery
+MATERIALS['pave'] = {'color': 0xFFFFFF, 'vertex': True}

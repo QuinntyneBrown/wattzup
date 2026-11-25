@@ -577,6 +577,8 @@ WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Con
 
 def group_of(mat: str) -> tuple[str, bool]:
     """The mesh a part's faces join, and whether that mesh is cut into chunks along the road."""
+    if mat == "pave":
+        return "Pave", True
     if mat in WHOLE:
         return WHOLE[mat], False
     spec = MATERIALS[mat]
@@ -700,7 +702,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
-                    if group == "Ground":
+                    if group in ("Ground", "Pave"):
                         _, near, _ = road.tree.find((v[0], v[1], 0.0))
                         p = road.s[near]
                         dx, dy = v[0] - p["x"], v[1] - p["y"]
@@ -843,7 +845,19 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         strip(sand, i, kerb + 7.0, drop, kerb + 2.4, 0.0)
         strip(sand, i, -(kerb + 2.4), 0.0, -(kerb + 7.0), -1.6)
 
+    stones = Builder("Crowned five-star sector", "pave") if edge == "pave" else None
     for i in range(n - 1):
+        if stones is not None:
+            if 320 <= s[i]["d"] < 2720:
+                strip(stones,i,2.12,-.075,1.1,.025)
+                strip(stones,i,1.1,.025,0,.08)
+                strip(stones,i,0,.08,-1.1,.025)
+                strip(stones,i,-1.1,.025,-2.12,-.075)
+            else:
+                strip(asphalt,i,2.12,0,-2.12,0)
+            for side in (-1,1):
+                strip(sand,i,side*2.12,-.075,side*3.12,-.105)
+            continue
         strip(asphalt, i, ROAD_HALF, 0.0, -ROAD_HALF, 0.0)
         # The double yellow line down the middle and a white line inside each edge.
         if white_centre:
@@ -876,6 +890,9 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         strip(prom, i, -kerb, 0.12, -(kerb + TERRACE), 0.12)
         strip(sand, i, -(kerb + TERRACE), 0.12, -(kerb + TERRACE + 8.0), -2.4)
 
+    if stones is not None:
+        stones.build(col)
+
     def chevron(d: float, lane: float) -> None:
         for back in (0.0, 1.5):
             tip, tail = d + 2.2 - back, d - back
@@ -888,7 +905,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     # Chevrons up every effort: the road itself says "push".
     for stage in st:
-        if stage["kind"] != "work":
+        if edge == "pave" or stage["kind"] != "work":
             continue
         d = stage["from"] + 12
         while d < stage["to"] - 6:
@@ -1796,7 +1813,7 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         "durationSeconds": sum(s["duration"] for s in st),
         "step": STEP,
         "startIndex": int(LEAD_IN / STEP),
-        "roadHalfWidth": ROAD_HALF,
+        "roadHalfWidth": course.get("roadHalfWidth", ROAD_HALF),
         "meanLevel": round(mean, 2),
         "gradePerLevel": per_level,
         # The direction the light comes from, as a unit vector in the glb's axes.

@@ -58,6 +58,7 @@ import {
   courseWet,
   parseCourse,
 } from './course';
+import type { arenbergPave } from './arenberg-pave';
 import { CourseCyclistKit, type RiderModel as Cyclist } from './course-cyclist';
 import { fenceMaterial } from './fence-material';
 import { type CabinPose, gondolaPosition } from './gondola-flight';
@@ -108,6 +109,7 @@ const SHADOW_WIDTH = 0.8;
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Land: 950,
+  Pave: 180,
   Ground: 420,
   Solid: 250,
   Walls: 220,
@@ -200,6 +202,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
+  private pave: ReturnType<typeof arenbergPave> | null = null;
   private course: Course | null = null;
   private disposed = false;
   private readonly scene = new Scene();
@@ -356,6 +359,12 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
+      if (this.course.file.id === 'arenberg') {
+        const { arenbergPave } = await import('./arenberg-pave');
+        if (this.disposed) return false;
+        this.pave = arenbergPave();
+        this.disposables.push(this.pave);
+      }
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -471,6 +480,7 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    this.pave = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -569,6 +579,7 @@ export class CourseRenderer implements WorldRenderer {
     const coloured = this.lampGlow?.coloured ?? dusk;
     const made = this.lampGlow?.light ?? dusk;
     this.disposables.push(...Object.values(materials));
+    if (this.pave) materials['Pave'] = this.pave.material;
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
     const detail = surfaceTexture();
@@ -639,7 +650,7 @@ export class CourseRenderer implements WorldRenderer {
         return;
       }
       // The ground is lit smoothly: its normals are worked out here, so the map's file carries none.
-      if (group === 'Ground') mesh.geometry.computeVertexNormals();
+      if (group === 'Ground' || group === 'Pave') mesh.geometry.computeVertexNormals();
       // The map is set once and never moves: its matrices are worked out here, not every frame.
       mesh.matrixAutoUpdate = false;
       mesh.updateMatrix();
