@@ -157,16 +157,22 @@ def arch(k,art):
     soffit=height(BRIDGE)-1.18
     low=height(KNOT_START-KNOT_RADIUS)-1.2
     radius=6.5;spring=soffit-radius-.45
-    def block(left,right,base1,base2,top1,top2,tint):
-        for side in (-3.85,3.85):
-            f=(pt(left,side,base1),pt(right,side,base2),pt(right,side,top2),pt(left,side,top1))
-            co=lin(tint);art.face(f,(co,)*4);art.face(f[::-1],(co,)*4)
-        f=(pt(left,-3.85,base1),pt(right,-3.85,base2),pt(right,3.85,base2),pt(left,3.85,base1))
-        art.face(f,(lin(0x807869),)*4);art.face(f[::-1],(lin(0x807869),)*4)
-    for j in range(32):
-        a=-18+j*36/32;b=a+36/32
-        def base(u):return low if abs(u)>radius else spring+math.sqrt(max(0,radius*radius-u*u))
-        block(a,b,base(a),base(b),height(BRIDGE+a)-.15,height(BRIDGE+b)-.15,(0xAA9B81,0xAE9E87,0xB3A68C)[j%3])
+    # Closed masonry courses under the deck. Cut each coursed pier to the
+    # radius of the opening, with a continuous soffit between the two faces.
+    for j in range(96):
+        u=-29.7+j*.625
+        underside=low-.28 if abs(u)>=radius else spring+math.sqrt(max(0,radius*radius-u*u))
+        deck=height(BRIDGE+u)-.025
+        x,y,_=k.road.pos(BRIDGE+u)
+        art.box((x,y,underside),(.635,7.76,max(.24,deck-underside+.025)),heading(BRIDGE+u),lin(0xA8997F))
+        for side in (-3.91,3.91):
+            x,y,_=k.road.pos(BRIDGE+u,side)
+            courses=math.ceil((deck-underside)/.51)
+            for n in range(courses):
+                h=min(.49,deck-underside-n*.51)
+                if h>.025:
+                    tint=(0xBAAB91,0xA89B83,0xC2B399,0xB1A189)[(j*3+n*7)%4]
+                    art.box((x,y,underside+n*.51),(.612,.09,h),heading(BRIDGE+u),lin(tint))
     for side in (-3.91,3.91):
         for j in range(21):
             a=j*math.pi/21+.009;b=(j+1)*math.pi/21-.009
