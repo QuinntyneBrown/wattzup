@@ -239,8 +239,10 @@ export class CourseRenderer implements WorldRenderer {
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
+    trainingRiderX: null as number | null,
     groups: {} as Record<string, number>,
   };
+  private readonly trainingGroup: Cyclist[] = [];
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -359,6 +361,12 @@ export class CourseRenderer implements WorldRenderer {
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
+      if (_world.id === 'angels') {
+        for (const [index, colour] of [0x4a7990, 0xac5449, 0x537149].entries()) {
+          const cyclist = this.rider('girona-club-' + index, colour);
+          if (cyclist) this.trainingGroup.push(cyclist);
+        }
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -422,6 +430,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    if (this.trainingGroup.length) this.placeTrainingGroup(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
@@ -473,6 +482,7 @@ export class CourseRenderer implements WorldRenderer {
     this.glider = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
+    this.trainingGroup.length = 0;
     this.riders.clear();
     this.lamplit.clear();
     this.lampGlow = null;
@@ -901,6 +911,22 @@ export class CourseRenderer implements WorldRenderer {
     this.sun.target.updateMatrixWorld();
   }
 
+  private placeTrainingGroup(frame: SceneFrame, metres: number): void {
+    const elapsed = frame.reducedMotion ? 0 : frame.time;
+    const lead = 32 + elapsed * 5.2;
+    // Reuse three bodies. Switch to the next group only when both groups are out of sight.
+    const nearest = lead + Math.round((metres - lead) / 760) * 760;
+    this.drawn.trainingRiderX = null;
+    for (const [index, cyclist] of this.trainingGroup.entries()) {
+      const at = nearest - index * 2.7;
+      cyclist.group.visible = at >= 0 && at < this.course!.length && Math.abs(at - metres) < 150;
+      if (!cyclist.group.visible) continue;
+      const standing = this.ride(cyclist, at, index % 2 === 0 ? 1.3 : 2.2);
+      cyclist.pose(elapsed * 8.9 + index, standing);
+      if (index === 0) this.drawn.trainingRiderX = cyclist.group.position.x;
+    }
+  }
+
   /** The race's other riders at their places, each on a line of their own (L2-064 AC3). */
   private placeRiders(frame: SceneFrame, metres: number): void {
     for (const rider of this.riders.values()) {
@@ -941,11 +967,12 @@ export class CourseRenderer implements WorldRenderer {
   }
 
   /** A race rider in their jersey, made the first time they ride into view; the ghost in translucent gold. */
-  private rider(jersey: string): Cyclist | null {
+  private rider(jersey: string, clubColour?: number): Cyclist | null {
     const made = this.riders.get(jersey);
     if (made) return made;
     if (!this.kit || !this.canvas) return null;
-    const colour = jerseyColour(this.canvas, jersey);
+    const colour =
+      clubColour === undefined ? jerseyColour(this.canvas, jersey) : new Color(clubColour);
     // The ghost is a figure of glass: it carries no light.
     const cyclist = this.kit.make(
       colour,

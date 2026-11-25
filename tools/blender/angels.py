@@ -1,5 +1,7 @@
 """Girona on the Onyar, the wooded Gavarres climb and the sanctuary terrace."""
 import math
+import bpy
+from functools import lru_cache
 from worldkit import Painted, lin, smooth
 
 
@@ -9,7 +11,7 @@ def centre_line(course, theme, bc):
     mean = sum((s["to"]-s["from"])*s["level"] for s in stages)/length
     def bearing(d):
         # Broad river bend gives way to shorter turns climbing the Gavarres.
-        return .24*math.sin(d/210) + smooth(220,850,d)*(.65*math.sin(d/165)+.24*math.sin(d/74))
+        return .24*math.sin(d/210) + .82*smooth(-50,130,d)-.82*smooth(140,340,d) + smooth(220,850,d)*(.65*math.sin(d/165)+.24*math.sin(d/74))
     samples = []
     x,y,z = -bc.LEAD_IN,0,0
     for i in range(math.ceil((bc.LEAD_IN+length+bc.RUN_OUT)/bc.STEP)+1):
@@ -58,7 +60,74 @@ THEME = {
 }
 
 
+@lru_cache(maxsize=96)
+def lettering(text):
+    """Original raised sign lettering as triangles. The exported course needs no font."""
+    curve=bpy.data.curves.new("Sign master","FONT")
+    curve.body=text
+    curve.align_x="CENTER"
+    curve.resolution_u=2
+    obj=bpy.data.objects.new("Sign master",curve)
+    bpy.context.scene.collection.objects.link(obj)
+    evaluated=obj.evaluated_get(bpy.context.evaluated_depsgraph_get())
+    mesh=evaluated.to_mesh()
+    try:
+        mesh.calc_loop_triangles()
+        triangles=[tuple(tuple(mesh.vertices[v].co[:2]) for v in t.vertices) for t in mesh.loop_triangles]
+        width=max(x for tri in triangles for x,y in tri)-min(x for tri in triangles for x,y in tri)
+        return triangles,width
+    finally:
+        evaluated.to_mesh_clear()
+        bpy.data.objects.remove(obj,do_unlink=True)
+        bpy.data.curves.remove(curve)
+
+
+def words(b,text,origin,right,up,size,max_width,tint):
+    triangles,width=lettering(text)
+    scale=min(size,max_width/width)
+    col=lin(tint)
+    for tri in triangles:
+        points=[tuple(origin[k]+scale*(x*right[k]+y*up[k]) for k in range(3)) for x,y in tri]
+        b.face(points,(col,)*3)
+
+
+def panorama(k):
+    hills = Painted(k,"peaks")
+    # The Pyrenees occupy a fixed skyline on the far side of the plain. Two
+    # nearer ridgelines soften into the haze over the coast beyond the summit.
+    for row,offset in enumerate((3800,2300)):
+        points=[]
+        for j in range(85):
+            x=-4500+j*320
+            y=offset+200*math.sin(j*.6)
+            h=700+row*30+(350 if not row else 140)*abs(math.sin(j*.51)+.42*math.sin(j*1.8))
+            points.append((x,y,h))
+        for j,(a,b) in enumerate(zip(points,points[1:])):
+            ca,cb=lin(0x8D9EAC if row==0 else 0x83948E),lin(0xBAC2BF if row==0 else 0xA5B0A3)
+            hills.face(((a[0],a[1],-500),(b[0],b[1],-500),b,a),(ca,ca,cb,cb))
+            hills.face((a,b,(b[0],b[1],-500),(a[0],a[1],-500)),(cb,cb,ca,ca))
+            if row==0 and max(a[2],b[2])>1060:
+                cap=(b[0],b[1]-5,b[2]-115)
+                hills.face((a,b,cap),(lin(0xCFD5D5),lin(0xECF0EA),cb))
+    (x,y,z),yaw=k.road.at(k.road.index(k.length)),k.s[k.road.index(k.length)]["h"]
+    right=(math.sin(yaw),-math.cos(yaw))
+    forward=(math.cos(yaw),math.sin(yaw))
+    for row in range(3):
+        strip=[]
+        for j in range(49):
+            across=(j-24)*115
+            distance=1900+row*640
+            px=x+forward[0]*distance+right[0]*across
+            py=y+forward[1]*distance+right[1]*across
+            strip.append((px,py,z-22+42*math.sin(j*.6+row)+17*math.sin(j*1.3)))
+        shade=lin((0x899C86,0xA1ADA0,0xBBC6B5)[row])
+        for a,b in zip(strip,strip[1:]):
+            pts=(a,b,(b[0],b[1],z-300),(a[0],a[1],z-300))
+            hills.face(pts,(shade,)*4);hills.face(pts[::-1],(shade,)*4)
+
+
 def scenery(k):
+    panorama(k)
     art = Painted(k)
     stone,tile,window = map(lin,(0xC7B49B,0x996347,0x405053))
     def site(d,side):
@@ -84,12 +153,21 @@ def scenery(k):
     art.roof((x,y,z+21),33,17,6,yaw,tile)
     for level,radius,height in ((0,4.8,23),(23,3.9,9),(32,3.1,5),(37,1.4,3)):
         art.tube((x+12,y-4,z+level),radius,radius*.93,height,stone,stone,8,stone)
+    # Medieval walls rise above the quays. The crenellations break the skyline.
+    for d in range(38,266,6):
+        (x,y,z),yaw=site(d,52)
+        art.box((x,y,z),(6.15,1.7,13.8),yaw,stone)
+        for along in (-2,0,2):
+            art.box((x+math.cos(yaw)*along,y+math.sin(yaw)*along,z+13.8),(.95,1.6,.75),yaw,stone)
+    for d in (88,216):
+        c,yaw=site(d,52)
+        art.tube(c,3.6,3.4,17.4,stone,stone,8,stone)
     for d in range(330,2550,355):
         house(d, -22 if d%2 else 28,14,6.4,stone)
-    for d in range(330,int(k.length)-100,16):
+    for d in range(330,int(k.length)-100,9):
         for side in (-1,1):
             if side==1 and d%920<280: continue
-            offset=side*k.rng.uniform(8,24)
+            offset=side*k.rng.uniform(7,19)
             (x,y,z),yaw=site(d,offset)
             h=k.rng.uniform(4,7)
             pine = k.rng.random()<.34
@@ -100,6 +178,10 @@ def scenery(k):
                 p=(x+1.25*math.cos(a),y+1.25*math.sin(a),z+h-.4+j*.32)
                 art.tube(p,1.75,2.15,1.0,foliage,foliage,7)
                 art.tube((p[0],p[1],p[2]+1),2.15,.40,1 if pine else 2.1,foliage,foliage,7,foliage)
+            # A second, less detailed stand adds depth between the roadside trunks.
+            (tx,ty,tz),_ = site(d+4,side*k.rng.uniform(23,52))
+            art.tube((tx,ty,tz),.4,.24,h*.9,bark,bark,5)
+            art.tube((tx,ty,tz+h*.8),3.8,2.9,2.9,foliage,foliage,7,foliage)
     for d in range(400,int(k.length)-90,9):
         if d%200<88:
             c,yaw=site(d,-6.4)
@@ -108,6 +190,14 @@ def scenery(k):
         c,yaw=site(d,6.2)
         art.box(c,(.57,.38,1.13),yaw,lin(0xE6DFCC))
         art.box((c[0],c[1],c[2]+.84),(.59,.40,.25),yaw,lin(0xA7643A))
+        right=(math.sin(yaw),-math.cos(yaw),0)
+        face=(c[0]-.31*math.cos(yaw),c[1]-.31*math.sin(yaw),c[2]+.38)
+        words(art,str(d//1000),face,right,(0,0,1),.26,.34,0x343D37)
+        i=k.road.index(d-22)
+        h=k.s[i]["h"]
+        grade=k.s[i]["g"]/100
+        words(art,("SOM-HI!","GIRONA","FORÇA")[d//1000%3],k.road.at(i,-.9,.035),
+              (math.sin(h),-math.cos(h),0),(math.cos(h),math.sin(h),grade),1.3,3.8,0xD5C9A8)
     (x,y,z),yaw=site(k.length+26,4)
     pale,portal=map(lin,(0xE4DDCA,0x685440))
     art.box((x,y,z),(16,10,8.3),yaw,pale)
