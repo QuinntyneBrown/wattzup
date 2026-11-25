@@ -3598,7 +3598,7 @@ export const koppenbergCourseMap = {
   place: 'Melden, Flemish Ardennes, Belgium',
   world: 'koppenberg',
   distanceKm: 5.64,
-  climbingM: 86,
+  climbingM: 111,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

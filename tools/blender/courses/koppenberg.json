@@ -1,0 +1,79 @@
+{
+  "id": "koppenberg",
+  "name": "Koppenberg Cobbles",
+  "world": "koppenberg",
+  "theme": "koppenberg",
+  "seed": 2150,
+  "layout": 0,
+  "class": {
+    "id": "low-cadence-strength-builder",
+    "title": "Low Cadence Strength Builder",
+    "channel": "GCN Training",
+    "videoId": "VUEOu5m3oaY",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 62
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 62
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 62
+      },
+      {
+        "kind": "cool-down",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
