@@ -1,0 +1,241 @@
+{
+  "id": "aubisque",
+  "name": "Col d'Aubisque",
+  "world": "aubisque",
+  "theme": "aubisque",
+  "seed": 2075,
+  "layout": 0,
+  "class": {
+    "id": "35-minute-torque-power-intervals",
+    "title": "35 Minute Torque Power Intervals",
+    "channel": "GCN",
+    "videoId": "ybLM983BOCk",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 80,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 200,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 80,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 80,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "cool-down",
+        "duration": 260,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
