@@ -99,12 +99,12 @@ def land(road,col,theme,bc):
 
 
 def roadway(road,st,length,col,bc):
-    b=bc.Builder('Track surface','terrain');b.colours=[]
+    b=bc.Builder('Road','terrain');b.colours=[]
     def strip(d,end,l,r,z,tint):
         b.quad(pos(d,l,z),pos(end,l,z),pos(end,r,z),pos(d,r,z))
         b.colours.extend([lin(tint)]*4)
     for d in range(0,LAP,4):
-        for l,r,tint in ((-12,-10,0x8C8983),(-10,-6,0x66686A),(-6,-4,0x606264),(-4,-1.7,0x56585B),(-1.7,-1,0x515457),(-1,2,0x585A5B),(2,6,0x636568),(6,10,0x6A6C6D),(10,13,0x858582)):
+        for l,r,tint in ((-12,-10,0x8C8983),(-10,-6,0x66686A),(-6,-4,0x606264),(-4,-1.7,0x606163),(-1.7,-1,0x5E6062),(-1,2,0x626465),(2,6,0x636568),(6,10,0x6A6C6D),(10,13,0x858582)):
             strip(d,d+4,l,r,0,tint)
         for edge in (-9.8,9.8):strip(d,d+4,edge,edge+.13,.012,0xEBE9DF)
         if d>3450 or d<470:
@@ -156,9 +156,23 @@ def grandstand(art,d,rng,inside=False):
             for seat in range(15):
                 u=d-11+seat*1.53+rng.uniform(-.22,.22)
                 shirt=rng.choice((0xBE3837,0x536E8B,0xE3D7B7,0xD3AD43,0x7B8E89,0x374853,0xC37458))
-                place(art,u,l,z+.4,(.60,.42,.65),shirt)
-                if level==0 and row<3:place(art,u,l,z+1.04,(.32,.30,.33),rng.choice((0xC79674,0x926850,0xC4AB86)))
+                # Three-quarter facing cards give even the far section distinct necks,
+                # sleeves and heads, with fewer faces than cuboid crowds.
+                hue=lin(shirt);skin=lin(rng.choice((0xC79674,0x926850,0xC4AB86,0xAD805D)))
+                height=rng.uniform(.9,1.13);lean=rng.uniform(-.12,.12)
+                def at(a,h):
+                    return pos(u+a*.79+lean*h,l+a*.55*side,z+.37+h*height)
+                def card(outline,col):
+                    pts=[at(a,h) for a,h in outline]
+                    normal=(pts[1][0]-pts[0][0])*(pts[2][2]-pts[0][2])-(pts[1][2]-pts[0][2])*(pts[2][0]-pts[0][0])
+                    if (normal>0) != (side>0):pts.reverse()
+                    art.face(pts,(col,)*len(pts))
+                card([(-.27,0),(.25,0),(.36,.5),(.21,.7),(-.19,.7),(-.35,.52)],hue)
+                card([(-.14,.7),(.10,.69),(.165,.85),(.10,1.0),(-.12,1.0),(-.17,.87)],skin)
+                if seat%4==0:card([(-.17,.94),(.20,.95),(.10,1.06),(-.11,1.08)],lin(0x333B40))
     place(art,d,side*(base+11),15.85,(24.2,23.6,.36),0xB9BDC0)
+    face=[pos(d+a,side*(base+11)+b,15.84) for a,b in ((-12,-11.8),(-12,11.8),(12,11.8),(12,-11.8))]
+    art.face(face,(lin(0x7D8584),)*4)
     for off in (-11,11):
         beam(art,pos(d+off,side*(base+19),.2),pos(d+off,side*(base+19),15.86),.24,.25,lin(0x777F80))
         beam(art,pos(d+off,side*(base+19),11.9),pos(d+off,side*(base+1),15.80),.17,.18,lin(0x757F82))
