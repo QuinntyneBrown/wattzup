@@ -510,6 +510,19 @@ The red ciclovia follows the bay from the fort towards Leme. Its course takes di
 | Leme and Sugarloaf | Pão de Açúcar has a steep granite face above a green base. Nearer headlands overlap it differently round the bay. | Real 05–07, 12 and 15, games 04–05 |
 | Atlantic | Repeated shallow waves fold into strips of foam. Warm sunset reflections stretch toward the beach, opposite the apartment shadows. | Real 05–07, 09, 13–15, games 04–05 |
 
+### Copenhagen Cycle Superhighway
+
+The race follows a condensed Supercykelsti from the commuter avenues to the harbour. The physical route uses the original class stages. Caribana’s fixed skyline and moving parade inform the separation between copper spires, waterfront façades and near-field riders. Repeated bicycle wheels and frames share geometry. The race clock drives pedals, traffic lights and speed markers, including pause and resume.
+
+| View | Construction and riding sightline | References |
+| --- | --- | --- |
+| Protected track | Granite kerb, blue crossing paint, asphalt wear, orange C signs, counter display, public pump and low footrest. Signals face the bike lane. | Real 01–02, 06–07 and 13–14, games 01 and 03 |
+| Commuter rush | High handlebars, coat silhouettes, mudguards and baskets identify upright city bikes. A two-wheeled long-john and three-wheeled front-box cycle have distinct frames, boxes and wheelbases. | Real 01–02 and 06, games 01 and 03–05 |
+| Cykelslangen | The orange running surface rises into an S bend above the water on slender piers with closely spaced rail pickets. | Real 03–05 and 12, games 02 and 04 |
+| Harbour baths | Timber decks and stairs enclose blue water with swimmers, a lookout and a striped red-and-white marker. | Real 10–11 and 15, games 02 and 05 |
+| Nyhavn | Narrow gables, uneven roof heights, windows and awnings rise across a row of wooden vessels. Trees and crowded racks stand in the foreground. | Real 08–09 and 15, games 02 and 03 |
+| Inner harbour bridge | Distinct bridge rails and spans open views towards the distant quays and copper spires in low northern light. | Real 05, 11–12 and 15, games 02 and 04 |
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a

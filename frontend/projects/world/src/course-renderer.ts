@@ -9,6 +9,8 @@ import type { chichenPlaza } from './chichen-plaza';
 import type { ConeyBoardwalk } from './coney-boardwalk';
 import type { copacabanaPromenade } from './copacabana-promenade';
 import type { CopacabanaBeach } from './copacabana-beach';
+import type { copenhagenStreet } from './copenhagen-street';
+import type { CopenhagenCommuters } from './copenhagen-commuters';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -253,6 +255,8 @@ export class CourseRenderer implements WorldRenderer {
   private boardwalk: ConeyBoardwalk | null = null;
   private promenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
+  private danishStreet: Awaited<ReturnType<typeof copenhagenStreet>> | null = null;
+  private commuters: CopenhagenCommuters | null = null;
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -831,6 +835,24 @@ export class CourseRenderer implements WorldRenderer {
         this.copacabana = new CopacabanaBeach(this.course, this.scene);
         this.disposables.push(this.copacabana);
       }
+      if (this.course.file.id === 'copenhagen') {
+        const [{ CopenhagenCommuters }, { copenhagenStreet }] = await Promise.all([
+          import('./copenhagen-commuters'),
+          import('./copenhagen-street'),
+        ]);
+        if (this.disposed) return false;
+        const street = await copenhagenStreet(this.course);
+        if (this.disposed) {
+          street.dispose();
+          return false;
+        }
+        this.danishStreet = street;
+        this.scene.add(street.root);
+        this.disposables.push(street);
+        this.commuters = new CopenhagenCommuters(this.course, this.scene);
+        this.disposables.push(this.commuters);
+        this.camera.setViewOffset(1, 1, 0, 0.08, 1, 1);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1037,6 +1059,8 @@ export class CourseRenderer implements WorldRenderer {
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.champsParade?.update(frame.time, metres, frame.reducedMotion);
     this.riderBatch?.follow();
+    this.danishStreet?.follow(metres);
+    this.commuters?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.promenade?.follow(metres);
     this.copacabana?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
@@ -1148,6 +1172,9 @@ export class CourseRenderer implements WorldRenderer {
     this.promenade?.root.removeFromParent();
     this.promenade = null;
     this.copacabana = null;
+    this.danishStreet?.root.removeFromParent();
+    this.danishStreet = null;
+    this.commuters = null;
     this.map = null;
     // The chunks were taken out of the map: their geometry is released here.
     for (const { mesh } of this.chunks) mesh.geometry.dispose();
@@ -1736,8 +1763,8 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : this.commuters ? 4.1 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
+    const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : this.commuters ? 2.0 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
     const back = course.place(metres - behind, sway, this.here);
     const rim = this.plaza ? Math.max(0, 1 - Math.abs(metres - 3180) / 105) : 0;
@@ -2164,6 +2191,11 @@ export class CourseRenderer implements WorldRenderer {
         breakerX: this.copacabana.breakerX,
       });
     }
+    if (this.commuters)
+      Object.assign(drawn, {
+        cargoPedalY: this.commuters.cargoPedalY,
+        markerCount: this.commuters.markerCount,
+      });
     hook['course'] = drawn;
   }
 

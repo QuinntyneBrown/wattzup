@@ -1407,3 +1407,8 @@ import copacabana as _copacabana  # noqa: E402
 
 THEMES['copacabana'] = _copacabana.THEME
 SCENERY['copacabana'] = _copacabana.scenery
+
+import copenhagen as _copenhagen  # noqa: E402
+
+THEMES['copenhagen'] = _copenhagen.THEME
+SCENERY['copenhagen'] = _copenhagen.scenery

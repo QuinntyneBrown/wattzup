@@ -28,6 +28,7 @@ import chichenElevation from './chichen-elevation.json';
 import comoElevation from './como-elevation.json';
 import comuna13Elevation from './comuna13-elevation.json';
 import copacabanaElevation from './copacabana-elevation.json';
+import copenhagenElevation from './copenhagen-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1946,6 +1947,46 @@ export const copacabanaCourseMap = {
       seg('recover', 50, 10, 80),
       seg('work', 60, 23, 100),
       seg('recover', 30, 10, 80),
+    ],
+  },
+};
+
+export const copenhagenCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'copenhagen-cycle-superhighway',
+  name: 'Copenhagen Cycle Superhighway',
+  routeName: 'The Supercykelsti',
+  place: 'Copenhagen, Denmark',
+  world: 'copenhagen',
+  distanceKm: 13.65,
+  climbingM: 47,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: copenhagenElevation,
+  },
+  thumbnailUrl: 'maps/copenhagen-cycle-superhighway.jpg',
+  photoUrl: 'maps/copenhagen-cycle-superhighway-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 60, 18, 90),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 60, 22, 90),
+      seg('work', 120, 19, 90),
+      seg('recover', 120, 13, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 60, 22, 90),
+      seg('work', 120, 19, 90),
+      seg('recover', 240, 13, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 60, 22, 90),
+      seg('recover', 120, 19, 90),
+      seg('cool-down', 120, 13, 80),
     ],
   },
 };

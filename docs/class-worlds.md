@@ -53,6 +53,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Comuna 13, Medellín (`comuna13`) | Sufferfest Ramp Session: The Escalator (GCN, 30:50) | 13.583 km | 672 m | `public/courses/comuna13.glb` ([ride views](screenshots/comuna-13-medellin/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Coney Island Boardwalk (`coney`) | Spin to Win (GCN Training, 19:00) | 8.475 km | 5 m | `public/courses/coney.glb` ([ride views](screenshots/coney-island-boardwalk/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Copacabana Promenade (`copacabana`) | Quick Sprint Session (GCN Training, 10:00) | 4.300 km | 14 m | `public/courses/copacabana.glb` ([ride views](screenshots/copacabana-promenade/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Copenhagen Cycle Superhighway (`copenhagen`) | 1 Minute VO2 Max Surges (GCN Training, 32:00) | 13.650 km | 47 m | `public/courses/copenhagen.glb` ([ride views](screenshots/copenhagen-cycle-superhighway/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
