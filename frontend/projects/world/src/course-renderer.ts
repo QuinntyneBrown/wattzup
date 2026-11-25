@@ -1,3 +1,4 @@
+import type { gardenaForest } from './gardena-forest';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -201,6 +202,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private forest: Awaited<ReturnType<typeof gardenaForest>> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -361,13 +363,23 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'dolomites') {
         const { gardenaMassifs } = await import('./gardena-massifs');
         if (this.disposed) return false;
-        const massifs = await gardenaMassifs();
+        const massifs = await gardenaMassifs(this.course);
         if (this.disposed) {
           massifs.dispose();
           return false;
         }
         this.scene.add(massifs.mesh);
         this.disposables.push(massifs);
+        const { gardenaForest } = await import('./gardena-forest');
+        if (this.disposed) return false;
+        const forest = await gardenaForest();
+        if (this.disposed) {
+          forest.dispose();
+          return false;
+        }
+        this.forest = forest;
+        this.scene.add(forest.group);
+        this.disposables.push(forest);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -492,6 +504,7 @@ export class CourseRenderer implements WorldRenderer {
     this.groundEye = null;
     this.riderBatch = null;
     this.rain = null;
+    this.forest = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -907,6 +920,7 @@ export class CourseRenderer implements WorldRenderer {
     const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
     this.sky?.position.copy(this.camera.position);
+    this.forest?.follow(back.x, back.z);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
     this.sun.position.set(ahead.x + x * 70, ahead.y + 34, ahead.z + z * 70);

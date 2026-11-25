@@ -1,5 +1,9 @@
+import type { Course } from './course';
 import {
   BufferGeometry,
+  CanvasTexture,
+  Group,
+  PlaneGeometry,
   DoubleSide,
   Float32BufferAttribute,
   Mesh,
@@ -9,7 +13,7 @@ import {
 } from 'three/webgpu';
 
 /** Three fixed mountain groups beyond the entire centre line, with an original summer rock portrait. */
-export async function gardenaMassifs() {
+export async function gardenaMassifs(course: Course) {
   const texture = await new TextureLoader().loadAsync('courses/dolomites-massifs.webp');
   texture.colorSpace = SRGBColorSpace;
   const rock = new MeshBasicMaterial({
@@ -46,10 +50,49 @@ export async function gardenaMassifs() {
   geometry.setAttribute('uv', new Float32BufferAttribute(uv, 2));
   geometry.setIndex(triangles);
   const mesh = new Mesh(geometry, rock);
+  const group = new Group();
+  group.add(mesh);
+  const signs: { map: CanvasTexture; geometry: PlaneGeometry; material: MeshBasicMaterial }[] = [];
+  for (const [metres, name, local] of [
+    [110, 'ORTISEI', 'Urtijëi · St. Ulrich'],
+    [8430, 'SANTA CRISTINA', 'S. Cristina Gherdëina'],
+    [32630, 'SELVA', 'Sëlva · Wolkenstein'],
+  ] as const) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 192;
+    const c = canvas.getContext('2d')!;
+    c.fillStyle = '#eeeade';
+    c.fillRect(0, 0, 512, 192);
+    c.strokeStyle = '#33372e';
+    c.lineWidth = 8;
+    c.strokeRect(7, 7, 498, 178);
+    c.textAlign = 'center';
+    c.fillStyle = '#25291f';
+    c.font = 'bold 52px sans-serif';
+    c.fillText(name, 256, 80, 465);
+    c.font = '36px sans-serif';
+    c.fillText(local, 256, 144, 465);
+    const map = new CanvasTexture(canvas);
+    map.colorSpace = SRGBColorSpace;
+    const material = new MeshBasicMaterial({ map });
+    const geometry = new PlaneGeometry(3.1, 1.16);
+    const sign = new Mesh(geometry, material);
+    const at = course.place(metres, 7.35);
+    sign.position.set(at.x, at.y + 1.78, at.z);
+    sign.rotation.y = at.heading;
+    group.add(sign);
+    signs.push({ map, geometry, material });
+  }
   return {
-    mesh,
+    mesh: group,
     dispose() {
-      mesh.removeFromParent();
+      group.removeFromParent();
+      for (const sign of signs) {
+        sign.material.dispose();
+        sign.geometry.dispose();
+        sign.map.dispose();
+      }
       geometry.dispose();
       rock.dispose();
       texture.dispose();

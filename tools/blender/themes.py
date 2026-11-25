@@ -202,7 +202,8 @@ THEMES: dict[str, dict] = {
         "sun_altitude": 0.6,
         "palette": {"asphalt": 0x34343A, "sand": 0x6E8A46, "promenade": 0x8A8478, "sea": 0x4E7A3A},
         "land": {"low": 0x6E9A48, "mid": 0x5A8A3E, "high": 0x8A8A70, "rock": 0xCFC6B4, "snow": 0xF2F5F8},
-        "terrain": {"sea": False, "rise": 150.0, "far": 30.0, "valley": True},
+        "terrain": {"sea": False, "clear_road": True, "rise": 76.0, "far": 30.0, "valley": True},
+        "kerbs": False,
         "edge": "guardrail",
         "centre": "white",
         "turns": {"work": (("hairpin", 0.4), ("ess", 0.3), ("sweep", 0.2), ("straight", 0.1)),
@@ -1104,8 +1105,8 @@ def dolomites(k: Kit) -> dict:
     k.gable(B["roof-slate"], k.P(top, 0, off, 5), 9, 6, 3, yaw + math.pi / 2)
     B["whitewash"].box(k.P(top, -4, off, -1), (2.6, 2.6, 12), yaw)
     k.cone(B["roof-slate"], k.P(top, -4, off, 11), 1.9, 4.5, 4)
-    from val_gardena import cableways
-    return {"efforts": efforts, "chalets": chalets, "cableways": cableways(k)}
+    from val_gardena import cableways, forest
+    return {"efforts": efforts, "chalets": chalets, "cableways": cableways(k), "forest": forest(k)}
 
 
 def vicecity(k: Kit) -> dict:

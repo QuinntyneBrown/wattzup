@@ -62,6 +62,27 @@ def valley(k):
         idx = k.road.index(station)
         x,y,_ = k.road.at(idx, side*(k.kerb+15))
         _onion_dome_church(k.B,k,x,y,k.height_at(x,y),k.s[idx]['h'],metal)
+        # Warm stone voussoirs, deep-set nave windows and contrasting pilasters above the yard.
+        yaw=k.s[idx]['h']
+        base=k.height_at(x,y)
+        def church_box(along, across, up, dims, tint):
+            xx=x+math.cos(yaw)*along-math.sin(yaw)*across
+            yy=y+math.sin(yaw)*along+math.cos(yaw)*across
+            art.box((xx,yy,base+up),dims,yaw,lin(tint))
+        for bank in (-1,1):
+            for arch in (-5.6,-1.9,1.9,5.6):
+                church_box(arch,bank*4.66,3.42,(1.35,.15,2.57),0x827763)
+                church_box(arch,bank*4.76,3.56,(.99,.13,2.23),0x4c5758)
+                church_box(arch,bank*4.84,3.54,(.075,.07,2.28),0xd3c7ae)
+                church_box(arch,bank*4.85,4.66,(1.06,.065,.085),0xe2d7b9)
+                church_box(arch,bank*4.83,3.37,(1.52,.30,.16),0xd3c7ae)
+            for along in (-7.8,-3.74,0,3.74,7.8):
+                church_box(along,bank*4.58,1.2,(.28,.32,6.5),0xd3c6a5)
+            church_box(0,bank*4.67,7.45,(16.4,.28,.32),0xc3b394)
+        for distance in ({156:110,8485:8430,32680:32630}[station],):
+            i=k.road.index(distance)
+            for step in (-.94,.94):
+                art.box(k.P(i,step,-7.35,.06),(.09,.13,1.62),k.s[i]['h'],lin(0x858b86))
         for along in (-200,-151,-98,-46,24,76,130,200,275):
             i=k.road.index(station+along)
             for bank in (-1,1):
@@ -118,3 +139,22 @@ def valley(k):
             if d%4==0:continue
             art.box((x,y,z-.55),(4.2,.66,1.29),yaw,lin(rng.choice((0xa89e88,0x968e7c,0xb4aa94))))
             art.box((x,y,z+.73),(4.22,.78,.16),yaw,lin(0xc3b9a0))
+
+
+def forest(k):
+    """Trees are grounded against the same mesh interpolation as the villages."""
+    import random
+    rng=random.Random(52311)
+    trees=[]
+    for station in range(-35,38550,13):
+        if any(abs(station-centre)<155 for centre in (156,8485,32680)):continue
+        meadow=math.cos(station/295)>.52
+        for j in range(4 if meadow else 7):
+            side=rng.choice((-1,1))
+            lane=side*(rng.uniform(51,190) if meadow else rng.uniform(14,148))
+            x,y,_=k.road.pos(station+rng.uniform(-11,11),lane)
+            nearest=k.road.tree.find((x,y,0))[2]
+            if nearest<13:continue
+            tile=rng.choice((0,1)) if nearest>60 else rng.choice((1,2,3))
+            trees.append([round(x,1),round(k.height_at(x,y)-.25,1),round(-y,1),round(rng.uniform(9,19),1),tile])
+    return trees
