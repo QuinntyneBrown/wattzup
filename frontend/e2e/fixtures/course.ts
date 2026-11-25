@@ -1,3 +1,4 @@
+import dalesElevation from './dales-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,52 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const dalesCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'yorkshire-dales',
+  name: 'Yorkshire Dales',
+  routeName: 'The Buttertubs',
+  place: 'North Yorkshire, England',
+  world: 'dales',
+  distanceKm: 24.047,
+  climbingM: 334,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: dalesElevation,
+  },
+  thumbnailUrl: 'maps/yorkshire-dales.jpg',
+  photoUrl: 'maps/yorkshire-dales-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 90),
+      seg('work', 15, 21, 120),
+      seg('recover', 45, 13, 90),
+      seg('work', 15, 21, 120),
+      seg('recover', 45, 13, 90),
+      seg('work', 15, 21, 120),
+      seg('recover', 173, 13, 90),
+      seg('work', 220, 21, 92),
+      seg('recover', 240, 13, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 190, 21, 91),
+      seg('work', 240, 13, 90),
+      seg('recover', 30, 24, 100),
+      seg('work', 190, 21, 91),
+      seg('recover', 240, 13, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 190, 21, 91),
+      seg('work', 240, 13, 90),
+      seg('recover', 30, 24, 100),
+      seg('work', 190, 21, 91),
+      seg('recover', 240, 13, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 190, 21, 91),
+      seg('cool-down', 160, 11, 85),
+    ],
   },
 };
