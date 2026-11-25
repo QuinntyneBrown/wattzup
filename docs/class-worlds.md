@@ -15,6 +15,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Dolomites (`dolomites`) | The catalogue's 30:00 intervals (placeholder) | 38.5 km | 860 m | `public/courses/dolomites.glb` ([film](../blender/dolomites.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Vice City (`vicecity`) | The catalogue's 30:00 intervals (placeholder) | 24 km | 60 m | `public/courses/vicecity.glb` ([film](../blender/vicecity.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Col du Granit (`granite`) | The catalogue's 30:00 intervals (placeholder) | 16.1 km | 1,240 m | `public/courses/granite.glb` ([film](../blender/granite.mp4)) | Built in Blender (ADR 0035) and ridden in races |
+| Atlantic Ocean Road (`atlanticroad`) | FTP HIIT Booster for Longer Efforts (GCN Training, 30:00) | 13.125 km | 65 m | `public/courses/atlanticroad.glb` ([ride views](screenshots/atlantic-ocean-road/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
@@ -151,7 +152,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 121 | 30 Minutes of Threshold Power | Hoover Dam | 70% |  | The road over Hoover Dam's crest in the blazing desert sun, between cream art deco parapets and bronze lamps, Lake Mead's bathtub ring and intake towers on one side and the drop into the Black Canyon on the other, the Winged Figures of the Republic beside the road and the bypass bridge's arch leaping the canyon ahead. |
 | 122 | Intense High Tempo Bike Workout | Tempelhof Field | 81% |  | Berlin's old airport runways turned park, kites flying overhead. |
 | 123 | Olympic Pursuit Efforts | Aguascalientes Velodrome | 35% |  | A high-altitude Mexican track where pursuit records fall. |
-| 124 | FTP HIIT Booster for Longer Efforts | Atlantic Ocean Road | 35% | [Ride views](screenshots/atlantic-ocean-road/README.md) | Norway's bridges hopping between islets as waves break alongside. |
+| 124 | FTP HIIT Booster for Longer Efforts | Atlantic Ocean Road | 35% |  | Norway's bridges hopping between islets as waves break alongside. |
 | 125 | 30 Minute VO2 Max Session | Torres del Paine | 77% |  | Patagonian gravel roads beneath granite spires and wind-whipped lakes. |
 | 126 | Leg Burner | Fish Hill, Cotswolds | 35% |  | Honey-stone villages and a steep climb up the Cotswold escarpment. |
 | 127 | The Smash Fest | Junkanoo, Nassau | 35% |  | Bahamian Boxing Day parade of cowbells, goatskin drums and crepe-paper costumes. |
