@@ -83,6 +83,7 @@ export class RaceStore {
   private readonly loaded = signal<MapDto | null>(null);
   private readonly ghosts = inject(GHOST_API);
   private readonly ridden = signal(0);
+  readonly raceMetres = this.ridden.asReadonly();
   private readonly outbox = inject(RIDE_OUTBOX);
   /** The ride's record for the backend, with the ride id given when the race starts (Record a ride). */
   private recorder: RideRecorder | null = null;
