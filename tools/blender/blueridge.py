@@ -251,6 +251,35 @@ def stone_crossings(k,art):
         for side in (-1,1):
             for j in range(6):art.box(k.road.pos(d,side*(6.7+.25*j),j-.6),(4,2.2,1.07),bearing(d),lin(stone[j%4]))
 
+    # The masonry lines a real cutting in a wooded spur. The outside rock rises
+    # above the bore and slopes back into the ground at both sides of the road.
+    def portal_skin(d,t,margin):
+        r=6.15+margin*(4.9+.77*math.sin(d*.073+t*2.2)+.45*math.cos(t*5.3))
+        return k.road.pos(d,r*math.cos(t),1.26+r*math.sin(t))
+    for d in range(4860,4917,3):
+        for j in range(18):
+            a=j*math.pi/18;b=(j+1)*math.pi/18
+            pts=(portal_skin(d,a,1),portal_skin(d+3,a,1),portal_skin(d+3,b,1),portal_skin(d,b,1))
+            tone=lin((0x8F8168,0x777762,0x8B765E,0x82775F)[(j+d//6)%4])
+            art.face(pts,(tone,)*4);art.face(pts[::-1],(tone,)*4)
+        for side in (-1,1):
+            t=0 if side>0 else math.pi
+            pts=(portal_skin(d,t,1),portal_skin(d+3,t,1),k.road.pos(d+3,side*27,-.4),k.road.pos(d,side*27,-.4))
+            tone=lin(0x837856);art.face(pts,(tone,)*4);art.face(pts[::-1],(tone,)*4)
+    for portal in (4860,4917):
+        for j in range(23):
+            a=j*math.pi/23;b=(j+1)*math.pi/23
+            for layer in range(3):
+                inner=layer/3;outer=(layer+1)/3
+                pts=(portal_skin(portal,a,inner),portal_skin(portal,a,outer),portal_skin(portal,b,outer),portal_skin(portal,b,inner))
+                tone=lin((0x817A6B,0x968C75,0x7D7768,0xA29478)[(j//3+layer)%4])
+                art.face(pts,(tone,)*4);art.face(pts[::-1],(tone,)*4)
+    for j in range(22):
+        d=4862+j*2.5;theta=.49+(j*1.71)%2.15
+        x,y,z=portal_skin(d,theta,1)
+        art.tube((x,y,z-.24),.13,.07,2.9,lin(0x625548),lin(0x786656),6)
+        crown(art,(x,y,z+1.92),1.79,2.42,j,(0xB96D35,0xC98A3F,0xA75530)[j%3])
+
 
 def mill(k,art):
     d,l=6193,-12; a=bearing(d); x,y,z=k.road.pos(d,l,-.67)
