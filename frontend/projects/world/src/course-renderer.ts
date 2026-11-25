@@ -749,7 +749,12 @@ export class CourseRenderer implements WorldRenderer {
       this.scene.add(carried);
     } else {
       const dome = new SphereGeometry(9000, 24, 12);
-      const sky = skyMaterial(look, this.course!.file.sun, detail);
+      const sky = skyMaterial(
+        look,
+        this.course!.file.sun,
+        detail,
+        this.course!.file.id === 'atlanticroad',
+      );
       this.skyClock = sky.at;
       this.sky = new Mesh(dome, sky.material);
       this.sky.renderOrder = -1;

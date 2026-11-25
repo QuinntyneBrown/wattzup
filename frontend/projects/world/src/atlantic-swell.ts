@@ -6,7 +6,7 @@ import {
   MeshBasicMaterial,
   Object3D,
   PlaneGeometry,
-  Quaternion,
+  type Quaternion,
 } from 'three/webgpu';
 import type { Course, CoursePlace } from './course';
 

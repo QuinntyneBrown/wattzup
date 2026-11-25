@@ -45,6 +45,7 @@ export function skyMaterial(
   look: CourseLook,
   sun: readonly [number, number, number],
   detail: DataTexture,
+  coastalSquall = false,
 ): Sky {
   const colours = look.sky.map((hex) => new Color(hex));
   const stop = (i: number) => vec3(colours[i]!.r, colours[i]!.g, colours[i]!.b);
@@ -107,6 +108,31 @@ export function skyMaterial(
     vec3(haze.r, haze.g, haze.b).mul(night ? 1.5 : 1.05),
     height.mul(-9).exp().mul(0.75),
   );
+
+  if (coastalSquall) {
+    // Low, ragged North Atlantic cloud banks. Slanted gaps in the rain curtain transmit warm light.
+    const bearing = toward.z.add(toward.x.mul(0.39));
+    const bank = texture(
+      detail,
+      vec2(bearing.mul(0.61).add(time.mul(0.0065)), height.mul(2.5).add(0.31)),
+    ).g;
+    const baseHeight = bank
+      .mul(0.12)
+      .add(0.045)
+      .add(sin(bearing.mul(6).add(time.mul(0.051))).mul(0.025));
+    const shelf = smoothstep(baseHeight.sub(0.018), baseHeight.add(0.036), height);
+    const shadow = smoothstep(0.38, 0.68, bank.mul(0.71).add(wisp.mul(0.42))).mul(shelf);
+    sky = mix(sky, vec3(0.088, 0.133, 0.17), shadow.mul(0.64));
+    const shafts = sin(bearing.mul(37).add(height.mul(52)).add(time.mul(0.09)))
+      .mul(0.5)
+      .add(0.5);
+    const gap = smoothstep(0.43, 0.61, bank).mul(smoothstep(0.74, 0.58, bank));
+    const rays = smoothstep(0.71, 0.97, shafts)
+      .mul(gap)
+      .mul(shelf.oneMinus())
+      .mul(smoothstep(0.002, 0.035, height));
+    sky = sky.add(vec3(0.13, 0.102, 0.059).mul(rays));
+  }
 
   const material = new MeshBasicNodeMaterial({ side: BackSide, fog: false, depthWrite: false });
   material.colorNode = sky;
