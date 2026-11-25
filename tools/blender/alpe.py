@@ -122,6 +122,108 @@ def bend_sign(k,b,d,number):
     words(b,("ALLEZ","HUP","VAMOS")[number%3],(x,y,z+.055),right,(math.cos(yaw),math.sin(yaw),k.s[i]["g"]/100),1.75,5.8,0xEBD482 if number%2 else 0xEEEAE2)
 
 
+
+def chalet(b,x,y,z,yaw,width=7.5,depth=6,height=4.8):
+    wood, cream, slate = lin(0x91684B),lin(0xE6DDCA),lin(0x59626B)
+    cs,sn=math.cos(yaw),math.sin(yaw)
+    def pos(u,v,h):
+        return x+u*cs-v*sn, y+u*sn+v*cs, z+h
+    b.box(pos(0,0,-1.5),(width,depth,height+1.5),yaw,cream)
+    b.box(pos(0,0,height*.65),(width+.12,depth+.12,height*.35),yaw,wood)
+    b.roof(pos(0,0,height),width+.65,depth+.75,height*.42,yaw,slate)
+    for face in (-1,1):
+        for j in (-.30,0,.30):
+            b.box(pos(width*j,face*(depth/2+.09),height*.35),(1.02,.14,1.15),yaw,lin(0x48575F))
+        b.box(pos(0,face*(depth/2+.5),height*.56),(width*.86,1.05,.15),yaw,wood)
+        b.box(pos(0,face*(depth/2+.96),height*.72),(width*.86,.1,.14),yaw,wood)
+        for j in range(7):
+            b.box(pos(width*(j-3)*.13,face*(depth/2+.96),height*.56),(.08,.1,.79),yaw,wood)
+
+
+def camper(b,x,y,z,yaw):
+    cs,sn=math.cos(yaw),math.sin(yaw)
+    def pos(u,v,h):
+        return x+u*cs-v*sn,y+u*sn+v*cs,z+h
+    white,glass = lin(0xF0EBDA),lin(0x4F6573)
+    b.box(pos(0,0,.38),(5.5,2.2,2.2),yaw,white)
+    b.box(pos(3.1,0,.46),(1.45,2.12,1.65),yaw,white)
+    b.box(pos(2.65,0,2.12),(1.55,2.16,.52),yaw,white)
+    for side in (-1,1):
+        for u in (-1.35,.35,2.9):
+            b.box(pos(u,side*1.11,1.35),(1.0,.09,.61),yaw,glass)
+        b.box(pos(-.15,side*1.11,.97),(5,.1,.14),yaw,lin(0x417C86))
+        for u in (-1.7,2.35):
+            b.box(pos(u,side*1.06,0),(.76,.34,.74),yaw,lin(0x323437))
+
+
+def fan(k,b,x,y,z,yaw,orange):
+    rng=k.rng
+    tall=rng.uniform(.9,1.12)
+    skin=lin(rng.choice((0xB78264,0xE4B696,0x936B55)))
+    shirt=lin(rng.choice((0xED6B22,0xF68423,0xCF521F) if orange else (0x446C91,0xF0D768,0xBA5648,0xDDDCCF)))
+    b.box((x,y,z),(.34,.34,.81*tall),yaw,lin(0x485260))
+    b.tube((x,y,z+.78*tall),.18,.24,.6*tall,shirt,shirt,7)
+    b.tube((x,y,z+1.37*tall),.13,.115,.24*tall,skin,skin,7,skin)
+    for side in (-1,1):
+        lift=rng.uniform(.22,.58)
+        b.box((x-math.sin(yaw)*side*.24,y+math.cos(yaw)*side*.24,z+1.03*tall),
+              (.13,.12,lift),yaw,skin)
+    if rng.random()<.38:
+        b.tube((x,y,z+1.58*tall),.16,.13,.08,shirt,shirt,8,shirt)
+
+
+def flag(b,x,y,z,yaw):
+    pole,red,white,blue=map(lin,(0x777F83,0xC34B43,0xEFEACA,0x455C91))
+    b.tube((x,y,z),.045,.036,4.7,pole,pole,5)
+    cs,sn=math.cos(yaw),math.sin(yaw)
+    def point(j,up):
+        return x+j*.46*cs-math.sin(j*1.3)*.13*sn,y+j*.46*sn+math.sin(j*1.3)*.13*cs,z+up-j*.035
+    for j in range(4):
+        for h,tint in enumerate((blue,white,red)):
+            base=3.58+h*.34
+            pts=(point(j,base),point(j+1,base),point(j+1,base+.34),point(j,base+.34))
+            b.face(pts,(tint,)*4);b.face(pts[::-1],(tint,)*4)
+
+
+def church(k,b,bend):
+    i=k.road.index(bend+8)
+    x,y,z=k.P(i,6,15)
+    # Set the small nave on the inside of the bend; the square tower is seen before the bell.
+    cream,slate=lin(0xEEE4CD),lin(0x59616B)
+    b.box((x,y,z-1.8),(9,5.1,5.8),0,cream)
+    b.roof((x,y,z+4),9,5.1,2.5,0,slate)
+    b.box((x-3.1,y-1,z-1.8),(2.8,2.8,10.4),0,cream)
+    for dy in (-1.44,1.44):
+        b.box((x-3.1,y-1+dy,z+6.45),(.8,.1,1.3),0,lin(0x424B51))
+    b.tube((x-3.1,y-1,z+8.6),2.22,.09,4.9,slate,slate,4,slate)
+    b.box((x-3.1,y-1,z+13.4),(.10,.10,1.1),0,slate)
+    b.box((x-3.1,y-1,z+14.0),(.72,.1,.11),0,slate)
+
+
+def lift(k,b):
+    towers=[]
+    steel, red = lin(0x7B868B),lin(0xC65F45)
+    for d in (k.length-420,k.length-225,k.length-60):
+        i=k.road.index(d)
+        x,y,z=k.road.at(i,-18)
+        b.tube((x,y,z-2),.77,.46,16,steel,steel,8,steel)
+        b.box((x,y,z+14),(6,.75,.5),0,steel)
+        towers.append((x,y,z+14))
+    for a,c in zip(towers,towers[1:]):
+        prev=a
+        for j in range(1,17):
+            t=j/16
+            hx,hy,hz=[a[k]+(c[k]-a[k])*t for k in range(3)]
+            hz-=3.4*math.sin(math.pi*t)
+            line=(hx,hy,hz)
+            pts=(prev,(prev[0],prev[1],prev[2]+.14),(hx,hy,hz+.14),line)
+            b.face(pts,(steel,)*4);b.face(pts[::-1],(steel,)*4)
+            if j in (4,10):
+                b.box((hx,hy,hz-1.5),(.12,.12,1.5),0,steel)
+                b.box((hx,hy,hz-3.1),(1.56,1.98,1.62),0,red)
+                b.box((hx,hy,hz-2.55),(1.59,1.99,.74),0,lin(0x536A76))
+            prev=line
+
 def scenery(k):
     b=Painted(k)
     bends=turns(k.length)
@@ -135,5 +237,28 @@ def scenery(k):
             if j in (0,14,20) or d2%3==0:
                 x,y,z=k.road.at(i,side*k.rng.uniform(8.5,11.0))
                 k.person((x,y,z-.2),k.s[i]["h"]+side*math.pi/2,["crowd-3","crowd-2"])
+    # Dutch Corner has the densest roadside supporters; the rest of the hill retains
+    # enough open verge for an unobstructed view of the numbered signs.
+    for j,d in enumerate(bends):
+        for offset in range(-46,52,2 if j==14 else 9):
+            i=k.road.index(d+offset)
+            for side in (-1,1):
+                off=side*k.rng.uniform(5.8,7.4)
+                x,y,z=k.road.at(i,off)
+                fan(k,b,x,y,z-.12,k.s[i]["h"]+side*math.pi/2,j==14)
+            if offset%7==0:
+                x,y,z=k.road.at(i,-7)
+                flag(b,x,y,z,k.s[i]["h"]+.4)
+        i=k.road.index(d-53)
+        x,y,z=k.road.at(i,-9)
+        camper(b,x,y,z-.2,k.s[i]["h"])
+    church(k,b,bends[14])
+    for start,end,spacing in [(-35,123,19),(k.length-410,k.length-18,22)]:
+        for j,d in enumerate(range(int(start),int(end),spacing)):
+            i=k.road.index(d)
+            side=1 if j%2 else -1
+            x,y,z=k.road.at(i,side*k.rng.uniform(13,19))
+            chalet(b,x,y,z-.27,k.s[i]["h"]+.2,7.5,6,4.2 if start<0 else 7)
+    lift(k,b)
     k.peaks(25,700,1700,(550,1030),"limestone","snow",k.s[-1]["z"]-100)
     return {"efforts":0}
