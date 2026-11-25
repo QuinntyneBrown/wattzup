@@ -83,6 +83,7 @@ import type { seafrontAsphalt } from './seafront-asphalt';
 import type { BrightonParade } from './brighton-parade';
 import type { BrooklynCommute } from './brooklyn-commute';
 import type { BundCruise } from './bund-cruise';
+import type { CalobraCamp } from './calobra-camp';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -250,6 +251,7 @@ export class CourseRenderer implements WorldRenderer {
   private skyClock: ((seconds: number) => void) | null = null;
   /** Moves the sea's ripples on to a second of the ride's clock. */
   private waterClock: ((seconds: number) => void) | null = null;
+  private camp: CalobraCamp | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
@@ -293,6 +295,8 @@ export class CourseRenderer implements WorldRenderer {
     ferryPosition: undefined as number | undefined,
     boatPosition: undefined as number | undefined,
     touristPosition: undefined as number | undefined,
+    packDistance: undefined as number | undefined,
+    coachDistance: undefined as number | undefined,
     backend: '' as string,
     ghostSeparationMetres: 0,
     boatHeight: null as number | null,
@@ -535,6 +539,12 @@ export class CourseRenderer implements WorldRenderer {
         this.deckSurface = surface.material;
         this.disposables.push(...surface.textures);
       }
+      if (this.course.file.id === 'calobra') {
+        // The original Sa Calobra class's chase lens and unshifted horizon (#921).
+        this.camera.clearViewOffset();
+        this.camera.fov = 60;
+        this.camera.updateProjectionMatrix();
+      }
       this.build(gltf.scene, canvas, clinker, fronts, foliage);
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
@@ -583,6 +593,13 @@ export class CourseRenderer implements WorldRenderer {
         this.cruise = new BundCruise(this.course);
         this.scene.add(this.cruise.root);
         this.disposables.push(this.cruise);
+      }
+      if (this.course.file.id === 'calobra') {
+        const { CalobraCamp } = await import('./calobra-camp');
+        if (this.disposed) return false;
+        this.camp = new CalobraCamp(this.course, this.kit!, this.riderBatch!);
+        this.scene.add(this.camp.root);
+        this.disposables.push(this.camp);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -781,6 +798,7 @@ export class CourseRenderer implements WorldRenderer {
     this.timing?.update(metres, frame.time);
     if (this.trainingGroup.length) this.placeTrainingGroup(frame, metres);
     if (this.echelon.length) this.placeEchelon(frame, metres);
+    this.camp?.update(frame.time, metres, frame.reducedMotion);
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.riderBatch?.follow();
@@ -800,7 +818,7 @@ export class CourseRenderer implements WorldRenderer {
       if (this.scene.fog instanceof Fog)
         this.scene.fog.color.setRGB(0.402 + 0.43 * t, 0.604 - 0.27 * t, 0.658 - 0.43 * t);
     }
-    this.aim(metres);
+    this.aim(metres, frame.reducedMotion);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
       you.group.position.x,
@@ -943,6 +961,7 @@ export class CourseRenderer implements WorldRenderer {
     this.speedWeek = null;
     this.saltRoad = null;
     this.riderBatch = null;
+    this.camp = null;
     this.rain = null;
     this.shadows.clear();
     this.casting.clear();
@@ -970,7 +989,8 @@ export class CourseRenderer implements WorldRenderer {
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
-    this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
+    const fogRange = this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : FOG;
+    this.scene.fog = new Fog(look.haze, fogRange[0], fogRange[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
     this.sun.intensity = look.light.intensity;
@@ -1439,7 +1459,7 @@ export class CourseRenderer implements WorldRenderer {
   }
 
   /** The chase camera behind the rider, looking up the road, with the sky and the sun's light around it. */
-  private aim(metres: number): void {
+  private aim(metres: number, reducedMotion = true): void {
     const course = this.course!;
     // Close in on the rider at the start line and at the finish line.
     const near = Math.max(
@@ -1448,13 +1468,15 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
-    const back = course.place(metres - behind, 0, this.here);
+    const calobra = course.file.id === 'calobra';
+    const behind = calobra ? 5.5 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
+    const up = calobra ? 2.1 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
+    const back = course.place(metres - behind, sway, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
+    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), 0, this.there);
+    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP), ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
@@ -1826,6 +1848,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.ferryPosition = this.commute?.ferryPosition;
     drawn.boatPosition = this.cruise?.boatPosition;
     drawn.touristPosition = this.cruise?.touristPosition;
+    drawn.packDistance = this.camp?.packDistance;
+    drawn.coachDistance = this.camp?.coachDistance;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

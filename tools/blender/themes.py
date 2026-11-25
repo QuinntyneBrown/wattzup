@@ -1407,3 +1407,9 @@ import bund as _bund
 
 THEMES["bund"] = _bund.THEME
 SCENERY["bund"] = _bund.scenery
+
+
+import calobra as _calobra
+
+THEMES["calobra"] = _calobra.THEME
+SCENERY["calobra"] = _calobra.scenery

@@ -16,6 +16,7 @@ import blueridgeElevation from './blueridge-elevation.json';
 import bondiElevation from './bondi-elevation.json';
 import brightonElevation from './brighton-elevation.json';
 import brooklynElevation from './brooklyn-elevation.json';
+import calobraElevation from './calobra-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1389,6 +1390,33 @@ export const bundCourseMap = {
       seg('recover', 30, 11, 80),
       seg('work', 60, 24, 105),
       seg('cool-down', 213, 10, 80),
+    ],
+  },
+};
+
+export const calobraCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'sa-calobra-mallorca',
+  name: 'Sa Calobra, Mallorca',
+  routeName: 'The Sa Calobra climb',
+  place: 'Mallorca, Spain',
+  world: 'calobra',
+  distanceKm: 11.851,
+  climbingM: 671,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: calobraElevation,
+  },
+  thumbnailUrl: 'maps/sa-calobra-mallorca.jpg',
+  photoUrl: 'maps/sa-calobra-mallorca-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 14, 90),
+      seg('work', 1180, 20, 72),
+      seg('work', 20, 24, 110),
+      seg('cool-down', 330, 11, 85),
     ],
   },
 };
