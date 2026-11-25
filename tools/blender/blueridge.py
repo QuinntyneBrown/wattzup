@@ -146,6 +146,25 @@ def crown(art,base,r,height,angle,tint):
     art.face(rings[-1],(shade,)*8)
 
 
+def leaf_spray(art,x,y,z,length,a,shade):
+    # A branch tip carries overlapping pointed leaves, bright on top and dark underneath.
+    for j in range(5):
+        t=a+(j-2)*.53
+        c,s=math.cos(t),math.sin(t)
+        u=x+.10*length*j*math.cos(a);v=y+.10*length*j*math.sin(a)
+        dz=z+.12*length*math.sin(j)
+        tip=(u+c*length,v+s*length,dz-.17*length)
+        mid=(u+c*length*.44,v+s*length*.44,dz+.10*length)
+        span=.19*length
+        left=(mid[0]-s*span,mid[1]+c*span,dz)
+        right=(mid[0]+s*span,mid[1]-c*span,dz)
+        base=(u,v,dz)
+        low=tuple(k*.72 for k in shade[:3])+(1.,)
+        high=tuple(min(1,k*1.12) for k in shade[:3])+(1.,)
+        art.face((base,left,tip,mid),(shade,high,shade,high))
+        art.face((base,mid,tip,right),(low,shade,high,shade))
+
+
 def tree(k,art,d,l,h,species):
     x,y,z=k.road.pos(d,l,relief(d,l));a=k.rng.random()*math.tau
     bark=lin(0x695C4A)
@@ -157,6 +176,12 @@ def tree(k,art,d,l,h,species):
         beam(art,(x,y,z+h*.32),end,h*.047,h*.045,bark)
         crown(art,end,h*(.23+.018*species),h*(.36+.035*species),yaw,palette[species][j%3])
     crown(art,(x,y,z+h*.70),h*.21,h*.35,a,palette[species][1])
+    # Paint canopy detail on the inward-facing edge, the portion visible to riders.
+    if abs(l)<16:
+        towards=bearing(d)+(math.pi/2 if l<0 else -math.pi/2)
+        for j in range(13):
+            t=towards+1.26*math.sin(j*2.53+a);rr=h*(.28+.06*math.cos(j*.87))
+            leaf_spray(art,x+rr*math.cos(t),y+rr*math.sin(t),z+h*(.67+.19*math.sin(j*1.71)),h*.075,t,lin(palette[species][j%3]))
 
 
 def overlook(k,art,d,name):
@@ -249,6 +274,17 @@ def scenery(k):
     art=Painted(k);rng=k.rng
     for d,name in ((108,'MEMPHIS RIDGE'),(1100,'LINN COVE'),(13264,'GRANDVIEW'),(20350,'PINE SPUR')):overlook(k,art,d,name)
     viaduct(k,art);stone_crossings(k,art);mill(k,art)
+    # Across Grandfather Mountain, the deciduous canopy climbs from the ravine
+    # floor to the far abutment, leaving the sightline from the first turnout open.
+    for d in range(1170,1800,5):
+        for side in (-1,1):
+            lane=side*rng.uniform(19,71)
+            if 1170<d<1280 and side<0 and abs(lane)<48:continue
+            tree(k,art,d,lane,rng.uniform(4.2,9.6),rng.randrange(3))
+    for d in range(1220,1710,19):
+        for lane in (-62,-50,44,67):
+            d0=d+rng.uniform(-6,6);l=lane+rng.uniform(-2.7,2.7)
+            tree(k,art,d0,l,rng.uniform(7,12),rng.randrange(3))
     for d in range(6,24243,6):
         if d%12==0 and not any(abs(d-c)<145 for c in (108,1145,1490,2280,4860,6193,13264)):
             continue
