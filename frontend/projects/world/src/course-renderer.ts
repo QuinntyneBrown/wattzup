@@ -69,6 +69,7 @@ import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
+import type { SpeedWeek } from './speed-week';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -215,7 +216,7 @@ export class CourseRenderer implements WorldRenderer {
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
-  private speedWeek: import('./speed-week').SpeedWeek | null = null;
+  private speedWeek: SpeedWeek | null = null;
   private saltRoad: Material | null = null;
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */

@@ -1,6 +1,6 @@
 import {
   BoxGeometry,
-  BufferGeometry,
+  type BufferGeometry,
   Color,
   DoubleSide,
   Float32BufferAttribute,
