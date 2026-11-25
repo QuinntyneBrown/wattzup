@@ -1,3 +1,4 @@
+import comuna13Elevation from './comuna13-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,50 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const comuna13CourseMap = {
+  ...haleakalaCourseMap,
+  id: 'comuna-13-medellin',
+  name: 'Comuna 13, Medellín',
+  routeName: 'The escalator streets',
+  place: 'San Javier, Medellín',
+  world: 'comuna13',
+  distanceKm: 13.58,
+  climbingM: 672,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: comuna13Elevation,
+  },
+  thumbnailUrl: 'maps/comuna-13-medellin.jpg',
+  photoUrl: 'maps/comuna-13-medellin-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 120, 16, 90),
+      seg('work', 60, 18, 100),
+      seg('recover', 100, 11, 80),
+      seg('work', 120, 18, 85),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 18, 85),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 19, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 20, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 21, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 22, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 22, 100),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 23, 100),
+      seg('recover', 30, 14, 80),
+      seg('work', 90, 24, 100),
+      seg('cool-down', 100, 11, 80),
+    ],
   },
 };
