@@ -1247,3 +1247,8 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import como as _como  # noqa: E402
+
+THEMES["como"] = _como.THEME
+SCENERY["como"] = _como.scenery

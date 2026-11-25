@@ -75,6 +75,8 @@ import { bendLean } from './rider-lean';
 import { type ShadowShape, shadowLength, shadowShape } from './rider-shadow-shape';
 import { outOfTheSaddle } from './rider-stance';
 import { endShadow, sideShadow } from './shadow-silhouette';
+import type { comoPromenade } from './como-promenade';
+import type { ComoFerries } from './como-ferries';
 import { SunGlow } from './sun-glow';
 import { vertexFinish } from './rider-finish';
 import { RiderShadows } from './rider-shadows';
@@ -230,6 +232,8 @@ export class CourseRenderer implements WorldRenderer {
     z: number;
     reach: number;
   }[] = [];
+  private promenade: Awaited<ReturnType<typeof comoPromenade>> | null = null;
+  private ferries: ComoFerries | null = null;
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -237,6 +241,8 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    ferryX: null as number | null,
+    foilX: null as number | null,
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
@@ -357,6 +363,23 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'como') {
+        const [{ ComoFerries }, { comoPromenade }] = await Promise.all([
+          import('./como-ferries'),
+          import('./como-promenade'),
+        ]);
+        const trees = await comoPromenade(this.course);
+        if (this.disposed) {
+          trees.dispose();
+          return false;
+        }
+        this.promenade = trees;
+        this.scene.add(trees.root);
+        this.disposables.push(trees);
+        if (this.disposed) return false;
+        this.ferries = new ComoFerries(this.course, this.scene);
+        this.disposables.push(this.ferries);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -432,6 +455,8 @@ export class CourseRenderer implements WorldRenderer {
     const lights = metres < START_LIGHTS;
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
+    this.promenade?.follow(metres);
+    this.ferries?.update(frame.reducedMotion ? 0 : frame.time, metres);
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
@@ -471,6 +496,8 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    this.ferries = null;
+    this.promenade = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -1105,6 +1132,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.ferryX = this.ferries?.ferryX ?? null;
+    drawn.foilX = this.ferries?.foilX ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
