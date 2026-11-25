@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Accelerate to Elevate” Route Details (Watopia)](https://zwiftinsider.com/route/accelerate-to-elevate/) (g0003) | © Zwift |
 | game-04.jpg | MyWhoosh: [mywhoosh-world](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/08/mywhoosh-world-1.jpg) (g0682) | © MyWhoosh |
 | game-05.jpg | MyWhoosh: [UCI_02_2](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/09/UCI_02_2.jpg) (g0480) | © MyWhoosh |
+
+The race uses an original generated limestone surface on individually modelled sea stacks, cliffs and an open London Arch. Sources 06–10 and 15 inform the bedding, erosion and proportions. The signs and Memorial Arch lettering are drawn in the project. The licensed reference photographs and game screenshots are used only for comparison.
