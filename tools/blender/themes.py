@@ -1381,3 +1381,9 @@ import bondi as _bondi
 
 THEMES["bondi"] = _bondi.THEME
 SCENERY["bondi"] = _bondi.scenery
+
+
+import bonneville as _bonneville
+
+THEMES["bonneville"] = _bonneville.THEME
+SCENERY["bonneville"] = _bonneville.scenery

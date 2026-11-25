@@ -582,6 +582,36 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     }
 
     [Fact]
+    public async Task Bonneville_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "bonneville-salt-flats");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 14, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("recover", 120, 14, 80),
+                new Segment("work", 30, 24, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 30, 16, 100),
+                new Segment("work", 30, 24, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 30, 16, 100),
+                new Segment("work", 30, 24, 80),
+                new Segment("recover", 60, 21, 80),
+                new Segment("work", 30, 16, 100),
+                new Segment("recover", 30, 24, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 30, 16, 100),
+                new Segment("work", 30, 24, 80),
+                new Segment("recover", 60, 21, 80),
+                new Segment("work", 30, 16, 100),
+                new Segment("recover", 120, 14, 80),
+                new Segment("cool-down", 120, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task The_catalogue_lists_its_maps_in_unlock_order_without_a_session()
     {
         var maps = await ReadMaps();
@@ -623,6 +653,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Blue Mountains, Jamaica", 14.593, 752, "Hard", "The coffee road", "Jamaica"),
                 new Listed("Blue Ridge Parkway", 24.25, 391, "Hard", "The Parkway", "Virginia and North Carolina, USA"),
                 new Listed("Bondi to Bronte", 6.15, 95, "Moderate", "The coast walk", "Sydney, Australia"),
+                new Listed("Bonneville Salt Flats", 8.25, 0, "Moderate", "Speed Week", "Wendover, Utah"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -669,6 +700,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("blue-mountains-jamaica", null),
                 ("blue-ridge-parkway", null),
                 ("bondi-to-bronte", null),
+                ("bonneville-salt-flats", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -715,6 +747,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("blue-mountains-jamaica", null),
                 ("blue-ridge-parkway", null),
                 ("bondi-to-bronte", null),
+                ("bonneville-salt-flats", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -738,7 +771,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "bondi-to-bronte" => 810, "blue-ridge-parkway" => 3300, "blue-mountains-jamaica" => 2100, "blackpool-illuminations" => 840, "big-sur" => 1800, "bealach-na-ba" => 1320, "beach-road-melbourne" => 2750, "bay-of-islands" => 3680, "bathsheba-barbados" => 1500, "sixth-street-austin" => 2020, "col-aubisque" => 1980, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "bonneville-salt-flats" => 1200, "bondi-to-bronte" => 810, "blue-ridge-parkway" => 3300, "blue-mountains-jamaica" => 2100, "blackpool-illuminations" => 840, "big-sur" => 1800, "bealach-na-ba" => 1320, "beach-road-melbourne" => 2750, "bay-of-islands" => 3680, "bathsheba-barbados" => 1500, "sixth-street-austin" => 2020, "col-aubisque" => 1980, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -757,7 +790,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
