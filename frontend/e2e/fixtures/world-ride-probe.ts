@@ -118,4 +118,12 @@ export class WorldRideProbe {
           .__wzWorldRide?.course?.flamingoBillHeight ?? null,
     );
   }
+  /** Height of a grazing vicuña’s head on the dry shore. */
+  async vicunaHeadHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { vicunaHeadHeight?: number } } })
+          .__wzWorldRide?.course?.vicunaHeadHeight ?? null,
+    );
+  }
 }
