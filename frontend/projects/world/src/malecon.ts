@@ -13,12 +13,13 @@ import {
   vec3,
   vertexColor,
 } from 'three/tsl';
+import type {
+  Matrix4} from 'three/webgpu';
 import {
   Box3,
   type Camera,
   DoubleSide,
   InstancedMesh,
-  Matrix4,
   type Mesh,
   MeshBasicMaterial,
   MeshBasicNodeMaterial,
