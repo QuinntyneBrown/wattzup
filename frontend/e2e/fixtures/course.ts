@@ -1,3 +1,4 @@
+import daytonaElevation from './daytona-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,45 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const daytonaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'daytona-beach-sand',
+  name: 'Daytona Beach Sand',
+  routeName: 'Tide Line',
+  place: 'Daytona Beach, Florida',
+  world: 'daytona',
+  distanceKm: 8.375,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: daytonaElevation,
+  },
+  thumbnailUrl: 'maps/daytona-beach-sand.jpg',
+  photoUrl: 'maps/daytona-beach-sand-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 13, 80),
+      seg('work', 120, 18, 85),
+      seg('recover', 60, 13, 80),
+      seg('work', 120, 18, 85),
+      seg('work', 60, 19, 90),
+      seg('work', 60, 22, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 24, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 24, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 24, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 24, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 24, 85),
+      seg('cool-down', 120, 10, 80),
+    ],
   },
 };
