@@ -9,6 +9,7 @@
 // It follows Old Town's pattern (world-oldtown.ts): `build`, `lay` and `place`, seeded detail,
 // canvas textures and a loop that recycles the street, with the shared crowd, barriers, banners,
 // feather flags, pop-up tents, salt crust, road paint and box builder of world-kit.ts.
+import type { Course, CoursePlace } from './course';
 import {
   AdditiveBlending,
   BoxGeometry,
@@ -16,7 +17,8 @@ import {
   ConeGeometry,
   CylinderGeometry,
   BufferAttribute,
-  type BufferGeometry,
+  BufferGeometry,
+  Float32BufferAttribute,
   type CanvasTexture,
   Color,
   DoubleSide,
@@ -29,6 +31,8 @@ import {
   RepeatWrapping,
   Shape,
   ShapeGeometry,
+  SRGBColorSpace,
+  TextureLoader,
   type Texture,
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -207,6 +211,11 @@ export class DeathValleyStreet implements SceneStreet {
       prop.mesh.position.set(prop.x, ground(metres) + KERB, -metres);
     }
     this.crowd.place(this.time, heightAt, along, KERB);
+    this.placeRavens(heightAt);
+    this.horizon.position.set(0, heightAt(AHEAD), -AHEAD);
+  }
+
+  private placeRavens(heightAt: (metres: number) => number): void {
     // Ravens wheel in slow circles over the road ahead, riding the heat, wings beating now and then.
     this.ravens.forEach((bird, i) => {
       const turn = this.time * (0.22 + (i % 3) * 0.05) + i * 1.9;
@@ -222,7 +231,155 @@ export class DeathValleyStreet implements SceneStreet {
       bird.children[1]!.rotation.z = 0.15 + beat;
       bird.children[2]!.rotation.z = -0.15 - beat;
     });
-    this.horizon.position.set(0, heightAt(AHEAD), -AHEAD);
+  }
+
+  private readonly basinBirds = new Group();
+  private readonly aidSpectators = new Group();
+  private readonly sample: CoursePlace = { x: 0, y: 0, z: 0, heading: 0, pitch: 0 };
+  private readonly basinSurfaces: Mesh[] = [];
+
+  /** Lay metre-scaled crust, washes and patched tarmac along the actual bends. */
+  private addBasinSurfaces(course: Course): void {
+    const asphalt = this.material({ map: this.repeat(asphaltTexture(), 5, 5) });
+    const wash = this.material({ map: this.repeat(gravelTexture(), 5, 5) });
+    const salt = this.material({ map: this.repeat(saltCrustTexture(), 14, 14) });
+    const brine = this.material({ color: 0x91a9ab, roughness: 0.22, metalness: 0.12 });
+    for (let start = -60; start < course.length + 90; start += 160) {
+      for (const [inner, outer, material] of [
+        [-3.72, 3.72, asphalt],
+        [-7.2, -3.72, wash],
+        [3.72, 44, wash],
+        [-275, -7.2, salt],
+        ...(start >= 580 && start < 1230 ? [[-66, -20, brine] as const] : []),
+      ] as const) {
+        const positions: number[] = [],
+          uv: number[] = [],
+          indices: number[] = [];
+        for (let i = 0; i <= 16; i++) {
+          const d = start + i * 10;
+          for (const lane of [inner, outer]) {
+            const edge =
+              material === brine ? lane + 4.5 * Math.sin(d / 38) + 1.6 * Math.cos(d / 11) : lane;
+            const at = course.place(d, edge, this.sample);
+            const up = material === asphalt ? 0.013 : material === brine ? 0.047 : 0.015;
+            positions.push(at.x, at.y + up, at.z);
+            uv.push(edge, d);
+          }
+          if (i < 16) {
+            const n = i * 2;
+            indices.push(n, n + 1, n + 2, n + 2, n + 1, n + 3);
+          }
+        }
+        const geometry = new BufferGeometry();
+        geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+        geometry.setAttribute('uv', new Float32BufferAttribute(uv, 2));
+        geometry.setIndex(indices);
+        geometry.computeVertexNormals();
+        this.disposables.push(geometry);
+        const mesh = new Mesh(geometry, material);
+        mesh.userData['station'] = start + 80;
+        this.basinSurfaces.push(mesh);
+        this.group.add(mesh);
+      }
+    }
+  }
+
+  /** Reuse the authored desert details at locations on the native course. */
+  buildBasin(course: Course): void {
+    this.disposables.push(...this.flagMaterials);
+    this.addBasinSurfaces(course);
+    this.addParkSign();
+    this.addThermometer();
+    this.addAid();
+    for (let i = 0; i < this.props.length; i++) {
+      const prop = this.props[i]!;
+      const index = i;
+      const station = index === 0 ? 949 : index === 1 ? 9146 : 9160 + index * 14;
+      const at = course.place(station, prop.x);
+      prop.mesh.position.set(at.x, at.y, at.z);
+      prop.mesh.rotation.y = at.heading + (index === 0 ? -0.99 : index === 1 ? 1.09 : 0);
+    }
+    this.addRavens();
+    this.basinBirds.add(...this.ravens);
+    this.group.add(this.basinBirds);
+    const existing = this.group.children.length;
+    this.crowd.build();
+    this.aidSpectators.add(...this.group.children.slice(existing));
+    this.group.add(this.aidSpectators);
+    const aid = course.place(9175);
+    this.aidSpectators.position.set(aid.x, aid.y, aid.z);
+    this.aidSpectators.rotation.y = aid.heading;
+    this.addMirage();
+  }
+
+  get ravenHeading() {
+    return this.ravens[0]?.rotation.y ?? null;
+  }
+
+  private panamints: Mesh | null = null;
+
+  async loadPanamints(stillOpen: () => boolean): Promise<void> {
+    const texture = await new TextureLoader().loadAsync('courses/deathvalley-panamint.webp');
+    if (!stillOpen()) {
+      texture.dispose();
+      return;
+    }
+    texture.colorSpace = SRGBColorSpace;
+    const material = new MeshBasicMaterial({
+      map: texture,
+      side: DoubleSide,
+      transparent: true,
+      depthWrite: false,
+      opacity: 0.81,
+      fog: false,
+      color: 0xe5dfd4,
+    });
+    const positions: number[] = [],
+      uv: number[] = [],
+      indices: number[] = [];
+    for (let i = 0; i <= 96; i++) {
+      const angle = (i * Math.PI) / 48;
+      const x = 2050 * Math.sin(angle),
+        z = 2050 * Math.cos(angle);
+      positions.push(x, -72, z, x, 245, z);
+      const u = Math.floor(i / 24) % 2 ? 1 - (i % 24) / 24 : (i % 24) / 24;
+      uv.push(u, 0, u, 1);
+      if (i < 96) {
+        const n = i * 2;
+        indices.push(n, n + 1, n + 2, n + 2, n + 1, n + 3);
+      }
+    }
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('uv', new Float32BufferAttribute(uv, 2));
+    geometry.setIndex(indices);
+    this.disposables.push(texture, material, geometry);
+    this.panamints = new Mesh(geometry, material);
+    this.group.add(this.panamints);
+  }
+
+  get mirageOpacity() {
+    return this.mirage?.opacity ?? null;
+  }
+
+  private readonly flat = () => 0;
+  private readonly stationOffset = (offset: number, every: number) =>
+    loopMetres(offset, 0, every, BEHIND);
+
+  followBasin(course: Course, distance: number, seconds: number): void {
+    this.setTime(seconds);
+    for (const mesh of this.basinSurfaces)
+      mesh.visible = Math.abs(distance - Number(mesh.userData['station'])) < 640;
+    this.aidSpectators.visible = Math.abs(9175 - distance) < 360;
+    if (this.aidSpectators.visible) this.crowd.place(seconds, this.flat, this.stationOffset, KERB);
+    const at = course.place(distance, 0, this.sample);
+    this.panamints?.position.set(at.x, at.y, at.z);
+    this.basinBirds.position.set(at.x, at.y, at.z);
+    this.basinBirds.rotation.y = at.heading;
+    this.placeRavens(this.flat);
+    const shimmer = course.place(distance + 135, 0, this.sample);
+    this.horizon.position.set(shimmer.x, shimmer.y + 0.13, shimmer.z);
+    this.horizon.rotation.set(shimmer.pitch, shimmer.heading, 0, 'YXZ');
   }
 
   /**
@@ -617,6 +774,11 @@ export class DeathValleyStreet implements SceneStreet {
         }),
       ),
     );
+    this.addMirage();
+  }
+
+  private addMirage(): void {
+    const h = this.horizon;
     // The mirage on the road ahead: a pale sheen of the sky lying on the asphalt, wavering.
     const sheen = new PlaneGeometry(26, 150);
     sheen.rotateX(-Math.PI / 2);

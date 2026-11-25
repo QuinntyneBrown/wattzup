@@ -873,3 +873,18 @@ The inventory records 74% implementation and a 33/100 visual score. DaytonaStree
 | Southern shore, 6.62 km | Lifeguard huts, ramps, loungers and Atlantic breakers continue beyond the pier district | Real 01–04, 09–10 and 12, games 01–02 |
 
 As in Caribana, the foreground follows race time while the skyline remains fixed. Use packed static geometry for the pier and hotels, bounded pools for cars and waves and shared materials for repeating beach furniture. Dispose the loaded assets with the course. L1 Race, the ride-a-map journey, L2-064–066, L2-159–160, the performance design and ADRs 0021, 0023, 0030, 0034 and 0035 apply. Capture the six viewpoints before and after and measure actual moving frames at 45 m and 3,370 m.
+
+## Death Valley (#2111)
+
+Select Death Valley in Map Select, open Race Setup and start Badwater Road. The maps catalogue supplies the Sufferfest plan and the dedicated course supplies the centre line, camera and physical gradient. The inventory records 80% implementation. Earlier iterations added modelled ridges, dunes, parasols, ravens and a roadside crowd (#310, #312, #314 and #315). The existing scene repeats the aid station, sign and thermometer on a short loop. Keep the salt and scrub variation, hot-air shimmer and raven flight. Place the two landmarks at their own distances. Concentrate people at the Badwater trailhead and Furnace Creek so the long stretches between still feel empty.
+
+| Rider view | Composition on Low | References |
+| --- | --- | --- |
+| 0.08 km | Twin yellow lines cross sun-bleached asphalt beneath the near Black Mountains. | Real 01–02, 09–10 and game 01 |
+| 0.89 km | The Badwater elevation sign, timber boardwalk and shallow brine mark the edge of the basin. | Real 03–06 and games 01–02 |
+| 2.28 km | Raised polygon rims cross the bright flats below the distant Panamint Range. | Real 04–08, 15 and games 02–03 |
+| 4.63 km | Gravel fans spill from banded canyons into low clumps of creosote and desert holly. | Real 09–10, 14–15 and games 01 and 04 |
+| 7.74 km | A stepped series of golden Mesquite dune crests rises above the road mirage. | Real 11–13 and games 03–05 |
+| 9.07 km | The Furnace Creek thermometer rises beside the shaded race aid stop. | Real 03, 09, 13 and games 02 and 05 |
+
+Use Caribana’s fixed skyline technique to separate the Panamints from the near alluvial fans and roadside salt edges. Bake canyon strata and dune lee slopes into vertex colours. Pool foreground scrub and wildlife, update the mirage and wingbeats on the ride clock, and release geometry, maps and materials when the course closes. The valley landmarks are condensed to the original workout. L1 Race, the ride-a-map journey, L2-064–066 and L2-159–160 trace to the performance budget and ADRs 0021, 0023, 0030, 0034 and 0035. Measure submitted frames beginning at 540 m and 8,560 m and capture six paired rider-height views with the HUD.

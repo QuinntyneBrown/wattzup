@@ -33,6 +33,7 @@ import cornwallElevation from './cornwall-elevation.json';
 import cypressElevation from './cypress-elevation.json';
 import dalesElevation from './dales-elevation.json';
 import daytonaElevation from './daytona-elevation.json';
+import deathvalleyElevation from './deathvalley-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -2178,6 +2179,44 @@ export const daytonaCourseMap = {
       seg('recover', 60, 10, 80),
       seg('work', 60, 24, 85),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const deathValleyCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'death-valley',
+  name: 'Death Valley',
+  routeName: 'Badwater Road',
+  place: 'Death Valley, California',
+  world: 'deathvalley',
+  distanceKm: 9.781,
+  climbingM: 40,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: deathvalleyElevation,
+  },
+  thumbnailUrl: 'maps/death-valley.jpg',
+  photoUrl: 'maps/death-valley-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 11, 80),
+      seg('work', 60, 14, 90),
+      seg('recover', 30, 18, 100),
+      seg('work', 135, 13, 80),
+      seg('recover', 225, 18, 85),
+      seg('work', 30, 21, 95),
+      seg('recover', 90, 13, 80),
+      seg('work', 60, 21, 100),
+      seg('recover', 40, 13, 80),
+      seg('work', 50, 21, 110),
+      seg('recover', 90, 13, 80),
+      seg('work', 60, 21, 95),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('cool-down', 120, 11, 80),
     ],
   },
 };

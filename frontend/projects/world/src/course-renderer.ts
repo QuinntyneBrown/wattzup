@@ -7,6 +7,8 @@ import type { DalesSheep } from './dales-sheep';
 import type { DalesFlags } from './dales-flags';
 import type { DaytonaBoardwalk } from './daytona-boardwalk';
 import type { DaytonaTideLine } from './daytona-tide-line';
+import type { badwaterGeology } from './badwater-geology';
+import type { DeathValleyStreet } from './world-deathvalley';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -282,6 +284,8 @@ export class CourseRenderer implements WorldRenderer {
   private shore: DaytonaTideLine | null = null;
   private course: Course | null = null;
   private timing: PursuitBoard | null = null;
+  private geology: Awaited<ReturnType<typeof badwaterGeology>> | null = null;
+  private basin: DeathValleyStreet | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -411,6 +415,8 @@ export class CourseRenderer implements WorldRenderer {
     sheepX: null as number | null,
     pickupZ: null as number | null,
     gondolaY: null as number | null,
+    mirageOpacity: null as number | null,
+    ravenHeading: null as number | null,
     groups: {} as Record<string, number>,
     kiteAngle: undefined as number | undefined,
     boatX: undefined as number | undefined,
@@ -957,6 +963,28 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.shore.group);
         this.camera.setViewOffset(1, 1, 0, 0.053, 1, 1);
       }
+      if (this.path === 'courses/deathvalley') {
+        const { DeathValleyStreet } = await import('./world-deathvalley');
+        if (this.disposed) return false;
+        this.basin = new DeathValleyStreet((texture) => {
+          this.disposables.push(texture);
+          return texture;
+        }, this.disposables);
+        this.basin.buildBasin(this.course);
+        await this.basin.loadPanamints(() => !this.disposed);
+        if (this.disposed) return false;
+        const { badwaterGeology } = await import('./badwater-geology');
+        if (this.disposed) return false;
+        const geology = await badwaterGeology(this.course);
+        if (this.disposed) {
+          geology.dispose();
+          return false;
+        }
+        this.geology = geology;
+        this.disposables.push(geology);
+        this.scene.add(this.basin.group, geology.group);
+        this.camera.setViewOffset(1, 1, 0, 0.05, 1, 1);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1181,6 +1209,8 @@ export class CourseRenderer implements WorldRenderer {
     this.flags?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.boardwalk?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.shore?.place(metres, frame.reducedMotion ? 0 : frame.time);
+    this.geology?.follow(metres);
+    this.basin?.followBasin(course, metres, frame.reducedMotion ? 0 : frame.time);
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
@@ -1564,6 +1594,11 @@ export class CourseRenderer implements WorldRenderer {
     // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
+    if (this.path === 'courses/deathvalley') {
+      const sunDisc = materials['Sun'] as MeshBasicMaterial;
+      sunDisc.vertexColors = false;
+      sunDisc.color.setHex(0xfff6df);
+    }
     this.beams = materials['Beams'] as MeshBasicMaterial;
     const painted: Mesh[] = [];
     map.traverse((part) => {
@@ -2319,6 +2354,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.flagTip = this.flags?.tip ?? null;
     drawn.pickupZ = this.boardwalk?.pickupZ ?? null;
     drawn.gondolaY = this.boardwalk?.gondolaY ?? null;
+    drawn.mirageOpacity = this.basin?.mirageOpacity ?? null;
+    drawn.ravenHeading = this.basin?.ravenHeading ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;

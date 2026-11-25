@@ -63,7 +63,7 @@ export class WorldRideProbe {
     }, metres);
   }
 
-  async beachMotion(part: 'pickupZ' | 'gondolaY'): Promise<number | null> {
+  async beachMotion(part: 'pickupZ' | 'gondolaY' | 'volleyballY' | 'breakerX'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
@@ -108,16 +108,7 @@ export class WorldRideProbe {
     );
   }
 
-  async beachMotion(part: 'volleyballY' | 'breakerX'): Promise<number | null> {
-    return this.page.evaluate(
-      (name) =>
-        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
-          ?.course?.[name] ?? null,
-      part,
-    );
-  }
-
-  async parkMotion(part: 'carRadius' | 'trainX'): Promise<number | null> {
+  async parkMotion(part: 'carRadius' | 'trainX' | 'horseStride' | 'clubDistance'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
@@ -181,15 +172,6 @@ export class WorldRideProbe {
   }
 
   async basinMotion(part: 'kiteAngle' | 'boatX' | 'haze'): Promise<number | null> {
-    return this.page.evaluate(
-      (name) =>
-        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
-          ?.course?.[name] ?? null,
-      part,
-    );
-  }
-
-  async parkMotion(part: 'horseStride' | 'clubDistance'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
@@ -576,6 +558,15 @@ export class WorldRideProbe {
       () =>
         (window as unknown as { __wzWorldRide?: { course?: { illumination?: number } } })
           .__wzWorldRide?.course?.illumination ?? null,
+    );
+  }
+
+  async desertMotion(part: 'mirageOpacity' | 'ravenHeading'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
     );
   }
 }

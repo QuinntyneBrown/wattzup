@@ -1432,3 +1432,8 @@ import daytona as _daytona  # noqa: E402
 
 THEMES['daytona'] = _daytona.THEME
 SCENERY['daytona'] = _daytona.scenery
+
+import deathvalley as _deathvalley  # noqa: E402
+
+THEMES['deathvalley'] = _deathvalley.THEME
+SCENERY['deathvalley'] = _deathvalley.scenery

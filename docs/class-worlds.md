@@ -58,6 +58,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Cypress Mountain (`cypress`) | Ramp Workout: From Threshold to Sprints (GCN Training, 43:00) | 18.125 km | 797 m | `public/courses/cypress.glb` ([ride views](screenshots/cypress-mountain/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Yorkshire Dales (`dales`) | Race Winning Intervals (GCN, 52:48) | 24.047 km | 334 m | `public/courses/dales.glb` ([ride views](screenshots/yorkshire-dales/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Daytona Beach Sand (`daytona`) | Drag Race (GCN Training, 20:00) | 8.375 km | 0 m | `public/courses/daytona.glb` ([ride views](screenshots/daytona-beach-sand/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Death Valley (`deathvalley`) | Sufferfest 20 Minute Session (GCN, 23:00) | 9.781 km | 40 m | `public/courses/deathvalley.glb` ([ride views](screenshots/death-valley/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
