@@ -15,6 +15,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   artmuseum: 'courses/artmuseum',
   atacama: 'courses/atacama',
   atlanticroad: 'courses/atlanticroad',
+  aubisque: 'courses/aubisque',
   ibiza: 'courses/ibiza',
   alpe: 'courses/alpe',
   cinqueterre: 'courses/cinqueterre',

@@ -249,4 +249,25 @@ export class WorldRideProbe {
           .__wzWorldRide?.course?.sprayHeight ?? null,
     );
   }
+  /** Start at a physical viewpoint after Map Select is open and before the course loads. */
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+  /** Lane of the horse nearest the corniche. */
+  async horseLane(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { horseLane?: number } } }).__wzWorldRide
+          ?.course?.horseLane ?? null,
+    );
+  }
+  async cirqueSun(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { cirqueSun?: number } } }).__wzWorldRide
+          ?.course?.cirqueSun ?? null,
+    );
+  }
 }

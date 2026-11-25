@@ -97,6 +97,9 @@ import type { AtacamaWildlife } from './atacama-wildlife';
 import { heldFps } from './held-fps';
 import type { AtlanticSwell } from './atlantic-swell';
 import { heldFps } from './held-fps';
+import type { AubisqueWeather } from './aubisque-weather';
+import type { AubisqueLivestock } from './aubisque-livestock';
+import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -264,6 +267,8 @@ export class CourseRenderer implements WorldRenderer {
     vicunaHeadHeight: null as number | null,
     flamingoBillHeight: null as number | null,
     sprayHeight: null as number | null,
+    cirqueSun: null as number | null,
+    horseLane: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -286,6 +291,8 @@ export class CourseRenderer implements WorldRenderer {
   private salt: Material | null = null;
   private wildlife: AtacamaWildlife | null = null;
   private swell: AtlanticSwell | null = null;
+  private weather: AubisqueWeather | null = null;
+  private livestock: AubisqueLivestock | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -498,6 +505,17 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.swell.group);
         this.disposables.push(this.swell);
       }
+      if (this.course.file.id === 'aubisque') {
+        const [{ AubisqueLivestock }, { AubisqueWeather }] = await Promise.all([
+          import('./aubisque-livestock'),
+          import('./aubisque-weather'),
+        ]);
+        if (this.disposed) return false;
+        this.livestock = new AubisqueLivestock(this.course);
+        this.weather = new AubisqueWeather(this.course, this.sun);
+        this.scene.add(this.weather.root, this.livestock.mesh);
+        this.disposables.push(this.livestock, this.weather);
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -576,6 +594,8 @@ export class CourseRenderer implements WorldRenderer {
     );
     this.wildlife?.update(you.group.position.x, frame.reducedMotion ? 0 : frame.time);
     this.swell?.update(metres, frame.reducedMotion ? 0 : frame.time, this.camera.quaternion);
+    this.weather?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.livestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -656,6 +676,8 @@ export class CourseRenderer implements WorldRenderer {
     this.salt = null;
     this.mirage = null;
     this.swell = null;
+    this.livestock = null;
+    this.weather = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -1510,6 +1532,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.vicunaHeadHeight = this.wildlife?.headHeight ?? null;
     drawn.flamingoBillHeight = this.wildlife?.billHeight ?? null;
     drawn.sprayHeight = this.swell?.height ?? null;
+    drawn.cirqueSun = this.weather ? this.sun.intensity : null;
+    drawn.horseLane = this.livestock?.horseLane ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

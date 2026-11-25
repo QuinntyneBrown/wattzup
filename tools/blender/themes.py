@@ -1324,3 +1324,8 @@ import atlanticroad as _atlanticroad
 
 THEMES["atlanticroad"] = _atlanticroad.THEME
 SCENERY["atlanticroad"] = _atlanticroad.scenery
+
+import aubisque as _aubisque
+
+THEMES["aubisque"] = _aubisque.THEME
+SCENERY["aubisque"] = _aubisque.scenery

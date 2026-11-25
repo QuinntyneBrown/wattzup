@@ -198,6 +198,59 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     }
 
     [Fact]
+    public async Task Aubisque_keeps_the_original_thirty_seven_torque_intervals_and_recoveries()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "col-aubisque");
+        Assert.Equal("aubisque", map.World);
+        Assert.Equal(12.6, map.DistanceKm);
+        Assert.Equal(361, map.ClimbingM);
+        var heights = Assert.IsAssignableFrom<IReadOnlyList<double>>(map.Terrain.Elevation);
+        Assert.InRange(heights.Min(), -110, -100);
+        Assert.InRange(heights[^1], 250, 252);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 14, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 80, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 200, 11, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 80, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 80, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("recover", 20, 13, 80),
+                new Segment("work", 40, 22, 70),
+                new Segment("cool-down", 260, 11, 80)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task The_catalogue_lists_its_maps_in_unlock_order_without_a_session()
     {
         var maps = await ReadMaps();
@@ -228,6 +281,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Philadelphia Art Museum Steps", 8.175, 86, "Hard", "Benjamin Franklin Parkway", "Philadelphia, Pennsylvania"),
                 new Listed("Atacama Desert", 21.275, 15, "Hard", "The salar road", "Antofagasta, Chile"),
                 new Listed("Atlantic Ocean Road", 13.125, 65, "Hard", "Storseisundet Bridge", "Møre og Romsdal, Norway"),
+                new Listed("Col d'Aubisque", 12.6, 361, "Hard", "Cirque du Litor", "Pyrénées-Atlantiques, France"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -263,6 +317,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("philadelphia-art-museum", null),
                 ("atacama-desert", null),
                 ("atlantic-ocean-road", null),
+                ("col-aubisque", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -298,6 +353,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("philadelphia-art-museum", null),
                 ("atacama-desert", null),
                 ("atlantic-ocean-road", null),
+                ("col-aubisque", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -321,7 +377,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "col-aubisque" => 1980, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -340,7 +396,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));

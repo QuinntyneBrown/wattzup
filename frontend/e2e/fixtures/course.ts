@@ -3,6 +3,8 @@ import artMuseumElevation from './artmuseum-elevation.json';
 
 import atlanticElevation from './atlantic-elevation.json';
 
+import aubisqueElevation from './aubisque-elevation.json';
+
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -650,6 +652,66 @@ export const atlanticRoadCourseMap = {
       seg('recover', 60, 13, 80),
       seg('work', 600, 21, 90),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const aubisqueCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'col-aubisque',
+  name: "Col d'Aubisque",
+  routeName: 'Cirque du Litor',
+  place: 'Pyrénées-Atlantiques, France',
+  world: 'aubisque',
+  distanceKm: 12.6,
+  climbingM: 361,
+  rating: 'Hard',
+  terrain: {
+    elevation: aubisqueElevation,
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/col-aubisque.jpg',
+  photoUrl: 'maps/col-aubisque-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 14, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 80, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 200, 11, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 80, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 80, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('recover', 20, 13, 80),
+      seg('work', 40, 22, 70),
+      seg('cool-down', 260, 11, 80),
     ],
   },
 };

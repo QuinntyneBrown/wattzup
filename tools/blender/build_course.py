@@ -2276,6 +2276,9 @@ def main(argv: list[str] | None = None) -> dict:
     if (theme or {}).get("road_builder"):
         theme["road_builder"](road, st, length, col, sys.modules[__name__])
     else:
+        if (theme or {}).get("road_builder"):
+        theme["road_builder"](road, st, length, col, sys.modules[__name__])
+    else:
         if theme and theme.get("road_builder"):
         theme["road_builder"](road, st, length, col, sys.modules[__name__])
     else:

@@ -23,6 +23,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Philadelphia Art Museum Steps (`artmuseum`) | HIIT Leg Buster (GCN Training, 19:40) | 8.175 km | 86 m | `public/courses/artmuseum.glb` ([ride views](screenshots/philadelphia-art-museum/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Atacama Desert (`atacama`) | Extreme Fat Burning Class (GCN, 50:00) | 21.275 km | 15 m | `public/courses/atacama.glb` ([ride views](screenshots/atacama-desert/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Atlantic Ocean Road (`atlanticroad`) | FTP HIIT Booster for Longer Efforts (GCN Training, 30:00) | 13.125 km | 65 m | `public/courses/atlanticroad.glb` ([ride views](screenshots/atlantic-ocean-road/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Col d'Aubisque (`aubisque`) | 35 Minute Torque Power Intervals (GCN, 33:00) | 12.600 km | 361 m | `public/courses/aubisque.glb` ([ride views](screenshots/col-aubisque/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
