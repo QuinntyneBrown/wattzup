@@ -124,4 +124,107 @@ def scenery(kit):
             if d%20==0:
                 box(d,0,-7,1.0,2.2,6.82,0x878b83)
                 box(d,0,-.47,2.35,6.5,.43,0xa2a399)
+    def tube(d,l,z,r1,r2,h,tint,sides=12):
+        shade=lin(tint)
+        art.tube(pose(d,l,z),r1,r2,h,shade,shade,sides,shade)
+    def stick(a,b,width,tint):
+        dx,dy,dz=(b[i]-a[i] for i in range(3))
+        span=math.hypot(dx,dy);length=math.hypot(span,dz)
+        if not length:return
+        u,v=(-dy/span,dx/span) if span else (1,0)
+        ring=[(width*(u*math.cos(q)-v*dz/length*math.sin(q)),
+               width*(v*math.cos(q)+u*dz/length*math.sin(q)),width*span/length*math.sin(q))
+              for q in (0,math.pi/2,math.pi,3*math.pi/2)]
+        for j in range(4):
+            nxt=(j+1)%4
+            vertices=[tuple(point[i]+normal[i] for i in range(3)) for point,normal in
+                      ((a,ring[j]),(a,ring[nxt]),(b,ring[nxt]),(b,ring[j]))]
+            art.face(vertices,[lin(tint)]*4)
+    rng=kit.rng
+    # North-facing coloured gables on the far quay; the houses share party walls but have
+    # individual ridge heights, chimney pots and framed windows above their café fronts.
+    for j,d in enumerate(range(6930,8190,10)):
+        l=-45;h=rng.choice((9,11,13,15));w=rng.uniform(9.4,10.4)
+        tint=(0xb8674a,0xe3b85b,0x7d9ca8,0xb35243,0xecdec0,0xadb59b)[j%6]
+        box(d,l,-.2,w,10,h,tint)
+        art.roof(pose(d,l,h-.2),10.4,w+.35,rng.uniform(2.8,4.7),bearing(d)+math.pi/2,lin(0x884f43))
+        box(d+2,l-2,h+1.5,.65,.72,3,0x9f6755)
+        for floor in range(int(h/3)):
+            z=floor*2.8+.65
+            for off in (-3,0,3):
+                box(d+off,l+5.04,z,1.3,.15,1.72,0xe2ded0)
+                box(d+off,l+5.15,z+.10,1.07,.08,1.48,0x51636a)
+                box(d+off,l+5.22,z+.12,.09,.08,1.47,0xd7d5c4)
+                box(d+off,l+5.23,z+.91,1.06,.08,.075,0xd7d5c4)
+        box(d,l+5.65,2.4,w*.8,1.45,.19,0xd7c9a9)
+        for off in (-2.8,1.9):
+            tube(d+off,l+7,.01,.4,.4,.68,0x8e735b,8)
+    # The quays and timber sailing boats, each with a hull narrowing towards its stem and stern.
+    for d in range(6950,8160,10):
+        box(d,-47,-3,10,19,2.77,0x8f8372)
+    for j,d in enumerate(range(7008,8130,31)):
+        l=-17-j%2*4
+        for k in range(12):
+            t=k/11;half=1.67*math.sin(math.pi*(.035+.93*t))**.6
+            box(d-8+k*1.4,l,-2.42,1.48,half*2,1.22,0x634a3b if j%2 else 0x424f51)
+            box(d-8+k*1.4,l,-1.20,1.50,half*2+.11,.11,0xc6a37a)
+        box(d+1,l,-1.06,4.0,2.18,1.19,0xd7c8a6)
+        box(d+1,l,.14,4.16,2.33,.17,0x876d55)
+        for off,top in ((-3,11),(4,8.7)):
+            tube(d+off,l,-1.03,.105,.065,top,0x947857,9)
+            stick(pose(d+off,l,top-1.15),pose(d+off+5,l,-.99),.026,0x6c6859)
+            stick(pose(d+off,l,top-1.15),pose(d+off-4,l,-.99),.026,0x6c6859)
+    # Islands Brygge's open swimming basin, wrapped in timber decks and the diving steps.
+    for d in range(4170,4350,3):
+        for l,w in ((-12.3,7.5),(-34.5,3)):
+            box(d,l,-1.06,2.98,w,.62,0xb09671)
+    for d in (4171,4260,4348):
+        box(d,-23,-1.08,3,22,.67,0xb59e7c)
+    for j in range(14):
+        box(4292+j*.65,-15,-.41,.67,3.1,(j+1)*.26,0xb0956f)
+    for j in range(6):
+        tube(4272,-31,-.46+j*.81,1.0-j*.055,.95-j*.055,.81,
+             0xb9473d if j%2==0 else 0xe8e6d7,8)
+    # City signals have a bike head at eye level, a lean rail, orange route sign and pump.
+    for n,d in enumerate(range(124,13600,260)):
+        if crossing(d):continue
+        tube(d,-3.4,-.03,.085,.075,2.60,0x697676,8)
+        box(d,-3.4,1.79,.26,.40,.68,0x333e40)
+        for j in range(3):
+            box(d-.14,-3.4,1.85+j*.21,.035,.14,.14,(0x355452,0x736753,0x794c4a)[j])
+        for off in (-2.3,-.45):
+            tube(d+off,-3.25,0,.055,.055,.86,0x778684,8)
+        box(d-1.37,-3.25,.84,1.95,.082,.085,0xa9b4ad)
+        box(d-1.37,-3.1,.28,1.95,.34,.09,0x7b8784)
+        if n%3==0:
+            box(d-10,-3.62,0,.1,.11,2.68,0x808b86)
+            box(d-10,-3.62,1.88,.12,.84,.75,0xe7984e)
+            for k in range(11):
+                a=math.radians(53+25*k)
+                box(d-10.075,-3.62+.23*math.sin(a),2.18+.23*math.cos(a),.025,.076,.08,0xffecd1)
+            box(d-6,-4.4,0,.25,.28,.97,0xb75841)
+            box(d-6,-4.4,.95,.13,.56,.10,0x56645e)
+    # Late nineteenth-century blocks, linden-lined cafés and parked bikes occupy the avenue.
+    for n,d in enumerate(range(-35,13800,28)):
+        if crossing(d):continue
+        h=rng.choice((10,13,16,19));l=23+rng.uniform(0,4);w=rng.uniform(20,27)
+        tone=rng.choice((0xc6b8a1,0xb17f69,0xd5c9ad,0xbab5aa,0xd0c5bb))
+        box(d,l+5,0,w,10,h,tone)
+        art.roof(pose(d,l+5,h),w+1,11,2.6,bearing(d),lin(0x716c64))
+        for floor in range(h//3):
+            z=.7+floor*3
+            for off in range(-8,10,4):
+                box(d+off,l-.11,z,1.3,.2,1.7,0x556368)
+                box(d+off,l-.23,z-.09,1.6,.32,.13,0xd6d2c3)
+        if n%3==0:
+            box(d,l-1.25,2.6,6.7,2.5,.14,0xb9a784)
+            for q in (-2,1.6):tube(d+q,l-2.5,0,.52,.52,.8,0x8e7766)
+    # The copper skyline remains fixed across the harbour, with pointed and stepped roofs.
+    far=Painted(kit,'peaks')
+    for d,side,h in ((1180,-245,61),(3880,-285,93),(6960,-190,72),(7890,-245,96),(10950,-218,88)):
+        x,y,z=pose(d,side)
+        far.box((x,y,z-2),(22,30,h*.49),bearing(d),lin(0xb29478))
+        far.tube((x,y,z+h*.46),9,6,h*.18,lin(0x687d75),lin(0x82968b),8)
+        far.tube((x,y,z+h*.64),5.7,.45,h*.35,lin(0x667c72),lin(0x98a69a),8)
+        far.tube((x,y,z+h*.98),.42,.12,3.1,lin(0x998850),lin(0xc6a766),6)
     return {'efforts':0}
