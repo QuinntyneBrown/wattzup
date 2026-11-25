@@ -101,6 +101,8 @@ import type { LigurianCoast } from './ligurian-coast';
 import type { HeadlandSurf } from './headland-surf';
 import type { comoPromenade } from './como-promenade';
 import type { ComoFerries } from './como-ferries';
+import type { ComunaCrews } from './comuna-crews';
+import type { comunaStreets } from './comuna-streets';
 import { SunGlow } from './sun-glow';
 import { vertexFinish } from './rider-finish';
 import { RiderShadows } from './rider-shadows';
@@ -301,6 +303,8 @@ export class CourseRenderer implements WorldRenderer {
   private headland: HeadlandSurf | null = null;
   private promenade: Awaited<ReturnType<typeof comoPromenade>> | null = null;
   private ferries: ComoFerries | null = null;
+  private crews: ComunaCrews | null = null;
+  private barrio: Awaited<ReturnType<typeof comunaStreets>> | null = null;
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -359,6 +363,8 @@ export class CourseRenderer implements WorldRenderer {
     walkerX: null as number | null,
     breakerHeight: null as number | null,
     foilX: null as number | null,
+    dancerY: null as number | null,
+    passengerY: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -779,6 +785,21 @@ export class CourseRenderer implements WorldRenderer {
         this.ferries = new ComoFerries(this.course, this.scene);
         this.disposables.push(this.ferries);
       }
+      if (this.course.file.id === 'comuna13') {
+        const [{ ComunaCrews }, { comunaStreets }] = await Promise.all([
+          import('./comuna-crews'),
+          import('./comuna-streets'),
+        ]);
+        const streets = await comunaStreets(this.course);
+        if (this.disposed) {
+          streets.dispose();
+          return false;
+        }
+        this.barrio = streets;
+        this.scene.add(streets.root);
+        this.crews = new ComunaCrews(this.course, this.scene);
+        this.disposables.push(streets, this.crews);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1037,6 +1058,8 @@ export class CourseRenderer implements WorldRenderer {
     this.headland?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.promenade?.follow(metres);
     this.ferries?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.barrio?.follow(metres);
+    this.crews?.update(frame.reducedMotion ? 0 : frame.time, metres);
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
     if (this.canalTraffic.length)
       this.placeCanalTraffic(metres, frame.reducedMotion ? 0 : frame.time);
@@ -1131,6 +1154,8 @@ export class CourseRenderer implements WorldRenderer {
     this.headland = null;
     this.ferries = null;
     this.promenade = null;
+    this.barrio = null;
+    this.crews = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -2074,6 +2099,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.breakerHeight = this.headland?.breakerHeight ?? null;
     drawn.ferryX = this.ferries?.ferryX ?? null;
     drawn.foilX = this.ferries?.foilX ?? null;
+    drawn.dancerY = this.crews?.dancerY ?? null;
+    drawn.passengerY = this.crews?.passengerY ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;

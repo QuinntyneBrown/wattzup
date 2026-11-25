@@ -26,6 +26,7 @@ import champsElevation from './champs-elevation.json';
 import chicagoElevation from './chicago-elevation.json';
 import chichenElevation from './chichen-elevation.json';
 import comoElevation from './como-elevation.json';
+import comuna13Elevation from './comuna13-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1827,6 +1828,51 @@ export const comoCourseMap = {
       seg('recover', 120, 19, 80),
       seg('work', 30, 24, 100),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const comuna13CourseMap = {
+  ...haleakalaCourseMap,
+  id: 'comuna-13-medellin',
+  name: 'Comuna 13, Medellín',
+  routeName: 'The escalator streets',
+  place: 'San Javier, Medellín',
+  world: 'comuna13',
+  distanceKm: 13.58,
+  climbingM: 672,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: comuna13Elevation,
+  },
+  thumbnailUrl: 'maps/comuna-13-medellin.jpg',
+  photoUrl: 'maps/comuna-13-medellin-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 120, 16, 90),
+      seg('work', 60, 18, 100),
+      seg('recover', 100, 11, 80),
+      seg('work', 120, 18, 85),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 18, 85),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 19, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 20, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 21, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 22, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 22, 100),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 23, 100),
+      seg('recover', 30, 14, 80),
+      seg('work', 90, 24, 100),
+      seg('cool-down', 100, 11, 80),
     ],
   },
 };

@@ -1392,3 +1392,8 @@ import como as _como  # noqa: E402
 
 THEMES["como"] = _como.THEME
 SCENERY["como"] = _como.scenery
+
+import comuna13 as _comuna13  # noqa: E402
+
+THEMES["comuna13"] = _comuna13.THEME
+SCENERY["comuna13"] = _comuna13.scenery
