@@ -30,6 +30,7 @@ import comuna13Elevation from './comuna13-elevation.json';
 import copacabanaElevation from './copacabana-elevation.json';
 import copenhagenElevation from './copenhagen-elevation.json';
 import cornwallElevation from './cornwall-elevation.json';
+import cypressElevation from './cypress-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -2052,6 +2053,42 @@ export const cornwallCourseMap = {
       seg('recover', 20, 10, 80),
       seg('work', 10, 24, 100),
       seg('cool-down', 140, 10, 80),
+    ],
+  },
+};
+
+export const cypressCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'cypress-mountain',
+  name: 'Cypress Mountain',
+  routeName: 'Cypress Bowl Road',
+  place: 'West Vancouver, Canada',
+  world: 'cypress',
+  distanceKm: 18.125,
+  climbingM: 797,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: cypressElevation,
+  },
+  thumbnailUrl: 'maps/cypress-mountain.jpg',
+  photoUrl: 'maps/cypress-mountain-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 14, 80),
+      seg('work', 90, 21, 90),
+      seg('recover', 90, 10, 80),
+      seg('work', 480, 16, 85),
+      seg('work', 360, 18, 85),
+      seg('recover', 120, 10, 80),
+      seg('work', 240, 19, 90),
+      seg('work', 120, 22, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 480, 10, 80),
     ],
   },
 };

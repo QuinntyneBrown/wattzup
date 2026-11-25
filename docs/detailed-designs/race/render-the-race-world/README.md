@@ -828,3 +828,18 @@ Journey 7 currently reaches a generic rolling Cabot class world with its own ben
 Use the existing catalogue and Race Setup path into the lazy authored-course renderer. Read the arc-length course JSON and GLB from the ride's same-origin course assets. Bake cliff strata, roadside wear and canopy shade into shared geometry. Keep the far headlands in fixed coordinates like Caribana’s Toronto skyline. Merge local details into distance-culled sections. Use shared geometry for boat and animal parts on both backends, seed variation at construction, update from race time and dispose on departure. Keep class progression and HUD on the existing race engine.
 
 Measure two sixty-second samples from the normal race entry with the simulated bike, nine seconds of warm-up, Low/WebGL2 and fourfold CPU throttle. Capture matched rider views before and after and record actual submissions, display callbacks, p95, longest interval, peak draw calls and advancing HUD distance. The performance and capture suites stay opt-in.
+
+## Cypress Mountain (#2108)
+
+The catalogue records the old version at 35%. Its mountain terrain supplies a climbing gradient and coastal colour. The normal entry needs a dedicated map for the historical class and a course that places each lookout, bridge and ski station at a fixed point. Keep the existing race HUD, the class plan and the foreground cyclists’ scale. L1 Race, the ride-a-map journey, L2-064–066 and L2-159–160 cover this route. ADRs 0021, 0023, 0030, 0034 and 0035 govern loading, rendering and Low. The performance design covers the moving tablet sample.
+
+| Rider view | Local detail | Reference |
+| --- | --- | --- |
+| Lower forest, 0.08 km | Tall narrow conifers, broken canopy, wet lane and climbing cyclists | Real 09, 10, 13 and 15. Games 01 and 02 |
+| Lower switchback, 2.67 km | Broad asphalt return, concrete barriers, chevrons and a cut slope | Real 01 and 09. Games 01 and 05 |
+| Highview, 5.65 km | Turnout, viewing plaque, two suspension towers and downtown beyond the inlet | Real 01–04, 08 and 12. Games 02 and 03 |
+| Howe Sound, 9.32 km | Forest gives way to blue islands and overlapping coastlines | Real 09, 11 and 14. Games 02 and 05 |
+| Upper mountain, 14.54 km | Black Mountain, Strachan and twin Lions with cleared ski runs | Real 07, 11 and 15. Games 01–03 |
+| Ski area, 17.94 km | Timber lodge, lift terminal, visible moving chairs and warmer light | Real 05–07. Games 03–05 |
+
+Map Select → Race Setup → Race loads the historical plan, then the world-specific course through the lazy renderer. The road centre line supplies the route panel and the physical camera. Fixed low-poly geography and bounded forest batches keep the horizon steady while near trunks pass the rider, following Caribana’s separation of near and far detail. Low uses the same skyline and chair silhouettes as the higher tiers. Clock-driven cyclists and chairs release their shared meshes and materials on exit. Compare six original and revised rider views, then count submitted frames in the two one-minute samples at 55 m and 5,400 m.

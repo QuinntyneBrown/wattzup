@@ -1,5 +1,7 @@
 import type { cornwallVisitors } from './cornwall-visitors';
 import type { CornwallHarbour } from './cornwall-harbour';
+import type { cypressForest } from './cypress-forest';
+import type { CypressLift } from './cypress-lift';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -265,6 +267,9 @@ export class CourseRenderer implements WorldRenderer {
   private pave: ReturnType<typeof arenbergPave> | null = null;
   private visitors: Awaited<ReturnType<typeof cornwallVisitors>> | null = null;
   private harbour: CornwallHarbour | null = null;
+  private forest: Awaited<ReturnType<typeof cypressForest>> | null = null;
+  private cypressLift: CypressLift | null = null;
+  private readonly climbingRiders: Cyclist[] = [];
   private course: Course | null = null;
   private timing: PursuitBoard | null = null;
   private disposed = false;
@@ -390,6 +395,8 @@ export class CourseRenderer implements WorldRenderer {
     echelonLeaderX: null as number | null,
     commissaireX: null as number | null,
     gullY: null as number | null,
+    climberX: null as number | null,
+    chairX: null as number | null,
     groups: {} as Record<string, number>,
     kiteAngle: undefined as number | undefined,
     boatX: undefined as number | undefined,
@@ -876,6 +883,33 @@ export class CourseRenderer implements WorldRenderer {
         this.disposables.push(this.commuters);
         this.camera.setViewOffset(1, 1, 0, 0.08, 1, 1);
       }
+      if (this.path === 'courses/cypress') {
+        const [{ CypressLift }, { cypressForest }] = await Promise.all([
+          import('./cypress-lift'),
+          import('./cypress-forest'),
+        ]);
+        if (this.disposed) return false;
+        const forest = await cypressForest(this.course);
+        if (this.disposed) {
+          forest.dispose();
+          return false;
+        }
+        this.forest = forest;
+        this.scene.add(forest.root);
+        this.disposables.push(forest);
+        this.cypressLift = new CypressLift(this.course, this.scene);
+        this.disposables.push(this.cypressLift);
+        for (const [i, colour] of [0x6c93a6, 0xbe634f, 0xc5ab72].entries()) {
+          const rider = this.kit!.make(new Color(colour), i + 17, true, 0.45);
+          this.climbingRiders.push(rider);
+          this.scene.add(rider.group);
+          this.riderBatch?.add(rider);
+          this.shadow(rider);
+          this.lamplight(rider);
+          this.disposables.push(...rider.owned);
+        }
+        this.camera.setViewOffset(1, 1, 0, 0.1, 1, 1);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1077,6 +1111,21 @@ export class CourseRenderer implements WorldRenderer {
     if (this.trainingGroup.length) this.placeTrainingGroup(frame, metres);
     if (this.echelon.length) this.placeEchelon(frame, metres);
     this.camp?.update(frame.time, metres, frame.reducedMotion);
+    if (this.cypressLift) {
+      const seconds = frame.reducedMotion ? 0 : frame.time;
+      this.forest?.follow(metres);
+      this.sun.intensity = 1.94 + (0.86 * metres) / course.length;
+      const leader = seconds * 3.64;
+      for (const [i, rider] of this.climbingRiders.entries()) {
+        const origin = leader + i * 37 + 21;
+        const station = origin + Math.ceil((metres - 13 - origin) / 142) * 142;
+        rider.group.visible = station < course.end;
+        if (!rider.group.visible) continue;
+        const standing = this.ride(rider, station, 4.76 + i * 0.19);
+        rider.pose(seconds * (6.6 + i * 0.47) + i, standing);
+      }
+      this.cypressLift.update(seconds, metres);
+    }
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
@@ -1796,15 +1845,27 @@ export class CourseRenderer implements WorldRenderer {
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
     const back = course.place(metres - behind, sway, this.here);
     const rim = this.plaza ? Math.max(0, 1 - Math.abs(metres - 3180) / 105) : 0;
-    this.camera.position.set(back.x, back.y + up + 1.6 * rim * rim, back.z);
+    const overlook = this.cypressLift
+      ? Math.max(
+          Math.exp(-Math.pow((metres - 5650) / 115, 4)),
+          Math.exp(-Math.pow((metres - 9320) / 115, 4)),
+        )
+      : 0;
+    this.camera.position.set(back.x, back.y + up + 1.6 * rim * rim + 0.52 * overlook, back.z);
     this.groundEye?.at(metres - behind, 0, up);
+    let shoulder = 0;
+    if (this.cypressLift) {
+      const glance = (centre: number, width: number) =>
+        Math.exp(-Math.pow((metres - centre) / width, 4));
+      shoulder = 4.1 * glance(5650, 100) - 4.3 * glance(9320, 110) + 2.2 * glance(17905, 54);
+    }
     const lap = this.railway ? metres % 1750 : 0;
     const bridge = this.railway ? Math.max(0, 1 - Math.abs(lap - 460) / 67) : 0;
     const skyline = this.railway ? Math.max(0, 1 - Math.abs(lap - 670) / 105) : 0;
     const train = this.railway ? Math.max(0, 1 - Math.abs(lap - 220) / 74) : 0;
     const view = this.basin?.sightline(metres) ?? this.plaza?.sightline(metres);
-    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0), this.there);
-    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train, ahead.z);
+    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0) + shoulder, this.there);
+    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train - Math.abs(shoulder) * 0.12, ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
@@ -2197,6 +2258,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.passengerY = this.crews?.passengerY ?? null;
     drawn.boatRoll = this.harbour?.boatRoll ?? null;
     drawn.gullY = this.harbour?.gullY ?? null;
+    drawn.climberX = this.climbingRiders[0]?.group.position.x ?? null;
+    drawn.chairX = this.cypressLift?.chairX ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;

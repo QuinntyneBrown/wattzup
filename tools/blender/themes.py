@@ -1417,3 +1417,8 @@ import cornwall as _cornwall  # noqa: E402
 
 THEMES['cornwall'] = _cornwall.THEME
 SCENERY['cornwall'] = _cornwall.scenery
+
+import cypress as _cypress  # noqa: E402
+
+THEMES['cypress'] = _cypress.THEME
+SCENERY['cypress'] = _cypress.scenery
