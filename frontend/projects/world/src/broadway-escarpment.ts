@@ -1,4 +1,6 @@
 import {
+  cameraPosition,
+  smoothstep,
   positionLocal,
   positionWorld,
   texture,
@@ -13,6 +15,7 @@ import {
   BoxGeometry,
   CanvasTexture,
   Color,
+  CylinderGeometry,
   DoubleSide,
   Group,
   InstancedMesh,
@@ -31,7 +34,7 @@ import {
   type Texture,
 } from 'three/webgpu';
 import type { Course } from './course';
-import { seeded } from './world-kit';
+import { Figures, seeded } from './world-kit';
 
 function verge(distance: number, left: number) {
   const edge = Math.max(0, Math.abs(left) - 5);
@@ -48,7 +51,16 @@ export async function broadwayEscarpment(course: Course) {
   const loader = new TextureLoader();
   const maps: Texture[] = [];
   try {
-    for (const name of ['broadway', 'beech', 'vale', 'stone', 'tarmac', 'grass', 'slate']) {
+    for (const name of [
+      'broadway',
+      'beech',
+      'vale',
+      'stone',
+      'tarmac',
+      'grass',
+      'slate',
+      'folly',
+    ]) {
       const map = await loader.loadAsync('courses/fishhill-' + name + '.webp');
       map.colorSpace = SRGBColorSpace;
       maps.push(map);
@@ -58,7 +70,7 @@ export async function broadwayEscarpment(course: Course) {
     throw error;
   }
   resources.push(...maps);
-  const [fronts, leaves, vale, stone, tarmac, grass, slate] = maps;
+  const [fronts, leaves, vale, stone, tarmac, grass, slate, follyMap] = maps;
   for (const map of [stone!, tarmac!, grass!, slate!]) {
     map.wrapS = map.wrapT = RepeatWrapping;
     map.anisotropy = 4;
@@ -68,7 +80,20 @@ export async function broadwayEscarpment(course: Course) {
     roughness: 0.67,
     side: DoubleSide,
   });
-  lane.colorNode = texture(tarmac!, positionWorld.xz.div(2.3)).rgb.mul(0.85);
+  const woodland = uniform(0);
+  const tarmacGrain = texture(tarmac!, positionWorld.xz.div(1.25)).rgb;
+  const shade = positionWorld.x
+    .mul(0.63)
+    .add(positionWorld.z.mul(0.29))
+    .sin()
+    .mul(positionWorld.z.mul(0.47).sub(positionWorld.x.mul(0.38)).sin())
+    .mul(0.1)
+    .sub(0.17);
+  const reflectedSky = smoothstep(18, 110, positionWorld.distance(cameraPosition))
+    .mul(positionWorld.x.mul(0.35).add(positionWorld.z.mul(0.21)).sin().mul(0.5).add(0.5))
+    .mul(0.035);
+  lane.colorNode = tarmacGrain.mul(0.7).mul(woodland.mul(shade).add(1)).add(reflectedSky);
+  lane.roughnessNode = tarmacGrain.r.mul(0.65).add(0.42);
   const walls = new MeshLambertNodeMaterial({ flatShading: true, side: DoubleSide });
   walls.colorNode = texture(
     stone!,
@@ -326,9 +351,85 @@ export async function broadwayEscarpment(course: Course) {
     box(post, 0.46, 2.03, 0, 1.03, 0.24, 0.075, 0xe1dec2);
     box(post, -0.28, 1.75, 0, 0.74, 0.19, 0.12, 0xd2d2bb);
   }
+  // Texture the three curved turrets and bays of the baked folly from the original elevation.
+  const tower = new Group(),
+    site = course.place(11443, 20);
+  tower.position.set(site.x, site.y + verge(11443, -20), site.z);
+  tower.rotation.y = site.heading;
+  group.add(tower);
+  const ashlar = new MeshBasicMaterial({ map: follyMap, side: DoubleSide, color: 0xd7cfbc });
+  resources.push(ashlar);
+  function skin(
+    geometry: PlaneGeometry | CylinderGeometry,
+    side: number,
+    x: number,
+    y: number,
+    z: number,
+    yaw: number,
+  ) {
+    const coords = geometry.getAttribute('uv');
+    for (let i = 0; i < coords.count; i++) coords.setX(i, (side + coords.getX(i)) / 2);
+    const mesh = new Mesh(geometry, ashlar);
+    mesh.position.set(x, y, z);
+    mesh.rotation.y = yaw;
+    tower.add(mesh);
+    resources.push(geometry);
+  }
+  for (let j = 0; j < 3; j++) {
+    const angle = 0.28 + (j * Math.PI * 2) / 3,
+      h = j === 0 ? 20 : 18.9;
+    const x = 4.85 * Math.sin(angle),
+      z = 4.85 * Math.cos(angle),
+      bay = angle + Math.PI / 3;
+    skin(new CylinderGeometry(1.625, 1.66, h - 2.65, 18, 1, true), 1, x, (h + 2.65) / 2, z, 0);
+    skin(new CylinderGeometry(1.66, 2.25, 2.65, 18, 1, true), 1, x, 1.325, z, 0);
+    skin(new PlaneGeometry(8.2, 15.9), 0, 2.8 * Math.sin(bay), 7.96, 2.8 * Math.cos(bay), bay);
+  }
+  const visitors = new Group();
+  group.add(visitors);
+  const people = new Figures(
+    visitors,
+    resources,
+    8,
+    {
+      tops: ['#64794f', '#696b8e', '#a5564b', '#a49b58', '#778a9c'],
+      bottoms: ['#464b50', '#5b554b', '#37505a'],
+      skins: ['#c59572', '#926746', '#d5ae92', '#956849'],
+    },
+    2120,
+    false,
+  );
+  function walk(time: number, metres: number) {
+    const upper = Math.abs(11430 - metres) < 270;
+    visitors.visible = upper || metres < 1560;
+    if (!visitors.visible) return;
+    for (let i = 0; i < 8; i++) {
+      const t = time * 0.048 + i * 0.77;
+      const d = upper
+        ? 11423 + 10 * Math.sin(t) + i * 1.35
+        : 85 + Math.floor(i / 2) * 245 + 9 * Math.sin(t);
+      const l = upper
+        ? 10 + i * 0.57 + Math.cos(t) * 1.42
+        : (i % 2 === 0 ? -1 : 1) * (7.1 + i * 0.32);
+      const p = course.place(d, l);
+      people.set(
+        i,
+        p.x,
+        p.y + verge(d, -l),
+        p.z,
+        p.heading + (Math.cos(t) < 0 ? Math.PI : 0),
+        0.95 + (i % 3) * 0.04,
+        0.025 * Math.abs(Math.sin(time * 2.2 + i)),
+      );
+    }
+    people.commit();
+  }
   return {
     group,
     materials: { Lane: lane, Wall: walls, Meadow: meadows, Slate: roofs },
+    get walkerPosition() {
+      return people.legs.instanceMatrix.array[12];
+    },
     get leafAngle() {
       return sway.value;
     },
@@ -342,6 +443,9 @@ export async function broadwayEscarpment(course: Course) {
         furniture.g.visible = Math.abs(metres - furniture.distance) < 360;
       vistaPaint.opacity = Math.max(0, Math.min(1, (metres - 5550) / 400, (7450 - metres) / 430));
       vista.visible = vistaPaint.opacity > 0;
+      woodland.value = Math.max(0, Math.min(1, (metres - 2250) / 280, (5250 - metres) / 280));
+      tower.visible = Math.abs(11443 - metres) < 1150;
+      walk(time, metres);
       graze(time, metres);
     },
     dispose() {

@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Beach Island Loop” Route Details (Watopia)](https://zwiftinsider.com/route/beach-island-loop/) (g0005) | © Zwift |
 | game-04.jpg | Zwift: [“Ven-10” Route Details (France)](https://zwiftinsider.com/route/ven-10/) (g0183) | © Zwift |
 | game-05.jpg | MyWhoosh: [04_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/08/04_optimized.png) (g0691) | © MyWhoosh |
+
+## Original race artwork
+
+The Broadway cottage and shopfront atlas, slate, dry-stone, turf, tarmac, beech and hedgerow atlas, Vale panorama and tower elevations were generated for this race. Real 03–09 and 14 informed the village proportions and details, real 01–02 and 15 the road cutting, real 10–11 the three-turret folly and real 12–13 the ridge outlook. All five game views informed rider-height scale and sightlines. The road, roofs, balconies, tower turrets, telephone kiosks, signposts, sheep and walkers use original geometry.

@@ -8,6 +8,7 @@ import { RaceSetupPage } from './pages/race-setup.page';
 import { RacePage } from './pages/race.page';
 
 for (const [actor, metres, part] of [
+  ['Broadway Tower walker', 11370, 'walkerPosition'],
   ['beech canopy', 3720, 'leafAngle'],
   ['grazing sheep', 8630, 'sheepHead'],
 ] as const) {

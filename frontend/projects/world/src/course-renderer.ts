@@ -237,6 +237,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly near = new Group();
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
+    walkerPosition: null as number | null,
     leafAngle: null as number | null,
     sheepHead: null as number | null,
     tier: 0 as number,
@@ -1128,6 +1129,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.walkerPosition = this.escarpment?.walkerPosition ?? null;
     drawn.leafAngle = this.escarpment?.leafAngle ?? null;
     drawn.sheepHead = this.escarpment?.sheepHead ?? null;
     drawn.tier = this.tier;

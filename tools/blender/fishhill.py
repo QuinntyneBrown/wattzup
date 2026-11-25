@@ -124,23 +124,39 @@ def scenery(k):
             for j in range(4):
                 box(d-1.85+j*1.25,l,foot+.87,1.20,.75,.20+rng.random()*.15,0xa79e86,stone)
     # Broadway Tower, designed as a three-sided folly with a round tower at each corner.
-    at=11468
+    at=11443
     l=-20
     base=ground(at,l)
     x,y,z=r.pos(at,l,base)
-    art.tube((x,y,z),5.1,4.8,16.8,lin(0x9a8969),lin(0xc1b090),3,lin(0xb6a786))
-    for j in range(3):
-        angle=j*math.tau/3
-        cx=x+4.4*math.cos(angle)
-        cy=y+4.4*math.sin(angle)
-        art.tube((cx,cy,z),1.82,1.63,19,lin(0x998766),lin(0xc7b99a),16,lin(0xb3a484))
-        art.tube((cx,cy,z+18.25),1.72,1.81,.65,lin(0xa4987d),lin(0xcabb9f),16)
-        for merlon in range(8):
-            a=merlon*math.tau/8
-            art.box((cx+1.52*math.cos(a),cy+1.52*math.sin(a),z+18.9),(.67,.55,.75),a,lin(0xbdae90))
-        for floor in (4,8,12,15):
-            for a in (0,math.pi/2,math.pi,3*math.pi/2):
-                art.box((cx+1.66*math.cos(a),cy+1.66*math.sin(a),z+floor),(.11,.46,1.49),a,lin(0x45423b))
+    radius=4.85
+    rotation=bearing(at)-math.pi+.28
+    towers=[(x+radius*math.cos(rotation+i*math.tau/3),
+             y+radius*math.sin(rotation+i*math.tau/3)) for i in range(3)]
+    # There is a windowed bay and a projecting balcony between each pair of turrets.
+    for j,(cx,cy) in enumerate(towers):
+        ex,ey=towers[(j+1)%3]
+        normal=bearing(at)-math.pi+.28+(j+.5)*math.tau/3
+        wx,wy=(cx+ex)/2,(cy+ey)/2
+        yaw=math.atan2(ey-cy,ex-cx)
+        for dx,dy,w,h,up in [(0,0,8.4,16.5,0),(.37,.37,8.8,.47,2.5),(.38,.38,8.8,.37,15.9)]:
+            art.box((wx+dx*math.cos(normal),wy+dy*math.sin(normal),z+up),(w,.69,h),yaw,lin(0xb7a485))
+        balcony=(wx+.85*math.cos(normal),wy+.85*math.sin(normal))
+        for up in (7.25,8.22):art.box((*balcony,z+up),(3.2,1.46,.2),yaw,lin(0xb5a488))
+        for i in range(10):
+            u=(i-4.5)*.32
+            art.box((balcony[0]+u*math.cos(yaw)+.61*math.cos(normal),
+                     balcony[1]+u*math.sin(yaw)+.61*math.sin(normal),z+7.43),
+                    (.12,.14,.8),yaw,lin(0xc1b398))
+        h=20 if j==0 else 18.9
+        art.tube((cx,cy,z),2.22,1.63,2.65,lin(0x978566),lin(0xb8a47d),18)
+        art.tube((cx,cy,z+2.64),1.63,1.60,h-2.64,lin(0xac9975),lin(0xc3b08c),18,lin(0xb3a484))
+        art.tube((cx,cy,z+h-.59),1.65,1.87,.57,lin(0x9f8c6c),lin(0xbfae90),18)
+        for k in range(10):
+            angle=k*math.tau/10
+            for size,up,height in ((1.7,h-.72,.36),(1.64,h,.72)):
+                art.box((cx+size*math.cos(angle),cy+size*math.sin(angle),z+up),
+                        (.44,.57,height),angle,lin(0xb4a183))
+    art.tube((*towers[0],z+20),.047,.047,3.4,lin(0x9da39d),lin(0xa1aaa4),6)
     return {'efforts':0}
 
 
