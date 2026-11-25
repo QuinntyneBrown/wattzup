@@ -119,13 +119,26 @@ def tree(art,x,y,z,size,seed):
         tip=(x+cs*.63*size,y+sn*.63*size,z+.82*size)
         beam(art,a,elbow,.13*size,.11*size,bark);beam(art,elbow,tip,.084*size,.076*size,bark)
         cx,cy,cz=tip
-        for n in range(8):
-            t=n*math.tau/8;e=t+math.tau/8;radius=size*(.51+.13*math.sin(arm+n*9.3))
-            p=(cx+radius*math.cos(t),cy+radius*math.sin(t),cz-.07*size)
-            q=(cx+.57*size*math.cos(e),cy+.57*size*math.sin(e),cz-.08*size)
-            high=(cx+.05*size,cy-.04*size,cz+.36*size)
-            co=lin((0x476A47,0x52784E,0x537C56)[(arm+n)%3])
-            art.face((p,q,high),(co,co,lin(0x709265)));art.face((q,p,(cx,cy,cz-.24*size)),(co,)*3)
+        # Broad, irregular crowns of leathery leaves, with shaded lower foliage and a few red flowers.
+        for cluster in range(3 if size>6 else 1):
+            ang=seed+cluster*2.62+arm;u=cx+.27*size*math.cos(ang);v=cy+.26*size*math.sin(ang)
+            rings=[]
+            for level,(rr,hh) in enumerate(((.36,-.18),(.54,-.015),(.43,.16),(.19,.265))):
+                row=[]
+                for n in range(9):
+                    t=n*math.tau/9
+                    wobble=.9+.13*math.sin(n*3+cluster+seed)
+                    row.append((u+rr*size*wobble*math.cos(t),v+rr*.81*size*wobble*math.sin(t),cz+hh*size+.035*size*math.sin(n*4.6+level)))
+                rings.append(row)
+            shades=[lin(tint) for tint in (0x3D6147,0x4E7751,0x61875B,0x789763)]
+            for j in range(3):
+                for n in range(9):
+                    q=(n+1)%9
+                    art.face((rings[j][n],rings[j][q],rings[j+1][q],rings[j+1][n]),(shades[j],shades[j],shades[j+1],shades[j+1]))
+            art.face(tuple(rings[-1]),(shades[-1],)*9)
+            if arm%2==cluster and size>6:
+                a,b=rings[2][2],rings[2][3];tip=(.5*(a[0]+b[0]),.5*(a[1]+b[1]),.5*(a[2]+b[2])+.17)
+                flower=lin(0x9D5550);art.face((a,b,tip),(flower,)*3)
 
 def island(k,art,d,side,rx,ry,h):
     x,y,_=k.road.pos(d,side);rings=[]
@@ -202,12 +215,16 @@ def waitangi(k,art):
 def scenery(k):
     art=Painted(k);sky=Painted(k,'peaks');rng=k.rng
     wharf(k,art);waitangi(k,art)
+    # A shore-side ticket office joins the wharf approach, short of the over-water pavilion.
+    building(k,art,375,-11.6,9.8,5.5,3.1,0xD7E0CD,'PAIHIA WHARF')
+    for d in (1505,1550,1588,8125,8185):
+        island(k,sky,d+75,-52,14,10,5.5)
     for i,d in enumerate((86,112,142,191,230,264,303,352,388,419,447)):
         building(k,art,d,12.8,rng.uniform(9,15),7,4.5+(i%3)*.65,(0xB6B2A4,0xAABABA,0xD7C8B0)[i%3],('BAY CAFE','MARSDEN ROAD','FERRY TICKETS','BOOKS','PIER CAFE')[i%5])
     for base in (8170,26575):
         for j in range(13):
             d=base+j*17;building(k,art,d,12+(j%3),10.4,6.5,3.7+(j%3)*.42,(0xE6E3D5,0xDADACC,0xD1DCD8)[j%3],None)
-    for d in range(15,27930,51):
+    for d in range(15,27930,69):
         if 3080<d<3345:continue
         lane=rng.choice((-1,1))*rng.uniform(6.8,15.5)
         x,y,_=k.road.pos(d,lane);tree(art,x,y,ground(d,lane),rng.uniform(3.9,6.6),rng.random()*6)
