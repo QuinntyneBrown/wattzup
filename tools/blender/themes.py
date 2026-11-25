@@ -1247,3 +1247,10 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+# The Willunga road, from the Adelaide Hills reference folder.
+import adelaide as _adelaide
+
+MATERIALS.update(_adelaide.MATERIALS)
+THEMES["adelaide"] = _adelaide.THEME
+SCENERY["adelaide"] = _adelaide.scenery
