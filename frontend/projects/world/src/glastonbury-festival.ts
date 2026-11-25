@@ -9,11 +9,23 @@ import {
   InstancedMesh,
   Mesh,
   MeshLambertMaterial,
+  MeshBasicMaterial,
+  TextureLoader,
+  SRGBColorSpace,
+  RepeatWrapping,
   Object3D,
 } from 'three/webgpu';
 import type { Course } from './course';
 import { Figures, seeded } from './world-kit';
 
+const CLOTH_CORNERS = [
+  [0, 0],
+  [1, 0],
+  [1, 1],
+  [0, 0],
+  [1, 1],
+  [0, 1],
+] as const;
 const palette = ['#ef476f', '#ffd166', '#219ebc', '#7f55ae', '#e38035', '#4caa8c'];
 const jackets = palette.map((value) => new Color(value));
 const trousers = ['#263546', '#496047', '#4d4053'].map((value) => new Color(value));
@@ -112,14 +124,7 @@ export function glastonburyFestival(course: Course) {
       pose.updateMatrix();
       masts.setMatrixAt(count++, pose.matrix);
       for (let strip = 0; strip < strips; strip++) {
-        for (const [along, low] of [
-          [0, 0],
-          [1, 0],
-          [1, 1],
-          [0, 0],
-          [1, 1],
-          [0, 1],
-        ] as const) {
+        for (const [along, low] of CLOTH_CORNERS) {
           const u = (strip + along) / strips;
           const wave = Math.sin(t * 2.85 + f.phase - u * 5.7) * 0.46 * u;
           const lift = y + f.height - 0.18 * u + 0.13 * u * Math.sin(t * 2.3 + f.phase - u * 4);
@@ -185,9 +190,29 @@ export function glastonburyFestival(course: Course) {
     for (const mesh of [figures.legs, figures.bodies, figures.heads]) mesh.count = i;
     figures.commit(true);
   }
+  const loader = new TextureLoader();
+  const surface = (name: string, metres: number) => {
+    const map = loader.load('courses/glastonbury-' + name + '.webp');
+    map.colorSpace = SRGBColorSpace;
+    if (metres) {
+      map.wrapS = map.wrapT = RepeatWrapping;
+      map.repeat.set(1 / metres, 1 / metres);
+      map.anisotropy = 4;
+    }
+    const material = new MeshBasicMaterial({ map, side: DoubleSide, vertexColors: metres > 0 });
+    owned.push(map, material);
+    return material;
+  };
+  const materials = {
+    FestivalPrint: surface('performance', 0),
+    FestivalPanels: surface('panels', 1.55),
+    FestivalMud: surface('mud', 2.4),
+    FestivalGrass: surface('grass', 3),
+  };
   update(0, 0, false);
   return {
     group,
+    materials,
     state,
     update,
     dispose() {

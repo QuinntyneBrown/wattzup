@@ -633,6 +633,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
+    if (this.festival) Object.assign(materials, this.festival.materials);
     const painted: Mesh[] = [];
     map.traverse((part) => {
       const mesh = part as Mesh;

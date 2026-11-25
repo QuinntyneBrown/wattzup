@@ -106,7 +106,12 @@ def scenery(k):
         ends=list(map(ring,(a,b)))
         for j in range(4):
             m=(j+1)%4;model.face((ends[0][j],ends[0][m],ends[1][m],ends[1][j]),(tone,)*4)
-    def stage(d,off,pyramid):
+    prints=Painted(k,'paint');prints.b.name='FestivalPrint';prints.b.uvs=[]
+    def graphic(pts,region):
+        prints.face(pts,(lin(0xFFFFFF),)*4)
+        left,top,right,bottom=region
+        prints.b.uvs.extend([(left,bottom),(right,bottom),(right,top),(left,top)])
+    def stage(d,off,pyramid,label):
         pt,h=frame(d,off,.36 if off<0 else -.36)
         width=24 if pyramid else 18
         art.box(pt(0,0,.1),(16,width*2,2),h,dark)
@@ -127,6 +132,9 @@ def scenery(k):
             art.box(pt(0,0,14.1),(18,width*2+3,1.35),h,steel)
             for a in (-8,8):
                 for b in (-width,width):bar(pt(a,b,1),pt(a,b,14),.53,silver)
+        graphic([pt(6.9,-14,2.15),pt(6.9,14,2.15),pt(6.9,14,11.5),pt(6.9,-14,11.5)],(0,0,1,341/512))
+        graphic([pt(-8.1,-8,1.95),pt(-8.1,8,1.95),pt(-8.1,8,4.6),pt(-8.1,-8,4.6)],
+                (label/3,342/512,(label+1)/3,425/512))
         for sign in (-1,1):
             y=sign*(width+5)
             art.box(pt(-5,y,1),(1.2,1.2,13),h,steel)
@@ -136,11 +144,12 @@ def scenery(k):
                 glow.box(pt(-5.82,y+(i-3.5)*.91,7.8+1.15*math.sin(i)),(.14,.89,3.65),h,colour)
         for i in range(13):
             glow.box(pt(-2,(i-6)*1.95,11.8),(.65,.68,.66),h,lin((0xFDB481,0xFF8CB8,0xADDDF2)[i%3]))
+            graphic([pt(-5.85,y-3.55,7.45),pt(-5.85,y+3.55,7.45),pt(-5.85,y+3.55,13.45),pt(-5.85,y-3.55,13.45)],(.23,0,.66,341/512))
         for i in range(5):
             art.box(pt(-6,i*3-6,2.15),(1.15,1.65,1.25),h,dark)
-    stage(140,-35,True);stage(3515,-32,False);stage(3720,47,False)
+    stage(258,-34,True,0);stage(3620,-28,False,1);stage(3860,44,False,2)
     # The four radial legs of the Arcadia spider carry the suspended industrial body.
-    pt,h=frame(5692,-30)
+    pt,h=frame(5790,-27)
     for i in range(6):
         t=i*math.tau/6
         def joint(r,z):return pt(math.cos(t)*r,math.sin(t)*r,z)
@@ -151,7 +160,7 @@ def scenery(k):
     art.tube(pt(0,0,6.3),3.3,5.8,3.7,dark,steel,12)
     art.tube(pt(0,0,10),5.8,2.7,3.3,steel,dark,12)
     for sign in (-1,1):glow.box(pt(-4.3,sign*1.7,9),(.9,1.3,.8),h,lin(0xF0A14E))
-    pt,h=frame(7901,27)
+    pt,h=frame(8020,18)
     for i in range(16):
         t=i*math.tau/16
         bar(pt(2.7*math.cos(t),2.7*math.sin(t),.1),pt(2.7*math.cos(t),2.7*math.sin(t),18.5),.15,silver)
@@ -178,6 +187,16 @@ def scenery(k):
                         for i in range(8):
                             n=(i+1)%8;art.face((last[i],last[n],ring[n],ring[i]),(fly if i in (1,5) else tone,)*4)
                     last=ring
+    # Fields of fans around each stage, seen behind the nearer walkers.
+    for station,side in ((258,-1),(3620,-1),(3860,1),(5790,-1),(8020,1)):
+        for i in range(235):
+            d=station-rng.uniform(14,105);off=side*rng.uniform(9.5,39)
+            x,y,z,h=local(d,off);a=rng.uniform(.83,1.12)
+            top=lin(rng.choice(fabric));skin=lin(rng.choice((0xAF8066,0xD5AA86,0x946A50)))
+            art.tube((x,y,z),.18,.18,.73*a,dark,steel,5)
+            art.tube((x,y,z+.68*a),.25,.22,.64*a,top,top,6)
+            art.tube((x,y,z+1.32*a),.13,.14,.26*a,skin,skin,7)
+            if i%4==0:art.tube((x,y,z+1.55*a),.18,.13,.09,top,top,7)
     # Hedgerows divide the campsites. The fixed Tor closes the long view behind them.
     for d in range(0,LENGTH,17):
         for side in (-1,1):
@@ -185,7 +204,7 @@ def scenery(k):
             x,y,z,h=local(d,side*(70+9*math.sin(d/80)))
             art.tube((x,y,z-.28),4.1,3.2,2.5,lin(0x546348),lin(0x6F8151),8)
             if (d//17)%8==0:k.broadleaf(x,y,z,rng.uniform(.78,1.15))
-    pt,h=frame(1650,245)
+    pt,h=frame(1940,120)
     for i in range(8):
         art.tube(pt(0,0,i*5.2),105-i*11,94-i*11,5.2,lin(0x71834D),lin(0x87965A),36)
     art.box(pt(0,0,41),(6.5,5.4,13),h,lin(0x928878))

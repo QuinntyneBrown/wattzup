@@ -53,3 +53,29 @@ for (const [actor, metres, part] of [
     await expect.poll(() => worldRide.glastonburyMotion(part)).not.toBe(held);
   });
 }
+
+test('the Pyramid Stage performance is visible from the trackway', async ({
+  api,
+  bluetooth,
+  page,
+  worldRide,
+}) => {
+  api.answer('GET', '/api/maps', [glastonburyCourseMap]);
+  api.answer('GET', '/api/progress', {
+    ...newRiderProgress,
+    openMapIds: [glastonburyCourseMap.id],
+  });
+  await worldRide.pin('low', 'webgl2');
+  await bluetooth.remember(echelonBike);
+  const race = new RacePage(page);
+  const maps = new MapSelectPage(page);
+  await maps.open();
+  await worldRide.startAt(80);
+  const row = maps.row(glastonburyCourseMap.name);
+  await row.root.click();
+  const setup = new RaceSetupPage(page);
+  await setup.mode('Your best time').click();
+  await setup.start.click();
+  await expect(race.backend).toBeVisible();
+  await expect.poll(() => worldRide.glastonburyStageSections()).toBeGreaterThan(0);
+});
