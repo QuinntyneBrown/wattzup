@@ -75,7 +75,7 @@ def villages(k,art):
             art.roof(at(0,0,2.34),3.65,2.05,.34,h,lin((0xAF5039,0xE4B94F,0x55886B)[j]))
             art.box(at(0,0,.48),(3.45,1.55,.46),h,lin(0x947450))
             art.box(at(0,1.04,1.91),(3.47,.08,.47),h,lin(0xEFE1A6))
-            words(art,name,at(1.43,1.09,2.05),(-math.cos(h),-math.sin(h),0),(0,0,1),.37,2.87,0x65412D)
+            words(art,name,at(0,1.09,2.05),(-math.cos(h),-math.sin(h),0),(0,0,1),.37,2.87,0x65412D)
             for n in range(14):
                 u=-1.25+.39*(n%7);v=-.37+.55*(n//7)
                 art.tube(at(u,v,.94),.12,.095,.10 if j==0 else .21,lin(0xAD7431),lin(0xE7AC44 if n%3 else 0xB95A35),7)
@@ -83,32 +83,54 @@ def villages(k,art):
         at,h=site(k,d,-5.3)
         for j in (-1.44,1.44):art.box(at(0,j,-.45),(.11,.11,2.23),h,lin(0x959C94))
         art.box(at(0,0,1.38),(.12,3.55,.94),h,lin(0x34734F))
-        words(art,name,at(-.075,1.55,1.70),(math.sin(h),-math.cos(h),0),(0,0,1),.48,3.12,0xF3F1DF)
+        words(art,name,at(-.075,0,1.70),(math.sin(h),-math.cos(h),0),(0,0,1),.48,3.12,0xF3F1DF)
 
 
 def scenery(k):
-    art=Painted(k);villages(k,art);plants=pictured(k,'LetrasFlora');sky=pictured(k,'Cordillera')
+    art=Painted(k);villages(k,art);plants=pictured(k,'LetrasFlora');forest=pictured(k,'CloudForest');sky=pictured(k,'Cordillera')
     for j in range(36):
         def at(n,h):
             th=math.tau*n/36
-            return (5800+13700*math.cos(th),13800*math.sin(th),1320+h)
-        u=j%12/12;v=(j%12+1)/12
-        picture(sky,(at(j,0),at(j+1,0),at(j+1,3450),at(j,3450)),((u,0),(v,0),(v,1),(u,1)))
+            return (5800+13700*math.cos(th),13800*math.sin(th),-520+h)
+        u=j%9/9;v=(j%9+1)/9
+        if (j//9)%2:u,v=1-u,1-v
+        picture(sky,(at(j,0),at(j+1,0),at(j+1,6350),at(j,6350)),((u,0),(v,0),(v,1),(u,1)))
+    # A wide, low folded valley fills the distance beneath the three skyline sectors.
+    foothills=Painted(k,'peaks')
+    for ix in range(-8,25):
+        for iy in range(-12,13):
+            def fold(dx,dy):
+                x=(ix+dx)*880;y=(iy+dy)*850
+                z=1370+135*math.cos(x/861+y/603)+86*math.sin(y/491)+112*math.cos(x/1081-y/560)
+                return (x,y,z)
+            c=lin((0x688367,0x65836C,0x718B72)[(ix+2*iy)%3])
+            foothills.face((fold(0,0),fold(1,0),fold(1,1),fold(0,1)),(c,)*4)
     def plant(d,off,height,aspect,kind):
         x,y,_=k.road.pos(d,off);z=k.height_at(x,y)-.13
+        if kind==0:
+            art.tube((x,y,z),height*.0085,height*.0057,height*.85,lin(0x8C8E76),lin(0xBDBCA6),7)
         yaw=bearing(d)+k.rng.uniform(-.70,.70);half=height*aspect*.5
         dx=math.sin(yaw)*half;dy=math.cos(yaw)*half
         u=(kind%2)*.5;v=.5 if kind<2 else 0
-        picture(plants,((x-dx,y-dy,z),(x+dx,y+dy,z),(x+dx,y+dy,z+height),(x-dx,y-dy,z+height)),((u,v),(u+.5,v),(u+.5,v+.5),(u,v+.5)))
+        target=plants if kind<4 else forest
+        if kind>=4:u=(kind%2)*.5;v=0
+        top=v+(.5 if kind<4 else 1)
+        picture(target,((x-dx,y-dy,z),(x+dx,y+dy,z),(x+dx,y+dy,z+height),(x-dx,y-dy,z+height)),((u,v),(u+.5,v),(u+.5,top),(u,top)))
     for d in range(-60,22400,15):
         if abs(d-3670)<100 or abs(d-11888)<100:continue
         if d<8400:
             for j in range(8):
                 off=(-1 if j%2 else 1)*(8.8+(j//2)*5.1)
-                plant(d+.6*(j%3),off,k.rng.uniform(1.25,2.05),1.15,2)
+                plant(d+.6*(j%3),off,k.rng.uniform(1.25,2.05),1.18,2)
             if d%45==0:plant(d,-26,k.rng.uniform(4.2,7.5),.88,1)
         if 4750<d<17000 and d%45==0:
-            for j in range(2):plant(d+8*j,k.rng.choice((-1,1))*k.rng.uniform(12,68),k.rng.uniform(19,36),.36,0)
+            for j in range(2):plant(d+8*j,k.rng.choice((-1,1))*k.rng.uniform(12,68),k.rng.uniform(19,36),.75,0)
+        if d<8700 and d%60==0:
+            plant(d+4,-26,k.rng.uniform(9,15),.94,4)
+        if 9900<d<18000:
+            for j in range(3):
+                off=(-1 if j%2 else 1)*k.rng.uniform(10,35)
+                plant(d+j*2,off,k.rng.uniform(10,21) if j!=1 else k.rng.uniform(4.2,7.7),1.05,4+j%2)
         if d>16600:
             for j in range(5):
                 off=k.rng.choice((-1,1))*k.rng.uniform(6.5,44)
@@ -117,9 +139,22 @@ def scenery(k):
                 at,h=site(k,d+j*4,7+j*5)
                 x,y,_=at(0,0);z=k.height_at(x,y)
                 art.tube((x,y,z),.29,.025,.58,lin(0x878157),lin(0xA99A65),5)
+    for d,off in ((7719,17),(7738,24),(7756,12),(7781,-18),(7805,24)):
+        plant(d,off,24+(d%9),.74,0)
+    for i in range(20):
+        plant(21464+i*4.3,(-1 if i%3 else 1)*(5.5+(i%4)*1.4),1.49+(i%5)*.24,.96,3)
+    for d in range(21380,21644,6):
+        off=k.rng.choice((-1,1))*k.rng.uniform(5.3,10)
+        x,y,_=k.road.pos(d,off);z=k.height_at(x,y);h=k.rng.uniform(.55,1.45)
+        art.tube((x,y,z-.12),.20,.16,h,lin(0x615446),lin(0x8B7753),7)
+        for j in range(12):
+            a=j*2.4;cs,sn=math.cos(a),math.sin(a);L=.48+.11*(j%3)
+            base=(x,y,z+h-.12);tip=(x+L*cs,y+L*sn,z+h+.25+(j%4)*.13)
+            mid=(x+L*.56*cs,y+L*.56*sn,z+h+.27)
+            art.face((base,(mid[0]-.087*sn,mid[1]+.087*cs,mid[2]),tip,(mid[0]+.087*sn,mid[1]-.087*cs,mid[2])),(lin(0x68715B),lin(0xA7A88C),lin(0xD3CDB0),lin(0xABB79A)))
     return {'efforts':0}
 
 
 THEME={'lay':route,'surface_builder':road,'land_builder':land,'terrain':{'sea':False},'land':{'mid':0x748553},
        'road_half_width':4.1,'sky':[0xDBE3D1,0xBBD9DE,0x92C5DE,0x70A8D3,0x5588BD],
-       'haze':0xC5D3C1,'light':[0xFFF0CB,1.68],'fill':[0xC1D9E4,0xA89975],'sun_altitude':.80,'sun_azimuth':.76}
+       'haze':0xC5D3C1,'light':[0xFFF0CB,1.68],'fill':[0xC1D9E4,0xA89975],'sun_radius':16,'sun_altitude':.80,'sun_azimuth':.76}
