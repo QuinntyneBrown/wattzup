@@ -93,6 +93,9 @@ def scenery(k):
         if d%24==0:
             k.lamp(i,9.6,'bulb',5.1);k.light(r.pos(d,8.65,.03),'bulb',12,.72)
     # Terraced cafés have an opening arcade, recessed shop windows and shaded seating.
+    wheel_view = r.index(7760)
+    view_x,view_y,_ = r.at(wheel_view)
+    view_heading = k.s[wheel_view]['h']
     for n,d in enumerate(range(-36,8650,39)):
         yaw=k.s[r.index(d)]['h']
         box(d,-24.4,-.2,36,14.2,7.8,0x96877e)
@@ -111,6 +114,14 @@ def scenery(k):
                     box(d+a+1.13*side,-11.4,.45,.075,.44,.40,0xca9868)
         # Apartments with glazed residential bands and scattered lit rooms rise above the podium.
         width=rng.uniform(18,28);floors=rng.randrange(15,36);off=-rng.uniform(42,72)
+        # At the marina mouth the low terraces open a view through to Bluewaters.
+        # Keep high-rise slabs to either side of the observation wheel's silhouette.
+        tx,ty,_=r.pos(d,off)
+        east,north=tx-view_x,ty-view_y
+        forward=east*math.cos(view_heading)+north*math.sin(view_heading)
+        cross=-east*math.sin(view_heading)+north*math.cos(view_heading)
+        if 35<forward<680 and abs(cross-36*forward/570)<115*forward/570+16:
+            floors=3+n%3
         glass=rng.choice((0x394758,0x5e626d,0x526274,0x585969))
         box(d,off,.1,width,16,3.15*floors,glass)
         for floor in range(floors):

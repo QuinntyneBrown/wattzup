@@ -364,6 +364,7 @@ export class CourseRenderer implements WorldRenderer {
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
       if (this.course.file.id === 'dubai') {
+        this.camera.setViewOffset(1, 1, 0, 0.045, 1, 1);
         const { MarinaBoats } = await import('./marina-boats');
         if (this.disposed) return false;
         this.boats = new MarinaBoats(this.course, this.scene);

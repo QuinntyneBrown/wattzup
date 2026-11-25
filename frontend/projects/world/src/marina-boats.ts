@@ -122,12 +122,17 @@ export class MarinaBoats {
       return t;
     };
     const tower = cayanTower(track, this.resources, new Color(0x807881));
-    const landmark = course.place(1320, -105);
-    tower.position.set(landmark.x, 0, landmark.z);
+    const landmark = course.place(780);
+    // Across the canal mouth, on the sightline from the south promenade.
+    tower.position.set(
+      landmark.x - 680 * Math.sin(landmark.heading) - 28 * Math.cos(landmark.heading),
+      0,
+      landmark.z - 680 * Math.cos(landmark.heading) + 28 * Math.sin(landmark.heading),
+    );
     this.group.add(tower);
     const kit = new Yachts(this.resources, [0xf5f3e8, 0xe1ded6, 0x364357]);
     const boats = Array.from({ length: 4 }, (_, i) =>
-      batchYacht(kit.make(i, 21 + i * 4, seeded(317 + i)), this.resources),
+      batchYacht(kit.make(i, 28 + i * 5, seeded(317 + i)), this.resources),
     );
     for (let d = 40, i = 0; d < course.length; d += 86, i++) {
       const where = course.place(d + (i % 3) * 3, -(21 + (i % 4) * 2)),
@@ -163,11 +168,12 @@ export class MarinaBoats {
       for (const x of [-6, -2, 2, 6]) box(this.dhow, canopy, x, 2.27, z, 0.12, 2.82, 0.12);
     box(this.dhow, canopy, 0, 3.73, 0, 16, 0.22, 5.2);
     for (const z of [-2.62, 2.62]) box(this.dhow, light, 0, 3.62, z, 16, 0.06, 0.06);
-    const berth = course.place(1708, -19.5);
+    const berth = course.place(1774, -18);
     this.dhow.position.set(berth.x, 0.48, berth.z);
     this.dhow.rotation.y = berth.heading + Math.PI / 2;
+    this.dhow.scale.setScalar(1.34);
     this.group.add(this.dhow);
-    const hub = course.place(8190, -85);
+    const hub = course.place(7760);
     const support = new Group();
     const rim = new TorusGeometry(88, 1.65, 6, 96);
     this.resources.push(rim);
@@ -196,7 +202,11 @@ export class MarinaBoats {
     this.wheel.position.y = 96;
     support.add(this.wheel);
     support.rotation.y = course.place(7760).heading;
-    support.position.set(hub.x, 0.35, hub.z);
+    support.position.set(
+      hub.x - 570 * Math.sin(hub.heading) - 40 * Math.cos(hub.heading),
+      0.35,
+      hub.z - 570 * Math.cos(hub.heading) + 40 * Math.sin(hub.heading),
+    );
     this.group.add(support);
     scene.add(this.group);
     this.follow(0);
