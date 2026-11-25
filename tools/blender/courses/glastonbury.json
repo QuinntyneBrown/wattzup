@@ -1,0 +1,229 @@
+{
+  "id": "glastonbury",
+  "name": "Glastonbury Fields",
+  "world": "glastonbury",
+  "theme": "glastonbury",
+  "seed": 2128,
+  "layout": 0,
+  "class": {
+    "id": "sprint-to-the-music",
+    "title": "Sprint to the Music",
+    "channel": "GCN Training",
+    "videoId": "iR9quS91C40",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 150,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 104
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 104
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 104
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 104
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 104
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 104
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 65
+      },
+      {
+        "kind": "recover",
+        "duration": 35,
+        "level": 11,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 65
+      },
+      {
+        "kind": "recover",
+        "duration": 35,
+        "level": 11,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 65
+      },
+      {
+        "kind": "recover",
+        "duration": 35,
+        "level": 11,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 65
+      },
+      {
+        "kind": "recover",
+        "duration": 35,
+        "level": 11,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 22,
+        "cadenceAim": 65
+      },
+      {
+        "kind": "cool-down",
+        "duration": 200,
+        "level": 11,
+        "cadenceAim": 81
+      }
+    ]
+  }
+}

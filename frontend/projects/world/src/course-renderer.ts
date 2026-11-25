@@ -1,3 +1,4 @@
+import type { glastonburyFestival } from './glastonbury-festival';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -248,6 +249,7 @@ export class CourseRenderer implements WorldRenderer {
   private beams: MeshBasicMaterial | null = null;
   private readonly confetti: Mesh[] = [];
   private funivia: { holder: Group; span: CourseCableway; pose: CabinPose } | null = null;
+  private festival: ReturnType<typeof glastonburyFestival> | null = null;
   private glider: { holder: Group; orbit: CourseGliderOrbit; pose: GliderPose } | null = null;
   /** The blob every rider's shadow is drawn with, and each rider's own. */
   private blob: {
@@ -356,6 +358,13 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
+      if (this.course.file.id === 'glastonbury') {
+        const { glastonburyFestival } = await import('./glastonbury-festival');
+        if (this.disposed) return false;
+        this.festival = glastonburyFestival(this.course);
+        this.scene.add(this.festival.group);
+        this.disposables.push(this.festival);
+      }
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -425,6 +434,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.festival?.update(frame.time, metres, frame.reducedMotion);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -471,6 +481,7 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    this.festival = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -1109,6 +1120,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    if (this.festival) Object.assign(drawn, this.festival.state);
     hook['course'] = drawn;
   }
 
