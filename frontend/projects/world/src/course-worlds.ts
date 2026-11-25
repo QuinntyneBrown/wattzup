@@ -49,6 +49,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   giza: 'courses/giza',
   glasgow: 'courses/glasgow',
   glastonbury: 'courses/glastonbury',
+  goldengate: 'courses/goldengate',
   ibiza: 'courses/ibiza',
   alpe: 'courses/alpe',
   dubai: 'courses/dubai',

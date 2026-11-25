@@ -1497,3 +1497,8 @@ import glastonbury as _glastonbury
 
 THEMES["glastonbury"] = _glastonbury.THEME
 SCENERY["glastonbury"] = _glastonbury.scenery
+
+import goldengate as _goldengate
+
+THEMES["goldengate"] = _goldengate.THEME
+SCENERY["goldengate"] = _goldengate.scenery

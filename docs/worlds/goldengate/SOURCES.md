@@ -25,3 +25,12 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Farmland Loop” Route Details (Makuri Islands)](https://zwiftinsider.com/route/farmland-loop/) (g0045) | © Zwift |
 | game-04.jpg | Zwift: [“Danger Noodle” Route Details (Watopia)](https://zwiftinsider.com/route/danger-noodle/) (g0029) | © Zwift |
 | game-05.jpg | Zwift: [“The Greenway” Route Details (New York)](https://zwiftinsider.com/route/the-greenway/) (g0160) | © Zwift |
+
+| Race detail | Reference and adaptation |
+| --- | --- |
+| Conservatory and JFK Drive | Real 07 establishes the white glasshouses, central dome, palms and formal lawn. Real 08–09 and games 01, 03 and 05 informed the car-free road, woody canopy, lane width and approach sightlines. The conservatory’s generated elevation covers an original three-dimensional building. |
+| Stow Lake and Spreckels Lake | Real 01, 04–05, 10–11 and 15 establish the two masonry arches, near shore, cypress and model yachts. Games 04–05 inform visibility at road speed. Water, masonry, ducks, hulls and sails are original meshes. |
+| Bison paddock | Real 02 and game 03 informed the sandy grass, separation from the road, high shoulders, lowered heads and near-fence view of the herd. The models build on the existing park world’s bison proportions and include calves. |
+| Windmill and coast | Real 03 and 06 show the Murphy Windmill and informed timber construction and sail detail. The route depicts the Dutch Windmill above Queen Wilhelmina’s tulip beds. Real 12–14 informed the Great Highway, dunes and surf. Games 02 and 04 informed the changing sightline through the trees. |
+
+The park’s original generated foliage atlas combines eucalyptus and Monterey cypress crowns with three-dimensional trunks and branch forks. The lawn and ocean surface textures are original procedural patterns. Real 01, 05, 08–09 and 11 informed the crowns and fog layers.
