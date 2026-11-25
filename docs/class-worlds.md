@@ -40,6 +40,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Brooklyn Bridge Commute (`brooklyn`) | Get to Work on Your Cycling Fitness (GCN Training, 25:00) | 10.700 km | 117 m | `public/courses/brooklyn.glb` ([ride views](screenshots/brooklyn-bridge-commute/README.md)) | Built and ridden; open from the start on the map catalogue |
 | The Bund, Shanghai (`bund`) | 30 Minute High Cadence HIIT (GCN Training, 30:03) | 12.832 km | 0 m | `public/courses/bund.glb` ([ride views](screenshots/the-bund-shanghai/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Sa Calobra, Mallorca (`calobra`) | Aerobic Cadence Workout With Team Sky (GCN, 30:30) | 11.851 km | 671 m | `public/courses/calobra.glb` ([ride views](screenshots/sa-calobra-mallorca/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Passo Campolongo (`campolongo`) | Intense Climb: Passo Campolongo (GCN, 21:50) | 8.235 km | 307 m | `public/courses/campolongo.glb` ([ride views](screenshots/passo-campolongo/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

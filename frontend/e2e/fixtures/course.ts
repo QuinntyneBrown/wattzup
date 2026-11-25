@@ -17,6 +17,7 @@ import bondiElevation from './bondi-elevation.json';
 import brightonElevation from './brighton-elevation.json';
 import brooklynElevation from './brooklyn-elevation.json';
 import calobraElevation from './calobra-elevation.json';
+import campolongoElevation from './campolongo-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1417,6 +1418,40 @@ export const calobraCourseMap = {
       seg('work', 1180, 20, 72),
       seg('work', 20, 24, 110),
       seg('cool-down', 330, 11, 85),
+    ],
+  },
+};
+
+export const campolongoCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'passo-campolongo',
+  name: 'Passo Campolongo',
+  routeName: 'The road from Corvara',
+  place: 'Alta Badia, Italy',
+  world: 'campolongo',
+  distanceKm: 8.235,
+  climbingM: 307,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: campolongoElevation,
+  },
+  thumbnailUrl: 'maps/passo-campolongo.jpg',
+  photoUrl: 'maps/passo-campolongo-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 12, 80),
+      seg('work', 120, 19, 75),
+      seg('work', 83, 22, 70),
+      seg('work', 107, 19, 75),
+      seg('recover', 67, 13, 80),
+      seg('work', 114, 19, 75),
+      seg('work', 163, 22, 70),
+      seg('recover', 123, 21, 75),
+      seg('work', 120, 22, 70),
+      seg('work', 33, 24, 80),
+      seg('cool-down', 200, 11, 80),
     ],
   },
 };

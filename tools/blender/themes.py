@@ -1413,3 +1413,9 @@ import calobra as _calobra
 
 THEMES["calobra"] = _calobra.THEME
 SCENERY["calobra"] = _calobra.scenery
+
+
+import campolongo as _campolongo
+
+THEMES["campolongo"] = _campolongo.THEME
+SCENERY["campolongo"] = _campolongo.scenery
