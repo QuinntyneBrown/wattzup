@@ -123,10 +123,7 @@ export class EdinburghStreet implements SceneStreet {
     this.time = seconds;
     // The jugglers' clubs climb and fall in a cascade over their hands.
     for (const juggler of this.jugglers) {
-      juggler.balls.forEach((ball, k) => {
-        const t = seconds * 2.4 + juggler.phase + (k * Math.PI * 2) / juggler.balls.length;
-        ball.position.set(Math.cos(t) * 0.35, 1.9 + Math.abs(Math.sin(t)) * 1.1, 0);
-      });
+      juggleClubs(juggler.balls, seconds, juggler.phase);
     }
     this.flags.forEach((flag, k) => (flag.rotation.y = Math.sin(seconds * 3 + k) * 0.25));
   }
@@ -651,5 +648,13 @@ function rockTexture(): CanvasTexture {
       g.fillStyle = `rgba(${random() < 0.5 ? '90,110,60' : '20,20,20'},${0.2 + random() * 0.3})`;
       g.fillRect(random() * 256, random() * 256, 6 + random() * 24, 3 + random() * 8);
     }
+  });
+}
+
+/** The original Fringe cascade, driven by seconds on the rider's clock. */
+export function juggleClubs(clubs: readonly Mesh[], seconds: number, phase: number): void {
+  clubs.forEach((club, k) => {
+    const t = seconds * 2.4 + phase + (k * Math.PI * 2) / clubs.length;
+    club.position.set(Math.cos(t) * 0.35, 1.9 + Math.abs(Math.sin(t)) * 1.1, 0);
   });
 }

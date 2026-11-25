@@ -1,3 +1,4 @@
+import type { FringePerformers } from './fringe-performers';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -201,6 +202,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private fringe: FringePerformers | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -235,6 +237,8 @@ export class CourseRenderer implements WorldRenderer {
   private readonly near = new Group();
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
+    clubY: null as null | number,
+    torchAngle: null as null | number,
     tier: 0 as number,
     backend: '' as string,
     drawCalls: 0,
@@ -357,6 +361,12 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'edinburgh') {
+        const { FringePerformers } = await import('./fringe-performers');
+        if (this.disposed) return false;
+        this.fringe = new FringePerformers(this.course, this.scene);
+        this.disposables.push(this.fringe);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -480,6 +490,7 @@ export class CourseRenderer implements WorldRenderer {
     this.groundEye = null;
     this.riderBatch = null;
     this.rain = null;
+    this.fringe = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -1007,6 +1018,7 @@ export class CourseRenderer implements WorldRenderer {
     this.skyClock?.(time);
     this.waterClock?.(time);
     this.rain?.at(time);
+    this.fringe?.at(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
       confetti.rotation.y = 0.012 * Math.sin(time * 0.9);
@@ -1107,6 +1119,8 @@ export class CourseRenderer implements WorldRenderer {
     }
     drawn.tier = this.tier;
     drawn.backend = this.backend;
+    drawn.clubY = this.fringe?.clubY ?? null;
+    drawn.torchAngle = this.fringe?.torchAngle ?? null;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     hook['course'] = drawn;
