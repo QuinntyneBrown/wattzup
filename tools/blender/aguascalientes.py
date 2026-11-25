@@ -147,6 +147,20 @@ def dress_arena(k, b):
         # Compact officials’ desk and timing cabinets on the infield.
         b.box((side*12, 1, -1.55), (3.2, 1.15, 0.94), 0, cream)
         b.box((side*12, 1.05, -0.5), (0.91, 0.11, 0.55), 0, charcoal)
+    # The official's brass lap bell hangs on the infield side of the home pursuit mark.
+    x, y = 1.3, -18.6
+    brass, lip = lin(0xA07232), lin(0xE7BF64)
+    b.box((x, y, -1.55), (0.2, 0.2, 4.25), 0, charcoal)
+    b.box((x+0.40, y, 2.59), (0.94, 0.13, 0.16), 0, charcoal)
+    b.tube((x+0.77, y, 2.29), 0.11, 0.07, 0.31, brass, brass, 12, lip)
+    b.tube((x+0.77, y, 1.93), 0.31, 0.11, 0.36, lip, brass, 12)
+    b.tube((x+0.77, y, 1.84), 0.075, 0.06, 0.15, charcoal, brass, 8, brass)
+    # Hangers and backing frames for the active timing faces, mirrored at both ends.
+    for side in (-1, 1):
+        x, y = side * 47, -side * 9
+        b.box((x+side*0.18, y, 5.0), (0.30, 13.40, 4.82), 0, charcoal)
+        for delta in (-5.2, 5.2):
+            b.box((x, y+delta, 9.72), (0.13, 0.13, 6.28), 0, steel)
     colours = [lin(c) for c in (0x1C7776, 0x42638C, 0xC56F56, 0xEAE4D0, 0xEAB85F)]
     skins = [lin(c) for c in (0x99684F, 0xC39A75, 0x9F765F)]
     for row in range(6):

@@ -3,6 +3,7 @@ import { newRiderProgress } from './fixtures/api';
 import { aguascalientesCourseMap } from './fixtures/course';
 import { ECHELON_NOTIFY, echelonBike, resistanceFrame, workoutFrame } from './fixtures/echelon';
 import { expect, test } from './fixtures/test';
+import { startRace, stepUntil } from './fixtures/race';
 import { RacePage } from './pages/race.page';
 
 test('a rider passes a lap board with a changing pursuit time', async ({
@@ -43,4 +44,20 @@ test('a rider passes a lap board with a changing pursuit time', async ({
       }),
     )
     .toBe(true);
+});
+
+test('the solo pursuit starts with the opponent across the infield', async ({
+  api,
+  bluetooth,
+  page,
+  worldRide,
+}) => {
+  await worldRide.pin('low', 'webgl2');
+  const race = await startRace(page, bluetooth, api, aguascalientesCourseMap.id, 'mode=solo', {
+    catalogue: [aguascalientesCourseMap],
+    world: true,
+  });
+  await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
+  await page.clock.runFor(32);
+  expect(await worldRide.ghostSeparation()).toBeGreaterThan(40);
 });

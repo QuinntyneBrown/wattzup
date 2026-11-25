@@ -237,6 +237,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    ghostSeparationMetres: 0,
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
@@ -762,6 +763,7 @@ export class CourseRenderer implements WorldRenderer {
       this.body!,
       this.course!.file.night === true,
       this.tier <= SIMPLE_RIDERS,
+      this.course!.file.id === 'aguascalientes',
     );
     this.kit = kit;
     // The rider wears the You jersey of the race board (L2-060).
@@ -896,6 +898,20 @@ export class CourseRenderer implements WorldRenderer {
       if (shadow) shadow.visible = false;
     }
     if (!frame.riders) return;
+    // A pursuit starts opposite the clocked opponent. Its replay still advances by the
+    // recorded distance, including when a rider gains a full lap or makes the catch.
+    if (this.timing && frame.riders.length === 1 && frame.riders[0]?.jersey === 'ghost') {
+      const ghost = this.rider('ghost');
+      if (ghost) {
+        const lap = 250;
+        const replay = metres + frame.riders[0].metres + lap / 2;
+        const onOval = ((replay % lap) + lap) % lap;
+        ghost.group.visible = true;
+        this.ride(ghost, onOval, 0.45);
+        ghost.pose(frame.reducedMotion ? 0 : frame.crank);
+      }
+      return;
+    }
     const nearest = ridersOnRoad(frame.riders, FAR_RIDERS)
       .sort((a, b) => Math.abs(a.metres) - Math.abs(b.metres))
       .slice(0, MOST_RIDERS);
@@ -1092,6 +1108,11 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    const ghost = this.riders.get('ghost');
+    drawn.ghostSeparationMetres =
+      this.you && ghost?.group.visible
+        ? this.you.group.position.distanceTo(ghost.group.position)
+        : 0;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
