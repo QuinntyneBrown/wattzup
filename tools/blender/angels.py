@@ -172,7 +172,12 @@ def scenery(k):
             h=k.rng.uniform(4,7)
             pine = k.rng.random()<.34
             bark,foliage = map(lin,(0x8B5D43 if not pine else 0x766655,k.rng.choice((0x596D48,0x495F3D,0x748251))))
+            if pine:
+                h *= 1.44
             art.tube((x,y,z),.34,.19,h,bark,bark,6)
+            if not pine and d%4:
+                peeled=lin(0xAC6348)
+                art.tube((x,y,z),.35,.27,h*.48,peeled,peeled,7)
             for j in range(3):
                 a=j*math.tau/3+yaw
                 p=(x+1.25*math.cos(a),y+1.25*math.sin(a),z+h-.4+j*.32)
@@ -186,6 +191,10 @@ def scenery(k):
         if d%200<88:
             c,yaw=site(d,-6.4)
             art.box(c,(9.1,.66,1.05),yaw,stone)
+    for d in range(420,int(k.length)-120,23):
+        c,yaw=site(d,5.9)
+        art.box(c,(.16,.16,.95),yaw,lin(0xE2E0CB))
+        art.box((c[0],c[1],c[2]+.74),(.17,.17,.11),yaw,lin(0xAF4638))
     for d in range(1000,int(k.length),1000):
         c,yaw=site(d,6.2)
         art.box(c,(.57,.38,1.13),yaw,lin(0xE6DFCC))
@@ -198,12 +207,64 @@ def scenery(k):
         grade=k.s[i]["g"]/100
         words(art,("SOM-HI!","GIRONA","FORÇA")[d//1000%3],k.road.at(i,-.9,.035),
               (math.sin(h),-math.cos(h),0),(math.cos(h),math.sin(h),grade),1.3,3.8,0xD5C9A8)
-    (x,y,z),yaw=site(k.length+26,4)
-    pale,portal=map(lin,(0xE4DDCA,0x685440))
-    art.box((x,y,z),(16,10,8.3),yaw,pale)
-    art.roof((x,y,z+8.3),16,10,2.2,yaw,tile)
-    for width,height,proud,tint in ((3.1,4.3,-8.05,stone),(2.35,3.65,-8.14,portal),(1.1,1.2,-8.07,window)):
-        up = 6 if tint==window else 0
-        art.box((x+proud*math.cos(yaw),y+proud*math.sin(yaw),z+up),(.16,width,height),yaw,tint)
-    house(k.length+24,-10,20,7.4,pale)
+    sanctuary(k,art,site)
     return {"efforts":0}
+
+
+def sanctuary(k,art,site):
+    (x,y,z),yaw = site(k.length+24,11)
+    cs,sn = math.cos(yaw),math.sin(yaw)
+    def pt(forward,left,up):
+        return (x+forward*cs-left*sn,y+forward*sn+left*cs,z+up)
+    def block(forward,left,up,length,width,height,tint):
+        art.box(pt(forward,left,up),(length,width,height),yaw,lin(tint))
+    def face(points,tint):
+        coords=tuple(pt(*p) for p in points)
+        art.face(coords,(lin(tint),)*len(coords))
+        art.face(coords[::-1],(lin(tint),)*len(coords))
+    # In real-04 the plain façade rises into a broad, clipped gable. Its only
+    # opening above the portal is an oculus framed in honey-coloured stone.
+    block(0,0,0,18,12,9.6,0xF2EBDD)
+    outline=((-6,9.59),(-4.05,12.55),(3.68,12.55),(6,10.05),(6,9.59))
+    for forward in (-9.02,9.02):
+        face([(forward,l,h) for l,h in outline],0xF2EBDD)
+    for (a,b),(c,d) in zip(outline[:3],outline[1:4]):
+        face([(-9.32,a,b), (9.32,a,b),(9.32,c,d),(-9.32,c,d)],0xA8795B)
+        face([(-9.33,a,b),(-9.33,c,d),(-9.33,c,d-.18),(-9.33,a,b-.18)],0xA79479)
+    # Shallow pilasters, base stones and joints cast a thin shadow at the jambs.
+    for l in (-5.72,4.9):
+        block(-9.07,l,0,.19,.46,9.6,0xE3DCCB)
+        block(-9.10,l,0,.27,.66,.38,0xC2B198)
+    block(-9.09,0,0,.27,2.05,3.25,0x433930)
+    for l in (-1.15,1.15):
+        for course in range(8):
+            block(-9.22,l,course*.40,.36,.37,.38,0xC7AF90 if course%3 else 0xAD9378)
+        block(-9.25,l-.02,3.2,.40,.53,.16,0x8B7763)
+    for h,w,tint in ((3.35,2.9,0xCCB99D),(3.55,3.23,0x927F6D),(3.73,2.87,0xE0D2B8)):
+        block(-9.25,0,h,.53,w,.16,tint)
+    face([(-9.28,-1.13,3.87),(-9.28,1.13,3.87),(-9.28,.55,4.52),(-9.28,0,5.13),(-9.28,-.55,4.52)],0xBCA88A)
+    block(-9.33,0,3.96,.07,.42,.66,0x6A594A)
+    def disc(h,r,depth,tint):
+        for j in range(20):
+            a=j*math.tau/20;b=(j+1)*math.tau/20
+            face([(depth,0,h),(depth,r*math.cos(a),h+r*math.sin(a)),(depth,r*math.cos(b),h+r*math.sin(b))],tint)
+    disc(8.3,.68,-9.13,0xBBAB91)
+    disc(8.3,.47,-9.17,0x4A4940)
+    for side in (-1,1):
+        block(-9.19,side*.15,7.92,.09,.043,.79,0x958B75)
+    block(-8.9,0,12.56,.08,.09,1.05,0x635C50)
+    block(-8.9,0,13.15,.08,.59,.08,0x635C50)
+    block(4,-4.1,9.2,2.2,1.8,4.2,0xBEAB90)
+    block(2.88,-4.1,11.68,.08,.88,1.18,0x524940)
+    # The adjoining guest house and its iron balconies enclose the far edge.
+    block(9,-10,0,8,13,8.1,0xE7E1D3)
+    for level in (0,3.2,6.1):
+        for l in (-15,-12.4,-9.8,-7.2):
+            block(4.95,l,level+.54,.12,.94,1.23,0x564F42)
+            if level==3.2:
+                block(4.63,l,level+.36,.74,1.6,.14,0xAC9E89)
+                for u in (-.64,-.32,0,.32,.64):
+                    block(4.26,l+u,level+.5,.045,.045,.67,0x4C4B42)
+                block(4.26,l,level+1.17,.06,1.42,.06,0x4C4B42)
+    for j in range(4):
+        block(-9.6-j*.38,0,-.08*j,.42,3.9+j*.28,.12,0xC6BCA7)
