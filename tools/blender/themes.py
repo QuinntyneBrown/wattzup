@@ -1093,10 +1093,8 @@ def dolomites(k: Kit) -> dict:
             i += rng.randint(30, 70)
         else:
             i += 5
-    # The pale peaks all round, snow on their tops.
-    base = min(p["z"] for p in s) - 4
-    k.peaks(26, 800, 1700, (420, 900), "limestone", "snow", base)
-    k.peaks(14, 1900, 2900, (700, 1200), "limestone", "snow", base)
+    from val_gardena import valley
+    valley(k)
     efforts = k.gates("accent", "flag-0", CROWD)
     # A summit sign and a chapel on the highest bend.
     top = max(range(k.n), key=lambda j: s[j]["z"])
@@ -1106,7 +1104,8 @@ def dolomites(k: Kit) -> dict:
     k.gable(B["roof-slate"], k.P(top, 0, off, 5), 9, 6, 3, yaw + math.pi / 2)
     B["whitewash"].box(k.P(top, -4, off, -1), (2.6, 2.6, 12), yaw)
     k.cone(B["roof-slate"], k.P(top, -4, off, 11), 1.9, 4.5, 4)
-    return {"efforts": efforts, "chalets": chalets}
+    from val_gardena import cableways
+    return {"efforts": efforts, "chalets": chalets, "cableways": cableways(k)}
 
 
 def vicecity(k: Kit) -> dict:

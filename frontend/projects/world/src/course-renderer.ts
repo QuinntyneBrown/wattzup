@@ -235,6 +235,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly near = new Group();
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
+    cabinHeight: null as number | null,
     tier: 0 as number,
     backend: '' as string,
     drawCalls: 0,
@@ -357,6 +358,17 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'dolomites') {
+        const { gardenaMassifs } = await import('./gardena-massifs');
+        if (this.disposed) return false;
+        const massifs = await gardenaMassifs();
+        if (this.disposed) {
+          massifs.dispose();
+          return false;
+        }
+        this.scene.add(massifs.mesh);
+        this.disposables.push(massifs);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -1107,6 +1119,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     drawn.tier = this.tier;
     drawn.backend = this.backend;
+    drawn.cabinHeight = this.funivia?.holder.position.y ?? null;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     hook['course'] = drawn;

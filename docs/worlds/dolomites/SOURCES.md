@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [Shot07.0139 (1)](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2026/08/Shot07.0139-1.jpg) (g0279) | © MyWhoosh |
 | game-04.jpg | Zwift: [“Mountain Route” Route Details (Watopia)](https://zwiftinsider.com/route/mountain-route/) (g0103) | © Zwift |
 | game-05.jpg | Zwift: [“Rolling Highlands” Route Details (Scotland)](https://zwiftinsider.com/route/rolling-highlands/) (g0130) | © Zwift |
+
+The original generated summer massif atlas depicts Sassolungo, the Sella plateau and the Geisler/Odle spires from valley level, with pale summer limestone, shaded vertical gullies and forested foothills. Real 03, 05, 07–08, 11–13 and 15 informed the silhouettes. Game 01 informed the skyline scale behind the riders.
