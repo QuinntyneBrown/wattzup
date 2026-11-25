@@ -1,3 +1,5 @@
+import type { DalesSheep } from './dales-sheep';
+import type { DalesFlags } from './dales-flags';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -200,6 +202,8 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
+  private flock: DalesSheep | null = null;
+  private flags: DalesFlags | null = null;
   private course: Course | null = null;
   private disposed = false;
   private readonly scene = new Scene();
@@ -239,6 +243,8 @@ export class CourseRenderer implements WorldRenderer {
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
+    flagTip: null as number | null,
+    sheepX: null as number | null,
     groups: {} as Record<string, number>,
   };
   private readonly chosenAt = new Vector3();
@@ -357,6 +363,18 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.path === 'courses/dales') {
+        const [{ DalesSheep }, { DalesFlags }] = await Promise.all([
+          import('./dales-sheep'),
+          import('./dales-flags'),
+        ]);
+        if (this.disposed) return false;
+        this.flock = new DalesSheep(this.course);
+        this.flags = new DalesFlags(this.course, this.scene);
+        this.scene.add(this.flock.mesh);
+        this.disposables.push(this.flock, this.flags);
+        this.camera.setViewOffset(1, 1, 0, 0.09, 1, 1);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -422,6 +440,8 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    this.flock?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.flags?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
@@ -1105,6 +1125,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.sheepX = this.flock?.sheepX ?? null;
+    drawn.flagTip = this.flags?.tip ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
