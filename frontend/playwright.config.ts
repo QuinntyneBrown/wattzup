@@ -6,8 +6,8 @@ const developmentPort = port + 1;
 
 // Behaviour specs only, Chromium only, never retried (AGENTS.md). e2e/fixtures/test.ts fails a spec on a page error,
 // a request off localhost, an unanswered backend or hub request, or an unexpected Bluetooth call.
-// On macOS the headless shell rasterizes 3D in SwiftShader. Give the race rendering
-// checks full headless Chromium with Metal, while ordinary browser fixtures keep their shell.
+// On macOS the headless shell defaults to SwiftShader. Select ANGLE’s native Metal
+// backend for real race renders and keep all tests on the same Chromium shell.
 const metal = !process.env['CI'] && process.platform === 'darwin';
 const worldSpecs = [
   '**/race-world*.spec.ts',
@@ -40,7 +40,15 @@ export default defineConfig({
     // The production build, as riders get it.
     { name: 'chromium', testIgnore: ['**/*.development.spec.ts', ...(metal ? worldSpecs : [])] },
     ...(metal
-      ? [{ name: 'chromium-metal', testMatch: worldSpecs, use: { channel: 'chromium' } }]
+      ? [
+          {
+            name: 'chromium-metal',
+            testMatch: worldSpecs,
+            use: {
+              launchOptions: { args: ['--use-gl=angle', '--use-angle=metal'] },
+            },
+          },
+        ]
       : []),
     // The development build, the only one that honours ?simulate (L2-024).
     {
