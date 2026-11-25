@@ -42,6 +42,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Sa Calobra, Mallorca (`calobra`) | Aerobic Cadence Workout With Team Sky (GCN, 30:30) | 11.851 km | 671 m | `public/courses/calobra.glb` ([ride views](screenshots/sa-calobra-mallorca/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Passo Campolongo (`campolongo`) | Intense Climb: Passo Campolongo (GCN, 21:50) | 8.235 km | 307 m | `public/courses/campolongo.glb` ([ride views](screenshots/passo-campolongo/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Cabot Trail (`cabot`) | 60 Minute Endurance Intervals (GCN, 60:00) | 25.075 km | 584 m | `public/courses/cabot.glb` ([ride views](screenshots/cabot-trail/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Iceland Ring Road (`iceland`) | Intense VO2 Cycling Efforts (GCN Training, 30:00) | 12.000 km | 91 m | `public/courses/iceland.glb` ([ride views](screenshots/iceland-ring-road/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
