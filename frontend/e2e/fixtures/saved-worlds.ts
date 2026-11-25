@@ -18,8 +18,10 @@ export const THREE_WORLDS: readonly SavedWorldOnDevice[] = [
   { id: 'coast', name: 'Cliffside Coast', bytes: 17_800_000 },
 ];
 
-/** Saves the worlds on this device, in order, as earlier rides left them; the page reloads to see them. */
+/** Saves the worlds on this device, in order, as earlier rides left them; before Settings opens. */
 export async function saveWorlds(page: Page, worlds: readonly SavedWorldOnDevice[]): Promise<void> {
+  // Get the app's origin without starting (and then interrupting) Angular's initial navigation.
+  await page.goto('/favicon.svg');
   await page.evaluate(
     async ([cacheName, list]) => {
       const cache = await caches.open(cacheName);
