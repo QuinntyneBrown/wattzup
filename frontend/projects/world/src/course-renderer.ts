@@ -86,6 +86,7 @@ import type { AngliruRoadside } from './angliru-roadside';
 import type { AntwerpWind } from './antwerp-wind';
 import type { arenbergPave } from './arenberg-pave';
 import { CourseCyclistKit, type RiderModel as Cyclist } from './course-cyclist';
+import type { DocklandsQuay } from './docklands-quay';
 import { fenceMaterial } from './fence-material';
 import { type CabinPose, gondolaPosition } from './gondola-flight';
 import { type GliderPose, paragliderPose } from './paraglider-flight';
@@ -290,6 +291,7 @@ export class CourseRenderer implements WorldRenderer {
   private basin: DeathValleyStreet | null = null;
   private promenade: Awaited<ReturnType<typeof diwaliPromenade>> | null = null;
   private festival: DiwaliFestival | null = null;
+  private quay: DocklandsQuay | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -347,6 +349,8 @@ export class CourseRenderer implements WorldRenderer {
   private readonly near = new Group();
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
+    ferryRoll: null as number | null,
+    walkerZ: null as number | null,
     tier: 0 as number,
     pushCarPosition: undefined as number | undefined,
     mirageHeight: undefined as number | undefined,
@@ -1008,6 +1012,13 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(promenade.group);
         this.camera.setViewOffset(1, 1, 0, 0.062, 1, 1);
       }
+      if (this.course.file.id === 'docklands') {
+        const { DocklandsQuay } = await import('./docklands-quay');
+        if (this.disposed) return false;
+        this.quay = new DocklandsQuay(this.course);
+        this.scene.add(this.quay.group);
+        this.disposables.push(this.quay);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1409,6 +1420,7 @@ export class CourseRenderer implements WorldRenderer {
     this.promenade = null;
     this.barrio = null;
     this.crews = null;
+    this.quay = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -2163,6 +2175,7 @@ export class CourseRenderer implements WorldRenderer {
       mesh.updateMatrix();
     }
     this.rain?.at(time);
+    this.quay?.at(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
       confetti.rotation.y = 0.012 * Math.sin(time * 0.9);
@@ -2392,6 +2405,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.steamHeight = this.railway?.steamHeight;
     drawn.wingAngle = this.plaza?.wingAngle;
     drawn.walkerX = this.plaza?.walkerX;
+    drawn.ferryRoll = this.quay?.ferry.rotation.z ?? null;
+    drawn.walkerZ = this.quay?.walkerZ ?? null;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;

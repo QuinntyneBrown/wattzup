@@ -903,3 +903,18 @@ The world inventory lists a 35% concept. The original workout exists in the hist
 | 9.21 km | Malabar Hill rises across the water beyond Chowpatty and the last light-wrapped palms. | Real 01–03, 07–08, 11 and games 03 and 05 |
 
 Bake bevels, balcony shadows, tetrapods and the far silhouettes into section geometry. Give the recessed round balcony corners and stepping rooflines the same attention Caribana gives its CN Tower. Reuse static lamp pools and reflections at Low. Bound the festive crowd, firework trails and taxi draws, move them with ride time, and dispose their shared assets with the renderer. Roadside lamp spacing and fixed views across the bay should read at riding speed. Capture the six views before and after and measure submitted frames at 55 m and 6,040 m. Apply L1 Race, the ride-a-map journey, L2-064–066 and L2-159–160, the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Neon Docklands (#2113)
+
+Map Select → Race Setup → Race already loads the native docklands GLB and its course file. The historic class inventory describes one-minute punches. The live map has eight 30-second work intervals within 17 stages and 30:00. Preserve that shipped plan, all resistance and cadence values, the 21.6 km centre line and its 120 m of climbing. The inventory records 85% implementation and 35/100 visual quality. The current generator repeats paired rectangular pylons with fanned stays, boxes for hulls and superstructures, and sheds with few loading-bay details. Keep the existing wet asphalt (#317), drizzle (#68), umbrellas (#76, #285) and neon signage (#47, #212) as visual references.
+
+| Rider view | Composition on Low | References |
+| --- | --- | --- |
+| 0.08 km | Wet paint and mooring furniture lead away from the port start. | Real 04–05 and games 01–02 |
+| 1.32 km | Floodlit brick canal warehouses rise in gabled bays behind waterside cafés. | Real 06–08, 13–15 and games 02–03 |
+| 4.05 km | The inclined white cable-stayed pylon rises above the first effort ramp. | Real 01, 09–10 and games 03–04 |
+| 6.50 km | Twin illuminated pylons stand above the second effort and its water reflections. | Real 02–05 and games 01 and 04 |
+| 8.17 km | A passenger liner, tall-ship rigging and the ferry landing mark the terminal. | Real 05, 11–14 and games 02 and 05 |
+| 10.78 km | A series of lit steel arches encloses the effort deck above the black water. | Real 01–04, 10, 14–15 and games 03–05 |
+
+Adapt Caribana’s layered street and skyline by keeping existing towers fixed, placing ship and bridge silhouettes at their real course distances and adding nearby people and wet quay fittings. Share hull, porthole and promenade materials. Batch repetitive handrails, moorings and brick details by section. The ferry and walkers use the ride clock and release their geometry and textures on exit. Measure submitted frames at 60 m and 8,150 m on Low and inspect matched views. Trace to L1 Race, the ride-a-map journey, L2-064–066 and L2-159–160, the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.

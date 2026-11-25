@@ -804,6 +804,7 @@ def oldtown(k: Kit) -> dict:
 
 def docklands(k: Kit) -> dict:
     """A harbour city after dark: brick warehouses with lit windows and neon, cranes and containers on the quay."""
+    import docklands_harbour as harbour
     B, s, rng = k.B, k.s, k.rng
     # Lamps both sides, every 24 m: the course file tells the app where their light falls.
     lamps = THEMES["docklands"]["lamps"]
@@ -836,6 +837,7 @@ def docklands(k: Kit) -> dict:
                         k.door(i, along, wall + 0.06, 0.12, 2.5, 3.1, lit)
                     else:
                         k.window(i, along, wall + 0.06, 1.4 + f * 3.6, 1.4, 1.9, lit, yaw)
+            harbour.warehouse(k,i,width,floors,off,wall)
             # On the roof, what shapes it against the sky: a water tank or a plant room, and a chimney.
             top = floors * 3.6 + 1.0
             spot = (i * 37) % 5
@@ -947,6 +949,7 @@ def docklands(k: Kit) -> dict:
             B[rng.choice(CONTAINERS)].box((x + math.cos(yaw) * u, y + math.sin(yaw) * u, 5), (11, L * 0.14, 2.6), yaw)
         B["glow-window"].box((x - math.cos(yaw) * L * 0.35, y - math.sin(yaw) * L * 0.35, 11), (L * 0.185, L * 0.145, 0.6), yaw)
         ships += 1
+    harbour.liner(k)
     k.skyline(int(110 * k.scale), 180, 1100)
     efforts = k.gates("neon-cyan", "neon-pink", CROWD, "gold", "bulb")
     # The harbour bridges: over each one's deck, two pylons with stay cables fanned down to the deck either side of
@@ -958,43 +961,10 @@ def docklands(k: Kit) -> dict:
         elif not s[i].get("bridge") and start is not None:
             spans.append((start, i - 1))
             start = None
-    out = k.kerb + 2.6
     for n_, (i0, i1) in enumerate(spans):
         if i1 - i0 < 40:
             continue
-        neon = ("neon-cyan", "neon-pink", "neon-amber", "neon-violet")[n_ % 4]
-        for share in (0.3, 0.7):
-            i = i0 + int((i1 - i0) * share)
-            yaw, deck = s[i]["h"], s[i]["z"]
-            top = 38.0
-            for side in (1, -1):
-                # A leg from the sea's bed to the pylon's head, slimmer above the deck.
-                B["tower"].box(k.P(i, 0, out * side, -9.0 - deck), (2.6, 1.8, deck + 9.0 + 1.0), yaw)
-                B["tower"].box(k.P(i, 0, out * side, 1.0), (1.7, 1.2, top - 1.0), yaw)
-                k.halo(k.P(i, 0, out * side, top + 0.6), neon)
-                # The stays: from the head down to the deck's edge, every 16 m out to 96 m each way.
-                head = k.P(i, 0, out * side, top - 1.0)
-                for reach in range(4, 28, 4):
-                    for way in (1, -1):
-                        j = i + reach * way
-                        if j < i0 or j > i1:
-                            continue
-                        foot = k.road.at(j, out * side, 1.0)
-                        for lift, order in ((0.0, (0, 1, 2, 3)), (0.02, (3, 2, 1, 0))):
-                            quad = (
-                                (head[0], head[1], head[2] + lift),
-                                (foot[0], foot[1], foot[2] + lift),
-                                (foot[0], foot[1], foot[2] + 0.16 + lift),
-                                (head[0], head[1], head[2] + 0.16 + lift),
-                            )
-                            B[neon].quad(*(quad[q] for q in order))
-            # The stays' light on the deck: a pool every 16 m as far as they reach.
-            for reach in range(-24, 28, 4):
-                if i0 <= i + reach <= i1:
-                    k.light(k.road.at(i + reach, 0.0), neon, 15.0, 0.55 - 0.012 * abs(reach))
-            # The head beam and a beam under the deck tie the two legs.
-            B["tower"].box(k.P(i, 0, 0, top - 3.0), (1.6, 2 * out + 1.2, 2.2), yaw)
-            B["tower"].box(k.P(i, 0, 0, -3.2), (2.2, 2 * out + 1.8, 1.8), yaw)
+        harbour.bridge(k,i0,i1,n_)
     return {"efforts": efforts, "warehouses": sheds, "cranes": cranes, "ships": ships, "lorries": lorries, "masts": masts}
 
 
