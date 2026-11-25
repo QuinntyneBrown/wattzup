@@ -116,6 +116,7 @@ import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
+import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
 import type { ArtMuseumFlags } from './artmuseum-flags';
 import type { ArtMuseumJoggers } from './artmuseum-joggers';
@@ -161,6 +162,14 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  AspenGrove: 690,
+  RoaringFork: 580,
+  SawatchGround: 2300,
+  SawatchRock: 4300,
+  PassSnow: 850,
+  CabinLogs: 770,
+  DivideSign: 420,
+  TwinLakes: 4500,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -260,6 +269,7 @@ export class CourseRenderer implements WorldRenderer {
   private danishStreet: Awaited<ReturnType<typeof copenhagenStreet>> | null = null;
   private commuters: CopenhagenCommuters | null = null;
   backend: Backend = 'webgl2';
+  private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
   private pave: ReturnType<typeof arenbergPave> | null = null;
@@ -634,6 +644,17 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.clearViewOffset();
         this.camera.fov = 60;
         this.camera.updateProjectionMatrix();
+      }
+      if (this.course.file.id === 'independence') {
+        const { independencePass } = await import('./independence-pass');
+        if (this.disposed) return false;
+        const divide = await independencePass();
+        if (this.disposed) {
+          divide.dispose();
+          return false;
+        }
+        this.divide = divide;
+        this.disposables.push(divide);
       }
       const blossomModules =
         parsed.id === 'cherryblossom'
@@ -1176,6 +1197,7 @@ export class CourseRenderer implements WorldRenderer {
       this.joggers.mesh.visible = Math.abs(you.group.position.x + 39) < 200;
       if (this.joggers.mesh.visible) this.joggers.update(frame.reducedMotion ? 0 : frame.time);
     }
+    this.divide?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -1317,7 +1339,12 @@ export class CourseRenderer implements WorldRenderer {
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
-    const fogRange = this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : FOG;
+    const fogRange =
+      this.course!.file.id === 'calobra'
+        ? ([2500, 16000] as const)
+        : this.divide
+          ? ([430, 5400] as const)
+          : FOG;
     this.scene.fog = new Fog(look.haze, fogRange[0], fogRange[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -1478,6 +1505,7 @@ export class CourseRenderer implements WorldRenderer {
     // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
+    if (this.divide) Object.assign(materials, this.divide.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     const painted: Mesh[] = [];
     map.traverse((part) => {
@@ -1832,6 +1860,18 @@ export class CourseRenderer implements WorldRenderer {
     const rim = this.plaza ? Math.max(0, 1 - Math.abs(metres - 3180) / 105) : 0;
     this.camera.position.set(back.x, back.y + up + 1.6 * rim * rim, back.z);
     this.groundEye?.at(metres - behind, 0, up);
+    const overlook =
+      this.divide && metres > 11780 && metres < 12380
+        ? Math.sin(((metres - 11780) * Math.PI) / 600) ** 2
+        : 0;
+    const summit =
+      this.divide && metres > 15020 && metres < 15279
+        ? 2.8 * Math.sin(((metres - 15020) * Math.PI) / 259) ** 2
+        : 0;
+    const river =
+      this.divide && metres > 1980 && metres < 2420
+        ? 2.7 * Math.sin(((metres - 1980) * Math.PI) / 440) ** 2
+        : 0;
     const lap = this.railway ? metres % 1750 : 0;
     const bridge = this.railway ? Math.max(0, 1 - Math.abs(lap - 460) / 67) : 0;
     const skyline = this.railway ? Math.max(0, 1 - Math.abs(lap - 670) / 105) : 0;
@@ -1839,9 +1879,32 @@ export class CourseRenderer implements WorldRenderer {
     const view = this.basin?.sightline(metres) ?? this.plaza?.sightline(metres);
     const ahead = course.place(
       metres + (calobra ? 24 : LOOK_AHEAD),
-      (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0),
+      (view?.lane ?? 0) + summit + river - 2.8 * bridge + (this.headland ? 1.6 : 0),
       this.there,
     );
+    if (overlook > 0) {
+      // Keep the rider in frame as Highway 82 rounds the outside of the lake overlook.
+      // The glacial basin lies 460 m ahead and 94 m left of the road at the viewpoint.
+      const origin = course.place(12080, 0, this.here);
+      const ox = origin.x;
+      const oz = origin.z;
+      const tangent = course.place(12084, 0, this.here);
+      const dx = tangent.x - ox;
+      const dz = tangent.z - oz;
+      const scale = 1 / Math.hypot(dx, dz);
+      const lakeX = ox + (460 * dx + 94 * dz) * scale;
+      const lakeZ = oz + (460 * dz - 94 * dx) * scale;
+      const rider = course.place(metres, 0, this.here);
+      const length = Math.hypot(lakeX - rider.x, lakeZ - rider.z);
+      const ux = (lakeX - rider.x) / length;
+      const uz = (lakeZ - rider.z) / length;
+      this.camera.position.x += (rider.x - 5.2 * ux - this.camera.position.x) * overlook;
+      this.camera.position.z += (rider.z - 5.2 * uz - this.camera.position.z) * overlook;
+      this.camera.position.y += 1.7 * overlook;
+      ahead.x += (rider.x + 14 * ux - ahead.x) * overlook;
+      ahead.z += (rider.z + 14 * uz - ahead.z) * overlook;
+      ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
+    }
     this.camera.lookAt(
       ahead.x,
       ahead.y + (calobra ? 1.2 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train,
@@ -2265,6 +2328,7 @@ export class CourseRenderer implements WorldRenderer {
         cargoPedalY: this.commuters.cargoPedalY,
         markerCount: this.commuters.markerCount,
       });
+    if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
     hook['course'] = drawn;
   }
 

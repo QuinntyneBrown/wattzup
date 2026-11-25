@@ -648,6 +648,10 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
         group, chunked = group_of(part.mat)
         if part.name == 'LandmarkLights':
             group, chunked = 'Glow', False
+        elif part.name == "SawatchSkyline":
+            group, chunked = part.name, False
+        elif part.name in ("SawatchGround", "AspenGrove", "RoaringFork", "SawatchRock", "PassSnow", "CabinLogs", "DivideSign", "TwinLakes"):
+            group, chunked = part.name, True
         elif part.name in GROUND_PARTS:
             group = "Ground"
         elif part.name == WINDOWS_PART:
@@ -698,7 +702,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple") or (group == "Ground" and part.uvs is not None):
+                if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple", "AspenGrove", "DivideSign", "SawatchSkyline") or (group == "Ground" and part.uvs is not None):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -709,7 +713,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple"):
+                    if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple", "AspenGrove", "DivideSign", "SawatchSkyline"):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
