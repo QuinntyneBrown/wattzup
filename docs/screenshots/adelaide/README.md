@@ -8,12 +8,13 @@ These captures show the production Race view on low/WebGL 2, with the simulated 
 | Vineyard bend, 0.10 km | ![Original road in the bare landscape](before-vineyard.jpg) | ![Pale trunks, vineyard rows and a dry verge beside white edge lines](after-vineyard.jpg) | real-03–06, 14 and game-02, 04–05 |
 | Expo approach, 0.32 km | ![Original generic bend](before-expo.jpg) | ![Race-day crowd and orange expo tent on the approach](after-expo.jpg) | real-11–12 and game-01–03 |
 
-The route uses the original 15 stages preserved in the repository’s GCN catalogue at commit `a9be36f6a`. The new race rides 12,975 m and climbs 201 m. Scenery is original Blender geometry. The course uses Caribana’s separate near and far silhouettes, locally specific landmarks, baked vertex shade and spatially grouped detail. Low retains the expo, vineyard, gum and village shapes. The game and real photographs remain credited in [the reference folder](../../worlds/adelaide/SOURCES.md).
+The route uses the original 15 stages preserved in the repository’s GCN catalogue at commit `a9be36f6a`. The new race rides 17,110 m and climbs 265 m, including the 3 km Old Willunga climb immediately before the cool-down. Scenery is original Blender geometry. The course uses Caribana’s separate near and far silhouettes, locally specific landmarks, baked vertex shade and spatially grouped detail. Low retains the expo, vineyard, gum and village shapes. The game and real photographs remain credited in [the reference folder](../../worlds/adelaide/SOURCES.md).
 
-The frame check runs the production app in headed Chromium with DPR 1, low/WebGL 2, 4× CPU throttle, a 9 s warm-up and 60 s of moving riding. It counts actual render submissions and browser animation frames. The expo is inside the measured segment. Run `npm run perf -- adelaide-tablet --headed` from `frontend/`. The measurement on an Apple M5 Pro MacBook Pro with 24 GB RAM describes the simulated tablet profile.
+The frame check runs the production app in headed Chromium with DPR 1, low/WebGL 2, 4× CPU throttle, a 9 s warm-up and 60 s of moving riding. It counts actual render submissions and browser animation frames. Two samples cross the vineyard expo and the expo on the Old Willunga climb. The climb sample starts the rendered course 13.75 km along the road, then advances it with the simulated bike. Run `npm run perf -- adelaide-tablet --headed` from `frontend/`. The measurement on an Apple M5 Pro MacBook Pro with 24 GB RAM describes the simulated tablet profile.
 
 | Chromium | Sample | Course submissions/s | Display callbacks/s | p95 submission interval | Longest | Peak draw calls |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| 159.0.8154.6, macOS arm64 | 0.12–0.95 km through the expo | 119.87 | 119.67 | 10.10 ms | 55.70 ms | 41 |
+| 159.0.8154.6, macOS arm64 | 0.12–0.95 km through the expo | 120.33 | 120.00 | 9.70 ms | 14.00 ms | 35 |
+| 159.0.8154.6, macOS arm64 | 13.87–14.70 km through the hill expo | 120.66 | 119.99 | 9.60 ms | 17.50 ms | 29 |
 
-The longest interval exceeded one 60 Hz frame. The measured average met the nominal 60 FPS criterion. These measurements do not establish the frame rate on a physical low-power tablet.
+The longest interval on the hill exceeded one 60 Hz frame. The measured average met the nominal 60 FPS criterion. These measurements do not establish the frame rate on a physical low-power tablet.
