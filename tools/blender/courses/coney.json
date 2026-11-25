@@ -1,0 +1,85 @@
+{
+  "id": "coney",
+  "name": "Coney Island Boardwalk",
+  "world": "coney",
+  "theme": "coney",
+  "seed": 58,
+  "layout": 0,
+  "class": {
+    "id": "spin-to-win",
+    "title": "Spin to Win",
+    "channel": "GCN Training",
+    "videoId": "83afmrgws-E",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 105
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 105
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 105
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

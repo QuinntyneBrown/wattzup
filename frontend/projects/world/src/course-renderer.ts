@@ -198,6 +198,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 }
 
 export class CourseRenderer implements WorldRenderer {
+  private boardwalk: import('./coney-boardwalk').ConeyBoardwalk | null = null;
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
@@ -357,6 +358,12 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'coney') {
+        const { ConeyBoardwalk } = await import('./coney-boardwalk');
+        if (this.disposed) return false;
+        this.boardwalk = new ConeyBoardwalk(this.course, this.disposables);
+        this.scene.add(this.boardwalk.group);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -424,6 +431,7 @@ export class CourseRenderer implements WorldRenderer {
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
+    this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     this.aim(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
@@ -463,6 +471,8 @@ export class CourseRenderer implements WorldRenderer {
       const mesh = part as Mesh;
       if (mesh.isMesh) mesh.geometry.dispose();
     });
+    this.boardwalk?.group.removeFromParent();
+    this.boardwalk = null;
     this.map = null;
     // The chunks were taken out of the map: their geometry is released here.
     for (const { mesh } of this.chunks) mesh.geometry.dispose();
