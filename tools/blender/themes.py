@@ -1247,3 +1247,8 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import beachroad as _beachroad
+
+THEMES["beachroad"] = _beachroad.THEME
+SCENERY["beachroad"] = _beachroad.scenery
