@@ -77,6 +77,22 @@ public sealed class HostingTests(HostedAppApi api) : IClassFixture<HostedAppApi>
     }
 
     [Theory]
+    [InlineData("kokoro.onnx", "application/octet-stream", "weights")]
+    [InlineData("af_bella.bin", "application/octet-stream", "voice")]
+    [InlineData("ort-wasm-simd-threaded.wasm", "application/wasm", "runtime")]
+    public async Task The_announcer_pack_files_answer_from_the_app_origin_without_a_session(string name, string type, string body)
+    {
+        using var client = api.CreateClient();
+
+        using var response = await client.GetAsync($"/models/voice-announcer/{name}", Cancel);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(type, response.Content.Headers.ContentType?.MediaType);
+        Assert.Equal(body, await response.Content.ReadAsStringAsync(Cancel));
+        AssertSecurityHeaders(response);
+    }
+
+    [Theory]
     [InlineData("/api/progress")]
     [InlineData("/hubs/unknown")]
     [InlineData("/health/unknown")]
