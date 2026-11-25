@@ -149,3 +149,31 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const atlanticRoadCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'atlantic-ocean-road',
+  name: 'Atlantic Ocean Road',
+  routeName: 'Storseisundet Bridge',
+  place: 'Møre og Romsdal, Norway',
+  world: 'atlanticroad',
+  distanceKm: 13.125,
+  climbingM: 65,
+  rating: 'Hard',
+  terrain: { grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 }, roll: 0 },
+  thumbnailUrl: 'maps/atlantic-ocean-road.jpg',
+  photoUrl: 'maps/atlantic-ocean-road-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 13, 80),
+      seg('work', 60, 16, 85),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 420, 21, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 600, 21, 90),
+      seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
