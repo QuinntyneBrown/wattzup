@@ -151,7 +151,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 121 | 30 Minutes of Threshold Power | Hoover Dam | 70% |  | The road over Hoover Dam's crest in the blazing desert sun, between cream art deco parapets and bronze lamps, Lake Mead's bathtub ring and intake towers on one side and the drop into the Black Canyon on the other, the Winged Figures of the Republic beside the road and the bypass bridge's arch leaping the canyon ahead. |
 | 122 | Intense High Tempo Bike Workout | Tempelhof Field | 81% |  | Berlin's old airport runways turned park, kites flying overhead. |
 | 123 | Olympic Pursuit Efforts | Aguascalientes Velodrome | 35% |  | A high-altitude Mexican track where pursuit records fall. |
-| 124 | FTP HIIT Booster for Longer Efforts | Atlantic Ocean Road | 35% |  | Norway's bridges hopping between islets as waves break alongside. |
+| 124 | FTP HIIT Booster for Longer Efforts | Atlantic Ocean Road | 35% | [Ride views](screenshots/atlantic-ocean-road/README.md) | Norway's bridges hopping between islets as waves break alongside. |
 | 125 | 30 Minute VO2 Max Session | Torres del Paine | 77% |  | Patagonian gravel roads beneath granite spires and wind-whipped lakes. |
 | 126 | Leg Burner | Fish Hill, Cotswolds | 35% |  | Honey-stone villages and a steep climb up the Cotswold escarpment. |
 | 127 | The Smash Fest | Junkanoo, Nassau | 35% |  | Bahamian Boxing Day parade of cowbells, goatskin drums and crepe-paper costumes. |
