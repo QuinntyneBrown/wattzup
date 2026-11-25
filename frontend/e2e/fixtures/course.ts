@@ -2065,7 +2065,7 @@ export const itenCourseMap = {
   place: 'Iten and the Kerio Valley, Kenya',
   world: 'iten',
   distanceKm: 17.86,
-  climbingM: 148,
+  climbingM: 378,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

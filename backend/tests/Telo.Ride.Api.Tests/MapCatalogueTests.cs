@@ -1269,7 +1269,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Copacabana Promenade", 4.3, 14, "Easy", "Avenida Atlântica", "Rio de Janeiro, Brazil"),
                 new Listed("Copenhagen Cycle Superhighway", 13.65, 47, "Easy", "The Supercykelsti", "Copenhagen, Denmark"),
                 new Listed("Cornish Harbour", 7.2, 120, "Moderate", "The harbour quay", "Cornwall, England"),
-                new Listed("Iten, Kenya", 17.86, 148, "Hard", "The red-dirt road", "Iten and the Kerio Valley, Kenya"),
+                new Listed("Iten, Kenya", 17.86, 378, "Hard", "The red-dirt road", "Iten and the Kerio Valley, Kenya"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }

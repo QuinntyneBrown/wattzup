@@ -59,14 +59,21 @@ def surface(road,st,length,col,theme):
 def land(road,col,theme,bc):
     points=road.s;xs=[p['x'] for p in points]
     def row(x):return points[min(len(xs)-1,bisect.bisect_left(xs,x))]
+    stadium=road.pos(8760,57);heading=road.s[road.index(8760)]['h']
     def height(x,y):
         p=row(x);side=(y-p['y'])*math.cos(p['h'])
         distance=abs(side)
         noise=math.sin(x/150+y/118)*14+math.cos(y/61-x/239)*6
         # South of the rim the Keiyo spurs descend towards the floor of the Kerio Valley.
         rim=smooth(14500,16000,p['d'])
-        drop=rim*smooth(12,570,-side)*(480+95*math.cos(x/264))
-        return p['z']-.43+smooth(6,110,distance)*noise-drop
+        drop=rim*(.20*smooth(4,73,-side)+.68*smooth(25,310,-side)+.12*smooth(215,580,-side))*(510+75*math.cos(x/264))
+        level=p['z']-.43+smooth(6,110,distance)*noise-drop
+        if 8570 < p['d'] < 9000 and side>12:
+            dx,dy=x-stadium[0],y-stadium[1]
+            u=dx*math.cos(heading)+dy*math.sin(heading);v=-dx*math.sin(heading)+dy*math.cos(heading)
+            bench=(1-smooth(78,123,abs(u)))*(1-smooth(52,80,abs(v)))*smooth(12,24,side)
+            level+=bench*(stadium[2]-6.08-level)
+        return level
     b=bc.Builder('Keiyo highlands','terrain');b.colours=[]
     offsets=(-1650,-1100,-730,-455,-270,-165,-94,-53,-26,-12,-7,-3.6,-2,0,2,3.6,7,12,26,53,94,165,270,455,730,1100,1650)
     previous=None
@@ -75,7 +82,7 @@ def land(road,col,theme,bc):
         for off in offsets:
             x,y,z=road.at(i,off)
             if abs(off)<=3.6:z-=.24
-            elif abs(off)<=12:z-=.31
+            elif abs(off)<=12 and (off>=0 or s['d']<14500):z-=.31
             else:z=height(x,y)
             tr=math.sin(x/153+y/90)*.4+math.cos(y/46-x/81)*.3
             colr=lin(0x76864E if tr>.17 else 0x889153 if tr>-.12 else 0x7A804A)
@@ -104,6 +111,9 @@ def scenery(k):
                     b=(x,y,z+lift)
                     art.face((a,b,(x,y,z+lift+.018),(a[0],a[1],a[2]+.018)),(lin(0x656962),)*4)
             last=(x,y,z)
+    from iten_landmarks import add, vegetation
+    add(k)
+    vegetation(k)
     return {'efforts':0}
 
 
