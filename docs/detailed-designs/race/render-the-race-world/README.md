@@ -1113,3 +1113,18 @@ The class scene repeats a 400 m roadside with a moving camel caravan, mastabas a
 | Return toward Cairo | Real 04–06 and 15 inform the low sun, successive bands of development and distant minarets. Game 02 informs atmospheric depth. |
 
 Bake the pyramids and Sphinx in world coordinates so the rider sees different faces through the turns. Separate sand, roadside stone and distant city by scale and contrast. Batch repeated tomb blocks and shaded awnings. Use a small number of articulated animals at the turnout with shared materials and deterministic motion on ride time. Release their graphics resources on exit. Measure the opening and turnout through the simulated ride after nine seconds of warm-up. Compare six HUD captures from the same entry and cadence.
+
+## Glasgow World Championships (#2127)
+
+The class already draws wet tarmac, grey air and short sightlines. Its generic bending street has no identifiable City Chambers or fixed sequence of championship corners. The race takes its sixteen stages from GCN Training’s *VO2 Max Race Simulation*. Fit George Square, the Merchant City grid and their approaches to the 13.1 km race. Restore the fifteen photographs, five game views and their credits from repository history. Real 12 depicts Calgary and informs wet-surface response only.
+
+| View | Construction and references |
+| --- | --- |
+| Square, 0.08 km | The City Chambers clock tower, three-part frontage, raised statue columns and grass islands orient the opening. Real 05–07 and 14, games 01 and 05. |
+| Tenements, 1.38 km | Stack bay windows, cornices, chimney pots and ground-floor shops in blond and red sandstone. Real 02 and 08–11, game 03. |
+| Merchant City, 3.54 km | Turn between fixed façades over white stop lines and inset iron covers. Keep corner radii rideable and preserve clear sightlines beyond the bike. Real 08–13, games 03–04. |
+| Wellington, 6.18 km | Model the mounted figure on its stone plinth outside the gallery, with the orange cone distinct against the portico. Real 07–08 inform street and statue scale. Games 01 and 04 inform recognition from the saddle. |
+| Crowds, 9.24 km | Umbrella canopies, rain jackets and rainbow bands line the barriers. Vary spectator pose, fabric and spacing as in Caribana. Real 01–04 and 12, game 02. |
+| Finish, 12.98 km | Return to the square and face the City Chambers clock and towers over the finish gantry. Real 05–07 and 14–15, games 01 and 05. |
+
+Register the physical course in the race loader and use the same sampled centre line for route progress, grade and the chase camera. Batch the streets in view, reuse façade materials, and bake recessed-window shading. Use cheap wet reflections, a bounded rain and spray buffer, and shared umbrella geometry on both graphics backends. The ride clock holds animation on pause. Release geometry, materials, textures and listeners on leaving the race. Apply ADRs 0021, 0023, 0030, 0034 and 0035 and measure submitted frames at the opening and busy crowd section after nine seconds of warm-up.

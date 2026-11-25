@@ -1487,3 +1487,8 @@ import giza as _giza
 
 THEMES["giza"] = _giza.THEME
 SCENERY["giza"] = _giza.scenery
+
+import glasgow as _glasgow
+
+THEMES["glasgow"] = _glasgow.THEME
+SCENERY["glasgow"] = _glasgow.scenery

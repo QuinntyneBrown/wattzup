@@ -63,6 +63,29 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async drawnCourseSections(group: string): Promise<number> {
+    return this.page.evaluate(
+      (name) =>
+        (
+          window as unknown as {
+            __wzWorldRide?: { course?: { groups: Record<string, number> } };
+          }
+        ).__wzWorldRide?.course?.groups[name] ?? 0,
+      group,
+    );
+  }
+
+  async glasgowMotion(
+    part: 'umbrellaHeight' | 'sprayHeight' | 'gantryX' | 'chambersX',
+  ): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async gizaMotion(
     part: 'camelHead' | 'cartPosition' | 'khafreScreenX' | 'khufuScreenX' | 'sphinxScreenX',
   ): Promise<number | null> {

@@ -27,6 +27,7 @@ import type { galibierPass } from './galibier-pass';
 import type { gardenaPass } from './gardena-pass';
 import type { ghentArena } from './ghent-arena';
 import type { gizaPanorama } from './giza-panorama';
+import type { glasgowCircuit } from './glasgow-circuit';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -379,6 +380,7 @@ export class CourseRenderer implements WorldRenderer {
   private panorama: ReturnType<typeof gizaPanorama> | null = null;
   private readonly monuments: { key: string; centre: Vector3 }[] = [];
   private readonly projected = new Vector3();
+  private championship: ReturnType<typeof glasgowCircuit> | null = null;
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -878,6 +880,14 @@ export class CourseRenderer implements WorldRenderer {
         gizaMaterials = surfaces.materials;
         this.disposables.push(surfaces);
         this.camera.setViewOffset(1, 1, 0, 0.045, 1, 1);
+      }
+      if (this.course.file.id === 'glasgow') {
+        const { glasgowCircuit } = await import('./glasgow-circuit');
+        if (this.disposed) return false;
+        this.championship = glasgowCircuit(this.course);
+        this.scene.add(this.championship.group);
+        this.disposables.push(this.championship);
+        this.camera.setViewOffset(1, 1, 0, 0.075, 1, 1);
       }
       this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material, gizaMaterials);
       if (this.course.file.id === 'aguascalientes') {
@@ -1612,6 +1622,7 @@ export class CourseRenderer implements WorldRenderer {
     this.street?.at(metres);
     this.arena?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.panorama?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.championship?.update(frame.time, metres, frame.speedKmh, frame.reducedMotion);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -1693,6 +1704,7 @@ export class CourseRenderer implements WorldRenderer {
     this.timing = null;
     this.arena = null;
     this.panorama = null;
+    this.championship = null;
     this.funivia = null;
     this.glider = null;
     this.smoke = null;
@@ -1977,6 +1989,10 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.beams = materials['Beams'] as MeshBasicMaterial;
     Object.assign(materials, localMaterials);
+    if (this.championship) {
+      materials['Tenements'] = this.championship.wall;
+      materials['RaceBoards'] = this.championship.boardMaterial;
+    }
     const painted: Mesh[] = [];
     map.traverse((part) => {
       const mesh = part as Mesh;
@@ -2823,6 +2839,7 @@ export class CourseRenderer implements WorldRenderer {
         (drawn as Record<string, unknown>)[key] = screen.z < 1 ? screen.x : Infinity;
       }
     }
+    if (this.championship) Object.assign(drawn, this.championship.measure(this.camera));
     hook['course'] = drawn;
   }
 
