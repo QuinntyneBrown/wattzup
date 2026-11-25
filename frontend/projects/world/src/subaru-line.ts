@@ -165,8 +165,7 @@ export async function subaruLine(course: Course) {
           (((d > 7100 && d < 8050) || (d > 9370 && d < 10320)) && side < 0)
         )
           continue;
-        let width: number,
-          height: number;
+        let width: number, height: number;
         if (species < 2) {
           if (d > 5400 || (species === 1 && j % 3 === 0)) continue;
           height = 11 + rand() * 13;
