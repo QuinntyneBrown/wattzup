@@ -173,7 +173,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 143 | Maximum Intensity Hill Climb Efforts | Haleakalā | 82% |  | Maui's sea-level-to-summit climb, ending above the clouds. |
 | 144 | 35 Minute Threshold HIIT | Vienna Ringstrasse | 35% |  | Grand boulevard past palaces, opera house and trams. |
 | 145 | Climb & Sprint to the Beat | Blue Mountains, Jamaica | 35% |  | Coffee-farm switchbacks with reggae drifting up from roadside sound systems. |
-| 146 | Get Pumped With Grace | Sixth Street, Austin | 81% |  | Live-music bars and festival crowds spilling into the street. |
+| 146 | Get Pumped With Grace | Sixth Street, Austin | 81% | [Ride views](screenshots/sixth-street-austin/README.md) | Live-music bars and festival crowds spilling into the street. |
 | 147 | 35 Minute Torque Power Intervals | Col d'Aubisque | 35% |  | Pyrenean cliff road with cows and giant bike sculptures. |
 | 148 | Fast Fitness: High Intensity 35 | Rome Colosseum Loop | 35% |  | Ancient ruins, umbrella pines and sampietrini cobbles. |
 | 149 | 35 Minute Hill Training | Winnats Pass | 80% |  | Peak District limestone gorge, steep and grassy-walled. |
