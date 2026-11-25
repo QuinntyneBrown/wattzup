@@ -19,7 +19,7 @@ Headed Chromium 159.0.8154.6 on Apple M5 Pro, 1024 × 768 at DPR 1, Low/WebGL 2,
 
 | Section | Scene offset | HUD distance | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak calls |
 | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| Route 1 opening | 0 m | 0.12 km to 0.95 km | 117.92 | 117.83 | 9.7 ms | 296.9 ms | 51 |
-| Glacial river, grazing horses and lagoon | 10280 m | 0.12 km to 0.95 km | 120.68 | 120.00 | 9.7 ms | 14.0 ms | 58 |
+| Route 1 opening | 0 m | 0.12 km to 0.95 km | 120.58 | 120.00 | 9.6 ms | 18.4 ms | 51 |
+| Glacial river, grazing horses and lagoon | 10280 m | 0.12 km to 0.95 km | 120.38 | 120.00 | 9.6 ms | 12.6 ms | 58 |
 
 Reproduce from the frontend workspace with `npm run perf -- iceland-tablet --headed`.
