@@ -175,6 +175,7 @@ import type { hanRiver } from './han-river';
 import type { hardknottFells } from './hardknott-fells';
 import type { malecon } from './malecon';
 import type { blackCanyon } from './black-canyon';
+import type { sunsetStrip } from './sunset-strip';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -221,6 +222,12 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   CanyonCrags: 750,
   MeadWater: 2700,
   RoadShimmer: 235,
+  StripDancers: 150,
+  StripBeams: 430,
+  StripFestoons: 175,
+  StripFleet: 1400,
+  CoveFoam: 370,
+  StripCloth: 170,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -360,6 +367,7 @@ export class CourseRenderer implements WorldRenderer {
   private fells: ReturnType<typeof hardknottFells> | null = null;
   private malecon: ReturnType<typeof malecon> | null = null;
   private dam: ReturnType<typeof blackCanyon> | null = null;
+  private strip: ReturnType<typeof sunsetStrip> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -757,6 +765,12 @@ export class CourseRenderer implements WorldRenderer {
         if (this.disposed) return false;
         this.pave = arenbergPave();
         this.disposables.push(this.pave);
+      }
+      if (this.course.file.id === 'ibiza') {
+        const { sunsetStrip } = await import('./sunset-strip');
+        if (this.disposed) return false;
+        this.strip = sunsetStrip();
+        this.disposables.push(this.strip);
       }
       if (this.course.file.id === 'bonneville') {
         const { saltFlatMaterial } = await import('./bonneville-surface');
@@ -1624,7 +1638,6 @@ export class CourseRenderer implements WorldRenderer {
       if (typeof from === 'number') this.benchFrom = from;
     }
     const metres = Math.min(ridden + this.benchFrom, course.end);
-    if (this.pinned) this.drawn.metres = metres;
     this.shore?.at(metres, frame.reducedMotion ? 0 : frame.time);
     this.lakes?.at(frame.reducedMotion ? 0 : frame.time, metres);
     this.etna?.at(frame.reducedMotion ? 0 : frame.time, metres);
@@ -1682,6 +1695,7 @@ export class CourseRenderer implements WorldRenderer {
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.champsParade?.update(frame.time, metres, frame.reducedMotion);
     this.riderBatch?.follow();
+    if (this.pinned) this.drawn.metres = metres;
     this.visitors?.follow(metres);
     if (this.harbour) {
       this.harbour.update(frame.reducedMotion ? 0 : frame.time, metres);
@@ -1778,6 +1792,7 @@ export class CourseRenderer implements WorldRenderer {
     this.fells?.update(frame.reducedMotion ? 0 : frame.time);
     this.malecon?.update(frame.reducedMotion ? 0 : frame.time, this.camera, metres);
     this.dam?.update(frame.reducedMotion ? 0 : frame.time);
+    this.strip?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -2121,6 +2136,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.fells) Object.assign(materials, this.fells.materials);
     if (this.malecon) Object.assign(materials, this.malecon.materials);
     if (this.dam) Object.assign(materials, this.dam.materials);
+    if (this.strip) Object.assign(materials, this.strip.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     Object.assign(materials, localMaterials);
     if (this.championship) {
@@ -2487,6 +2503,11 @@ export class CourseRenderer implements WorldRenderer {
       : 0;
     this.camera.position.set(back.x, back.y + up + 1.6 * rim * rim + 0.52 * overlook, back.z);
     this.groundEye?.at(metres - behind, 0, up);
+    // Follow the outside of the promenade curve above the small exposed bay.
+    const cove =
+      this.strip && metres >= 720 && metres <= 1200
+        ? Math.sin((Math.PI * (metres - 720)) / 480) ** 2
+        : 0;
     let shoulder = 0;
     if (this.cypressLift) {
       const glance = (centre: number, width: number) =>
@@ -2502,7 +2523,7 @@ export class CourseRenderer implements WorldRenderer {
       ? course.place(metres + 22, this.dam.lookAcross(metres), this.there)
       : this.malecon
       ? course.place(metres + 24, this.malecon.lookAcross(metres), this.there)
-      : course.place(metres + (calobra ? 24 : this.arena ? 7.5 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0) + shoulder, this.there);
+      : course.place(metres + (calobra ? 24 : this.arena ? 7.5 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0) + shoulder - 4.4 * cove, this.there);
     this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : this.arena ? 2.45 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train - Math.abs(shoulder) * 0.12, ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
@@ -3003,6 +3024,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.fells) Object.assign(drawn, this.fells.report(this.camera));
     if (this.malecon) Object.assign(drawn, this.malecon.report(this.camera));
     if (this.dam) Object.assign(drawn, this.dam.report(this.camera));
+    if (this.strip) Object.assign(drawn, this.strip.report());
     hook['course'] = drawn;
   }
 
