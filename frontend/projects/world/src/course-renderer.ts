@@ -89,6 +89,9 @@ import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import { heldFps } from './held-fps';
+import type { ArtMuseumFlags } from './artmuseum-flags';
+import type { ArtMuseumJoggers } from './artmuseum-joggers';
+import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -251,6 +254,8 @@ export class CourseRenderer implements WorldRenderer {
     backend: '' as string,
     ghostSeparationMetres: 0,
     boatHeight: null as number | null,
+    flagDisplacement: null as number | null,
+    joggerHeight: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -267,6 +272,8 @@ export class CourseRenderer implements WorldRenderer {
   private portWind: AntwerpWind | null = null;
   private readonly echelon: Cyclist[] = [];
   private readonly convoy: { holder: Group; moto: boolean }[] = [];
+  private flags: ArtMuseumFlags | null = null;
+  private joggers: ArtMuseumJoggers | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -439,6 +446,19 @@ export class CourseRenderer implements WorldRenderer {
           if (rider) this.echelon.push(rider);
         }
       }
+      if (this.path.endsWith('/artmuseum')) {
+        const [{ ArtMuseumJoggers }, { ArtMuseumFlags }] = await Promise.all([
+          import('./artmuseum-joggers'),
+          import('./artmuseum-flags'),
+        ]);
+        if (this.disposed) return false;
+        this.flags = new ArtMuseumFlags();
+        this.scene.add(this.flags.mesh);
+        this.disposables.push(this.flags);
+        this.joggers = new ArtMuseumJoggers();
+        this.scene.add(this.joggers.mesh);
+        this.disposables.push(this.joggers);
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -529,6 +549,11 @@ export class CourseRenderer implements WorldRenderer {
       );
     }
     if (this.convoy.length) this.placeConvoy(metres, frame.reducedMotion ? 0 : frame.time);
+    this.flags?.update(you.group.position.x, frame.reducedMotion ? 0 : frame.time);
+    if (this.joggers) {
+      this.joggers.mesh.visible = Math.abs(you.group.position.x + 39) < 200;
+      if (this.joggers.mesh.visible) this.joggers.update(frame.reducedMotion ? 0 : frame.time);
+    }
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -579,6 +604,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { holder } of this.convoy) this.scene.remove(holder);
     this.convoy.length = 0;
     this.pave = null;
+    this.joggers = null;
+    this.flags = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -1423,6 +1450,8 @@ export class CourseRenderer implements WorldRenderer {
         ? this.you.group.position.distanceTo(ghost.group.position)
         : 0;
     drawn.boatHeight = this.boats?.mesh.position.y ?? null;
+    drawn.flagDisplacement = this.flags?.displacement ?? null;
+    drawn.joggerHeight = this.joggers?.height ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

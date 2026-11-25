@@ -12,6 +12,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   angliru: 'courses/angliru',
   antwerp: 'courses/antwerp',
   arenberg: 'courses/arenberg',
+  artmuseum: 'courses/artmuseum',
   ibiza: 'courses/ibiza',
   alpe: 'courses/alpe',
   cinqueterre: 'courses/cinqueterre',

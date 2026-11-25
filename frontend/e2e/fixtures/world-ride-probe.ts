@@ -192,4 +192,25 @@ export class WorldRideProbe {
           .__wzWorldRide?.course?.commissaireX ?? null,
     );
   }
+  /** Start at a physical viewpoint after Map Select is open and before the course loads. */
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+  /** Height of the first jogger on the granite steps. */
+  async joggerHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { joggerHeight?: number } } })
+          .__wzWorldRide?.course?.joggerHeight ?? null,
+    );
+  }
+  async flagDisplacement(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { flagDisplacement?: number } } })
+          .__wzWorldRide?.course?.flagDisplacement ?? null,
+    );
+  }
 }

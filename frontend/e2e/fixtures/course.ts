@@ -1,4 +1,6 @@
 import angliruElevation from './angliru-elevation.json';
+import artMuseumElevation from './artmuseum-elevation.json';
+
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -543,6 +545,45 @@ export const arenbergCourseMap = {
       seg('work', 120, 16, 85),
       seg('recover', 60, 19, 90),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const artMuseumCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'philadelphia-art-museum',
+  name: 'Philadelphia Art Museum Steps',
+  routeName: 'Benjamin Franklin Parkway',
+  place: 'Philadelphia, Pennsylvania',
+  world: 'artmuseum',
+  distanceKm: 8.175,
+  climbingM: 86,
+  terrain: {
+    elevation: artMuseumElevation,
+    grade: { 'warm-up': 0, work: 4.2, recover: -2.4, 'cool-down': 0, steady: 0 },
+    roll: 0.1,
+  },
+  rating: 'Hard',
+  thumbnailUrl: 'maps/philadelphia-art-museum.jpg',
+  photoUrl: 'maps/philadelphia-art-museum-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 10, 80),
+      seg('work', 40, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 40, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 40, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 40, 19, 90),
+      seg('recover', 120, 13, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 90, 10, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 90, 10, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 90, 10, 80),
+      seg('cool-down', 120, 21, 90),
     ],
   },
 };
