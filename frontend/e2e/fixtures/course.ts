@@ -1,3 +1,4 @@
+import fensElevation from './fens-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,36 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const fensCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'fenland-time-trial',
+  name: 'Fenland Time Trial',
+  routeName: 'The drove road',
+  place: 'Cambridgeshire, England',
+  world: 'fens',
+  distanceKm: 15,
+  climbingM: 9,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: fensElevation,
+  },
+  thumbnailUrl: 'maps/fenland-time-trial.jpg',
+  photoUrl: 'maps/fenland-time-trial-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('work', 60, 18, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 600, 21, 90),
+      seg('recover', 180, 11, 80),
+      seg('work', 600, 21, 90),
+      seg('cool-down', 180, 11, 80),
+    ],
   },
 };
