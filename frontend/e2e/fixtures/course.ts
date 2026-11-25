@@ -1,3 +1,4 @@
+import hardknottElevation from './hardknott-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,39 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const hardknottCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'hardknott-pass',
+  name: 'Hardknott Pass',
+  routeName: 'The lane over the fells',
+  place: 'Lake District, England',
+  world: 'hardknott',
+  distanceKm: 10.3,
+  climbingM: 387,
+  rating: 'Brutal',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: hardknottElevation,
+  },
+  thumbnailUrl: 'maps/hardknott-pass.jpg',
+  photoUrl: 'maps/hardknott-pass-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 13, 80),
+      seg('work', 120, 22, 80),
+      seg('recover', 120, 13, 90),
+      seg('work', 120, 22, 80),
+      seg('recover', 120, 13, 90),
+      seg('work', 120, 22, 80),
+      seg('recover', 150, 13, 88),
+      seg('work', 120, 22, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 90, 24, 80),
+      seg('cool-down', 180, 11, 80),
+    ],
   },
 };
