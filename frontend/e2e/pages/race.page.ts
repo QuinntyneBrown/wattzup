@@ -11,6 +11,7 @@ export class RacePage {
   readonly map: Locator;
   readonly route: Locator;
   readonly bike: Locator;
+  readonly callout: Locator;
   readonly clock: Locator;
   readonly clockTotal: Locator;
   readonly interval: Locator;
@@ -80,6 +81,7 @@ export class RacePage {
     this.map = page.locator('.race-bar__map');
     this.route = page.locator('.race-bar__route');
     this.bike = page.locator('.race-bar__bike');
+    this.callout = page.locator('.race-callout-banner');
     this.clock = page.locator('.race-bar__clock');
     this.clockTotal = page.locator('.race-bar__total');
     this.interval = page.locator('.race-interval');

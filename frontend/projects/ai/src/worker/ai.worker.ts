@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
-
-type ProviderName = 'webnn' | 'wasm' | 'webgpu';
+import { env, InferenceSession, Tensor } from 'onnxruntime-web/wasm';
+import { phonemize } from 'phonemizer';
 
 interface WorkerRequest {
   readonly id: number;
@@ -13,68 +13,107 @@ interface WorkerResponse {
   readonly id: number;
   readonly ok: boolean;
   readonly pcm?: Float32Array;
-  readonly provider?: ProviderName;
+  readonly provider?: 'wasm';
   readonly error?: string;
 }
 
-let activeProvider: ProviderName = 'wasm';
-let sessionLoaded = false;
-
-async function selectProvider(): Promise<ProviderName> {
-  const nav = globalThis.navigator as unknown as Record<string, unknown> | undefined;
-  if (nav && 'ml' in nav) return 'webnn';
-  return 'wasm';
+interface VoicePack {
+  readonly directory: FileSystemDirectoryHandle;
+  readonly session: InferenceSession;
+  readonly vocabulary: Readonly<Record<string, number>>;
 }
 
-async function ensureSession(): Promise<void> {
-  if (sessionLoaded) return;
-  activeProvider = await selectProvider();
-  // Verify OPFS weights exist before running synthesis (L2-168 AC7).
-  const storage = globalThis.navigator?.storage;
-  if (storage && typeof storage.getDirectory === 'function') {
-    const root = await storage.getDirectory();
-    const dir = await root.getDirectoryHandle('voice-announcer');
-    await dir.getFileHandle('manifest.json');
+const VOICES = {
+  arcade: { file: 'af_bella.bin', language: 'en-us' },
+  commentator: { file: 'bm_george.bin', language: 'en' },
+  coach: { file: 'af_heart.bin', language: 'en-us' },
+} as const;
+const STYLE_SIZE = 256;
+const MAX_PHONEMES = 510;
+
+let voicePack: Promise<VoicePack> | undefined;
+const embeddings = new Map<string, Promise<Float32Array>>();
+
+async function file(directory: FileSystemDirectoryHandle, name: string): Promise<File> {
+  return (await directory.getFileHandle(name)).getFile();
+}
+
+async function openPack(): Promise<VoicePack> {
+  const root = await navigator.storage.getDirectory();
+  const directory = await root.getDirectoryHandle('voice-announcer');
+  await directory.getFileHandle('manifest.json');
+  const [model, tokenizer, wasm] = await Promise.all([
+    file(directory, 'kokoro.onnx'),
+    file(directory, 'tokenizer.json'),
+    file(directory, 'ort-wasm-simd-threaded.wasm'),
+  ]);
+  const {
+    model: { vocab: vocabulary },
+  } = JSON.parse(await tokenizer.text()) as {
+    model: { vocab: Record<string, number> };
+  };
+  // Supply the installed WASM bytes directly so session creation works offline.
+  // https://onnxruntime.ai/docs/tutorials/web/env-flags-and-session-options.html
+  env.wasm.numThreads = 1;
+  env.wasm.wasmBinary = await wasm.arrayBuffer();
+  try {
+    const session = await InferenceSession.create(await model.arrayBuffer(), {
+      executionProviders: ['wasm'],
+    });
+    return { directory, session, vocabulary };
+  } finally {
+    env.wasm.wasmBinary = undefined;
   }
-  sessionLoaded = true;
 }
 
-/**
- * Generates a short synthesized audio envelope when running ONNX inference in the dedicated worker.
- * Full Kokoro-82M graph execution binds here via dynamic `onnxruntime-web` import once local
- * model weights are fetched into `/models/voice-announcer/`.
- */
-async function synthesizePcm(text: string): Promise<Float32Array> {
-  await ensureSession();
-  const sampleRate = 24_000;
-  const durationSec = Math.min(3.0, Math.max(0.4, text.length * 0.045));
-  const length = Math.floor(sampleRate * durationSec);
-  const pcm = new Float32Array(length);
-  for (let i = 0; i < length; i += 1) {
-    const env = Math.min(1, i / 400) * Math.min(1, (length - i) / 400);
-    pcm[i] = Math.sin((2 * Math.PI * 440 * i) / sampleRate) * 0.05 * env;
+async function synthesize(text: string, preset: string | undefined): Promise<Float32Array> {
+  const { directory, session, vocabulary } = await (voicePack ??= openPack());
+  const voice = preset === 'commentator' || preset === 'coach' ? VOICES[preset] : VOICES.arcade;
+  let embedding = embeddings.get(voice.file);
+  if (!embedding) {
+    embedding = file(directory, voice.file).then(
+      async (data) => new Float32Array(await data.arrayBuffer()),
+    );
+    embeddings.set(voice.file, embedding);
   }
-  return pcm;
+  const phones = (await phonemize(text, voice.language)).join(' ');
+  // Kokoro discards unknown phonemes and wraps the sequence in token zero.
+  const tokens = [...phones]
+    .map((phone) => vocabulary[phone])
+    .filter((token) => Number.isInteger(token))
+    .slice(0, MAX_PHONEMES);
+  const input = BigInt64Array.from([0, ...tokens, 0], BigInt);
+  const offset = Math.min(tokens.length, MAX_PHONEMES - 1) * STYLE_SIZE;
+  const style = (await embedding).slice(offset, offset + STYLE_SIZE);
+  const { waveform } = await session.run({
+    input_ids: new Tensor('int64', input, [1, input.length]),
+    style: new Tensor('float32', style, [1, STYLE_SIZE]),
+    speed: new Tensor('float32', [1.05], [1]),
+  });
+  const pcm = waveform?.data;
+  if (!(pcm instanceof Float32Array)) throw new Error('worker_synthesis_failed');
+  return new Float32Array(pcm);
 }
 
-addEventListener('message', async (event: MessageEvent<WorkerRequest>) => {
-  const req = event.data;
-  if (req.type === 'dispose') {
-    sessionLoaded = false;
-    postMessage({ id: req.id, ok: true } satisfies WorkerResponse);
+addEventListener('message', async ({ data: request }: MessageEvent<WorkerRequest>) => {
+  if (request.type === 'dispose') {
+    const current = voicePack;
+    voicePack = undefined;
+    embeddings.clear();
+    await current?.then(({ session }) => session.release()).catch(() => undefined);
+    postMessage({ id: request.id, ok: true } satisfies WorkerResponse);
     return;
   }
-
   try {
-    const pcm = await synthesizePcm(req.text ?? '');
-    postMessage({ id: req.id, ok: true, pcm, provider: activeProvider } satisfies WorkerResponse, [
+    const pcm = await synthesize(request.text ?? '', request.voice);
+    postMessage({ id: request.id, ok: true, pcm, provider: 'wasm' } satisfies WorkerResponse, [
       pcm.buffer,
     ]);
-  } catch (error) {
+  } catch {
     postMessage({
-      id: req.id,
+      id: request.id,
       ok: false,
-      error: error instanceof Error ? error.message : 'worker_synthesis_failed',
+      error: 'worker_synthesis_failed',
     } satisfies WorkerResponse);
   }
 });

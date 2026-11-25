@@ -23,7 +23,9 @@ internal static class AppHosting
     public static IServiceCollection AddAppHosting(this IServiceCollection services) =>
         services.Configure<StaticFileOptions>(options =>
         {
-            options.ContentTypeProvider = new FileExtensionContentTypeProvider();
+            var contentTypes = new FileExtensionContentTypeProvider();
+            contentTypes.Mappings[".onnx"] = "application/octet-stream";
+            options.ContentTypeProvider = contentTypes;
             options.OnPrepareResponse = context =>
             {
                 if (NeverStale.Contains(context.File.Name))
