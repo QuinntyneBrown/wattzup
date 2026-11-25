@@ -62,7 +62,7 @@ def scenery(k):
         for side in (-1,1):
             if side==-1 and (1370<d<1530 or 4660<d<4900):continue
             if side==1 and 5180<d<5530:continue
-            if d>8210 and side==-1:continue
+            if d>8210:continue
             lane=side*(20+(j%5)*.42)
             h=(4+(j+int(side))%3)*3.13+1.3
             w=21.7 if j%4 else 18.5;tone=(0x918376,0x948d7e,0x847f78,0xb09c84)[j%4]
@@ -104,7 +104,7 @@ def scenery(k):
     cylinder(d,l,39.55,1.27,.26,3.9,0xa3987e,8)
     cylinder(d,l,43.35,.11,.06,2.7,0xa39b80)
     # Castle Rock, Half Moon Battery, the Great Hall and upper towers above the Esplanade.
-    d,l=8608,29
+    d,l=8608,63
     cx,cy,cz=r.pos(d,l);yaw=bearing(d);rings=[]
     for radius,z in ((1,-12),(.91,0),(.73,14),(.61,23)):
         ring=[]
@@ -134,6 +134,27 @@ def scenery(k):
         for a in (-3,3):
             for offset in (-1.5,1.5):box(station+a,side*9.65+offset,.77,.10,.10,3.34,0x969ca0)
         art.roof(r.pos(station,side*9.65,4.08),7.8,4.5,1.2,bearing(station),lin(0xa82958 if side>0 else 0x355e75))
+    # Gas-style lanterns, kerb bollards, local stone parapets and the Esplanade flagstaffs.
+    for j,d in enumerate(range(12,8655,32)):
+        side=1 if j%2 else -1;l=side*7.98
+        cylinder(d,l,.22,.26,.20,.54,0x47494a,8)
+        cylinder(d,l,.76,.105,.065,3.05,0x393f43,8)
+        cylinder(d,l,3.81,.11,.26,.18,0x4a4948,6)
+        cylinder(d,l,3.99,.255,.305,.40,0xe1d6ab,6)
+        cylinder(d,l,4.39,.34,.03,.25,0x494d4f,6)
+        for dist in (8,16,24):
+            cylinder(d+dist,l,.22,.12,.10,.68,0x45484a,8)
+        if d>8210:
+            for bank in (-1,1):
+                for part in (0,8,16,24):
+                    box(d+part,bank*12.5,.18,7.98,.72,.82,0x887f75)
+                    box(d+part,bank*12.5,1.0,8.0,.85,.16,0xb1a18a)
+                    box(d+part-3.8,bank*12.5,.18,.48,.87,1.22,0x9f937e)
+            if j%2==0:
+                cylinder(d,l+side*4.7,.21,.081,.05,7.7,0xa5a4a0,8)
+                a,b,c,e=(r.pos(d+s,l+side*4.7+.22*s,z) for s,z in ((0,7.7),(2.5,7.43),(2.5,6.06),(0,6.35)))
+                art.face((a,b,c,e),(lin(0x33749d),)*4)
+                beam(a,c,.063,0xefefdc);beam(b,e,.063,0xefefdc)
     return {'efforts':0}
 
 

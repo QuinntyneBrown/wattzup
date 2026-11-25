@@ -365,6 +365,7 @@ export class CourseRenderer implements WorldRenderer {
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
       if (this.course.file.id === 'edinburgh') {
+        this.camera.setViewOffset(1, 1, 0, 0.02, 1, 1);
         const { FringePerformers } = await import('./fringe-performers');
         if (this.disposed) return false;
         this.fringe = new FringePerformers(this.course, this.scene);
@@ -915,8 +916,10 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const distance = this.street ? 4.55 : CAMERA_BACK;
+    const behind = distance + (CLOSE_BACK - distance) * close;
+    const eye = this.street ? 2.4 : CAMERA_UP;
+    const up = eye + (CLOSE_UP - eye) * close;
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);

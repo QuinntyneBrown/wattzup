@@ -92,7 +92,7 @@ export async function fringeStreet(course: Course) {
   const loader = new TextureLoader(),
     textures: Texture[] = [];
   try {
-    for (const name of ['setts', 'tenements', 'crowds']) {
+    for (const name of ['setts', 'tenements', 'crowds', 'landmarks', 'crags']) {
       const map = await loader.loadAsync('courses/edinburgh-' + name + '.webp');
       map.colorSpace = SRGBColorSpace;
       textures.push(map);
@@ -101,16 +101,16 @@ export async function fringeStreet(course: Course) {
     for (const t of textures) t.dispose();
     throw error;
   }
-  const [stone, facade, crowd] = textures;
+  const [stone, facade, crowd, landmarks, crags] = textures;
   stone!.wrapS = stone!.wrapT = RepeatWrapping;
   stone!.anisotropy = 4;
   facade!.anisotropy = 4;
   const board = festivalBoard(),
     heart = heartMosaic();
   textures.push(board, heart);
-  const materials = [stone, facade, crowd, board, heart].map(
+  const materials = [stone, facade, crowd, board, heart, landmarks, crags].map(
     (map, i) =>
-      new MeshBasicMaterial({ map, side: DoubleSide, alphaTest: i === 2 || i === 4 ? 0.4 : 0 }),
+      new MeshBasicMaterial({ map, side: DoubleSide, alphaTest: i === 2 || i >= 4 ? 0.4 : 0 }),
   );
   const group = new Group(),
     geometries: BufferGeometry[] = [],
@@ -193,7 +193,8 @@ export async function fringeStreet(course: Course) {
     for (let d = start; d < end && d < 8560; d += 24) {
       const j = (d + 72) / 24;
       for (const side of [-1, 1]) {
-        if (side === -1 && ((d > 1370 && d < 1530) || (d > 4660 && d < 4900) || d > 8210)) continue;
+        if (d > 8210 || (side === -1 && ((d > 1370 && d < 1530) || (d > 4660 && d < 4900))))
+          continue;
         if (side === 1 && d > 5180 && d < 5530) continue;
         const tile = (j + side + 4) % 4,
           lo = tile / 4,
@@ -263,8 +264,23 @@ export async function fringeStreet(course: Course) {
       upright(d, side * 8.15, 0.41, 2.3, 1.58, side * 0.83, 0, 1);
     }
     if (idx.length) finish(3);
+    // Detailed elevations face approaching riders, with the native landmarks behind them on the climb.
+    for (const [d, l, width, height, angle, u0, u1, vTop] of [
+      [8528, -42, 76, 42, -0.28, 0, 0.426, 0.61],
+      [4760, 22.5, 33, 34, 0.12, 0.44, 0.785, 0.94],
+      [1429, 20, 22, 40, 0.05, 0.81, 1, 1],
+    ] as const) {
+      if (d >= start && d < end) upright(d, l, 0.2, width, height, angle, u0, u1, 0, vTop);
+    }
+    if (idx.length) finish(5);
+    // The Esplanade opens out to distant Old Town roofs and the crags. Keep their bearing fixed.
+    if (start <= 8520 && end > 8520) {
+      upright(course.length + 70, 0, -18, 575, 142, 0, 0, 1);
+      upright(8520, 160, -20, 480, 117, Math.PI / 2, 1, 0);
+      finish(6);
+    }
     if (start <= 5430 && end > 5430) {
-      ground(5429, 5432.6, 1.5, 5.1, true);
+      ground(5431, 5435.8, 0.55, 5.35, true);
       finish(4);
     }
   }
