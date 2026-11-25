@@ -166,6 +166,25 @@ def scenery(k):
         u=i%2*.5;v=i//2%2*.5
         picture(shops,((fx-dx,fy-dy,z-.12),(fx+dx,fy+dy,z-.12),(fx+dx,fy+dy,z+h),(fx-dx,fy-dy,z+h)),
                 ((u,v),(u+.5,v),(u+.5,v+.5),(u,v+.5)))
+    # A tea shop opens directly onto the near path just beyond the engraved marker.
+    tea=7487;yaw=heading(tea)+.74;x,y,z=k.road.pos(tea,-5.35)
+    width=7.6;depth=3.3;high=3.23
+    art.box((x,y,z-.22),(width,depth,high+.22),yaw,lin(0x795C45))
+    art.roof((x,y,z+high),width+.6,depth+1,1.22,yaw,lin(0x576369))
+    dx,dy=width*.5*math.cos(yaw),width*.5*math.sin(yaw)
+    fx,fy=x-math.sin(yaw)*1.68,y+math.cos(yaw)*1.68
+    picture(shops,((fx-dx,fy-dy,z-.15),(fx+dx,fy+dy,z-.15),(fx+dx,fy+dy,z+high),(fx-dx,fy-dy,z+high)),
+            ((0,0),(.5,0),(.5,.5),(0,.5)))
+    art.box((fx,fy,z+2.34),(7.5,1.05,.17),yaw,lin(0x675442))
+    for n in range(5):
+        u=(n-2)*.60
+        art.box((fx+u*math.cos(yaw)-.56*math.sin(yaw),fy+u*math.sin(yaw)+.56*math.cos(yaw),z+1.72),
+                (.55,.035,.62),yaw,lin(0x344D62))
+    for n in (-1,1):
+        cx=fx+n*2.20*math.cos(yaw)-.77*math.sin(yaw);cy=fy+n*2.20*math.sin(yaw)+.77*math.cos(yaw)
+        art.tube((cx,cy,z+1.54),.24,.20,.52,lin(0xBA7358),lin(0xE4BE82),12,lin(0xAE7459))
+    yaw=heading(7480);x,y,z=k.road.pos(7480,-2.09)
+    art.box((x+.17*math.cos(yaw),y+.17*math.sin(yaw),z-.12),(.32,.54,1.65),yaw,lin(0x94978D))
     gate(k,art,124,-10.8,True);gate(k,art,10083,-10.4,False)
     ridge=pictured(k,'Higashiyama')
     for start in range(-900,11700,1800):
