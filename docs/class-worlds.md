@@ -55,6 +55,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Copacabana Promenade (`copacabana`) | Quick Sprint Session (GCN Training, 10:00) | 4.300 km | 14 m | `public/courses/copacabana.glb` ([ride views](screenshots/copacabana-promenade/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Copenhagen Cycle Superhighway (`copenhagen`) | 1 Minute VO2 Max Surges (GCN Training, 32:00) | 13.650 km | 47 m | `public/courses/copenhagen.glb` ([ride views](screenshots/copenhagen-cycle-superhighway/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Cornish Harbour (`cornwall`) | Nasty Pasty Sprint Session (GCN Training, 17:00) | 7.200 km | 120 m | `public/courses/cornwall.glb` ([ride views](screenshots/cornish-harbour/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Isle of Man Mountain Course (`isleofman`) | Full Gas Sprints (GCN Training, 20:00) | 8.133 km | 206 m | `public/courses/isleofman.glb` ([ride views](screenshots/isle-of-man-mountain-course/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
