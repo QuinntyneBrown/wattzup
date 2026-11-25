@@ -6,6 +6,7 @@
 // here, on WebGL2.
 import type { Locator, Page } from '@playwright/test';
 import {
+  adelaideCourseMap,
   cinqueTerreCourseMap,
   haleakalaCourseMap,
   ibizaCourseMap,
@@ -97,7 +98,7 @@ test.describe('a course', () => {
   // Cinque Terre and Haleakalā, like Ibiza, are built from their classes and served from fixtures of their own
   // (L2-166 AC43, AC44).
   for (const [id, course, catalogue] of [
-    ['adelaide-hills', 'adelaide', [{ ...haleakalaCourseMap, id: 'adelaide-hills', world: 'adelaide', name: 'Adelaide Hills', routeName: 'The Willunga road' }]],
+    [adelaideCourseMap.id, 'adelaide', [adelaideCourseMap]],
     ['prairie-paceline', 'prairie', undefined],
     ['vice-city', 'vicecity', undefined],
     [cinqueTerreCourseMap.id, 'cinqueterre', [cinqueTerreCourseMap]],
@@ -126,4 +127,18 @@ test.describe('a course', () => {
       expect((await picture(page, race.world)).equals(first)).toBe(false);
     });
   }
+});
+
+test('Adelaide shows its Willunga road panorama when neither graphics backend can start', async ({
+  page,
+  bluetooth,
+  api,
+}) => {
+  const race = await startRace(page, bluetooth, api, adelaideCourseMap.id, 'mode=solo', {
+    catalogue: [adelaideCourseMap],
+  });
+  await expect(race.panorama).toBeVisible();
+  await expect
+    .poll(() => race.panorama.evaluate((image: HTMLImageElement) => image.naturalWidth))
+    .toBeGreaterThan(0);
 });

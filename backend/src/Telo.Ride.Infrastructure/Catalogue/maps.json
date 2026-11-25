@@ -1531,6 +1531,125 @@
         },
         "roll": 0
       }
+    },
+    {
+      "id": "adelaide-hills",
+      "name": "Adelaide Hills",
+      "routeName": "The Willunga road",
+      "place": "Summer vineyards and gum trees on the climb to Willunga Hill",
+      "distanceKm": 12.975,
+      "climbingM": 201,
+      "rating": "Moderate",
+      "world": "adelaide",
+      "thumbnailUrl": "maps/adelaide-hills.jpg",
+      "photoUrl": "maps/adelaide-hills-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 270,
+            "level": 14,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 240,
+            "level": 18,
+            "cadenceAim": 85
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 13,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 16,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 16,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 16,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 16,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 270,
+            "level": 21,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "cool-down",
+            "duration": 240,
+            "level": 11,
+            "cadenceAim": 80
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 1,
+          "work": 5,
+          "recover": -1,
+          "cool-down": -1,
+          "steady": 2
+        },
+        "roll": 1
+      }
     }
   ]
 }

@@ -149,3 +149,48 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+/** Adelaide Hills rides GCN’s HIIT Fat Burn With Mitchelton-Scott. */
+export const adelaideCourseMap = {
+  id: 'adelaide-hills',
+  name: 'Adelaide Hills',
+  routeName: 'The Willunga road',
+  place: 'Summer vineyards and gum trees on the climb to Willunga Hill',
+  distanceKm: 12.975,
+  climbingM: 201,
+  rating: 'Moderate',
+  world: 'adelaide',
+  thumbnailUrl: 'maps/adelaide-hills.jpg',
+  photoUrl: 'maps/adelaide-hills-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 270, 14, 80),
+      seg('work', 240, 18, 85),
+      seg('recover', 30, 13, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 16, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 16, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 16, 90),
+      seg('work', 30, 24, 100),
+      seg('work', 120, 16, 90),
+      seg('recover', 120, 11, 80),
+      seg('work', 270, 21, 90),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 240, 11, 80),
+    ],
+  },
+  terrain: {
+    grade: {
+      'warm-up': 1,
+      work: 5,
+      recover: -1,
+      'cool-down': -1,
+      steady: 2,
+    },
+    roll: 1,
+  },
+  unlockGoal: null,
+  unlockMapId: null,
+};
