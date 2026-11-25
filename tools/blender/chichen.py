@@ -174,12 +174,45 @@ def scenery(k):
                 art.tube((sx,sy,z+.29+row*.48),.3,.26,.38,lin(0x897C67),lin(0xC2B294),8,lin(0xB8A58C))
                 for off in (-.12,.12):
                     box(art,sx+off,sy+.24,z+.45+row*.48,.09,.05,.09,0x5E594B)
+    # Seeded duff, a few bare limestone fragments and cast leaf shadows break up the shaded floor.
+    for d in range(0,12200,7):
+        if 3100<d<3350 or 7110<d<8400:continue
+        for side in (-1,1):
+            for n in range(3):
+                off=rng.uniform(4.4,14)*side;x,y,h=pose(d+rng.uniform(-2,2),off)
+                z=height(d)-.322
+                tint=rng.choice((0x786B48,0x7F7650,0x6D7049,0x81784D,0x948863))
+                art.tube((x,y,z),rng.uniform(1,2.8),rng.uniform(.9,2.5),.015,lin(tint),lin(tint),6,lin(tint))
+    # Staggered facing stones preserve the grooves seen across El Castillo's terraces on approach.
+    for d,l,width,tiers,total,top in [(12749,-6,56,9,24.2,13.4),(8196,27,44,5,13.6,18)]:
+        cx,cy,h=pose(d,l)
+        for tier in range(tiers):
+            w=width-(width-top)*tier/tiers
+            for face in range(4):
+                a=h+face*math.pi/2;cs,sn=math.cos(a),math.sin(a)
+                for row in range(3):
+                    for j in range(round(w/1.65)):
+                        lateral=-w/2+(j+.5+row%2*.38)*1.65
+                        if abs(lateral)<width*.09 or abs(lateral)>w/2-.7:continue
+                        x=cx+cs*(w/2+.022)-sn*lateral;y=cy+sn*(w/2+.022)+cs*lateral
+                        box(monument,x,y,height(d)-.14+tier*total/tiers+row*.64,.06,1.59,.60,
+                            rng.choice((0xB7AE97,0xBDB59C,0xAFA78D,0xC3B99E)),a)
+                # Both bright nosing and its narrow dark riser run across every second tread.
+                count=91 if tiers==9 else 47
+                if tier==0:
+                    for j in range(0,count,2):
+                        reach=w/2+1.72-((width-top)/2+2)*j/count
+                        x=cx+cs*reach;y=cy+sn*reach
+                        box(monument,x,y,height(d)-.10+total*j/count,.24,width*.146,.10,0xD3CAB5,a)
     # Remnants of the earlier rubble kerb are interrupted with small bare patches along the causeway.
     for d in range(-60,12750,4):
         for side in (-1,1):
             x,y,h=pose(d,side*(3.53+rng.random()*.21))
-            box(art,x,y,height(d)-.35,2.3+rng.random()*1.73,.48+rng.random()*.32,
-                .28+rng.random()*.25,rng.choice((0xB2A78E,0xB4AE9A,0xA59F89,0xC2B8A0)),h+rng.uniform(-.04,.04))
+            for fragment in range(4):
+                sx,sy,_=pose(d+fragment*.86,side*(3.48+rng.random()*.24))
+                tint=rng.choice((0xB2A78E,0xB4AE9A,0xA59F89,0xC2B8A0))
+                art.tube((sx,sy,height(d)-.31),rng.uniform(.35,.57),rng.uniform(.29,.43),rng.uniform(.23,.46),
+                         lin(0x8B806D),lin(tint),5,lin(tint))
     for i in range(61):
         t=i*math.tau/61
         d=3230+41*math.cos(t);l=34+28*math.sin(t)

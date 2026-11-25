@@ -77,7 +77,7 @@ export async function chichenForest(course: Course) {
       for (let i = 0; i < 4; i++) colour.push(tint.r, tint.g, tint.b);
       idx.push(start, start + 1, start + 2, start, start + 2, start + 3);
     }
-    for (let d = section; d < Math.min(lap, section + 100); d += 6.4) {
+    for (let d = section; d < Math.min(lap, section + 100); d += 5.2) {
       const cenote = d > 3100 && d < 3320,
         ruins = d > 7110 && d < 8430,
         plaza = d > 12190;
@@ -99,6 +99,19 @@ export async function chichenForest(course: Course) {
           rng() < 0.6 ? 0 : 1,
           0xb4bd9e,
         );
+        if (!ruins && !plaza) {
+          panel(
+            d + 2.4,
+            side * (9 + rng() * 4),
+            1.33,
+            6 + rng() * 4,
+            2.4 + rng() * 2.3,
+            0,
+            0x9dab83,
+          );
+          if (rng() < 0.56)
+            panel(d + 3.1, side * (4.2 + rng() * 2.2), 0.33, 2.8, 1.08 + rng() * 0.8, 1, 0xa7b28b);
+        }
         if (rng() < 0.38) panel(d + 2, side * (4.1 + rng() * 2), 0.86, 2.6, 2.15, 2, 0xacba83);
       }
       if (d % 20 < 6) {
