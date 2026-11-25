@@ -24,6 +24,7 @@ test('Els Àngels from the Onyar, forest bend and summit terrace', async ({
   await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
   const version = process.env['ANGELS_CAPTURE'] ?? 'after';
   for (const [name, km] of [
+    ['river', 0.015],
     ['onyar', 0.045],
     ['masia', 0.29],
     ['forest', 1.42],
