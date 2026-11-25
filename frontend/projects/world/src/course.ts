@@ -55,6 +55,10 @@ export interface CourseFile {
   readonly rain?: number;
   /** How wet the ground is, from 0, dry, to 1, standing water everywhere; a course that names none is dry. */
   readonly wet?: number;
+  readonly headland?: {
+    readonly lookouts: readonly number[];
+    readonly surf: readonly (readonly [number, number, number])[];
+  };
   /** Thermal soaring paraglider orbits above high mountain passes. */
   readonly gliders?: readonly {
     readonly center: readonly [number, number, number];

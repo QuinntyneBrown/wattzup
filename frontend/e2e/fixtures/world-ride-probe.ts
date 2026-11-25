@@ -59,6 +59,21 @@ export class WorldRideProbe {
    * Call before the page loads: World Ride draws at `tier` and never drops it; with `webgl2`,
    * through three's WebGL2 backend even where WebGPU is offered.
    */
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+
+  async headlandMotion(part: 'walkerX' | 'breakerHeight'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async pin(tier: Tier, backend: 'auto' | 'webgl2' = 'auto'): Promise<void> {
     await this.page.addInitScript(
       ([t, b]) => {
