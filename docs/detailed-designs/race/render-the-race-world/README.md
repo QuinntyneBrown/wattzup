@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Kyoto Hanami (#2152)
+
+Use the normal catalogue and solo race entry. The eleven original stages of GCN Training’s Cadence Training to Improve Pedalling run for 25:00 from the beginning of the video. Extend the distinct sections of the Philosopher’s Path to the class-derived 10.400 km course. Keep the canal alongside the path, place bridge abutments on opposite walls and sample the physical grade for the map and HUD.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Nanzen-ji, 0.08 km | Real 13–15 and games 03–04 | The approach passes the timber temple gate, broad tiled eaves and flanking white walls before joining the canal. |
+| Lake Biwa canal, 1.54 km | Real 01–04, 10–11 and games 01 and 03 | The water runs below the narrow path between inclined walls of fitted stone. Pale gravel and rectangular edging separate the rider from the canal. |
+| Granite bridge, 3.28 km | Real 02–03, 05 and 08–11 and games 01 and 05 | A low granite span crosses the canal to the opposite bank. The shaded opening and its reflection stay visible under the parapet. |
+| Hanami walk, 5.42 km | Real 01–03, 06–09 and games 01–03 | Strollers and photographers gather under the pale pink canopy. Clusters of petals drift by and smaller petals float downstream. |
+| Tea shops, 7.46 km | Real 03–05, 09–11 and games 04–05 | Low timber shop fronts, lattice screens, indigo curtains and the carved 哲学の道 path marker frame the near bank. |
+| Ginkaku-ji approach, 10.04 km | Real 04, 10–11 and 13–15 and games 03–05 | Hedges and tiled timber buildings lead toward the Ginkaku-ji entrance, with green Higashiyama ridges beyond the last bridge. |
+
+Real 12 is the Philosopher’s Walk at Tatsuno in Hyōgo and supplies the stone-marker convention only. Real 13–15 establish Nanzen-ji’s gates. The northern gate is an original interpretation of the Ginkaku-ji approach. Use the daytime photographs for spring light and game 02 for contrast between petals and the riding line. Adapt Caribana’s physical separation of near participants and far skyline to visitors, bridges and green mountain ridges. Batch walkers and small drifting petals, keep the visible canal section bounded, and dispose the course-owned textures, batches and materials on exit. The issue title search found only #2152.
