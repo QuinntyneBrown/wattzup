@@ -61,9 +61,33 @@ export function arenbergPave() {
   texture.wrapS = texture.wrapT = RepeatWrapping;
   texture.repeat.set(1 / 3.2, 1 / 3.2);
   const material = new MeshLambertMaterial({ map: texture, side: DoubleSide });
+  const leaves = canvasTexture(128, 128, (g) => {
+    // Seeded oak and birch leaflets leave a broken canopy edge on either face.
+    g.fillStyle = '#d4d2af';
+    for (let i = 0; i < 390; i++) {
+      const angle = random() * Math.PI * 2,
+        rad = Math.sqrt(random());
+      const x = 64 + Math.cos(angle) * rad * 61,
+        y = 65 + Math.sin(angle) * rad * 58;
+      const tone = 178 + Math.floor(random() * 77);
+      g.fillStyle = 'rgb(' + [tone, tone, tone - 19].join(',') + ')';
+      g.beginPath();
+      g.ellipse(x, y, 2 + random() * 3.8, 1.3 + random() * 2.2, angle, 0, Math.PI * 2);
+      g.fill();
+    }
+  });
+  const foliage = new MeshLambertMaterial({
+    map: leaves,
+    vertexColors: true,
+    side: DoubleSide,
+    alphaTest: 0.46,
+  });
   return {
     material,
+    foliage,
     dispose() {
+      leaves.dispose();
+      foliage.dispose();
       texture.dispose();
       material.dispose();
     },

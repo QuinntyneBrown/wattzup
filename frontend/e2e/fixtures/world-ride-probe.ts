@@ -104,4 +104,12 @@ export class WorldRideProbe {
           ?.report ?? null) as WorldRideReport | null,
     );
   }
+  /** Position of the commissaire motorcycle drawn on the sector. */
+  async commissaireX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { commissaireX?: number } } })
+          .__wzWorldRide?.course?.commissaireX ?? null,
+    );
+  }
 }

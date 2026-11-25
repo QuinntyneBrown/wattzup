@@ -1253,3 +1253,5 @@ import arenberg as _arenberg
 THEMES['arenberg'] = _arenberg.THEME
 SCENERY['arenberg'] = _arenberg.scenery
 MATERIALS['pave'] = {'color': 0xFFFFFF, 'vertex': True}
+MATERIALS.update({name: {'color': 0xFFFFFF, 'vertex': True} for name in ('commissaire','team-car')})
+MATERIALS['arenberg-foliage'] = {'color': 0xFFFFFF, 'vertex': True}

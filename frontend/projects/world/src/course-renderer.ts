@@ -110,6 +110,7 @@ const SHADOW_WIDTH = 0.8;
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Land: 950,
   Pave: 180,
+  Foliage: 110,
   Ground: 420,
   Solid: 250,
   Walls: 220,
@@ -242,8 +243,10 @@ export class CourseRenderer implements WorldRenderer {
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
+    commissaireX: null as number | null,
     groups: {} as Record<string, number>,
   };
+  private readonly convoy: { holder: Group; moto: boolean }[] = [];
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -442,6 +445,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
+    if (this.convoy.length) this.placeConvoy(metres, frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -480,6 +484,8 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    for (const { holder } of this.convoy) this.scene.remove(holder);
+    this.convoy.length = 0;
     this.pave = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
@@ -579,7 +585,10 @@ export class CourseRenderer implements WorldRenderer {
     const coloured = this.lampGlow?.coloured ?? dusk;
     const made = this.lampGlow?.light ?? dusk;
     this.disposables.push(...Object.values(materials));
-    if (this.pave) materials['Pave'] = this.pave.material;
+    if (this.pave) {
+      materials['Pave'] = this.pave.material;
+      materials['Foliage'] = this.pave.foliage;
+    }
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
     const detail = surfaceTexture();
@@ -639,7 +648,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
-      const material = materials[group];
+      const material = materials[group === 'Commissaire' || group === 'TeamCar' ? 'Land' : group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
       mesh.material = material;
@@ -717,6 +726,17 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.scene.add(this.glider.holder);
       this.placeGlider(0, true);
+    }
+    for (const name of ['Commissaire', 'TeamCar']) {
+      const mesh = map.getObjectByName(name) as Mesh | undefined;
+      if (!mesh?.isMesh) continue;
+      mesh.updateMatrixWorld(true);
+      mesh.matrix.copy(mesh.matrixWorld);
+      const holder = new Group();
+      holder.add(mesh);
+      this.scene.add(holder);
+      this.convoy.push({ holder, moto: name === 'Commissaire' });
+      this.disposables.push(mesh.geometry);
     }
     this.map = map;
     this.scene.add(map);
@@ -1025,6 +1045,21 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.placeFunivia(time, false);
     this.placeGlider(time, false);
+  }
+
+  private placeConvoy(rider: number, time: number): void {
+    const lead = 33 + 7.1 * time;
+    const nearest = lead + Math.round((rider - lead) / 610) * 610;
+    this.drawn.commissaireX = null;
+    for (const { holder, moto } of this.convoy) {
+      const d = nearest - (moto ? 0 : 18);
+      holder.visible = d >= 0 && d < this.course!.length && Math.abs(d - rider) < 170;
+      if (!holder.visible) continue;
+      const at = this.course!.place(d, moto ? -1.22 : -1.05, this.there);
+      holder.position.set(at.x, at.y + 0.035, at.z);
+      holder.rotation.set(at.pitch, at.heading, 0, 'YXZ');
+      if (moto) this.drawn.commissaireX = holder.position.x;
+    }
   }
 
   private placeFunivia(time: number, reducedMotion: boolean): void {
