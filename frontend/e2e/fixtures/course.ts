@@ -1,3 +1,4 @@
+import gardenaElevation from './gardena-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,38 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const gardenaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'passo-gardena',
+  name: 'Passo Gardena',
+  routeName: 'The road from Selva',
+  place: 'South Tyrol, Italy',
+  world: 'gardena',
+  distanceKm: 8.975,
+  climbingM: 506,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: gardenaElevation,
+  },
+  thumbnailUrl: 'maps/passo-gardena.jpg',
+  photoUrl: 'maps/passo-gardena-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 360, 12, 90),
+      seg('work', 90, 14, 90),
+      seg('recover', 90, 16, 90),
+      seg('work', 180, 18, 90),
+      seg('work', 90, 19, 90),
+      seg('work', 90, 20, 90),
+      seg('work', 90, 21, 90),
+      seg('work', 90, 22, 90),
+      seg('work', 30, 24, 95),
+      seg('cool-down', 90, 10, 85),
+    ],
   },
 };
