@@ -206,7 +206,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 176 | Extreme Fat Burning Class | Atacama Desert | 86% |  | The driest desert on earth, salt flats and flamingo lagoons. |
 | 177 | 45 Minute Sprint Training | Beach Road, Melbourne | 35% |  | Bayside bunch-ride route past beach boxes and piers. |
 | 178 | FTP Booster Extended Efforts | Blue Ridge Parkway | 35% |  | Appalachian ridgeline road in blazing autumn colour. |
-| 179 | 60 Minute Reverse Pyramid | Angkor Temples | 82% |  | Jungle roads between Khmer temples and moats at dawn. |
+| 179 | 60 Minute Reverse Pyramid | Angkor Temples | 82% |  | Temple Road follows the moat past Angkor Wat to the South Gate, Bayon and Ta Prohm. All 17 reverse-pyramid stages are preserved. [Rider views](screenshots/angkor-temples/README.md). |
 | 180 | Reverse HIIT Race Winning Intervals | Verona Arena Finale | 35% |  | A grand tour finale circling into the Roman arena. |
 | 181 | Reverse Steps | Valparaíso Stairways | 35% |  | Colourful hillside stairways and funiculars above the Chilean port. |
 | 182 | 60 Minutes of Brutal Power | Mauna Kea | 81% |  | A brutal climb past observatories to Hawaii's highest summit. |

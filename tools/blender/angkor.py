@@ -32,7 +32,7 @@ def banks(road,col,theme,bc):
     b=bc.Builder("Moat and laterite banks","terrain")
     b.colours=[]
     profile=((-160,.1),(-14,.1),(-8,-.05),(-4,-.15),(4,-.15),(7,-.09),(10,WATER),(64,WATER),(68,.15),(165,.2))
-    palette=(0x586342,0x76563F,0xA36142,0xA36142,0xB56F48,0x925337,0x877D75,0x855C48,0x526646)
+    palette=(0x586342,0x76563F,0xA36142,0xA36142,0xB56F48,0x925337,0x646D65,0x855C48,0x526646)
     for i in range(0,len(road.s)-1,3):
         j=min(i+3,len(road.s)-1)
         for k,((a,az),(c,cz)) in enumerate(zip(profile,profile[1:])):
@@ -121,6 +121,24 @@ def gate(k,art,d):
         art.box(pt(-2.27,side*4.4,11.93),(.46,.89,.15),yaw,shade)
 
 
+def crown(art,x,y,z,radius,depth,rng):
+    # A dipterocarp has an irregular, spreading top and a shadowed understorey.
+    profile=[rng.uniform(.72,1.2) for _ in range(11)]
+    colours=list(map(lin,(0x354C36,0x486342,0x61734D,0x71845C)))
+    rings=[]
+    for scale,height in ((.47,-.28),(1,.12),(.82,.65),(.34,1)):
+        rings.append([(x+math.cos(j*math.tau/11)*radius*v*scale,
+                       y+math.sin(j*math.tau/11)*radius*v*scale,
+                       z+(height+.09*math.sin(j*2.7))*depth) for j,v in enumerate(profile)])
+    for level in range(3):
+        for j in range(11):
+            n=(j+1)%11
+            art.face((rings[level][j],rings[level][n],rings[level+1][n],rings[level+1][j]),
+                     (colours[level],colours[level],colours[level+1],colours[level+1]))
+    art.face(rings[-1],(colours[-1],)*11)
+    art.face(rings[0][::-1],(colours[0],)*11)
+
+
 def scenery(k):
     art=Painted(k)
     wat(k,art)
@@ -138,10 +156,38 @@ def scenery(k):
             art.tube((x,y,.1),.65,.35,h,bark,bark,7)
             for j in range(3):
                 a=j*2.1+d
-                foliage=lin(k.rng.choice((0x40543B,0x526144,0x677552)))
-                cx=x+2.3*math.cos(a);cy=y+2.3*math.sin(a)
-                art.tube((cx,cy,h-.5+j*.65),3.6,4.6,1.8,foliage,foliage,8)
-                art.tube((cx,cy,h+1.3+j*.65),4.6,.45,2.3,foliage,foliage,8,foliage)
+                radius=k.rng.uniform(3.6,6.2)
+                cx=x+2.8*math.cos(a);cy=y+2.8*math.sin(a)
+                crown(art,cx,cy,h-.5+j*.65,radius,k.rng.uniform(2.5,4.1),k.rng)
+            for j in range(3):
+                a=d+j*math.tau/3
+                toe=(x+math.cos(a)*1.9,y+math.sin(a)*1.9,.13)
+                shoulder=(x+.4*math.cos(a),y+.4*math.sin(a),2.5)
+                edge=(x+.5*math.cos(a+.7),y+.5*math.sin(a+.7),.13)
+                art.face((toe,edge,shoulder),(bark,bark,bark))
+                art.face((shoulder,edge,toe),(bark,bark,bark))
+            if d%5:
+                crown(art,x+2,y+1.5,.7,2.4,1.9,k.rng)
+    # Clumps of lotus and broken dawn highlights reveal the surface of the moat.
+    leaf,flower,glint=map(lin,(0x617653,0xD7B5A3,0xA99C85))
+    for d in range(-25,int(k.length),17):
+        i=k.road.index(d)
+        for j in range(4):
+            offset=k.rng.uniform(10.6,15.2)
+            for k2 in range(3):
+                u=j*.75+k2*.22
+                a=k.rng.uniform(0,math.tau)
+                pts=[]
+                for q in range(7):
+                    ang=a+q*math.tau/7
+                    x,y,_=k.P(i,u+math.cos(ang)*.28,offset+math.sin(ang)*.22)
+                    pts.append((x,y,WATER+.045))
+                art.face(pts,(leaf,)*7)
+                if j==2 and k2==1:
+                    x,y,_=k.P(i,u,offset)
+                    art.tube((x,y,WATER+.04),.04,.112,.13,flower,flower,6,flower)
+            x,y,_=k.P(i,j*2.4,k.rng.uniform(16,45))
+            art.box((x,y,WATER+.02),(1.2,.045,.013),k.s[i]["h"],glint)
     for d in range(975,int(k.length),3340):
         bayon(k,art,d)
     for d in range(1215,int(k.length),3340):

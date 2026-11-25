@@ -29,4 +29,18 @@ test('a tuk-tuk travels along Temple Road', async ({ api, bluetooth, page, world
       return Math.max(...samples) - Math.min(...samples);
     })
     .toBeGreaterThan(0.4);
+  await race.pause.click();
+  await expect(race.resume).toBeVisible();
+  const held = await worldRide.tukTukX();
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+        ),
+      ),
+  );
+  expect(await worldRide.tukTukX()).toBe(held);
+  await race.resume.click();
+  await expect.poll(() => worldRide.tukTukX()).not.toBe(held);
 });
