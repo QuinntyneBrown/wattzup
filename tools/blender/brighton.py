@@ -53,6 +53,15 @@ STRAIGHT=LAP/2-math.pi*RADIUS
 PALETTE=(0xC74653,0xE58950,0xF1CC53,0x438967,0x4A84B2,0x845D98)
 
 
+def waterfront(x):
+    # The promenade bows out at the pier, revealing its sea-facing flank from the saddle.
+    return 52*math.exp(-((x-1798)/107)**2)+12*math.sin(x/162)
+
+
+def warp(builder):
+    builder.verts=[(x,y+waterfront(x),z) for x,y,z in builder.verts]
+
+
 def station(d):
     t=d%LAP;turn=math.pi*RADIUS
     if t<STRAIGHT:x,y,h=t,0,0
@@ -70,7 +79,9 @@ def route(config,theme,bc):
     for i in range(math.ceil((length+bc.LEAD_IN+bc.RUN_OUT)/bc.STEP)+1):
         d=i*bc.STEP-bc.LEAD_IN;x,y,z,h=station(d)
         g=(station(d+1)[2]-station(d-1)[2])*.5
-        points.append(dict(d=d,x=x,y=y,z=z,h=h,k=0,g=g))
+        slope=(waterfront(x+.5)-waterfront(x-.5))
+        tangent=math.atan2(math.sin(h)+slope*math.cos(h),math.cos(h))
+        points.append(dict(d=d,x=x,y=y+waterfront(x),z=z,h=tangent,k=0,g=g))
     mean=sum((s['to']-s['from'])*s['level'] for s in stages)/length
     return points,stages,length,mean,0
 
@@ -94,6 +105,7 @@ def land(road,col,theme,bc):
             ground.colours.extend([(cols[0]*tone,cols[1]*tone,cols[2]*tone,1)]*4)
     sea=bc.Builder('English Channel','sea')
     sea.quad((-6300,56,0),(10200,56,0),(10200,11600,0),(-6300,11600,0));sea.build(col)
+    warp(ground)
     return ground.build(col),lambda *_:0
 
 
@@ -110,6 +122,7 @@ def roadway(road,st,length,col,bc):
                 v=l+stripe
                 paint.quad(place(a,v,.026),place(b,v,.026),place(b,v+.09,.026),place(a,v+.09,.026))
                 paint.colours.extend([lin(0xDEBC64)]*4)
+    warp(bed);warp(paint)
     bed.build(col);paint.build(col)
 
 
@@ -125,6 +138,15 @@ def box(a,x,y,z,l,w,h,col):a.box((x,y,z),(l,w,h),0,lin(col))
 def arcade(art):
     iron=0x4F786D;light=0x84A698
     for x in range(160,1440,8):
+        box(art,x+4,-20.15,15.66,8.01,1.34,.46,0xC7BBA6)
+        box(art,x+4,-20.15,16.13,8.04,1.49,.32,0xE1D3B9)
+        for n in range(4):
+            box(art,x+n*2.0,-19.76,16.36,.19,.19,.86,0x657B6D)
+        box(art,x+4,-19.76,17.17,8.05,.13,.12,0x657B6D)
+        # Echo the real terrace's open tracery and ventilated frieze above the arches.
+        for j in (-1,1):
+            beam(art,(x+4+j*3.23,-13.4,9.08),(x+4+j*1.93,-13.4,10.62),.14,.13,lin(light))
+            beam(art,(x+4+j*3.71,-13.4,9.59),(x+4+j*2.82,-13.4,10.64),.11,.13,lin(light))
         for y in (-13.4,-18.6):
             art.tube((x,y,4.16),.27,.19,5.7,lin(iron),lin(light),8)
         box(art,x,-13.4,4.16,.73,.63,.42,iron)
@@ -238,4 +260,9 @@ def scenery(k):
     art.tube((x,y,3.8),1.67,.79,143,lin(0x808480),lin(0x969C99),16)
     art.tube((x,y,92),7.3,9.1,2.7,lin(0x838786),lin(0xA6B9B6),24)
     art.tube((x,y,94.7),9.1,7.4,3.0,lin(0x8DA6AA),lin(0xC1CBC6),24)
+    for x in range(420,1170,6):
+        # Marshal the decorated vehicles in the shorefront traffic lane.
+        box(art,x,2.05,4.26,.15,.16,.64,0xA1B0A5)
+        box(art,x,2.05,4.77,.18,.19,.15,0xF1E5CB)
+    warp(art.b)
     return {'efforts':0}
