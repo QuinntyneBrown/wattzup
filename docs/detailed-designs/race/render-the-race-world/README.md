@@ -978,3 +978,18 @@ The original class supplies a clear alpine day, gentle bends and the 28 stages o
 | St. Moritz, 23.91 km | The hotels step up the hill toward the characteristic leaning tower and church. Real 06, 08 and 10–13, games 04–05. |
 
 Keep the Corvatsch and Bernina skyline fixed in world space, as Caribana does with the Toronto landmarks. Fence rails, near trees, rocks and villages should pass independently of the mountains. Bake the road and shore profile in Blender under ADRs 0034 and 0035. Load any animated content with the Engadin course in the existing world library under ADR 0030. Advance the kites and the red train on ride time. Use one set of shared materials and window the roadside batches. Dispose of textures, materials, geometry and scene objects on exit. Preserve Chromium WebGL 2 and WebGPU under ADR 0021, and keep the physical course aligned through its bends under ADR 0023. Follow the performance design for a nine-second warm-up and two moving sixty-second samples, with paired rider views at the six chainages.
+
+## Mount Etna (#2118)
+
+The original EtnaStreet sets loose blocks and broom on a cinder verge. It animates summit steam, white off-road buses and crater walkers. Issue #948 reports suspended birches and flow blocks where the ground flattens by the road. Sample the same terrain height for the native road cuts, birch roots and lava footings. Retain the half-buried house, snow pockets, yellow flowers, buses and the windward drift of the existing plume. Map Select currently has no Etna race. Supply a 12.885 km physical climb for the 14 stages of GCN Training’s Go Until You Blow, with 798 m of ascent.
+
+| Rider viewpoint | Composition and source |
+| --- | --- |
+| Opening, 0.08 km | A dark cone behind the clinker and pale road markings. Real 02–03 and 14, games 01–02. |
+| SP92, 2.28 km | Stone-edged hairpins cut through older black flows with birch and broom. Real 01–05, games 03–04. |
+| Coastal outlook, 4.76 km | A break in the downhill bank reveals the blue-grey Ionian horizon. Real 01 and 05 establish the slope and haze, game 05 the moving sightline. |
+| Silvestri, 8.38 km | Oxidised cinder rims and walkers stand out against black lava and harsh sunlight. Real 07–11 and 15, games 01 and 03. |
+| Refuge, 10.74 km | Chalet gables, stone base, shop fronts, parking and white tour buses form the terrace below the cableway. Real 04, 06, 09 and 12, games 03–04. |
+| Funivia, 12.18 km | Red gondolas hang from a sloping cable above the ash field under summit cloud. Real 13–14, games 02 and 05. |
+
+Place the summit in world space as Caribana does with the CN Tower. Build the crater rims and switchbacks against the resistance-derived route, and group near-field cuttings in short visible sections. Load plume, walkers and gondolas with the Etna course, reusing the class movement where possible. Freeze each on pause and suppress motion for reduced motion. Dispose of textures, geometry, materials and ride-clock animation state on exit. Follow ADRs 0021, 0023, 0030, 0034 and 0035 for the graphics backends, road geometry, lazy world library and course assets. The performance design measures actual scene submissions after nine seconds of warm-up, on the opening climb and at the refuge.

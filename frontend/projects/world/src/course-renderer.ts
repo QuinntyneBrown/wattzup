@@ -18,6 +18,7 @@ import type { fringeStreet } from './fringe-street';
 import type { FringePerformers } from './fringe-performers';
 import type { engadinShore } from './engadin-shore';
 import type { engadinLakes } from './engadin-lakes';
+import type { etnaAscent } from './etna-ascent';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -306,6 +307,7 @@ export class CourseRenderer implements WorldRenderer {
   private fringe: FringePerformers | null = null;
   private shore: Awaited<ReturnType<typeof engadinShore>> | null = null;
   private lakes: Awaited<ReturnType<typeof engadinLakes>> | null = null;
+  private etna: Awaited<ReturnType<typeof etnaAscent>> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -429,6 +431,11 @@ export class CourseRenderer implements WorldRenderer {
     villageFronts: 0,
     trainPosition: null as number | null,
     kiteHeight: null as number | null,
+    heatPhase: null as number | null,
+    busPosition: null as number | null,
+    plumeHeight: null as number | null,
+    gondolaPosition: null as number | null,
+    walkerPosition: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -719,6 +726,20 @@ export class CourseRenderer implements WorldRenderer {
       if (this.disposed) return false;
       const chichenPaving = chichenModule?.causewaySurface();
       if (chichenPaving) this.disposables.push(chichenPaving.tile);
+      if (this.course.file.id === 'etna') {
+        const { etnaAscent } = await import('./etna-ascent');
+        if (this.disposed) return false;
+        const ascent = await etnaAscent(this.course);
+        if (this.disposed) {
+          ascent.dispose();
+          return false;
+        }
+        this.etna = ascent;
+        this.disposables.push(ascent);
+        this.scene.add(ascent.group);
+        this.camera.setViewOffset(1, 1, 0, 0.03, 1, 1);
+        ascent.at(0, 0);
+      }
       this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material);
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
@@ -1312,6 +1333,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.pinned) this.drawn.metres = metres;
     this.shore?.at(metres, frame.reducedMotion ? 0 : frame.time);
     this.lakes?.at(frame.reducedMotion ? 0 : frame.time, metres);
+    this.etna?.at(frame.reducedMotion ? 0 : frame.time, metres);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
     const standing = this.ride(you, metres, 0);
@@ -1565,6 +1587,7 @@ export class CourseRenderer implements WorldRenderer {
     this.street = null;
     this.lakes = null;
     this.shore = null;
+    this.etna = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -1692,6 +1715,7 @@ export class CourseRenderer implements WorldRenderer {
       materials['Pave'] = this.pave.material;
       materials['Foliage'] = this.pave.foliage;
     }
+    Object.assign(materials, this.etna?.rocks);
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
     const detail = surfaceTexture();
@@ -2085,8 +2109,8 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : this.lakes ? 4.65 : CAMERA_BACK;
-    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : this.lakes ? 2.65 : CAMERA_UP;
+    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : this.lakes ? 4.65 : this.etna ? 4.55 : CAMERA_BACK;
+    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : this.lakes ? 2.65 : this.etna ? 2.42 : CAMERA_UP;
     const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : this.commuters ? 4.1 : distance + (CLOSE_BACK - distance) * close;
     const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : this.commuters ? 2.0 : eye + (CLOSE_UP - eye) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
@@ -2523,6 +2547,11 @@ export class CourseRenderer implements WorldRenderer {
     drawn.villageFronts = this.shore?.villageFronts ?? 0;
     drawn.trainPosition = this.lakes?.trainPosition ?? null;
     drawn.kiteHeight = this.lakes?.kiteHeight ?? null;
+    drawn.heatPhase = this.etna?.heatPhase ?? null;
+    drawn.busPosition = this.etna?.busPosition ?? null;
+    drawn.plumeHeight = this.etna?.plumeHeight ?? null;
+    drawn.gondolaPosition = this.etna?.gondolaPosition ?? null;
+    drawn.walkerPosition = this.etna?.walkerPosition ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;

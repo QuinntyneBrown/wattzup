@@ -38,6 +38,7 @@ import diwaliElevation from './diwali-elevation.json';
 import dubaiElevation from './dubai-elevation.json';
 import edinburghElevation from './edinburgh-elevation.json';
 import engadinElevation from './engadin-elevation.json';
+import etnaElevation from './etna-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -2661,6 +2662,43 @@ export const engadinCourseMap = {
       seg('work', 300, 21, 65),
       seg('recover', 180, 18, 95),
       seg('cool-down', 180, 11, 85),
+    ],
+  },
+};
+
+export const etnaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mount-etna',
+  name: 'Mount Etna',
+  routeName: 'The Sapienza road',
+  place: 'Mount Etna, Sicily',
+  world: 'etna',
+  distanceKm: 12.885,
+  climbingM: 798,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: etnaElevation,
+  },
+  thumbnailUrl: 'maps/mount-etna.jpg',
+  photoUrl: 'maps/mount-etna-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 14, 80),
+      seg('work', 120, 18, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 19, 80),
+      seg('work', 180, 14, 80),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 24, 93),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 24, 93),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 24, 93),
+      seg('recover', 60, 10, 80),
+      seg('work', 300, 24, 92),
+      seg('cool-down', 120, 10, 80),
     ],
   },
 };

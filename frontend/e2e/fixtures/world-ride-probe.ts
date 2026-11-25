@@ -466,6 +466,17 @@ export class WorldRideProbe {
     );
   }
 
+  async etnaMotion(
+    part: 'plumeHeight' | 'walkerPosition' | 'gondolaPosition' | 'busPosition' | 'heatPhase',
+  ): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async report(): Promise<WorldRideReport | null> {
     return this.page.evaluate(
       () =>

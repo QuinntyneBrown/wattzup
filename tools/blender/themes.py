@@ -1427,3 +1427,11 @@ import engadin as _engadin
 
 THEMES["engadin"] = _engadin.THEME
 SCENERY["engadin"] = _engadin.scenery
+
+import etna as _etna
+
+for name,colour in (("etna-clinker",0x413c39),("etna-scoria",0x854633),("etna-bitumen",0x48474a)):
+    MATERIALS[name]={"color":colour,"rough":1.0,"vertex":True}
+
+THEMES["etna"] = _etna.THEME
+SCENERY["etna"] = _etna.scenery
