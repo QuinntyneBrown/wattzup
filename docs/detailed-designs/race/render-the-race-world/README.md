@@ -215,3 +215,13 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+### Great Ocean Road (#2132)
+
+L1 Race, L2-064–066 and L2-159–160 apply to the Map Select → Race Setup → Ride journey. The world brief and reference photographs already exist. The baseline lacks a catalogue entry and an authored ride through the ten landmarks. Restore the 14 stages of *Hold Your Intensity*, including its video offset, before attaching the baked route. The scenic route compresses distances between Eastern View and the Port Campbell coast to 8.45 km. Existing race progress, controls, resistance and HUD remain authoritative.
+
+- At 0.08 km the timber lintel of the Memorial Arch spans both lanes. The cut bank, guardrail and coastal road at 1.67 km follow real 01–05, with close road furniture scaled against game 01. Yellow centrelines follow the issue brief. Apollo Bay signs and settlement proportions use real 11–12.
+- At 3.12 km turn inland under Otway eucalypts and broad tree ferns. Use real 03, 13–14 for tree height and wind exposure and game 04 for sightlines through vegetation. On leaving the forest the banksia, tussocks and stunted heath open the sea horizon.
+- At 5.05 km look across separated, individually shaped limestone stacks. At 6.55 km a sheltered crescent of sand lies between the gorge walls. At 8.24 km the surviving span of London Bridge stands offshore. Real 06–10 and 15 establish rock proportions, erosion, negative space and the relation of cliff edge to surf. Games 02–03 and 05 establish readable landmarks beside a moving cyclist. The #2132 thread contains no earlier rider comments.
+- The catalogue provides the course key to the lazy world renderer. Share materials and merge static clifftop geometry by road section. Give fixed stacks a longer visibility range than roadside scrub. Reuse water and spray geometry, advance crests and cloud light from the ride clock and release owned textures, materials and meshes when the ride ends.
+- Capture six matched 1024 × 768 views with the HUD. Measure two headed Chromium low/WebGL2 rides with 4× CPU, DPR 1, 9 s warm-up and 60 s of moving frames on the opening bends and the approach to the stacks. Record distance, frame submission, average FPS, p95, longest frame and peak draw calls beside the Caribana comparison. ADRs 0021, 0023, 0030 and 0034–0035 govern fallback rendering and measurement.
