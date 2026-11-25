@@ -48,7 +48,7 @@ def beam(art,a,b,width,height,colour):
 
 
 LAP=13075/3
-RADIUS=37.
+RADIUS=15.
 STRAIGHT=LAP/2-math.pi*RADIUS
 PALETTE=(0xC74653,0xE58950,0xF1CC53,0x438967,0x4A84B2,0x845D98)
 
@@ -181,7 +181,26 @@ def pier(art):
         box(art,x,y,5.45,w,l,4.8,0xECE6D4)
         for j in range(-int(l/2)+2,int(l/2)-1,4):
             box(art,x-w/2-.08,y+j,7.0,.16,2.52,2.46,0x77979B)
-        art.roof((x,y,10.25),l+2,w+1.8,2.0,math.pi/2,lin(0xA79682))
+        art.roof((x,y,10.25),l+2,w+1.8,2.0,math.pi/2,lin(0x9CA4A1))
+        for side in (-1,1):
+            box(art,x+side*(w/2+.20),y,9.87,.45,l+.6,.46,0xFCF4DD)
+            for j in range(-int(l/2)+2,int(l/2),4):
+                box(art,x+side*(w/2+.22),y+j+1.53,6.18,.35,.23,3.93,0xF7F3E4)
+            for j in range(-int(l/2)+4,int(l/2),10):
+                cx=x+side*(w/2+.25)
+                a=(cx,y+j-4.2,10.46);peak=(cx,y+j,13.8);b=(cx,y+j+4.2,10.46)
+                face=(a,peak,b) if side<0 else (b,peak,a)
+                art.face(face,(lin(0xE7E3D0),)*3)
+                beam(art,a,peak,.29,.31,lin(0xFAF3E2));beam(art,peak,b,.29,.31,lin(0xFAF3E2))
+                box(art,cx+side*.08,y+j,10.61,.12,1.18,1.54,0x718B92)
+        for j in range(-int(l/2)+1,int(l/2),4):
+            box(art,x,y+j,12.13,.12,.12,1.36,0xDAD9C9)
+        for j in range(-int(l/2)+5,int(l/2),16):
+            art.tube((x,y+j,12.14),1.88,2.15,1.5,lin(0xDEE0D4),lin(0xEBE7DA),12)
+            for ring,(r1,r2,rise) in enumerate(((2.43,2.18,.72),(2.18,1.44,.86),(1.44,.68,.56),(.68,.08,.52))):
+                foot=(0,.72,1.58,2.14)[ring]
+                art.tube((x,y+j,13.64+foot),r1,r2,rise,lin(0x809188),lin(0xA1ADA3),12)
+            art.tube((x,y+j,16.30),.09,.055,1.28,lin(0x8A928B),lin(0xE0D7BC),6)
         for u in (-1,1):
             for v in (-1,1):
                 at=(x+u*w*.46,y+v*l*.43,9.95)
@@ -201,7 +220,7 @@ def pier(art):
 
 def regency(art,rng):
     for x in range(110,1975,15):
-        h=rng.choice((9.8,12.3,14.1));y=-88.7
+        h=rng.choice((9.8,12.3,14.1));y=-2*RADIUS-14.7
         col=rng.choice((0xE2D7BC,0xE8DFC8,0xD3C8B2,0xDFD5C4))
         box(art,x,y,16.55,14.93,11.0,h,col)
         box(art,x,y,16.45+h,15.12,11.5,.53,0xECE5D3)
@@ -238,9 +257,19 @@ def scenery(k):
             for j,tint in enumerate(PALETTE):
                 col=lin(tint);z=9.72-j*.25
                 for a in range(3):
-                    def pt(q,b):return x+.56*q,y+.24*math.sin(q+x*.1),z+b-.09*q
+                    def pt(q,b):return x+.30*q,y-math.copysign(.56*q,y)+.17*math.sin(q+x*.1),z+b-.09*q
                     face=(pt(a,0),pt(a+1,0),pt(a+1,-.25),pt(a,-.25))
                     art.face(face,(col,)*4)
+                    art.face([(u+.02,v,w) for u,v,w in reversed(face)],(col,)*4)
+            art.tube((x,y,11.56),.37,.085,.37,lin(0x50645F),lin(0x68786D),6)
+    for x in (240,520,740,910,1060,1290,1520):
+        for j in range(25):
+            y=-8.4+j*.7
+            z=10.97-1.15*math.cos(y/8.5*math.pi/2)
+            col=lin(PALETTE[j%6])
+            face=((x,y,z),(x,y+.67,z),(x+.19,y+.36,z-.91))
+            art.face(face,(col,)*3);art.face([(u+.016,v,w) for u,v,w in reversed(face)],(col,)*3)
+            beam(art,(x,y,z),(x,y+.70,z+.025),.027,.027,lin(0x746F63))
     for x in range(30,1770,4):
         for l in (-6.98,7.05):
             box(art,x,l,4.35,3.91,.052,.075,0x9DA3A0)
@@ -251,18 +280,30 @@ def scenery(k):
                 for j in range(2 if 465<x<1110 else 1):
                     u=x+rng.uniform(-1.8,1.7);l=side*rng.uniform(7.4,8.43)
                     h=rng.uniform(.9,1.12);skin=lin(rng.choice((0xBF936E,0x966C55,0xCEAA86,0x996D4F)))
-                    box(art,u,l,4.23,.31,.24,.78*h,0x4E5B65)
+                    for sideleg in (-1,1):
+                        box(art,u+sideleg*.105,l,4.23,.145,.17,.77*h,0x47515A)
                     shirt=lin(rng.choice((*PALETTE,0xCEC6B3,0x4E687F)))
                     art.tube((u,l,4.23+.75*h),.20,.265,.59*h,shirt,shirt,6)
                     art.tube((u,l,4.23+1.33*h),.14,.14,.30*h,skin,skin,7)
+                    for sidearm in (-1,1):
+                        shoulder=(u+sidearm*.21,l,4.23+1.27*h)
+                        hand=(u+sidearm*(.31 if j==0 else .26),l-.11,4.23+(1.61 if sidearm==1 and j==0 else .84)*h)
+                        beam(art,shoulder,hand,.108,.13,skin)
                     if j==0:art.tube((u,l,4.23+1.59*h),.15,.11,.11*h,lin(0x5C4C3E),lin(0x654F3D),7)
+    for x in range(111,1975,7):
+        box(art,x,-21.7,16.47,6.98,.42,.49,0xBDB5A5)
+        box(art,x,-21.7,17.58,7.1,.09,.085,0x728278)
+        for j in (-3.3,-1.72,0,1.72,3.3):box(art,x+j,-21.7,16.92,.085,.085,.68,0x687B70)
+        if x%35==6:
+            art.tube((x,-21.91,16.58),.11,.065,4.95,lin(0x62776D),lin(0x829185),7)
+            art.tube((x,-21.91,21.53),.33,.16,.65,lin(0xEEE7D3),lin(0xFAF2DB),8)
     x=2515;y=13
     art.tube((x,y,3.8),1.67,.79,143,lin(0x808480),lin(0x969C99),16)
     art.tube((x,y,92),7.3,9.1,2.7,lin(0x838786),lin(0xA6B9B6),24)
     art.tube((x,y,94.7),9.1,7.4,3.0,lin(0x8DA6AA),lin(0xC1CBC6),24)
     for x in range(420,1170,6):
         # Marshal the decorated vehicles in the shorefront traffic lane.
-        box(art,x,2.05,4.26,.15,.16,.64,0xA1B0A5)
-        box(art,x,2.05,4.77,.18,.19,.15,0xF1E5CB)
+        box(art,x,-2.05,4.26,.15,.16,.64,0xA1B0A5)
+        box(art,x,-2.05,4.77,.18,.19,.15,0xF1E5CB)
     warp(art.b)
     return {'efforts':0}
