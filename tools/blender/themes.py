@@ -1463,3 +1463,10 @@ for name in ("furka-pasture", "furka-scree", "furka-snow", "furka-tarmac"):
     MATERIALS[name] = {"color": 0x82817b, "rough": 1.0, "vertex": True}
 THEMES["furka"] = _furka.THEME
 SCENERY["furka"] = _furka.scenery
+
+import galibier as _galibier
+
+for name in ("galibier-pasture", "galibier-scree", "galibier-snow", "galibier-tarmac"):
+    MATERIALS[name] = {"color": 0x82807c, "rough": 1.0, "vertex": True}
+THEMES["galibier"] = _galibier.THEME
+SCENERY["galibier"] = _galibier.scenery

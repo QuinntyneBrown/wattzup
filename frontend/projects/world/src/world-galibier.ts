@@ -37,14 +37,14 @@ const BEHIND = 24;
 /** The valley falls VALLEY metres below the road on the left. */
 const VALLEY = 260;
 
-const FAN_WEAR = {
+export const FAN_WEAR = {
   tops: ['#ffd23f', '#ffffff', '#d8102e', '#1d5aa8', '#2a8a4a', '#f4f4f0', '#1d1f24'],
   bottoms: ['#1d1f24', '#2f3e5c', '#5a5f69'],
   skins: ['#f5d3b5', '#f0c8a0', '#e2b48c', '#c48a5f'],
 };
 
 /** The riders' names the fans have painted on the road. */
-const NAMES = ['ALLEZ', 'VAS-Y', 'PANTANI', 'GO GO', 'TADEJ', 'JONAS'];
+export const NAMES = ['ALLEZ', 'VAS-Y', 'PANTANI', 'GO GO', 'TADEJ', 'JONAS'];
 
 export class GalibierStreet implements SceneStreet {
   readonly group = new Group();
@@ -405,7 +405,7 @@ function snowTexture(): CanvasTexture {
 }
 
 /** A rider's name in rough white paint, as the rider reads it. */
-function nameTexture(name: string): CanvasTexture {
+export function nameTexture(name: string): CanvasTexture {
   return canvasTexture(512, 128, (g) => {
     g.clearRect(0, 0, 512, 128);
     g.save();

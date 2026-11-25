@@ -63,6 +63,17 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async galibierMotion(
+    part: 'flagAngle' | 'spectatorHeight' | 'cloudPosition' | 'streamOffset',
+  ): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async furkaMotion(
     part: 'cowHead' | 'postbusPosition' | 'cloudHeight' | 'postbusDistance' | 'iceAboveLake',
   ): Promise<number | null> {

@@ -68,6 +68,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Fish Hill, Cotswolds (`fishhill`) | Leg Burner (GCN Training, 30:00) | 11.600 km | 245 m | `public/courses/fishhill.glb` ([ride views](screenshots/fish-hill-cotswolds/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Mount Fuji Road (`fuji`) | 30 Minute HIIT Ramp Session (GCN Training, 30:00) | 13.250 km | 855 m | `public/courses/fuji.glb` ([ride views](screenshots/mount-fuji-road/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Furka Pass (`furka`) | 45 Minute VO2 Max Intervals (GCN, 45:00) | 20.025 km | 672 m | `public/courses/furka.glb` ([ride views](screenshots/furka-pass/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Col du Galibier (`galibier`) | Increase Your Threshold Power (GCN Training, 60:00) | 26.050 km | 942 m | `public/courses/galibier.glb` ([ride views](screenshots/col-du-galibier/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

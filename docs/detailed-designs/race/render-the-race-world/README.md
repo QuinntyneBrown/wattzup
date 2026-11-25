@@ -1053,3 +1053,18 @@ The class supplies repeated bends, effort grades and crisp alpine light. The cat
 | Summit, 19.72 km | A yellow pass sign and delineators mark 2,429 m below the bare peaks. Real 05, 07, 12 and 14, games 02 and 05. |
 
 Stage the nearest delineators and coping stones in front of the hotel and glacier basin, with Galenstock and Dammastock in fixed world positions like Caribana’s tower and skyline. Keep the hairpin arms clear of each other’s terrain. Draw the blanket seams, ice tongue and meltwater as separate surfaces so the rider can read their relationships on Low. The yellow postbus follows the actual turning road. Cows graze on the lower slopes and cloud rises from below. Tie motion to ride time, hold it on pause and honour reduced motion. Load and release each course-specific asset with its scene. Follow ADRs 0021, 0023, 0030, 0034 and 0035. Sample submitted frames after nine seconds of warm-up at Gletsch and the Belvédère bend.
+
+## Col du Galibier (#2123)
+
+The existing class repeats 360 metres of snow banks, Tour road paint, fans and flags. It already models the monument and La Meije. Preserve those subjects, the early-summer light and the moving crowd. A single ride from Map Select needs a continuous route, a tunnel branch and a legible summit sign. The 26.05 km route joins sections of both sides of the pass to fit the 60-minute workout. The high road stays open past the tunnel mouth.
+
+| Rider viewpoint | Composition and reference |
+| --- | --- |
+| Lachat, 0.08 km | Timber chalets and the river mark the Plan Lachat valley approach. Real 09–12 and 14, games 02 and 04. |
+| Switchbacks, 6.72 km | White edge dashes, shale, low walls and chevrons lead around the exposed hairpins. Real 02–04, 08 and 11, games 02–03. |
+| Tour, 11.52 km | Painted riders’ names lead past flags and fans on a narrow shoulder. Real 02–03 and 08, games 01 and 04. |
+| Tunnel, 18.42 km | The stone portal takes the lower branch while the rider climbs between cut snow banks. Real 01 and 06–07, games 03 and 05. |
+| Desgrange, 22.36 km | The carved granite memorial stands above the southern approach with La Meije across the valley. Real 05, 10 and 13, games 02 and 04. |
+| Summit, 25.82 km | A rough stone plinth carries the altitude and both departmental signs. Real 03, 07, 13 and 15, games 01 and 05. |
+
+The map catalogue supplies the original 20 class stages. CourseRenderer loads the Blender road, elevation samples and tier-appropriate scenery only when the rider enters the course. Use short terrain sections around the summit fork and retaining walls. Give the nearby stone arch and engraved memorial physical depth, with the fixed glaciated skyline beyond the valley. Share repeatable road and slate textures with the class where practical. Use instancing for cycling fans, ride-clock flag movement and clouds. Release their materials, textures and geometry on exit. ADRs 0021, 0023, 0030, 0034 and 0035 govern rendering and quality. Follow the performance design for two headed simulated-tablet rides, measuring actual submissions after nine seconds of warm-up.

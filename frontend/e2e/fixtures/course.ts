@@ -43,6 +43,7 @@ import fensElevation from './fens-elevation.json';
 import fishhillElevation from './fishhill-elevation.json';
 import fujiElevation from './fuji-elevation.json';
 import furkaElevation from './furka-elevation.json';
+import galibierElevation from './galibier-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -2845,6 +2846,49 @@ export const furkaCourseMap = {
       seg('recover', 180, 13, 85),
       seg('work', 300, 22, 90),
       seg('cool-down', 300, 11, 85),
+    ],
+  },
+};
+
+export const galibierCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'col-du-galibier',
+  name: 'Col du Galibier',
+  routeName: 'The pass road',
+  place: 'French Alps, France',
+  world: 'galibier',
+  distanceKm: 26.05,
+  climbingM: 942,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: galibierElevation,
+  },
+  thumbnailUrl: 'maps/col-du-galibier.jpg',
+  photoUrl: 'maps/col-du-galibier-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 13, 80),
+      seg('work', 300, 16, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 18, 85),
+      seg('work', 120, 21, 90),
+      seg('recover', 120, 18, 85),
+      seg('work', 120, 22, 100),
+      seg('recover', 120, 23, 100),
+      seg('work', 90, 11, 80),
+      seg('recover', 360, 21, 90),
+      seg('work', 120, 22, 100),
+      seg('recover', 150, 19, 90),
+      seg('work', 360, 11, 80),
+      seg('recover', 150, 19, 90),
+      seg('work', 150, 22, 90),
+      seg('recover', 150, 19, 90),
+      seg('work', 150, 22, 90),
+      seg('recover', 240, 11, 80),
+      seg('work', 240, 22, 90),
+      seg('cool-down', 180, 10, 80),
     ],
   },
 };
