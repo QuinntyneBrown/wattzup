@@ -144,6 +144,21 @@ def portico(art,x,y,width,h,pillars,floor):
 
 def museum(art):
     wall,stone,glass,roof=map(lin,(0xBA9A6C,0xCDB58B,0x526575,0x776D64))
+    # The museum stands on Fairmount. The lawn rises behind the stair cheeks
+    # and continues underneath both wings to meet their stone foundations.
+    grass,earth=lin(0x778657),lin(0xA49A83)
+    for side in (-1,1):
+        for a,b in zip((-84,-58,-33,-7,16,44),(-58,-33,-7,16,44,82)):
+            def cross(x):
+                rise=TOP*smooth(-84,8,x)
+                return [(x,side*y,z) for y,z in ((15.8,rise),(35,rise*.94),(65,rise*.83),(89,rise*.29),(113,-.16))]
+            ca,cb=cross(a),cross(b)
+            for j in range(4):
+                f=(ca[j],cb[j],cb[j+1],ca[j+1])
+                art.face(f if side==1 else f[::-1],(grass,)*4)
+    art.box((47,0,-.18),(58,123,TOP+.19),0,earth)
+    for wing in (-1,1):
+        art.box((27,wing*48,-.12),(33,24,TOP+.15),0,lin(0xA89A7E))
     art.box((49,0,TOP-.10),(30,122,16.4),0,wall)
     for wing in (-1,1):
         y=wing*48
@@ -162,6 +177,11 @@ def museum(art):
             z=(flight*12+k+1)*RISER
             for side in (-1,1):
                 art.box((x+TREAD/2,side*8.55,-.12),(TREAD,15.25,z+.12),0,lin(0xA8A397 if k%3 else 0xABA69B))
+                # A slim weathered front edge and staggered granite slab joints.
+                art.box((x+.037,side*8.55,z+.002),(.074,15.25,.004),0,lin(0xBDB9AD))
+                for joint in range(4):
+                    y=side*(2.65+joint*3.25+(k%2)*.68)
+                    art.box((x+TREAD/2,y,z+.003),(TREAD,.035,.005),0,lin(0x807F76))
         if flight<5:
             x=-STAIRS-TERRACE+flight*(FLIGHT+LANDING)+FLIGHT
             for side in (-1,1):
