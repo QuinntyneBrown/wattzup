@@ -1548,3 +1548,7 @@ import isleofman as _isleofman
 
 THEMES['isleofman'] = _isleofman.THEME
 SCENERY['isleofman'] = _isleofman.scenery
+import iten as _iten
+
+THEMES['iten'] = _iten.THEME
+SCENERY['iten'] = _iten.scenery

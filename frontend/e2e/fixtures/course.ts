@@ -1,6 +1,7 @@
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
+import itenElevation from './iten-elevation.json';
 import angliruElevation from './angliru-elevation.json';
 import artMuseumElevation from './artmuseum-elevation.json';
 
@@ -3547,6 +3548,43 @@ export const isleofmanCourseMap = {
       seg('work', 10, 24, 100),
       seg('recover', 50, 14, 80),
       seg('cool-down', 360, 10, 80),
+    ],
+  },
+};
+
+export const itenCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'iten-kenya',
+  name: 'Iten, Kenya',
+  routeName: 'The red-dirt road',
+  place: 'Iten and the Kerio Valley, Kenya',
+  world: 'iten',
+  distanceKm: 17.86,
+  climbingM: 378,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: itenElevation,
+  },
+  thumbnailUrl: 'maps/iten-kenya.jpg',
+  photoUrl: 'maps/iten-kenya-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 120, 21, 90),
+      seg('work', 60, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 840, 19, 93),
+      seg('work', 180, 22, 90),
+      seg('work', 60, 24, 110),
+      seg('recover', 300, 11, 80),
+      seg('work', 60, 24, 110),
+      seg('recover', 180, 11, 80),
+      seg('work', 60, 24, 110),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 24, 110),
+      seg('cool-down', 120, 11, 80),
     ],
   },
 };

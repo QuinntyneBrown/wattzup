@@ -1,0 +1,103 @@
+{
+  "id": "iten",
+  "name": "Iten, Kenya",
+  "world": "iten",
+  "theme": "iten",
+  "seed": 2142,
+  "layout": 0,
+  "class": {
+    "id": "40-minute-hiit",
+    "title": "40 Minute HIIT",
+    "channel": "GCN Training",
+    "videoId": "6I_GpZZUWhQ",
+    "syncOffsetSeconds": 2
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 840,
+        "level": 19,
+        "cadenceAim": 93
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "cool-down",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

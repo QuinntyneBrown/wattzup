@@ -1276,3 +1276,17 @@ Trace the existing Isle of Man registry entry into the race catalogue and its la
 Use the fixed skyline and batched crowd approach from Caribana. Keep the rails, stairs, pub windows and marshals legible on Low. Release the textures, shared materials and tram geometry when the course leaves the screen. Test the ordinary rider entry, pause and resume through the fixture bike. Compare matching photos and measure two submitted one-minute samples after nine seconds of warm-up.
 
 The native scene models the slate courses, low hawthorn and ash, sheep, Snaefell summit masts, catenary, railway buildings, stair treads, Creg-ny-Baa windows and spectator stand. The train, marshal flag and illumination follow the ride clock. The changing cloud light uses an original generated Manx panorama. Crossing poles stand clear of the carriageway. White dashes share a continuous surface with the asphalt so depth precision on Low preserves the paint.
+
+### Iten, Kenya · #2142
+
+The existing world registry entry describes the red-dirt training road. Map Select also needs the original GCN workout published in the API catalogue. Its 14 stages of *40 Minute HIIT* cover 17.86 km in 40:00 with a two-second video offset. The Race journey enters a lazy native course through the course registry (ADRs 0021, 0023, 0030, 0034 and 0035). The rider and HUD share the sampled elevation. The off-network world uses local geometry and artwork.
+
+| Rider view | Construction and reference |
+| --- | --- |
+| Murram and runners | Two worn wheel paths reveal red laterite under the loose surface. Runner groups wear different kit and stride out of phase on the verge. The broken acacia crowns give way to candelabra euphorbia. Real 01–05 and 08, games 01–02 and 04. |
+| Farms and Kamariny Stadium | Fence wires follow timber posts between maize, pasture and tea plots. Cattle and goats cluster with their herders. The dirt oval encloses grass, with a simple covered timber stand on the long straight. Real 04, 07–08 and 12–14, games 03 and 04. |
+| Town and valley rim | Painted fascias sit under corrugated shop roofs beside a matatu and a moving boda-boda. The road shoulder opens onto successive spurs of the Kerio Valley under equatorial cumulus. Real 06, 09–11 and 15, games 01, 03 and 05. |
+
+As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
+
+The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.

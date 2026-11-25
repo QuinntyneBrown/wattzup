@@ -182,6 +182,8 @@ import type { sunsetStrip } from './sunset-strip';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
+import type { ItenTraining } from './iten-training';
+
 const eveningUniform = () => uniform(0);
 const CAMERA_BACK = 2.75;
 const CAMERA_UP = 1.8;
@@ -658,6 +660,7 @@ export class CourseRenderer implements WorldRenderer {
   /** Set by the test-only hook: the tier never steps, and each frame's cost is written to the hook. */
   private pinned = false;
   /** Set by the test-only hook: the metres up the road the bench starts its ride from. */
+  private trainingHighlands: ItenTraining | null = null;
   private benchFrom = 0;
   /** The street lamps' light on what stands near the road, where the course has lamps; and the riders' materials lit by it. */
   private lampGlow: LampGlow | null = null;
@@ -848,6 +851,18 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'iten') {
+        const { ItenTraining } = await import('./iten-training');
+        if (this.disposed) return false;
+        const highlands = await ItenTraining.load(this.course);
+        if (this.disposed) {
+          highlands.dispose();
+          return false;
+        }
+        this.trainingHighlands = highlands;
+        this.scene.add(highlands.root);
+        this.disposables.push(highlands);
       }
       const blossomModules =
         parsed.id === 'cherryblossom'
@@ -1788,6 +1803,7 @@ export class CourseRenderer implements WorldRenderer {
       this.camera.position.y,
       this.camera.position.z,
     );
+    this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
       you.group.position.x,
@@ -2185,6 +2201,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
+    if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
     const raining = courseRain(this.course!.file);
@@ -2758,6 +2775,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
     this.mountain?.frameView(metres, this.camera.position, ahead);
+    this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
       ahead.y +
@@ -3266,6 +3284,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
     if (this.mountain) Object.assign(drawn, this.mountain.report());
+    if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }
 
