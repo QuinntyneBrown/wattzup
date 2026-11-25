@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Junkanoo, Nassau (#2146)
+
+Preserve the 22-stage GCN class and the existing world soundtrack. Give the race a physical Bay Street course with original Nassau landmarks. Map Select and Race Setup pass the rider into the lazy course renderer, which loads the same-origin GLB and its arc-length profile. No other Junkanoo issue appeared in the rider-feedback title search.
+
+| Rider view | Real and game references | What remains legible on Low |
+| --- | --- | --- |
+| Bay Street, 0.08 km | Real 07, 11, 13–14 and games 01 and 04 | A narrow floodlit lane between colonial shop galleries, Bahamian shutters and freestanding barriers, with raised grandstands behind the spectators. |
+| Valley Boys, 2.31 km | Real 01–06 and games 02–03 | A giant original crepe-paper lead piece, its cut fringe and high headpiece reflecting the floodlights. The group name is readable over the crowd. |
+| Saxons, 4.76 km | Real 03–04, 09–10 and 12 and games 01 and 03 | Shoulder straps hold the goatskin drums. Hands swing cowbells, horn bells point above the players and the Saxons banner identifies the troupe. |
+| Rawson and Parliament squares, 7.24 km | Real 07, 13–14 and games 01 and 05 | Leave a sightline past palms to the seated Queen Victoria on her plinth, the pink government buildings, white verandahs and louvred shutters. |
+| Roots, 9.48 km | Real 02, 05–06 and 08–09 and games 03 and 05 | A distinct lead silhouette, group banner, fringe, spectators on tiers behind their barriers and black, aquamarine and yellow flags. |
+| Prince George Wharf, 12.12 km | Real 01, 13 and 15 and games 02 and 04 | Bands leave paper on the tarmac. A break in the shopfronts reveals water, the cruise-ship decks and a pink sky behind the wharf. |
+
+Real 10 depicts the Harbour Island band and informs drum scale and carriage. Use the Nassau street photographs for local buildings. Compare the distant harbour and moving parade foreground with Caribana’s skyline and bands. Batch the paper, barriers and musicians, animate from race time and release geometry, materials and textures when the rider exits. Match six HUD-visible viewpoints and record submitted FPS, p95, longest interval, peak calls and distance through the two one-minute tablet rides.
