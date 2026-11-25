@@ -19,6 +19,7 @@ import brooklynElevation from './brooklyn-elevation.json';
 import calobraElevation from './calobra-elevation.json';
 import campolongoElevation from './campolongo-elevation.json';
 import cabotElevation from './cabot-elevation.json';
+import caribanaElevation from './caribana-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1483,6 +1484,48 @@ export const cabotCourseMap = {
       seg('work', 1440, 21, 85),
       seg('work', 60, 24, 110),
       seg('cool-down', 300, 11, 85),
+    ],
+  },
+};
+
+export const caribanaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'caribana-parade',
+  name: 'Caribana Parade',
+  routeName: 'Lake Shore Boulevard',
+  place: 'Toronto, Canada',
+  world: 'caribana',
+  distanceKm: 6.555,
+  climbingM: 151,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0.5, work: 3, recover: -0.5, 'cool-down': 0, steady: 0 },
+    roll: 2.85,
+    elevation: caribanaElevation,
+  },
+  thumbnailUrl: 'maps/caribana-parade.jpg',
+  photoUrl: 'maps/caribana-parade-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 16, 113),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 16, 113),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 16, 113),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 16, 113),
+      seg('recover', 150, 11, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 22, 100),
+      seg('cool-down', 90, 11, 80),
     ],
   },
 };

@@ -31,6 +31,7 @@ export interface WorldRideProbeReport {
   readonly gpuMs: number[] | null;
   /** Draw calls in the latest frame, every pass included. */
   drawCalls: number;
+  paradeMetres?: number;
   /** Shader programs alive. */
   programs: number;
   /** Shader programs alive when the scene had loaded, before its first frame (L2-111 AC10). */

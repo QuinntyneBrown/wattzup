@@ -5,6 +5,7 @@ import type { SceneStreet, StreetFactory } from './world-kit';
 const SECTION = 24;
 const LOOP = 360;
 const DRAW_AHEAD = 160;
+const MARCH_METRES_PER_SECOND = 0.6;
 
 /** The authored blocks have local origins on the road centre at the start of each section. */
 export async function loadTabletCaribana(): Promise<StreetFactory> {
@@ -12,7 +13,8 @@ export async function loadTabletCaribana(): Promise<StreetFactory> {
   return (_track, disposables): SceneStreet => {
     const group = new Group();
     const backdrop: Mesh[] = [];
-    const sections: { mesh: Mesh; start: number }[] = [];
+    const sections: { mesh: Mesh; start: number; marching: boolean }[] = [];
+    let march = 0;
     const materials = new Set<Material>();
     for (const part of asset.scene.children) {
       const mesh = part as Mesh;
@@ -29,7 +31,11 @@ export async function loadTabletCaribana(): Promise<StreetFactory> {
         disposables.push(placed.material);
         backdrop.push(placed);
       } else {
-        sections.push({ mesh: placed, start: -mesh.position.z });
+        sections.push({
+          mesh: placed,
+          start: -mesh.position.z,
+          marching: mesh.name.startsWith('Mas_'),
+        });
       }
     }
     for (const material of materials) {
@@ -37,7 +43,12 @@ export async function loadTabletCaribana(): Promise<StreetFactory> {
       if (map) disposables.push(map);
     }
     disposables.push(...materials);
+    const band = group.getObjectByName('Mas_00');
+    const kerb = group.getObjectByName('Art_00');
     return {
+      get paradeMetres() {
+        return band && kerb ? (kerb.position.z - band.position.z + LOOP) % LOOP : undefined;
+      },
       group,
       backdrop,
       build() {
@@ -46,12 +57,13 @@ export async function loadTabletCaribana(): Promise<StreetFactory> {
       lay() {
         // place() aligns each section to the grade.
       },
-      setTime() {
-        // The authored tablet scenery is static.
+      setTime(seconds) {
+        march = (seconds * MARCH_METRES_PER_SECOND) % LOOP;
       },
       place(distance, heightAt) {
         for (const section of sections) {
-          const ahead = ((((section.start - distance + 48) % LOOP) + LOOP) % LOOP) - 48;
+          const start = section.start + (section.marching ? march : 0);
+          const ahead = ((((start - distance + 48) % LOOP) + LOOP) % LOOP) - 48;
           const mesh = section.mesh;
           mesh.visible = ahead >= -48 && ahead < DRAW_AHEAD;
           if (!mesh.visible) continue;
