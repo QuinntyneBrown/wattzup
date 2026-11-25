@@ -31,6 +31,7 @@ import type { WorldScene } from '@telo/world';
 @Directive({ selector: '[wzRaceWorld]' })
 export class RaceWorld {
   readonly map = input.required<MapDto>({ alias: 'wzRaceWorld' });
+  readonly raceMetres = input.required<number>();
   readonly elapsed = input.required<number>();
   readonly speedKmh = input.required<number | null>();
   readonly running = input.required<boolean>();
@@ -77,6 +78,7 @@ export class RaceWorld {
     const map = this.map();
     scene.setInput('worldId', map.world);
     scene.setInput('segments', map.plan.segments);
+    scene.setInput('raceMetres', this.raceMetres());
     scene.setInput('elapsed', this.elapsed());
     scene.setInput('speedKmh', this.speedKmh());
     scene.setInput('running', this.running());
