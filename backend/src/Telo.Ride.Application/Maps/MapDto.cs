@@ -32,7 +32,7 @@ public sealed record MapDto(
         map.ThumbnailUrl, map.PhotoUrl, map.Unlock.Goal(names), map.Unlock.MapId,
         map.Unlock.Kind == MapUnlock.LevelKind ? map.Unlock.Level : null,
         new PlanDto([.. map.Plan.Select(s => new SegmentDto(s.Kind, s.Duration, s.Level, s.CadenceAim))]),
-        new MapTerrainDto(map.Terrain.Grade, map.Terrain.Roll),
+        new MapTerrainDto(map.Terrain.Grade, map.Terrain.Roll, map.Terrain.Elevation),
         map.RealPlace is { } place
             ? new RealPlaceDto(place.Name, place.Route, place.Latitude, place.Longitude)
             : null);
@@ -42,4 +42,4 @@ public sealed record MapDto(
 public sealed record RealPlaceDto(string Name, string Route, double Latitude, double Longitude);
 
 /// <summary>A map's world as its road climbs: the grade for each segment kind, and the rolling grade over it.</summary>
-public sealed record MapTerrainDto(IReadOnlyDictionary<string, double> Grade, double Roll);
+public sealed record MapTerrainDto(IReadOnlyDictionary<string, double> Grade, double Roll, IReadOnlyList<double>? Elevation = null);
