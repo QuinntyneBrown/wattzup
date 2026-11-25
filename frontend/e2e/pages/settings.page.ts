@@ -204,6 +204,5 @@ export class SettingsPage {
 
   async open(fragment = ''): Promise<void> {
     await this.page.goto(`/settings${fragment ? `#${fragment}` : ''}`);
-    await this.sectionNav.waitFor();
   }
 }
