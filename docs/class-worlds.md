@@ -15,6 +15,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Dolomites (`dolomites`) | The catalogue's 30:00 intervals (placeholder) | 38.5 km | 860 m | `public/courses/dolomites.glb` ([film](../blender/dolomites.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Vice City (`vicecity`) | The catalogue's 30:00 intervals (placeholder) | 24 km | 60 m | `public/courses/vicecity.glb` ([film](../blender/vicecity.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Col du Granit (`granite`) | The catalogue's 30:00 intervals (placeholder) | 16.1 km | 1,240 m | `public/courses/granite.glb` ([film](../blender/granite.mp4)) | Built in Blender (ADR 0035) and ridden in races |
+| Bathsheba, Barbados (`bathsheba`) | Take It Easy (GCN Training, 25:00) | 10.700 km | 31 m | `public/courses/bathsheba.glb` ([ride views](screenshots/bathsheba-barbados/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
@@ -103,7 +104,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 73 | Festive Spin With Surprise Sprints | Strasbourg Christmas Market | 35% |  | Lights, gingerbread stalls and carols; surprise sprints between market squares. |
 | 74 | Quick & Sharp Sprinting Efforts | Champs-Élysées Finale | 80% |  | Final-day cobbles toward the Arc de Triomphe; sharp sprints for the line. |
 | 75 | Cadence Training to Improve Pedalling | Kyoto Hanami | 35% |  | The Philosopher's Path under pink sakura petals during cherry-blossom season. |
-| 76 | Take It Easy | Bathsheba, Barbados | 35% | [Ride views](screenshots/bathsheba-barbados/README.md) | A calm coast road past rum shacks, palms and white sand. |
+| 76 | Take It Easy | Bathsheba, Barbados | 35% |  | A calm coast road past rum shacks, palms and white sand. |
 | 77 | Easy Cadence Workout | Dutch Tulip Fields | 78% |  | Flat roads through striped bulb fields and windmills near Lisse. |
 | 78 | Step It Up | Machu Picchu Road | 35% |  | Switchbacks climbing through cloud to the Inca citadel. |
 | 79 | Running on Empty | Outback Highway | 35% |  | Endless red earth and road trains toward Uluru, fuel stops far apart. |
