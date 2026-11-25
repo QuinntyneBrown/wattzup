@@ -634,7 +634,10 @@ export class CourseRenderer implements WorldRenderer {
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
-    if (this.championship) materials['Tenements'] = this.championship.wall;
+    if (this.championship) {
+      materials['Tenements'] = this.championship.wall;
+      materials['RaceBoards'] = this.championship.boardMaterial;
+    }
     const painted: Mesh[] = [];
     map.traverse((part) => {
       const mesh = part as Mesh;
@@ -1122,7 +1125,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
-    if (this.championship) Object.assign(drawn, this.championship.state);
+    if (this.championship) Object.assign(drawn, this.championship.measure(this.camera));
     hook['course'] = drawn;
   }
 

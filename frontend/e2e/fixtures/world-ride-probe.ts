@@ -61,7 +61,9 @@ export class WorldRideProbe {
     }, metres);
   }
 
-  async glasgowMotion(part: 'umbrellaHeight' | 'sprayHeight'): Promise<number | null> {
+  async glasgowMotion(
+    part: 'umbrellaHeight' | 'sprayHeight' | 'gantryX' | 'chambersX',
+  ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide

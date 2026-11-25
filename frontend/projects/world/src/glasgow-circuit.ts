@@ -1,5 +1,8 @@
 import {
+  BoxGeometry,
   BufferGeometry,
+  type Camera,
+  CanvasTexture,
   Color,
   CylinderGeometry,
   DoubleSide,
@@ -14,6 +17,7 @@ import {
   SphereGeometry,
   SRGBColorSpace,
   TextureLoader,
+  Vector3,
 } from 'three/webgpu';
 import type { Course } from './course';
 import { seeded } from './world-kit';
@@ -48,6 +52,58 @@ function umbrella() {
   return geometry;
 }
 
+function finishGantry() {
+  const group = new Group();
+  const steel = new MeshLambertMaterial({ color: 0x4a5261 });
+  const beam = new BoxGeometry(1, 1, 1);
+  for (const side of [-1, 1]) {
+    for (const edge of [-1, 1]) {
+      const post = new Mesh(beam, steel);
+      post.position.set(edge * 0.44, 3.05, side * 6.1);
+      post.scale.set(0.22, 6.1, 0.33);
+      group.add(post);
+    }
+    for (let level = 0; level < 5; level++) {
+      const brace = new Mesh(beam, steel);
+      brace.position.set(0, level * 1.13 + 0.75, side * 6.1);
+      brace.rotation.z = (level % 2 ? -1 : 1) * 0.65;
+      brace.scale.set(0.13, 1.43, 0.18);
+      group.add(brace);
+    }
+  }
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 128;
+  const ctx = canvas.getContext('2d')!;
+  ctx.fillStyle = '#18354c';
+  ctx.fillRect(0, 0, 1024, 128);
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 68px sans-serif';
+  ctx.fillText('GLASGOW  •  FINISH', 512, 69);
+  ctx.font = 'bold 25px sans-serif';
+  ctx.fillText('ROAD WORLD CHAMPIONSHIPS', 512, 102);
+  for (const [index, tint] of ['#3898cd', '#db4545', '#202126', '#edc331', '#50a164'].entries()) {
+    ctx.fillStyle = tint;
+    ctx.fillRect(0, 108 + index * 4, 1024, 4);
+  }
+  const print = new CanvasTexture(canvas);
+  print.colorSpace = SRGBColorSpace;
+  const cloth = new MeshBasicMaterial({ map: print, side: DoubleSide });
+  const panel = new PlaneGeometry(12.9, 1.62);
+  const sign = new Mesh(panel, cloth);
+  sign.rotation.y = -Math.PI / 2;
+  sign.position.set(-0.45, 6.05, 0);
+  group.add(sign);
+  return {
+    group,
+    sign,
+    dispose() {
+      for (const owned of [steel, beam, print, cloth, panel]) owned.dispose();
+    },
+  };
+}
+
 export function glasgowCircuit(course: Course) {
   const group = new Group(),
     rng = seeded(2127),
@@ -57,6 +113,9 @@ export function glasgowCircuit(course: Course) {
   tenement.colorSpace = chambers.colorSpace = SRGBColorSpace;
   tenement.anisotropy = 4;
   const wall = new MeshBasicMaterial({ map: tenement, side: DoubleSide });
+  const boards = loader.load('courses/glasgow-barriers.webp');
+  boards.colorSpace = SRGBColorSpace;
+  const boardMaterial = new MeshBasicMaterial({ map: boards, side: DoubleSide });
   const civic = new MeshBasicMaterial({ map: chambers, side: DoubleSide, alphaTest: 0.55 });
   const faceGeometry = new PlaneGeometry(98, 44);
   const face = new Mesh(faceGeometry, civic);
@@ -64,12 +123,20 @@ export function glasgowCircuit(course: Course) {
   face.position.set(start.x + 174.55, course.place(110).y + 22.14, -14);
   face.rotation.y = -Math.PI / 2;
   group.add(face);
+  const finish = finishGantry();
+  finish.group.position.set(start.x, start.y, start.z);
+  group.add(finish.group);
+  const projected = new Vector3();
+  function screenX(mesh: Mesh, camera: Camera) {
+    mesh.getWorldPosition(projected).project(camera);
+    return Math.abs(projected.z) <= 1 ? projected.x : Infinity;
+  }
   const geom = {
     body: new SphereGeometry(1, 9, 7),
     post: new CylinderGeometry(1, 1, 1, 7),
     hood: umbrella(),
   };
-  const sizes = { body: 1700, post: 1300, hood: 350 };
+  const sizes = { body: 3200, post: 1300, hood: 350 };
   const lit = new MeshLambertMaterial(),
     cloth = new MeshLambertMaterial({ vertexColors: true, side: DoubleSide });
   const batches = {
@@ -138,6 +205,7 @@ export function glasgowCircuit(course: Course) {
     roll: number,
     tone: number,
   ) {
+    if (count[kind] >= sizes[kind]) return;
     const i = count[kind]++;
     scratch.position.set(x, y, z);
     scratch.rotation.set(0, yaw, roll, 'YXZ');
@@ -156,7 +224,7 @@ export function glasgowCircuit(course: Course) {
   const spray = new InstancedMesh(drops, water, 28);
   spray.frustumCulled = false;
   group.add(spray);
-  const state = { umbrellaHeight: 0, sprayHeight: 0 },
+  const state = { umbrellaHeight: 0, sprayHeight: 0, gantryX: Infinity, chambersX: Infinity },
     wheel = course.place(0);
   function update(time: number, metres: number, speed: number, reduced: boolean) {
     count.body = count.post = count.hood = 0;
@@ -183,6 +251,30 @@ export function glasgowCircuit(course: Course) {
           h,
           0,
           0x3d4548,
+        );
+        part(
+          'body',
+          x + side * dx * 2.15,
+          y + 1.13 * a,
+          z + side * dz * 2.15,
+          0.084,
+          0.234 * a,
+          0.095,
+          h,
+          side * 0.16,
+          coat,
+        );
+        part(
+          'body',
+          x + side * dx * 2.43,
+          y + 0.92 * a,
+          z + side * dz * 2.43,
+          0.071,
+          0.085,
+          0.076,
+          h,
+          0,
+          skin,
         );
         part('body', x + side * dx, y + 0.09, z + side * dz, 0.092, 0.08, 0.15, h, 0, 0x333334);
       }
@@ -225,12 +317,21 @@ export function glasgowCircuit(course: Course) {
       spray.instanceMatrix.needsUpdate = true;
     }
   }
+  update(0, 0, 0, false);
   return {
     group,
-    state,
+    measure(camera: Camera) {
+      state.gantryX = screenX(finish.sign, camera);
+      state.chambersX = screenX(face, camera);
+      return state;
+    },
     wall,
+    boardMaterial,
     update,
     dispose() {
+      finish.dispose();
+      boards.dispose();
+      boardMaterial.dispose();
       group.removeFromParent();
       for (const b of Object.values(batches)) b.dispose();
       spray.dispose();

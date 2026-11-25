@@ -53,7 +53,17 @@ def lay(course,theme,bc):
     return samples,stages,LENGTH,mean,0
 
 def land(road,col,theme,bc):
-    return None,lambda x,y:road.s[road.tree.find((x,y,0))[1]]['z']-.02
+    def ground(x,y):
+        return road.s[road.tree.find((x,y,0))[1]]['z']-3.8
+    district=bc.Builder('Glasgow city ground','terrain')
+    district.colours=[]
+    xs=[s['x'] for s in road.s];ys=[s['y'] for s in road.s]
+    for x in range(math.floor(min(xs))-250,math.ceil(max(xs))+250,32):
+        for y in range(math.floor(min(ys))-250,math.ceil(max(ys))+250,32):
+            corners=[(a,b,ground(a,b)) for a,b in ((x,y),(x+32,y),(x+32,y+32),(x,y+32))]
+            district.quad(*corners)
+            district.colours.extend([lin(0x716F67)]*4)
+    return district.build(col),ground
 
 def road_surface(road,st,length,col,theme,bc):
     tar=bc.Builder('Road','asphalt');paint=bc.Builder('RoadPaint','paint')
@@ -80,18 +90,39 @@ def road_surface(road,st,length,col,theme,bc):
                 a,c=road.at(i,1+n*.92,.029),road.at(i,1.58+n*.92,.029)
                 x,y,h,_=position(d);vx,vy=.24*math.cos(h),.24*math.sin(h)
                 paint.quad(c,a,(a[0]+vx,a[1]+vy,a[2]),(c[0]+vx,c[1]+vy,c[2]))
+    x,y,h,_=position(0)
+    for row in range(2):
+        for tile in range(20):
+            if (tile+row)%2:continue
+            pts=[(x+u,y+v,elevation(u)+.031) for u,v in
+                 ((row*.49,-5+tile*.5),((row+1)*.49,-5+tile*.5),
+                  ((row+1)*.49,-4.5+tile*.5),(row*.49,-4.5+tile*.5))]
+            paint.quad(*pts)
     for b in (tar,paint,pavement):b.build(col)
 
 def scenery(k):
     art=Painted(k);rng=k.rng;r=k.road
     def block(d,l,z,w,dep,h,colour):
-        art.box(r.pos(d,l,z),(w,dep,h),position(d)[2],lin(colour))
+        art.box(r.pos(d%LENGTH,l,z),(w,dep,h),position(d)[2],lin(colour))
     # The grass islands, warm gravel and black railings of George Square.
     for d in range(-110,97,12):
         block(d,24,.1,12,38,.18,0x9A907C)
         block(d,24,.30,11.8,27,.12,0x62794D)
+    for d in range(-148,111,9):
+        x,y,z=r.pos(d%LENGTH,42,.18)
+        art.tube((x,y,z),.24,.15,4.4,lin(0x574943),lin(0x706054),9)
+        for j,(off,high,radius) in enumerate(((-1.25,3.7,2.1),(1.05,4.25,2.3),(0,5.8,2.05))):
+            low,high_tint=lin((0x57684D,0x5E7552,0x697C58)[j]),lin(0x82906B)
+            art.tube((x+off,y,z+high),radius*.43,radius,1.35,low,high_tint,10)
+            art.tube((x+off,y,z+high+1.35),radius,.32,1.55,high_tint,high_tint,10)
+        for l in (10.5,38.5):
+            block(d,l,.27,.11,.11,1.15,0x495250)
+            block(d+4.5,l,1.13,9,.08,.08,0x495250)
+        if d%3==2:
+            block(d,9,.12,.15,.15,4.7,0x505553)
+            block(d,9,4.76,.46,.46,.6,0xE2D9B9)
     for d,l in ((-89,16),(-30,32),(9,20),(72,28)):
-        x,y,z=r.pos(d,l,.41)
+        x,y,z=r.pos(d%LENGTH,l,.41)
         art.box((x,y,z),(4.3,4.1,.62),0,lin(0x9F9990))
         art.box((x,y,z+.62),(3.1,2.95,.50),0,lin(0xB6B0A5))
         art.box((x,y,z+1.12),(2.4,2.25,2.8),0,lin(0x908C82))
@@ -147,8 +178,9 @@ def scenery(k):
         art.box((x,y,z+8.55),(1.62,1.62,.68),yaw,lin(0xC4BCAD))
     art.box(local(0,-4.3,10.2),(29,4.6,1.3),yaw,lin(0xBFB5A5))
     art.roof(local(0,-9.6,11.5),13.1,29,4.6,yaw+math.pi/2,lin(0xAAA194))
-    mount(art,r,at-14,-12.4)
+    mount(art,r,at-24,-10.3)
     # Steel barriers backed by rainbow panels near the finish and at championship viewing areas.
+    sponsors=Painted(k,'asphalt');sponsors.b.name='RaceBoards';sponsors.b.uvs=[]
     for start,end in ((-190,170),(1320,1490),(3460,3670),(6090,6285),(9120,9370),(12680,12890)):
         for d in range(start,end,3):
             for side in (-1,1):
@@ -156,6 +188,13 @@ def scenery(k):
                 block(d,l,.15,2.80,.11,.88,0xD0D4CE)
                 for j,tone in enumerate((0x4180B6,0xB74145,0x3F4246,0xCCA13C,0x4F885B)):
                     block(d,l-side*.064,.36+j*.085,2.65,.036,.08,tone)
+                if (d-start)//3%3==0:
+                    def panel(u,h):return r.pos((d+u)%LENGTH,l-side*.10,h)
+                    pts=[panel(-1.35,.60),panel(1.35,.60),panel(1.35,.98),panel(-1.35,.98)]
+                    sponsors.face(pts,(lin(0xFFFFFF),)*4)
+                    u=((d-start)//9%2)*.5;v=u+.5
+                    if side<0:u,v=v,u
+                    sponsors.b.uvs.extend([(u,1),(v,1),(v,0),(u,0)])
                 block(d,l,.99,2.94,.10,.075,0x737B7D)
                 block(d+1.4,l,.1,.07,.13,.96,0x7C8181)
     for d in range(236,12915,105):
@@ -167,7 +206,7 @@ def scenery(k):
 
 def mount(art,r,station,side):
     """Wellington’s bronze horse, rider and the traffic cone on the raised stone plinth."""
-    yaw=position(station)[2]+.62;x,y,z=r.pos(station,side,.14)
+    yaw=position(station)[2]+1.22;x,y,z=r.pos(station,side,.14)
     bronze,light,stone=lin(0x384A43),lin(0x536158),lin(0x938C82)
     def pt(u,v,h):
         return x+u*math.cos(yaw)-v*math.sin(yaw),y+u*math.sin(yaw)+v*math.cos(yaw),z+h
