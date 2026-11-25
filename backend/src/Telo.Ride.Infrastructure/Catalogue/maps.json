@@ -1531,6 +1531,173 @@
         },
         "roll": 0
       }
+    },
+    {
+      "id": "the-bund-shanghai",
+      "name": "The Bund, Shanghai",
+      "routeName": "The Bund promenade",
+      "place": "Shanghai, China",
+      "distanceKm": 12.8325,
+      "climbingM": 0,
+      "rating": "Moderate",
+      "world": "bund",
+      "thumbnailUrl": "maps/the-bund-shanghai.jpg",
+      "photoUrl": "maps/the-bund-shanghai-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 13,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 15,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "recover",
+            "duration": 45,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 15,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "recover",
+            "duration": 45,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 15,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "recover",
+            "duration": 45,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "recover",
+            "duration": 330,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 45,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "recover",
+            "duration": 15,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 45,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "recover",
+            "duration": 15,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 45,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "recover",
+            "duration": 315,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 24,
+            "cadenceAim": 105
+          },
+          {
+            "kind": "cool-down",
+            "duration": 213,
+            "level": 10,
+            "cadenceAim": 80
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 0,
+          "steady": 0,
+          "work": 0,
+          "recover": 0,
+          "cool-down": 0
+        },
+        "roll": 0
+      }
     }
   ]
 }
