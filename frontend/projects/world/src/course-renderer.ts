@@ -639,6 +639,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.summit?.landmark(group, mesh);
       const material = materials[group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
@@ -1120,7 +1121,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
-    if (this.summit) Object.assign(drawn, this.summit.report());
+    if (this.summit) Object.assign(drawn, this.summit.report(this.camera));
     hook['course'] = drawn;
   }
 

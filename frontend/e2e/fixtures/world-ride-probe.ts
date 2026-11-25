@@ -62,7 +62,9 @@ export class WorldRideProbe {
     }, metres);
   }
 
-  async haleakalaMotion(part: 'grazing' | 'tradeWind'): Promise<number | null> {
+  async haleakalaMotion(
+    part: 'grazing' | 'tradeWind' | 'towerX' | 'rosetteX',
+  ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide

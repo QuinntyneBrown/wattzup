@@ -21,6 +21,8 @@ CROWD = [f"crowd-{i}" for i in range(6)]
 MATERIALS: dict[str, dict] = {
     "hk-wind-cloud": {"color":0xFFFFFF,"rough":1,"vertex":True},
     "hk-crater-floor": {"color":0xFFFFFF,"rough":1,"vertex":True},
+    "hk-solar-drum": {"color":0xFFFFFF,"rough":.75,"vertex":True},
+    "hk-garden-plant": {"color":0xFFFFFF,"rough":1,"vertex":True},
     "hk-ranch-head": {"color":0xFFFFFF,"rough":1,"vertex":True},
     "hk-crowns": {"color":0xFFFFFF,"rough":1},
     # Small things painted by vertex that only matter close to, in the group drawn near the rider (what is
@@ -391,27 +393,38 @@ def height_share(k, i: int) -> float:
     return (k.s[i]["z"] - min(zs)) / (max(zs) - min(zs))
 
 
-def silversword(k, x: float, y: float, z: float, bloom: bool, r: float | None = None) -> None:
-    """One silversword: a globe of narrow silver blades sitting on the cinder, and on a few the tall flower stalk.
-    Given a small `r` it is a seedling: a tuft of a few short blades."""
-    rng, b = k.rng, k.B["hk-silver"]
-    seedling = r is not None
-    r = r or rng.uniform(0.55, 0.95)
-    for tier, (blades, tilt) in enumerate(((6, 0.5), (4, 1.1)) if seedling else ((10, 0.3), (8, 0.8), (5, 1.25))):
-        for q in range(blades):
-            a = q * math.tau / blades + tier * 0.35 + rng.uniform(-0.15, 0.15)
-            ca, sa = math.cos(a), math.sin(a)
-            tip = (x + ca * r * math.cos(tilt), y + sa * r * math.cos(tilt), z + 0.08 + r * math.sin(tilt))
-            w = 0.07 if seedling else 0.16
-            left, right = (x - sa * w, y + ca * w, z + 0.06), (x + sa * w, y - ca * w, z + 0.06)
-            b.tri(left, right, tip)
-            b.tri(right, left, tip)
+def silversword(k, x, y, z, bloom, r=None, signature=False):
+    """Folded silver leaves radiate from a basal rosette below the maroon inflorescence."""
+    paint=Painted(k,"hk-garden-plant" if signature else "hk-detail")
+    rng=k.rng; juvenile=r is not None
+    radius=r or rng.uniform(.53,.91)
+    base=_lin(0x526967); mid=_lin(0xB4C8BD); bright=_lin(0xE0E8D9); dim=_lin(0x879D99)
+    paint.tube((x,y,z-.12),radius*.30,radius*.23,.27,base,dim,8)
+    tiers=((7,.38),(5,.91)) if juvenile else ((18,.24),(16,.54),(13,.91),(9,1.22))
+    for tier,(count,tilt) in enumerate(tiers):
+        for j in range(count):
+            a=j*math.tau/count+tier*.53+rng.uniform(-.06,.06)
+            width=radius*(.062 if not juvenile else .077)
+            def at(f,side,up):
+                return (x+radius*f*math.cos(tilt)*math.cos(a)-side*math.sin(a),
+                        y+radius*f*math.cos(tilt)*math.sin(a)+side*math.cos(a),
+                        z+.07+radius*f*math.sin(tilt)+up)
+            foot=at(.04,0,.015);tip=at(1,0,.045);ridge=at(.52,0,.09)
+            for side,tone in ((-1,dim),(1,bright)):
+                edge=at(.48,side*width,.026)
+                paint.face((foot,edge,ridge),(base,tone,mid))
+                paint.face((ridge,edge,tip),(mid,tone,bright))
     if bloom:
-        # The flower stalk: a spire as tall as a rider's shoulder, thick with maroon heads, on a silver stem.
-        tall = rng.uniform(1.4, 2.1)
-        k.prism(b, (x, y, z + r * 0.4), 0.09, 0.5, 5, 0.08)
-        k.prism(k.B["hk-bloom"], (x, y, z + r * 0.4 + 0.45), 0.3, tall * 0.55, 6, 0.24)
-        k.prism(k.B["hk-bloom"], (x, y, z + r * 0.4 + 0.45 + tall * 0.55), 0.24, tall * 0.45, 6, 0.05)
+        tall=rng.uniform(1.4,2.08)
+        stalk=_lin(0x745742)
+        paint.tube((x,y,z+.11),.054,.025,tall,dim,stalk,7)
+        for row in range(12):
+            up=.42+row*.047;reach=(.07+.15*math.sin(row*math.pi/13))*(1-row*.037)
+            for petal in range(6):
+                az=(petal/6+row*.109)*math.tau;rad=.056*(1-row*.038)
+                c=(x+math.cos(az)*reach,y+math.sin(az)*reach,z+tall*up)
+                paint.tube(c,rad,rad*.52,.085,_lin(0x66453F),_lin(0x9B6153),6)
+        paint.tube((x,y,z+tall*.95),.055,.012,.14,_lin(0x7C5F47),_lin(0xB49C68),6)
 
 
 def spent_silversword(paint, rng, x: float, y: float, z: float) -> None:
@@ -458,7 +471,7 @@ def silverswords(k) -> int:
     return planted
 
 
-def dome(paint, c, r: float, drum: float, slit: float, sides: int = 12, skin: int = 0xF4F5F2) -> None:
+def dome(paint, c, r: float, drum: float, slit: float, sides: int = 24, skin: int = 0xF4F5F2) -> None:
     """An observatory: a white drum under a white dome (or one of another `skin`), with the dark slit the telescope
     looks out of."""
     white, shade, dark = _lin(skin), tuple(v * 0.72 for v in _lin(skin)[:3]) + (1.0,), _lin(0x30343A)
@@ -498,13 +511,25 @@ def science_city(k) -> int:
         yaw = rng.uniform(0, math.pi)
         paint.box((x + math.cos(yaw) * (r + 5.0), y + math.sin(yaw) * (r + 5.0), z - 1.5), (r * 1.6, r * 0.9, 5.0), yaw, _lin(0xECECE6))
         stood += 1
+    # Shutter rails, faceted panel seams and the drum catwalk read against the blue sky.
+    for along,out,rad,drum in plan[:4]:
+        px,py,_=k.P(i,along,out);pz=k.height_at(px,py)
+        for j in range(18):
+            a=j*math.tau/18
+            paint.box((px+rad*.96*math.cos(a),py+rad*.96*math.sin(a),pz+drum-.33),(.10,.10,.72),a,_lin(0x778792))
     # The solar telescope, the tallest thing on the mountain: a white tower with its dome on top and a low wing.
+    solar=Painted(k,"hk-solar-drum")
     x, y, _ = k.P(i, 74.0, 2.0 * side)
     z = k.height_at(x, y)
     white = _lin(0xF4F5F2)
-    paint.box((x, y, z - 1.5), (15.0, 15.0, 27.0), 0.2, white)
-    paint.box((x + 13.0, y + 4.0, z - 1.5), (14.0, 11.0, 9.5), 0.2, _lin(0xECECE6))
-    dome(paint, (x, y, z + 25.5), 8.2, 3.0, 2.4)
+    solar.box((x, y, z - 1.5), (15.0, 15.0, 27.0), 0.2, white)
+    solar.box((x + 13.0, y + 4.0, z - 1.5), (14.0, 11.0, 9.5), 0.2, _lin(0xECECE6))
+    dome(solar, (x, y, z + 25.5), 8.2, 3.0, 2.4)
+    for zz in (4.5,9.2,14.8,20.2,24.7):
+        solar.box((x,y,z+zz),(15.25,15.25,.19),.2,_lin(0xB9C2C8))
+    for n in range(4):
+        solar.box((x-6.95+.33*n,y-6.24+3.1*n,z+3.1),(.48,1.38,2.4),.2,_lin(0x687781))
+    solar.tube((x,y,z+25.4),8.3,8.3,.55,_lin(0x88969E),_lin(0xB1BBC2),24)
     # The air force's telescope: a silver dome on a broad silver drum.
     x, y, _ = k.P(i, 168.0, -52.0 * side)
     z = k.height_at(x, y)
@@ -1351,6 +1376,6 @@ def scenery(k) -> dict:
         i=k.road.index(station)
         off=(7.6+.33*(j%4))*(-1 if j%4 else 1)
         x,y,_=k.road.at(i,off)
-        silversword(k,x,y,k.ground(x,y,i,off),j%4==1)
+        silversword(k,x,y,k.s[i]["z"]-.035,j%4==1,signature=j==5)
     shrubs = shrubland(k)
     return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "peaksAboveCloud": islands, "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs, **signs, "gardenSilverswords": garden}

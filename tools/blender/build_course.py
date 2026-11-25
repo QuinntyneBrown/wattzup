@@ -639,7 +639,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             group = "Ground"
         elif part.name in ("HkWindCloud", "HkCraterFloor"):
             group, chunked = part.name, False
-        elif part.name in ("HkFlank", "HkRanchHead", "HkCrowns"):
+        elif part.name in ("HkFlank", "HkRanchHead", "HkCrowns", "HkGardenPlant", "HkSolarDrum"):
             group = part.name
         elif part.name == WINDOWS_PART:
             group = "Windows"

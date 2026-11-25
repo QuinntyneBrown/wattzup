@@ -15,6 +15,10 @@ import {
   vertexColor,
 } from 'three/tsl';
 import {
+  Box3,
+  type Camera,
+  type Mesh,
+  Vector3,
   DoubleSide,
   FrontSide,
   MeshBasicMaterial,
@@ -60,8 +64,26 @@ export function haleakalaSummit() {
   trees.colorSpace = SRGBColorSpace;
   trees.flipY = false;
   const crowns = new MeshBasicMaterial({ map: trees, side: DoubleSide, alphaTest: 0.58 });
+  const landmarkMaterial = new MeshBasicMaterial({ vertexColors: true, side: DoubleSide });
+  const marks = new Map<string, Vector3>();
+  const projected = new Vector3();
+  function screenX(kind: string, camera: Camera) {
+    const target = marks.get(kind);
+    if (!target) return Infinity;
+    projected.copy(target).project(camera);
+    return Math.abs(projected.z) <= 1 ? projected.x : Infinity;
+  }
   return {
+    landmark(kind: string, mesh: Mesh) {
+      if (kind !== 'HkSolarDrum' && kind !== 'HkGardenPlant') return;
+      const bounds = new Box3().setFromObject(mesh, true);
+      const target = bounds.getCenter(new Vector3());
+      if (kind === 'HkSolarDrum') target.y = bounds.max.y - 6;
+      marks.set(kind, target);
+    },
     materials: {
+      HkSolarDrum: landmarkMaterial,
+      HkGardenPlant: landmarkMaterial,
       HkFlank: flank,
       HkCraterFloor: caldera,
       HkWindCloud: cloud,
@@ -72,10 +94,17 @@ export function haleakalaSummit() {
       wind.value = seconds * 0.00072;
       grazing.value = seconds * 0.89;
     },
-    report() {
-      return { tradeWind: wind.value, grazing: grazing.value };
+    report(camera: Camera) {
+      return {
+        towerX: screenX('HkSolarDrum', camera),
+        rosetteX: screenX('HkGardenPlant', camera),
+        tradeWind: wind.value,
+        grazing: grazing.value,
+      };
     },
     dispose() {
+      marks.clear();
+      landmarkMaterial.dispose();
       for (const item of [scoria, flank, caldera, bank, cloud, horse, crowns, trees])
         item.dispose();
     },
