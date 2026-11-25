@@ -27,6 +27,11 @@ export class WorldMusicPlayer {
     if (this.wanted) this.start();
   }
 
+  /** Sets the volume at the rider's position, from silent to full volume. */
+  setVolume(volume: number): void {
+    if (this.audio) this.audio.volume = Math.min(1, Math.max(0, volume));
+  }
+
   /** Plays or pauses; pausing keeps the position (L2-128 AC2, AC3). */
   sync(play: boolean): void {
     this.wanted = play;
