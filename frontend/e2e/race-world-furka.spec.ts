@@ -37,6 +37,11 @@ for (const [actor, metres, part] of [
     await expect(race.backend).toBeVisible();
 
     await expect.poll(() => worldRide.furkaMotion(part)).not.toBeNull();
+    if (part === 'cloudHeight') {
+      await expect
+        .poll(async () => (await worldRide.furkaMotion('iceAboveLake')) ?? 0)
+        .toBeGreaterThan(18);
+    }
     if (part === 'postbusPosition') {
       await expect
         .poll(async () => (await worldRide.furkaMotion('postbusDistance')) ?? Infinity)

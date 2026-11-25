@@ -62,7 +62,7 @@ export class WorldRideProbe {
   }
 
   async furkaMotion(
-    part: 'cowHead' | 'postbusPosition' | 'cloudHeight' | 'postbusDistance',
+    part: 'cowHead' | 'postbusPosition' | 'cloudHeight' | 'postbusDistance' | 'iceAboveLake',
   ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>

@@ -91,17 +91,59 @@ export async function furkaPass(course: Course) {
   glacialPaint.opacityNode = smoothstep(0, 0.15, uv().x)
     .mul(smoothstep(0.88, 1, uv().x).oneMinus())
     .mul(smoothstep(0.85, 1, uv().y).oneMinus());
-  const glacialGeo = new PlaneGeometry(444, 180, 16, 6),
-    basin = new Mesh(glacialGeo, glacialPaint);
+  const basin = new Group();
   const h = lookout.heading;
-  const sideX = lookout.x - 650 * Math.sin(h) - 216 * Math.cos(h);
-  const sideZ = lookout.z - 650 * Math.cos(h) + 216 * Math.sin(h);
-  basin.position.set(sideX, lookout.y - 34, sideZ);
-  basin.rotation.order = 'YXZ';
-  basin.rotation.y = lookout.heading + 0.28;
-  basin.rotation.x = -0.82;
+  const sideX = lookout.x - 310 * Math.sin(h) - 99 * Math.cos(h);
+  const sideZ = lookout.z - 310 * Math.cos(h) + 99 * Math.sin(h);
+  basin.position.set(sideX, lookout.y - 16, sideZ);
+  basin.rotation.y = h;
+  glacialPaint.fog = false;
+  // Keep the water horizontal. The dirty toe rises from its back bank and the
+  // crevassed ice climbs away from the rider above the protective sheets.
+  function iceBand(from: number, to: number, base: number, rise: number) {
+    const geometry = new PlaneGeometry(1, 1, 32, 8);
+    const positions = geometry.getAttribute('position'),
+      coords = geometry.getAttribute('uv');
+    for (let i = 0; i < positions.count; i++) {
+      const u = coords.getX(i),
+        v = coords.getY(i),
+        t = from + (to - from) * v;
+      positions.setXYZ(
+        i,
+        (u - 0.5) * 185,
+        base + rise * v + (rise > 0 ? 2.6 * Math.sin(u * 19) * Math.sin(v * Math.PI) : 0),
+        45 - t * 118,
+      );
+      coords.setY(i, t);
+    }
+    geometry.computeBoundingSphere();
+    const mesh = new Mesh(geometry, glacialPaint);
+    basin.add(mesh);
+    resources.push(geometry);
+    return geometry;
+  }
+  const meltwater = iceBand(0, 0.3, 0, 0);
+  iceBand(0.3, 0.62, 0, 19);
+  const upperIce = iceBand(0.62, 1, 19, 27);
+  // Continue the steep road cut down to the lake. The moraine also screens the
+  // far edge of the narrow course mesh between the outlook and the glacier.
+  const moraine = new PlaneGeometry(1, 1, 36, 24);
+  const bank = moraine.getAttribute('position');
+  for (let i = 0; i < bank.count; i++) {
+    const u = bank.getX(i),
+      v = bank.getY(i);
+    const x = u * 880,
+      z = v * 740;
+    const lip = Math.max(0, Math.abs(x) - 84) * 0.09;
+    const rise = Math.max(0, -z - 76) * 0.18;
+    bank.setXYZ(i, x, -8 + lip + rise + 3 * Math.sin(x * 0.019) * Math.cos(z * 0.027), z);
+  }
+  moraine.computeVertexNormals();
+  moraine.computeBoundingSphere();
+  basin.add(new Mesh(moraine, materials.Scree));
+  resources.push(moraine);
   group.add(basin);
-  resources.push(glacialGeo, glacialPaint);
+  resources.push(glacialPaint);
   const mistGeo = new PlaneGeometry(460, 69);
   const mistPaint = new MeshBasicMaterial({
     map: cloud,
@@ -266,6 +308,9 @@ export async function furkaPass(course: Course) {
   return {
     group,
     materials,
+    get iceAboveLake() {
+      return upperIce.getAttribute('position').getY(0) - meltwater.getAttribute('position').getY(0);
+    },
     get cowHead() {
       return heads[0]!.rotation.x;
     },
@@ -286,10 +331,10 @@ export async function furkaPass(course: Course) {
           heads[i]!.rotation.x = -0.32 + 0.46 * Math.sin(time * 0.85 + i * 2.7);
       postbus.visible = metres > 11600 && metres < 13000;
       if (postbus.visible) {
-        const cycle = 96 * Math.sin(time * 0.031);
-        const p = course.place(12342 - cycle, -2.3);
+        const cycle = 16 * Math.sin(time * 0.12);
+        const p = course.place(12355 - cycle, -2.3);
         postbus.position.set(p.x, p.y + 0.04, p.z);
-        postbus.rotation.y = p.heading + (Math.cos(time * 0.031) > 0 ? Math.PI : 0);
+        postbus.rotation.y = p.heading + (Math.cos(time * 0.12) > 0 ? Math.PI : 0);
         const rider = course.place(metres);
         postbusDistance = Math.hypot(p.x - rider.x, p.z - rider.z);
       }
