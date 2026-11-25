@@ -79,18 +79,16 @@ test('Caribana keeps the simulated tablet ride moving at a nominal 60 Hz', async
     const { averageFps } = frameRun(intervals);
     const sorted = [...intervals].sort((a, b) => a - b);
     const p95 = sorted[Math.floor(0.95 * sorted.length)]!;
-    test
-      .info()
-      .annotations.push({
-        type: 'frames',
-        description:
-          averageFps.toFixed(2) +
-          ' FPS, p95 ' +
-          p95.toFixed(2) +
-          ' ms, longest ' +
-          sorted.at(-1)!.toFixed(2) +
-          ' ms',
-      });
+    test.info().annotations.push({
+      type: 'frames',
+      description:
+        averageFps.toFixed(2) +
+        ' FPS, p95 ' +
+        p95.toFixed(2) +
+        ' ms, longest ' +
+        sorted.at(-1)!.toFixed(2) +
+        ' ms',
+    });
     expect(Math.round(averageFps)).toBeGreaterThanOrEqual(60);
   } finally {
     riding = false;
