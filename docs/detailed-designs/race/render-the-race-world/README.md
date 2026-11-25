@@ -828,3 +828,15 @@ Journey 7 currently reaches a generic rolling Cabot class world with its own ben
 Use the existing catalogue and Race Setup path into the lazy authored-course renderer. Read the arc-length course JSON and GLB from the ride's same-origin course assets. Bake cliff strata, roadside wear and canopy shade into shared geometry. Keep the far headlands in fixed coordinates like Caribana’s Toronto skyline. Merge local details into distance-culled sections. Use shared geometry for boat and animal parts on both backends, seed variation at construction, update from race time and dispose on departure. Keep class progression and HUD on the existing race engine.
 
 Measure two sixty-second samples from the normal race entry with the simulated bike, nine seconds of warm-up, Low/WebGL2 and fourfold CPU throttle. Capture matched rider views before and after and record actual submissions, display callbacks, p95, longest interval, peak draw calls and advancing HUD distance. The performance and capture suites stay opt-in.
+
+### Iten, Kenya · #2142
+
+The existing world registry entry describes the red-dirt training road. Map Select also needs the original GCN workout published in the API catalogue. Its 14 stages of *40 Minute HIIT* cover 17.86 km in 40:00 with a two-second video offset. The Race journey enters a lazy native course through the course registry (ADRs 0021, 0023, 0030, 0034 and 0035). The rider and HUD share the sampled elevation. The off-network world uses local geometry and artwork.
+
+| Rider view | Construction and reference |
+| --- | --- |
+| Murram and runners | Two worn wheel paths reveal red laterite under the loose surface. Runner groups wear different kit and stride out of phase on the verge. The broken acacia crowns give way to candelabra euphorbia. Real 01–05 and 08, games 01–02 and 04. |
+| Farms and Kamariny Stadium | Fence wires follow timber posts between maize, pasture and tea plots. Cattle and goats cluster with their herders. The dirt oval encloses grass, with a simple covered timber stand on the long straight. Real 04, 07–08 and 12–14, games 03 and 04. |
+| Town and valley rim | Painted fascias sit under corrugated shop roofs beside a matatu and a moving boda-boda. The road shoulder opens onto successive spurs of the Kerio Valley under equatorial cumulus. Real 06, 09–11 and 15, games 01, 03 and 05. |
+
+As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
