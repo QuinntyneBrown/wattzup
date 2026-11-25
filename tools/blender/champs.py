@@ -59,6 +59,10 @@ def roadway(road,st,length,col,bc):
             return (x-math.sin(h)*l,y+math.cos(h)*l,height(x))
         end=min(d+3,LAP)
         roadbed.quad(edge(d,-7.75),edge(end,-7.75),edge(end,7.75),edge(d,7.75))
+    for x in range(0,math.ceil(AVENUE),4):
+        end=min(x+4,AVENUE)
+        roadbed.quad((x,-RADIUS+7.73,height(x)-.027),(end,-RADIUS+7.73,height(end)-.027),
+                     (end,RADIUS-7.73,height(end)-.027),(x,RADIUS-7.73,height(x)-.027))
     roadbed.build(col)
 
 
@@ -170,12 +174,12 @@ def streets(k,art,city,box):
                     art.tube((tx,side*48,z+1.59),1.30,.12,.58,lin(0xA45547),lin(0xDF9B7B),8)
             x+=w
         for x in range(8,int(AVENUE)-5,12):
-            y=side*44.5;z=height(x)
+            y=side*50.5;z=height(x)
             art.tube((x,y,z-.2),.35,.22,4.8,lin(0x787663),lin(0xACAA8C),7)
             for v in (-1,1):
                 beam(art,(x,y,z+2.55),(x+v*1.4,y,z+5.45),.16,0x898975)
-            art.box((x,y,z+4.25),(8.3,5.1,4.4),0,lin(rng.choice((0x637D57,0x758959,0x718457))))
-            art.box((x,y,z+8.55),(7.5,4.65,.52),0,lin(0x8D9A65))
+            art.box((x,y,z+4.25),(7.7,4.8,4.1),0,lin(rng.choice((0x637D57,0x758959,0x718457))))
+            art.box((x,y,z+8.30),(7.2,4.3,.48),0,lin(0x8D9A65))
         for x in range(6,int(AVENUE)-5,28):
             y=side*40.8;z=height(x)
             art.tube((x,y,z),.22,.10,5.3,lin(0x475655),lin(0x6A7164),8)
@@ -203,6 +207,10 @@ def streets(k,art,city,box):
         for x in range(85,LINE+50,28):
             for tier in range(4):
                 box(x,side*(43+tier*.95),height(x)+tier*.4,22,1.04,.32,0x866D6A)
+    for x in range(25,LINE+140,3):
+        y=-RADIUS+8.0;z=height(x)
+        for h in (.4,1.08):beam(art,(x,y,z+h),(x+3,y,height(x+3)+h),.042,0x879393)
+        beam(art,(x,y,z),(x,y,z+1.09),.048,0x687475)
     # Finish photo gantry and the distance boards stay fixed across the three laps.
     z=height(LINE)
     for y in (-RADIUS-8.1,-RADIUS+8.1):

@@ -69,6 +69,7 @@ import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
+import type { ChampsParade } from './champs-parade';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -214,6 +215,7 @@ export class CourseRenderer implements WorldRenderer {
   private waterClock: ((seconds: number) => void) | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
+  private parade: ChampsParade | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
@@ -236,6 +238,8 @@ export class CourseRenderer implements WorldRenderer {
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
     tier: 0 as number,
+    flagAngle: undefined as number | undefined,
+    sprintLane: undefined as number | undefined,
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
@@ -356,7 +360,26 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
-      this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'champs') {
+        const { ChampsParade, parisPave } = await import('./champs-parade');
+        if (this.disposed) return false;
+        const pave = parisPave();
+        this.disposables.push(pave.tile);
+        this.build(gltf.scene, canvas, pave.material);
+        this.parade = new ChampsParade(this.course, this.kit!, this.riderBatch!, this.sun);
+        this.scene.add(this.parade.root);
+        this.disposables.push(this.parade);
+        const { champsAvenue } = await import('./champs-avenue');
+        const crowd = await champsAvenue(this.course);
+        if (this.disposed) {
+          crowd.dispose();
+          return false;
+        }
+        this.scene.add(crowd.root);
+        this.disposables.push(crowd);
+      } else {
+        this.build(gltf.scene, canvas);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -423,6 +446,7 @@ export class CourseRenderer implements WorldRenderer {
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
+    this.parade?.update(frame.time, metres, frame.reducedMotion);
     this.riderBatch?.follow();
     this.aim(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
@@ -479,6 +503,7 @@ export class CourseRenderer implements WorldRenderer {
     this.sunGlow = null;
     this.groundEye = null;
     this.riderBatch = null;
+    this.parade = null;
     this.rain = null;
     this.shadows.clear();
     this.casting.clear();
@@ -488,7 +513,7 @@ export class CourseRenderer implements WorldRenderer {
     this.renderer = null;
   }
 
-  private build(map: Object3D, canvas: HTMLCanvasElement): void {
+  private build(map: Object3D, canvas: HTMLCanvasElement, pavement?: Material): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
@@ -580,7 +605,8 @@ export class CourseRenderer implements WorldRenderer {
       new Color(look.haze),
       coloured,
     );
-    materials['Ground'] = ground.material;
+    if (pavement) ground.material.dispose();
+    materials['Ground'] = pavement ?? ground.material;
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
@@ -1105,6 +1131,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.flagAngle = this.parade?.flagAngle;
+    drawn.sprintLane = this.parade?.sprintLane;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
