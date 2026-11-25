@@ -1392,3 +1392,8 @@ import brickyard as _brickyard
 
 THEMES["brickyard"] = _brickyard.THEME
 SCENERY["brickyard"] = _brickyard.scenery
+
+import brighton as _brighton
+
+THEMES["brighton"] = _brighton.THEME
+SCENERY["brighton"] = _brighton.scenery
