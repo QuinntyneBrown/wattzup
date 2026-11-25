@@ -1305,3 +1305,5 @@ Use the normal catalogue, race setup and native course renderer. GCN’s 25 Minu
 | Skyline overlook, 9.94 km | Real 01, 07–08, 10–11 and 15 and games 03 and 05 | The dark braced Hancock tower and bundled Willis Tower stand above the shoreline cluster across turquoise water. |
 
 Real 04 depicts a trail at Geneva, New York and informs path scale only. Real 14 shows a smaller North Avenue beach building. Use the ship-shaped main beach house from the issue brief, with the shore and skyline proportions established by real 11 and 15. Caribana’s fixed skyline and detailed moving foreground translate to Chicago’s distinctive towers and the active path users. Batch the masts, beach furniture and wheeled traffic, keep secondary motion on race time and release each course-owned resource on exit. The world-specific feedback title search found only #2153.
+
+Model the North Avenue Beach House with a streamlined blue-and-white hull, portholes and an open upper deck. Its current concrete structure was designed by Wheeler Kearns Architects and opened in 2000. [Chicago Park District, North Avenue Beach](https://www.chicagoparkdistrict.com/parks-facilities/north-avenue-beach)
