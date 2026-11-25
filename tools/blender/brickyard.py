@@ -161,12 +161,14 @@ def grandstand(art,d,rng,inside=False):
                 hue=lin(shirt);skin=lin(rng.choice((0xC79674,0x926850,0xC4AB86,0xAD805D)))
                 height=rng.uniform(.9,1.13);lean=rng.uniform(-.12,.12)
                 def at(a,h):
-                    return pos(u+a*.79+lean*h,l+a*.55*side,z+.37+h*height)
+                    return pos(u+a*.79+lean*h,l-a*.55*side,z+.37+h*height)
                 def card(outline,col):
                     pts=[at(a,h) for a,h in outline]
                     normal=(pts[1][0]-pts[0][0])*(pts[2][2]-pts[0][2])-(pts[1][2]-pts[0][2])*(pts[2][0]-pts[0][0])
                     if (normal>0) != (side>0):pts.reverse()
                     art.face(pts,(col,)*len(pts))
+                    back=[(x+.026*math.cos(station(u)[2]),y+.026*math.sin(station(u)[2]),z) for x,y,z in reversed(pts)]
+                    art.face(back,(col,)*len(back))
                 card([(-.27,0),(.25,0),(.36,.5),(.21,.7),(-.19,.7),(-.35,.52)],hue)
                 card([(-.14,.7),(.10,.69),(.165,.85),(.10,1.0),(-.12,1.0),(-.17,.87)],skin)
                 if seat%4==0:card([(-.17,.94),(.20,.95),(.10,1.06),(-.11,1.08)],lin(0x333B40))
@@ -226,9 +228,20 @@ def scenery(k):
             art.tube((x,y,.03),.29,.24,h*.7,lin(0x796A50),lin(0x817663),6)
             art.tube((x,y,h*.48),2.1,2.8,h*.4,lin(0x4E7642),lin(0x668949),7)
             art.tube((x,y,h*.86),2.8,.52,h*.43,lin(0x668949),lin(0x78994E),7)
-    x,y,_=pos(1850,55);art.box((x,y,.1),(90,26,6.8),0,lin(0xD9D7CA))
+    x,y,_=pos(2120,39);art.box((x,y,.1),(90,26,6.8),0,lin(0xD9D7CA))
     art.box((x,y,6.6),(94,29,.5),0,lin(0xA0A8A9))
     for u in range(-40,42,6):art.box((x+u,y+13.12,1),(4.8,.12,4.8),0,lin(0x506F79))
+    # Each flag has its own fold and separate bands, visible from the opposite straight.
+    for d in range(-495,470,40):
+        base=pos(d,-31,16.35)
+        art.tube(base,.085,.06,4.1,lin(0x747B7A),lin(0xB3B9BA),6)
+        for j in range(3):
+            z=base[2]+3.80-j*.33
+            color=lin((0xB34541,0xEBE4D3,0x42687C)[(j+d//40)%3])
+            for i in range(3):
+                def cloth(k,h):return (base[0]+k*.85,base[1]+.30*math.sin(k+d*.3),z+h-.085*k)
+                shape=(cloth(i,0),cloth(i+1,0),cloth(i+1,-.33),cloth(i,-.33))
+                art.face(shape,(color,)*4)
     for d in (420,1460,2420,3400):
         place(art,d,-13,2.3,(.4,1.5,1.8),0xD7CDC0)
     return {'efforts':0}
