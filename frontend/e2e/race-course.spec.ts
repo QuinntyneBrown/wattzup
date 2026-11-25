@@ -6,6 +6,7 @@
 // here, on WebGL2.
 import type { Locator, Page } from '@playwright/test';
 import {
+  copenhagenCourseMap,
   cinqueTerreCourseMap,
   haleakalaCourseMap,
   ibizaCourseMap,
@@ -97,6 +98,7 @@ test.describe('a course', () => {
   // Cinque Terre and Haleakalā, like Ibiza, are built from their classes and served from fixtures of their own
   // (L2-166 AC43, AC44).
   for (const [id, course, catalogue] of [
+    [copenhagenCourseMap.id, 'copenhagen', [copenhagenCourseMap]],
     ['prairie-paceline', 'prairie', undefined],
     ['vice-city', 'vicecity', undefined],
     [cinqueTerreCourseMap.id, 'cinqueterre', [cinqueTerreCourseMap]],
