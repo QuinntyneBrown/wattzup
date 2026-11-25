@@ -582,6 +582,8 @@ def group_of(mat: str) -> tuple[str, bool]:
     spec = MATERIALS[mat]
     if mat == "confetti":
         return "Confetti", True
+    if mat.startswith("fen-"):
+        return mat.split("-")[1].capitalize(), True
     if mat == "terrain":
         return "Land", True
     if "alpha" in spec:
@@ -779,6 +781,8 @@ def mix(a, b, t):
 
 
 def build_road(road: Road, st: list[dict], length: float, col, theme: dict | None = None) -> None:
+    if theme and theme.get("road_builder"):
+        return theme["road_builder"](road, st, length, col, sys.modules[__name__])
     edge = (theme or {}).get("edge", "seawall")
     white_centre = (theme or {}).get("centre") == "white"
     # A racing circuit's red-and-white kerbs round a bend; a theme whose road is a public one turns them off.
@@ -1796,7 +1800,7 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         "durationSeconds": sum(s["duration"] for s in st),
         "step": STEP,
         "startIndex": int(LEAD_IN / STEP),
-        "roadHalfWidth": ROAD_HALF,
+        "roadHalfWidth": (theme or {}).get("road_half_width", ROAD_HALF),
         "meanLevel": round(mean, 2),
         "gradePerLevel": per_level,
         # The direction the light comes from, as a unit vector in the glb's axes.

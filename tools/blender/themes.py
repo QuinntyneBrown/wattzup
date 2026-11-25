@@ -1247,3 +1247,10 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import fens as _fens
+
+for name in ("fen-lane", "fen-fields", "fen-drains"):
+    MATERIALS[name] = {"color": 0x878579, "rough": 1.0, "vertex": True}
+THEMES["fens"] = _fens.THEME
+SCENERY["fens"] = _fens.scenery
