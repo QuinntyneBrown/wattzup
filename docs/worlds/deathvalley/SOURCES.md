@@ -27,3 +27,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-05.jpg | MyWhoosh: [MicrosoftTeams-image-6-2-1080×608-1](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2022/08/MicrosoftTeams-image-6-2-1080x608-1.png) (g0933) | © MyWhoosh |
 
 The Panamint horizon is original artwork generated for this course. The prompt described a wide midday view from Badwater Basin across the salt to folded alluvial fans, a lavender-grey Panamint skyline and a small snow cap on Telescope Peak. Real 04–08 and 15 informed its proportions, and game 02 informed the riding sightline. The course uses a transparent WebP ridge behind the native terrain.
+
+The cliff material and three desert plant cutouts are original generated assets. The rock prompt called for folded charcoal, umber and buff bands cut by gravel gullies in the Black Mountains. The vegetation prompt described the open branches and small leaves of creosote, saltbush and desert holly under midday light. Real 01–02, 09–10 and 14 guided the near escarpment and fan, and real 11–13 guided spacing around the dunes.

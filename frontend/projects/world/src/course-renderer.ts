@@ -1,3 +1,4 @@
+import type { badwaterGeology } from './badwater-geology';
 import type { DeathValleyStreet } from './world-deathvalley';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
@@ -202,6 +203,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private geology: Awaited<ReturnType<typeof badwaterGeology>> | null = null;
   private basin: DeathValleyStreet | null = null;
   private disposed = false;
   private readonly scene = new Scene();
@@ -371,7 +373,16 @@ export class CourseRenderer implements WorldRenderer {
         this.basin.buildBasin(this.course);
         await this.basin.loadPanamints(() => !this.disposed);
         if (this.disposed) return false;
-        this.scene.add(this.basin.group);
+        const { badwaterGeology } = await import('./badwater-geology');
+        if (this.disposed) return false;
+        const geology = await badwaterGeology(this.course);
+        if (this.disposed) {
+          geology.dispose();
+          return false;
+        }
+        this.geology = geology;
+        this.disposables.push(geology);
+        this.scene.add(this.basin.group, geology.group);
         this.camera.setViewOffset(1, 1, 0, 0.05, 1, 1);
       }
 
@@ -439,6 +450,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    this.geology?.follow(metres);
     this.basin?.followBasin(course, metres, frame.reducedMotion ? 0 : frame.time);
     this.lampShadows?.end();
     this.riderBatch?.follow();
@@ -639,6 +651,11 @@ export class CourseRenderer implements WorldRenderer {
     // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
+    if (this.path === 'courses/deathvalley') {
+      const sunDisc = materials['Sun'] as MeshBasicMaterial;
+      sunDisc.vertexColors = false;
+      sunDisc.color.setHex(0xfff6df);
+    }
     this.beams = materials['Beams'] as MeshBasicMaterial;
     const painted: Mesh[] = [];
     map.traverse((part) => {

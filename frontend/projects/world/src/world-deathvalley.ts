@@ -236,7 +236,6 @@ export class DeathValleyStreet implements SceneStreet {
   private readonly basinBirds = new Group();
   private readonly aidSpectators = new Group();
   private readonly sample: CoursePlace = { x: 0, y: 0, z: 0, heading: 0, pitch: 0 };
-  private brushCount = 0;
   private readonly basinSurfaces: Mesh[] = [];
 
   /** Lay metre-scaled crust, washes and patched tarmac along the actual bends. */
@@ -248,9 +247,9 @@ export class DeathValleyStreet implements SceneStreet {
     for (let start = -60; start < course.length + 90; start += 160) {
       for (const [inner, outer, material] of [
         [-3.72, 3.72, asphalt],
-        [-13, -3.72, wash],
+        [-7.2, -3.72, wash],
         [3.72, 44, wash],
-        [-275, -13, salt],
+        [-275, -7.2, salt],
         ...(start >= 580 && start < 1230 ? [[-66, -20, brine] as const] : []),
       ] as const) {
         const positions: number[] = [],
@@ -289,15 +288,13 @@ export class DeathValleyStreet implements SceneStreet {
   buildBasin(course: Course): void {
     this.disposables.push(...this.flagMaterials);
     this.addBasinSurfaces(course);
-    this.addBrush();
-    this.brushCount = this.props.length;
     this.addParkSign();
     this.addThermometer();
     this.addAid();
-    for (let i = this.brushCount; i < this.props.length; i++) {
+    for (let i = 0; i < this.props.length; i++) {
       const prop = this.props[i]!;
-      const index = i - this.brushCount;
-      const station = index === 0 ? 920 : index === 1 ? 9102 : 9110 + index * 14;
+      const index = i;
+      const station = index === 0 ? 949 : index === 1 ? 9146 : 9160 + index * 14;
       const at = course.place(station, prop.x);
       prop.mesh.position.set(at.x, at.y, at.z);
       prop.mesh.rotation.y = at.heading + (index === 0 ? -0.99 : index === 1 ? 1.09 : 0);
@@ -373,13 +370,6 @@ export class DeathValleyStreet implements SceneStreet {
     this.setTime(seconds);
     for (const mesh of this.basinSurfaces)
       mesh.visible = Math.abs(distance - Number(mesh.userData['station'])) < 640;
-    for (let i = 0; i < this.brushCount; i++) {
-      const prop = this.props[i]!;
-      const station = distance + loopMetres(prop.offset, distance, LOOP, BEHIND);
-      const at = course.place(station, prop.x, this.sample);
-      prop.mesh.position.set(at.x, at.y, at.z);
-      prop.mesh.rotation.y = at.heading;
-    }
     this.aidSpectators.visible = Math.abs(9175 - distance) < 360;
     if (this.aidSpectators.visible) this.crowd.place(seconds, this.flat, this.stationOffset, KERB);
     const at = course.place(distance, 0, this.sample);

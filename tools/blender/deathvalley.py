@@ -52,7 +52,7 @@ def basin(road,col,theme,bc):
         toe=70+29*math.sin(d/493)+21*math.cos(d/201)
         height=max(0,r-toe)
         fold=.57+.21*math.cos(d/124)+.18*math.sin(d/357)+.04*math.sin(d/33)
-        return -.16+min(height,180)*fold+max(height-180,0)*(.4+.19*math.sin(d/245))
+        return -.16 + .22 * (min(height,180)*fold+max(height-180,0)*(.4+.19*math.sin(d/245)))
     def face(vertices,colour):
         ground.faces.append(tuple(ground.v(v) for v in vertices))
         ground.colours.extend([lin(colour)]*len(vertices))
@@ -76,24 +76,24 @@ def scenery(kit):
     def pos(d,l,z=0):return r.at(r.index(d),l,z)
     # A real timber landing with visible plank joints and square rail posts.
     for j in range(46):
-        d=925+j*.38; i=r.index(925); x,y,z=r.at(i,8.6+j*.42)
+        i=r.index(949); x,y,z=r.at(i,8.6+j*.42)
         art.box((x,y,z+.22),(.409,3.45,.15),0,lin(rng.choice((0xb09c7d,0xc0af90,0xa48c72))))
         if j%6==0:
             for side in (-1,1):art.box((x,y+side*1.64,z+.24),(.115,.115,1.02),0,lin(0xa38c6a))
     for side in (-1,1):
-        x,y,z=pos(925,18)
+        x,y,z=pos(949,18)
         art.box((x,y+side*1.64,z+1.21),(19.5,.1,.12),0,lin(0xb6a081))
     # Low dune crests bend downwind and alternate sunlit windward faces with shaded slip faces.
     for row in range(7):
         for part in range(32):
             d=7180+part*51+row*61
             if d>9400:continue
-            near=78+row*45+24*math.sin(d/184+row)
-            high=(5+row*2.9)*(1+.41*math.sin(d/191+row)+.22*math.sin(d/83))
+            near=46+row*33+10*math.sin(d/184+row)
+            high=(9+row*3.7)*(1+.41*math.sin(d/191+row)+.22*math.sin(d/83))
             def ridge(k):
                 return [pos(k,near-25,-.15),pos(k,near+7,high*.59),pos(k,near+19,high),pos(k,near+38,.1)]
             a,b=ridge(d),ridge(d+51)
-            for n,c in enumerate((0xd2b084,0xe3bc83,0xb18d66)):
+            for n,c in enumerate((0xc69b69,0xe6b578,0x9f7353)):
                 vs=(a[n],b[n],b[n+1],a[n+1]);art.face(vs,(lin(c),)*4)
     return {'efforts':0}
 
