@@ -73,6 +73,14 @@ export class WorldRideProbe {
     );
   }
 
+  async eveningLight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { eveningLight?: number } } })
+          .__wzWorldRide?.course?.eveningLight ?? null,
+    );
+  }
+
   async pin(tier: Tier, backend: 'auto' | 'webgl2' = 'auto'): Promise<void> {
     await this.page.addInitScript(
       ([t, b]) => {

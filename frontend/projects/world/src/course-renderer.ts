@@ -6,7 +6,7 @@
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
-import { pass } from 'three/tsl';
+import { pass, uniform } from 'three/tsl';
 import {
   AdditiveBlending,
   AgXToneMapping,
@@ -86,6 +86,7 @@ import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
+const eveningUniform = () => uniform(0);
 const CAMERA_BACK = 2.75;
 const CAMERA_UP = 1.8;
 /**
@@ -238,11 +239,13 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    eveningLight: null as number | null,
     ferryX: null as number | null,
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
   };
+  private evening: ReturnType<typeof eveningUniform> | undefined;
   private boats: BayOfIslandsBoats | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
@@ -434,6 +437,14 @@ export class CourseRenderer implements WorldRenderer {
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
+    if (this.evening) {
+      const progress = Math.max(0, Math.min(1, (metres - 19500) / 7900));
+      const t = progress * progress * (3 - 2 * progress);
+      this.evening.value = t;
+      this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
+      if (this.scene.fog instanceof Fog)
+        this.scene.fog.color.setRGB(0.402 + 0.43 * t, 0.604 - 0.27 * t, 0.658 - 0.43 * t);
+    }
     this.aim(metres);
     this.boats?.update(metres, frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
@@ -483,6 +494,7 @@ export class CourseRenderer implements WorldRenderer {
     this.funivia = null;
     this.glider = null;
     this.boats = null;
+    this.evening = undefined;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -503,6 +515,7 @@ export class CourseRenderer implements WorldRenderer {
   private build(map: Object3D, canvas: HTMLCanvasElement): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
+    if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -613,6 +626,7 @@ export class CourseRenderer implements WorldRenderer {
         detail,
         this.course!.file.night === true,
         coloured,
+        this.evening,
       );
       materials['Sea']!.dispose();
       materials['Sea'] = water.material;
@@ -749,7 +763,7 @@ export class CourseRenderer implements WorldRenderer {
       this.scene.add(carried);
     } else {
       const dome = new SphereGeometry(9000, 24, 12);
-      const sky = skyMaterial(look, this.course!.file.sun, detail);
+      const sky = skyMaterial(look, this.course!.file.sun, detail, this.evening);
       this.skyClock = sky.at;
       this.sky = new Mesh(dome, sky.material);
       this.sky.renderOrder = -1;
@@ -909,7 +923,11 @@ export class CourseRenderer implements WorldRenderer {
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
-    this.sun.position.set(ahead.x + x * 70, ahead.y + 34, ahead.z + z * 70);
+    this.sun.position.set(
+      ahead.x + x * 70,
+      ahead.y + 34 - 25 * (this.evening?.value ?? 0),
+      ahead.z + z * 70,
+    );
     this.sun.target.updateMatrixWorld();
   }
 
@@ -1117,6 +1135,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.eveningLight = this.evening?.value ?? null;
     drawn.ferryX = this.boats?.ferryX ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;

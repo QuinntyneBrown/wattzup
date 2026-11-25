@@ -38,6 +38,7 @@ test('the ferry crosses Paihia wharf and holds position on pause', async ({
       return Math.max(...samples) - Math.min(...samples);
     })
     .toBeGreaterThan(0.09);
+  await expect.poll(() => worldRide.eveningLight()).toBe(0);
   await race.pause.click();
   await expect(race.resume).toBeVisible();
   const held = await worldRide.ferryX();
@@ -52,4 +53,6 @@ test('the ferry crosses Paihia wharf and holds position on pause', async ({
   expect(await worldRide.ferryX()).toBe(held);
   await race.resume.click();
   await expect.poll(() => worldRide.ferryX()).not.toBe(held);
+  await worldRide.startAt(26700);
+  await expect.poll(() => worldRide.eveningLight()).toBeGreaterThan(0.8);
 });
