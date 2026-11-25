@@ -1,3 +1,4 @@
+import kilaueaElevation from './kilauea-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3585,6 +3586,35 @@ export const itenCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 60, 24, 110),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const kilaueaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'kilauea-lava-road',
+  name: 'Kīlauea Lava Road',
+  routeName: 'Crater Rim Drive',
+  place: 'Hawaiʻi Volcanoes National Park, Hawaiʻi',
+  world: 'kilauea',
+  distanceKm: 7.696,
+  climbingM: 217,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: kilaueaElevation,
+  },
+  thumbnailUrl: 'maps/kilauea-lava-road.jpg',
+  photoUrl: 'maps/kilauea-lava-road-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 272, 13, 80),
+      seg('work', 183, 16, 85),
+      seg('recover', 67, 11, 80),
+      seg('work', 356, 18, 85),
+      seg('work', 150, 20, 90),
+      seg('cool-down', 74, 11, 80),
     ],
   },
 };
