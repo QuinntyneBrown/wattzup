@@ -88,6 +88,7 @@ import type { CalobraCamp } from './calobra-camp';
 import type { CampolongoLifts } from './campolongo-lifts';
 import type { CabotWildlife } from './cabot-wildlife';
 import type { ParkTraffic } from './park-traffic';
+import type { ChampsParade } from './champs-parade';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -262,6 +263,7 @@ export class CourseRenderer implements WorldRenderer {
   private basin: Awaited<ReturnType<typeof blossomFestival>> | null = null;
   private rain: Rain | null = null;
   private parkTraffic: ParkTraffic | null = null;
+  private champsParade: ChampsParade | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private speedWeek: SpeedWeek | null = null;
   private saltRoad: Material | null = null;
@@ -311,6 +313,8 @@ export class CourseRenderer implements WorldRenderer {
     moosePitch: undefined as number | undefined,
     horseStride: undefined as number | undefined,
     clubDistance: undefined as number | undefined,
+    flagAngle: undefined as number | undefined,
+    sprintLane: undefined as number | undefined,
     backend: '' as string,
     ghostSeparationMetres: 0,
     boatHeight: null as number | null,
@@ -579,7 +583,12 @@ export class CourseRenderer implements WorldRenderer {
       if (this.disposed) return false;
       const paving = blossomModules?.[1].promenadeSurface();
       if (paving) this.disposables.push(paving.tile);
-      this.build(gltf.scene, canvas, clinker, fronts, foliage, paving?.material);
+      const champs =
+        parsed.id === 'champs' ? await import('./champs-parade') : null;
+      if (this.disposed) return false;
+      const parisPaving = champs?.parisPave();
+      if (parisPaving) this.disposables.push(parisPaving.tile);
+      this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving)?.material);
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
         if (this.disposed) return false;
@@ -673,6 +682,19 @@ export class CourseRenderer implements WorldRenderer {
         this.basin = festival;
         this.scene.add(festival.root);
         this.disposables.push(festival);
+      }
+      if (champs) {
+        this.champsParade = new champs.ChampsParade(this.course, this.kit!, this.riderBatch!, this.sun);
+        this.scene.add(this.champsParade.root);
+        this.disposables.push(this.champsParade);
+        const { champsAvenue } = await import('./champs-avenue');
+        const crowd = await champsAvenue(this.course);
+        if (this.disposed) {
+          crowd.dispose();
+          return false;
+        }
+        this.scene.add(crowd.root);
+        this.disposables.push(crowd);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -876,6 +898,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.champsParade?.update(frame.time, metres, frame.reducedMotion);
     this.riderBatch?.follow();
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
@@ -1038,6 +1061,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lifts = null;
     this.cabotWildlife = null;
     this.parkTraffic = null;
+    this.champsParade = null;
     this.rain = null;
     this.shadows.clear();
     this.casting.clear();
@@ -1060,7 +1084,7 @@ export class CourseRenderer implements WorldRenderer {
     clinker: Texture | null,
     fronts: Texture | null,
     foliage: Texture | null,
-    cherryPavement?: Material,
+    coursePavement?: Material,
   ): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
@@ -1177,7 +1201,7 @@ export class CourseRenderer implements WorldRenderer {
       coloured,
       clinker,
     );
-    const pavement = this.saltRoad ?? this.speedwaySurface?.(detail) ?? this.seafrontSurface?.(detail) ?? this.deckSurface ?? cherryPavement;
+    const pavement = this.saltRoad ?? this.speedwaySurface?.(detail) ?? this.seafrontSurface?.(detail) ?? this.deckSurface ?? coursePavement;
     materials['Ground'] = pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
@@ -1941,6 +1965,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.boatHeel = this.cabotWildlife?.boatHeel;
     drawn.horseStride = this.parkTraffic?.horseStride;
     drawn.clubDistance = this.parkTraffic?.clubDistance;
+    drawn.flagAngle = this.champsParade?.flagAngle;
+    drawn.sprintLane = this.champsParade?.sprintLane;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;

@@ -22,6 +22,7 @@ import cabotElevation from './cabot-elevation.json';
 import caribanaElevation from './caribana-elevation.json';
 import centralparkElevation from './centralpark-elevation.json';
 import cherryblossomElevation from './cherryblossom-elevation.json';
+import champsElevation from './champs-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1649,6 +1650,56 @@ export const cherryBlossomCourseMap = {
       seg('recover', 30, 11, 90),
       seg('work', 30, 24, 110),
       seg('cool-down', 135, 11, 82),
+    ],
+  },
+};
+
+export const champsCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'champs-elysees-finale',
+  name: 'Champs-Élysées Finale',
+  routeName: 'The Champs-Élysées',
+  place: 'Paris, France',
+  world: 'champs',
+  distanceKm: 10.4625,
+  climbingM: 93,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: champsElevation,
+  },
+  thumbnailUrl: 'maps/champs-elysees-finale.jpg',
+  photoUrl: 'maps/champs-elysees-finale-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 12, 80),
+      seg('work', 60, 17, 85),
+      seg('recover', 30, 19, 90),
+      seg('work', 30, 21, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 16, 85),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 19, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 120, 13, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('cool-down', 150, 12, 80),
     ],
   },
 };

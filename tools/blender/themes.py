@@ -1435,3 +1435,8 @@ import cherryblossom as _cherryblossom
 
 THEMES["cherryblossom"] = _cherryblossom.THEME
 SCENERY["cherryblossom"] = _cherryblossom.scenery
+
+import champs as _champs
+
+THEMES["champs"] = _champs.THEME
+SCENERY["champs"] = _champs.scenery
