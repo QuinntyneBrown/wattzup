@@ -98,6 +98,7 @@ import { type ShadowShape, shadowLength, shadowShape } from './rider-shadow-shap
 import { outOfTheSaddle } from './rider-stance';
 import { endShadow, sideShadow } from './shadow-silhouette';
 import type { LigurianCoast } from './ligurian-coast';
+import type { HeadlandSurf } from './headland-surf';
 import { SunGlow } from './sun-glow';
 import { vertexFinish } from './rider-finish';
 import { RiderShadows } from './rider-shadows';
@@ -295,6 +296,7 @@ export class CourseRenderer implements WorldRenderer {
     reach: number;
   }[] = [];
   private coast: LigurianCoast | null = null;
+  private headland: HeadlandSurf | null = null;
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -350,6 +352,8 @@ export class CourseRenderer implements WorldRenderer {
     foamAdvance: null as number | null,
     hikerX: null as number | null,
     boatRoll: null as number | null,
+    walkerX: null as number | null,
+    breakerHeight: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -747,6 +751,12 @@ export class CourseRenderer implements WorldRenderer {
         this.coast = new LigurianCoast(this.course, this.scene, this.sun);
         this.disposables.push(this.coast);
       }
+      if (this.course.file.id === 'coast' && this.course.file.headland) {
+        const { HeadlandSurf } = await import('./headland-surf');
+        if (this.disposed) return false;
+        this.headland = new HeadlandSurf(this.course, this.scene);
+        this.disposables.push(this.headland);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1002,6 +1012,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
     this.coast?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.headland?.update(frame.reducedMotion ? 0 : frame.time, metres);
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
     if (this.canalTraffic.length)
       this.placeCanalTraffic(metres, frame.reducedMotion ? 0 : frame.time);
@@ -1093,6 +1104,7 @@ export class CourseRenderer implements WorldRenderer {
     this.railway = null;
     this.plaza = null;
     this.coast = null;
+    this.headland = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -1282,6 +1294,7 @@ export class CourseRenderer implements WorldRenderer {
         this.course!.file.night === true,
         coloured,
         this.evening,
+        this.course!.file.id === 'coast',
       );
       materials['Sea']!.dispose();
       materials['Sea'] = water.material;
@@ -1645,7 +1658,7 @@ export class CourseRenderer implements WorldRenderer {
     const skyline = this.railway ? Math.max(0, 1 - Math.abs(lap - 670) / 105) : 0;
     const train = this.railway ? Math.max(0, 1 - Math.abs(lap - 220) / 74) : 0;
     const view = this.basin?.sightline(metres) ?? this.plaza?.sightline(metres);
-    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge, this.there);
+    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0), this.there);
     this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train, ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
@@ -2031,6 +2044,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.sprintLane = this.champsParade?.sprintLane;
     drawn.hikerX = this.coast?.hikerX ?? null;
     drawn.boatRoll = this.coast?.boatRoll ?? null;
+    drawn.walkerX = this.headland?.walkerX ?? null;
+    drawn.breakerHeight = this.headland?.breakerHeight ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;

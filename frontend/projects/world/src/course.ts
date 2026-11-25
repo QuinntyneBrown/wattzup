@@ -64,6 +64,10 @@ export interface CourseFile {
       readonly shore: readonly (readonly [number, number])[];
     }[];
   };
+  readonly headland?: {
+    readonly lookouts: readonly number[];
+    readonly surf: readonly (readonly [number, number, number])[];
+  };
   /** Thermal soaring paraglider orbits above high mountain passes. */
   readonly gliders?: readonly {
     readonly center: readonly [number, number, number];

@@ -50,6 +50,7 @@ export function waterMaterial(
   lights: boolean,
   coloured: Node<'vec3'> | null = null,
   evening?: Node<'float'>,
+  coastalWater = false,
 ): Water {
   const time = uniform(0);
   const at = positionWorld.xz;
@@ -95,7 +96,10 @@ export function waterMaterial(
     seen = mix(seen, amber, evening);
     bed = mix(vec3(0.075, 0.46, 0.4), vec3(0.058, 0.18, 0.18), evening);
   }
-  const water = mix(bed, seen, glance);
+  // A clear open coast keeps the blue of the water between sunset highlights.
+  const water = coastalWater
+    ? mix(vec3(0.018, 0.135, 0.18), seen, glance.mul(0.56)).add(vec3(1, 0.64, 0.33).mul(glint))
+    : mix(bed, seen, glance);
   // Under a bridge's lit stays, and beside a neon sign, the water takes their colour, broken by its ripples.
   material.colorNode = coloured ? water.add(coloured.mul(a.r.add(b.g).mul(GLOW))) : water;
   return {
