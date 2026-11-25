@@ -118,4 +118,11 @@ export class WorldRideProbe {
           .__wzWorldRide?.course?.joggerHeight ?? null,
     );
   }
+  async flagDisplacement(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { flagDisplacement?: number } } })
+          .__wzWorldRide?.course?.flagDisplacement ?? null,
+    );
+  }
 }

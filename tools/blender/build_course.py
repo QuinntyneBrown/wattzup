@@ -685,7 +685,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos"):
+                if group in ("Windows", "Fences", "Halos") or (group == "Ground" and part.uvs is not None):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -700,7 +700,9 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
-                    if group == "Ground":
+                    if group == "Ground" and part.uvs is not None:
+                        mesh["uvs"].append(part.uvs[i])
+                    elif group == "Ground":
                         _, near, _ = road.tree.find((v[0], v[1], 0.0))
                         p = road.s[near]
                         dx, dy = v[0] - p["x"], v[1] - p["y"]

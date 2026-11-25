@@ -80,16 +80,28 @@ def road_builder(road,st,length,col,bc):
     paint=bc.Builder('Lane dashes','paint')
     terrace=bc.Builder('Smooth centre of the museum steps','promenade')
     def ribbon(builder,samples,half):
+        # The overlapping circuits have different odometer distances at the same point.
+        # Map the physical road in metres so tyre wear stays the same size on each lap.
+        if builder.uvs is None:builder.uvs=[]
         prev=None
+        previous_xy=None
+        distance=0.0
         for x,y,z,h in samples:
             cs,sn=math.cos(h),math.sin(h)
             pair=((x+sn*half,y-cs*half,z),(x-sn*half,y+cs*half,z))
-            if prev:builder.quad(prev[0],pair[0],pair[1],prev[1])
+            if prev:
+                new_distance=distance+math.dist(previous_xy,(x,y))
+                builder.quad(prev[0],pair[0],pair[1],prev[1])
+                builder.uvs.extend(((-half,distance),(-half,new_distance),(half,new_distance),(half,distance)))
+                distance=new_distance
+            previous_xy=(x,y)
             prev=pair
     ends=[s['to'] for s in st if s['kind']=='work']
     x0=-ends[0]-bc.LEAD_IN
-    ribbon(asphalt,[(x0,0,0,0),(-STAIRS-TERRACE,0,0,0)],5.8)
-    ribbon(asphalt,[(x0,2*RADIUS,0,0),(0,2*RADIUS,0,0)],5.8)
+    def straight(y,end):
+        return [(x,y,0,0) for x in range(math.ceil(x0),math.ceil(end),8)]+[(end,y,0,0)]
+    ribbon(asphalt,straight(0,-STAIRS-TERRACE),5.8)
+    ribbon(asphalt,straight(2*RADIUS,0),5.8)
     for a in sorted({round((b-a-2*TURN)/2,4) for a,b in zip(ends,ends[1:])}):
         ribbon(asphalt,[(-a-RADIUS*math.sin(j*math.pi/40),RADIUS*(1+math.cos(j*math.pi/40)),0,math.pi+j*math.pi/40) for j in range(41)],5.8)
     ribbon(asphalt,[return_bend(j*TURN/48) for j in range(49)],5.8)
@@ -206,11 +218,21 @@ def fountain(art,x,y,washington):
 def scenery(k):
     art=Painted(k)
     museum(art)
-    fountain(art,-175,16,True)
-    fountain(art,-1630,17,False)
+    fountain(art,-175,-16,True)
+    fountain(art,-1630,-17,False)
     bronze=lin(0x586455)
     art.box((-68,-10.7,-.12),(2.55,2.55,1.34),0,lin(0x8F897B))
     person(art,-68,-10.7,1.22,1.55,bronze,True)
+    # A family takes the familiar two-fisted pose next to the plinth. A fourth visitor
+    # holds a camera at eye height, looking toward them from the path.
+    for u,v,shirt,skin,scale,pose in ((-67,-8.35,0x597B98,0xBA876B,1,True),(-68,-7.35,0xB65E44,0x9B7158,.85,True),(-70,-8.3,0x788556,0xAC8462,.96,False),(-75,-8.7,0xD4A957,0x946F5B,1.05,False)):
+        pad=stair_height(u)
+        person(art,u,v,pad,scale,lin(shirt),pose)
+        art.tube((u,v,pad+1.43*scale),.136*scale,.134*scale,.255*scale,lin(skin),lin(skin),8,lin(skin))
+        if u==-75:
+            for sign in (-1,1):
+                beam(art,(u,v+sign*.19,pad+1.3),(u+.30,v+sign*.10,pad+1.53),.125,lin(skin))
+            art.box((u+.3,v,pad+1.46),(.16,.23,.15),0,lin(0x374247))
     # The median and rows of mature plane trees run along both carriageways.
     for x in range(-2010,2,19):
         for y in (-13,12,42,67):
@@ -223,9 +245,17 @@ def scenery(k):
                 dx,dy=2.3*math.cos(a),2.3*math.sin(a)
                 beam(art,(x,y,h*.50),(x+dx,y+dy,h*.84),.22,wood)
                 leaves=lin(k.rng.choice((0x678650,0x779258,0x80975C,0x647D50)))
-                art.tube((x+dx,y+dy,h*.71),1.45,3,1.58,leaves,leaves,9)
-                art.tube((x+dx,y+dy,h*.71+1.58),3,.35,1.86,leaves,leaves,9,leaves)
-    skyline(art)
+                for n in range(3):
+                    a2=a+n*2.37
+                    cx=x+dx+1.27*math.cos(a2)
+                    cy=y+dy+1.24*math.sin(a2)
+                    base=h*.67+k.rng.uniform(-.55,.65)
+                    crown=k.rng.uniform(1.95,2.7)
+                    dark=tuple(.73*c for c in leaves[:3])+(1,)
+                    art.tube((cx,cy,base),.5,crown,1.38,dark,leaves,7)
+                    art.tube((cx,cy,base+1.38),crown,crown*.79,1.12,leaves,leaves,7)
+                    art.tube((cx,cy,base+2.5),crown*.79,.15,1.27,leaves,leaves,7,leaves)
+    skyline(Painted(k,"peaks"))
     flags(k,art)
     return {'efforts':0}
 
@@ -257,16 +287,8 @@ def skyline(art):
 
 
 def flags(k,art):
-    bands=((0x3B5685,0xE6E2CD,0xAB5149),(0x5D8059,0xEEE4CF,0xA9574C),(0x333F47,0xB35549,0xDDBA62),
-           (0x496D96,0xD4B35D,0x496D96),(0xA5574D,0xEBDCC4,0xA5574D),(0x6489A5,0xE4DFCF,0x6489A5))
     metal=lin(0x696E65)
     for j,x in enumerate(range(-1960,-95,33)):
         for side in (-1,1):
             y=side*7.55
             art.tube((x,y,0),.073,.049,6.45,metal,metal,7,metal)
-            colours=bands[(j+(side+1))%len(bands)]
-            for strip,c in enumerate(colours):
-                a,b=strip*.61,(strip+1)*.61
-                def p(u,h):return (x+u,y+.11*math.sin(u*4),h-u*.09)
-                pts=(p(a,5.15),p(b,5.15),p(b,6.32),p(a,6.32))
-                art.face(pts,(lin(c),)*4);art.face(pts[::-1],(lin(c),)*4)
