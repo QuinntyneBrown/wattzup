@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Neon Flats” Route Details (Makuri Islands)](https://zwiftinsider.com/route/neon-flats/) (g0109) | © Zwift |
 | game-04.jpg | MyWhoosh: [Wind & Draft 2](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/12/Wind-Draft-2.jpg) (g0435) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Double Span Spin” Route Details (New York)](https://zwiftinsider.com/route/double-span-spin/) (g0032) | © Zwift |
+
+The festive family atlas is original generated artwork. The prompt described four groups of Mumbai residents watching Diwali fireworks or holding a small lamp, including a grandmother and child, adults in saris and kurtas and friends in salwar kameez, lit by the warm seafront lamps. Real 03–04 and 07 guided the promenade scale and evening setting. The paper lanterns, clay lamps and rangoli are original geometry and a procedural floral design informed by real 11–13 and 15.
+
+The façade atlas is original generated artwork. Four front elevations were requested with fluted pilasters, horizontal balcony rails, aged plaster, occupied windows, paper lanterns and warm balcony lamps against early evening shadow. The cream, pale green and dusty pink façades in real 05–07 informed their proportions. The atlas appears behind separately modelled balcony rails and stair towers.

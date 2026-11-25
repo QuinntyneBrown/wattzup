@@ -14,7 +14,8 @@ def elevation(d):
 
 def bearing(d):
     # The inside of the northbound sweep is the Arabian Sea, on the rider's left.
-    return 1.03+1.76*(.5+.5*math.tanh((d-4480)/2350))+.075*math.sin(d/610)
+    bays=sum(.54*math.exp(-((d-apex)/185)**2) for apex in (225,4970,6595,9340))
+    return 1.03+1.76*(.5+.5*math.tanh((d-4480)/2350))+.075*math.sin(d/610)+bays
 
 
 def lay(course,theme,bc):
@@ -45,9 +46,12 @@ def road(r,stages,length,col,bc):
 
 def shore(r,col,theme,bc):
     b=bc.Builder('Marine Drive sea wall and promenade','terrain');b.colours=[]
+    water=bc.Builder('Arabian Sea','sea')
     for i in range(len(r.s)-1):
-        for a,c,h,z,tint in ((-110,-7.2,.19,.19,0x755f60),(-7.2,-7.18,.19,-.02,0x9c9995),(7.18,7.25,-.02,.2,0xc6c0ac),(7.25,15.8,.2,.24,0x948b7d),(15.8,15.86,.24,.89,0x726e70),(15.86,16.77,.89,.89,0xbcaa90),(16.77,16.91,.89,-1.8,0x5c5353),(16.91,22,-1.8,-2.4,0x60575d),(22,1500,-2.4,-2.42,0x16273c)):
+        for a,c,h,z,tint in ((-110,-7.2,.19,.19,0x755f60),(-7.2,-7.18,.19,-.02,0x9c9995),(7.18,7.25,-.02,.2,0xc6c0ac),(7.25,15.8,.2,.24,0x948b7d),(15.8,15.86,.24,.89,0x726e70),(15.86,16.77,.89,.89,0xbcaa90),(16.77,16.91,.89,-1.8,0x5c5353),(16.91,22,-1.8,-2.42,0x60575d)):
             face(b,[r.at(k,l,v) for k,l,v in ((i,c,z),(i,a,h),(i+1,a,h),(i+1,c,z))],tint)
+        water.quad(r.at(i,1450,-2.43),r.at(i,21,-2.43),r.at(i+1,21,-2.43),r.at(i+1,1450,-2.43))
+    water.build(col)
     return b.build(col),lambda x,y:4
 
 
@@ -116,6 +120,25 @@ def scenery(k):
             for floor in range(4,int(h)-2,5):
                 for col in (-7,-2,3,8):
                     if rng.random()<.69:glow(d+col,off+9.55,floor,(1.67,.12,.84),'glow-door')
+    # Across Back Bay, a few high-rise clusters define Nariman Point and Malabar Hill.
+    # The distance is compressed so the necklace remains visible at rider height.
+    far=Painted(k,'peaks')
+    for j in range(144):
+        d=-155+j*74
+        bay=285+104*math.sin(j*.084)+38*math.cos(j*.31)
+        x,y,z=r.pos(d,bay)
+        tall=(1+.7*math.cos(j*.065))*(13+rng.random()*41)
+        width=rng.uniform(10,27);yaw=bearing(d)
+        far.box((x,y,z-2.24),(width,12,tall),yaw,lin(rng.choice((0x20283b,0x29283b,0x343047,0x292d3c))))
+        for floor in range(3,int(tall),4):
+            for n in range(-int(width/2)+2,int(width/2)-1,4):
+                if rng.random()<.68:
+                    xx=x+math.cos(yaw)*n+math.sin(yaw)*6.05
+                    yy=y+math.sin(yaw)*n-math.cos(yaw)*6.05
+                    far.box((xx,yy,z-2.15+floor),(1.2,.09,.82),yaw,lin(rng.choice((0xffc57c,0xacc5cb,0xd39461))))
+        for step in range(4):
+            xx,yy,zz=r.pos(d+step*17,bay-26)
+            far.box((xx,yy,zz-1.0),(.96,.75,.7),yaw,lin(0xffb354))
     return {'efforts':0}
 
 

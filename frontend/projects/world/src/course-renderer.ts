@@ -1,3 +1,4 @@
+import type { diwaliPromenade } from './diwali-promenade';
 import type { DiwaliFestival } from './diwali-festival';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
@@ -202,6 +203,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private promenade: Awaited<ReturnType<typeof diwaliPromenade>> | null = null;
   private festival: DiwaliFestival | null = null;
   private disposed = false;
   private readonly scene = new Scene();
@@ -366,6 +368,16 @@ export class CourseRenderer implements WorldRenderer {
         if (this.disposed) return false;
         this.festival = new DiwaliFestival(this.course, this.scene);
         this.disposables.push(this.festival);
+        const { diwaliPromenade } = await import('./diwali-promenade');
+        if (this.disposed) return false;
+        const promenade = await diwaliPromenade(this.course);
+        if (this.disposed) {
+          promenade.dispose();
+          return false;
+        }
+        this.promenade = promenade;
+        this.disposables.push(promenade);
+        this.scene.add(promenade.group);
         this.camera.setViewOffset(1, 1, 0, 0.062, 1, 1);
       }
 
@@ -433,6 +445,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    this.promenade?.follow(metres, frame.reducedMotion ? 0 : frame.time);
     this.festival?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.lampShadows?.end();
     this.riderBatch?.follow();
