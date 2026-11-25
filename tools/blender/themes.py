@@ -1247,3 +1247,10 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import fuji as _fuji
+
+for name in ("fuji-tarmac", "fuji-clinker", "fuji-scoria"):
+    MATERIALS[name] = {"color": 0x777572, "rough": 1.0, "vertex": True}
+THEMES["fuji"] = _fuji.THEME
+SCENERY["fuji"] = _fuji.scenery
