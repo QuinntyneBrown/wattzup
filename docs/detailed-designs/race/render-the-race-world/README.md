@@ -231,3 +231,13 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+### Hoover Dam · L2-2137
+
+Map Select currently has no Hoover Dam race entry. The class registry resolves HooverStreet through the world library and draws a short repeating crest. Issue #940 described the earlier generic road. Preserve the subsequent class’s bronze figures, square Deco lamps, intake towers and bridge silhouette. Restore the historical GCN workout with its three-second video cue. Use the catalogue’s elevation profile and the same physical distance in the map, HUD and road. ADRs 0021, 0023, 0030, 0034 and 0035 govern loading, rendering and tier selection.
+
+Place the dam and bypass at fixed positions. The approach road curves towards them from above so that the downstream arch is visible between dark volcanic abutments. The convex side of the dam drops to the Colorado, the concave side holds back Lake Mead. The tower drums, ribs, upper glazing and bridges remain distinct on Low. The plaza’s seated figures, clocks and light standards give a human scale. The long shore road carries the white mineral band continuously around headlands. Keep barriers solid around the drop and vary the rocky verge density on the approaches.
+
+Real 03–06 establish the cut heights and approach signs. Games 01–04 guide their sightlines from rider height. Real 07–10 and 12–14 locate the crest, bypass bridge, downstream river and upstream towers. Use real 11 for the silhouettes only, since the ride takes place in bright daytime. Real 02 and 15 guide the architectural details and plaza. Real 01 is Davis Dam and supplies a comparison for low road furniture only. Real 13 and game 05 guide water-level contrast with the adjoining rock. Retain the credits in the world folder.
+
+Merge static near scenery into track sections; keep the remote bridge, cliffs and towers independent of the foreground visibility window. The tablet shares materials and instances, uses baked occlusion and runs a small heat shimmer on the ride clock. Release each loaded geometry, texture and instance when the rider leaves. Capture the six mock positions from a simulated solo ride and measure both the opening and busiest crest section on Low/WebGL 2 at 1024 × 768, DPR 1, 4× CPU, following the performance budget design.
