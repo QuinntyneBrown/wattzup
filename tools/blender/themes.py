@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import jouvert as _jouvert
+
+THEMES['jouvert'] = _jouvert.THEME
+SCENERY['jouvert'] = _jouvert.scenery

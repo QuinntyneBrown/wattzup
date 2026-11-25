@@ -3598,7 +3598,7 @@ export const jouvertCourseMap = {
   place: 'Port of Spain, Trinidad and Tobago',
   world: 'jouvert',
   distanceKm: 6.275,
-  climbingM: 8,
+  climbingM: 42,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

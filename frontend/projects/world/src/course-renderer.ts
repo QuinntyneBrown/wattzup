@@ -597,6 +597,7 @@ export class CourseRenderer implements WorldRenderer {
   private highlandLivestock: HighlandLivestock | null = null;
   private bigSurCoast: BigSurCoast | null = null;
   private trams: BlackpoolTrams | null = null;
+  private frederick: MeshBasicMaterial | null = null;
   private yard: BlueMountainsYard | null = null;
   private mill: MabryMill | null = null;
   private surf: BondiSurf | null = null;
@@ -779,6 +780,21 @@ export class CourseRenderer implements WorldRenderer {
           image.anisotropy = 4;
           image.flipY = false;
         }
+      }
+      if (this.course.file.id === 'jouvert') {
+        const atlas = await new TextureLoader().loadAsync('courses/jouvert-frederick.webp');
+        if (this.disposed) {
+          atlas.dispose();
+          return false;
+        }
+        atlas.flipY = false;
+        atlas.colorSpace = SRGBColorSpace;
+        atlas.anisotropy = 4;
+        this.frederick = new MeshBasicMaterial({ map: atlas, side: DoubleSide });
+        this.disposables.push(atlas, this.frederick);
+        this.camera.clearViewOffset();
+        this.camera.fov = 62;
+        this.camera.updateProjectionMatrix();
       }
       if (this.course.file.id === 'arenberg') {
         const { arenbergPave } = await import('./arenberg-pave');
@@ -1964,6 +1980,7 @@ export class CourseRenderer implements WorldRenderer {
     this.mountain = null;
     this.trainingHighlands = null;
     this.trams = null;
+    this.frederick = null;
     this.yard = null;
     this.mill = null;
     this.surf = null;
@@ -2194,6 +2211,7 @@ export class CourseRenderer implements WorldRenderer {
       this.seafrontSurface?.(detail) ??
       this.deckSurface ??
       coursePavement;
+    if (this.frederick) materials['FrederickFronts'] = this.frederick;
     materials['Ground'] = pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
