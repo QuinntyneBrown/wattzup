@@ -186,8 +186,8 @@ def scenery(k):
         cottage(k,art,d,11.8+(i%4)*2,(0x6BB4A5,0xD69D7D,0xE5C58D,0x87A9B1)[i%4] if d not in (609,3821,8953) else 0xAC4C42,d in (609,3821,8953))
     cottage(k,art,620,-10.2,0xAD4941,True)
     cottage(k,art,115,-11.4,0x66B1A4)
-    for d in (2222,2230,2236):
-        boat(k,art,d,-12.7,rng.choice((0x407F9E,0xCE654F,0xD3AD4D)))
+    for d in (2217,2225,2233):
+        boat(k,art,d,-6.9,rng.choice((0x407F9E,0xCE654F,0xD3AD4D)))
     # Low spreading sea grape above the beach, with grey trunks and clusters of broad leaves.
     for i in range(200):
         d=45+rng.uniform(0,10580);lane=rng.choice((1,-1))*rng.uniform(6.6,16.8)
@@ -205,7 +205,7 @@ def scenery(k):
                 art.face((rim,next_rim,top),(co,co,lin(0x93A563)))
     for d in (2251,2259,2265,5298,5304,8037):boat(k,art,d,-shore(d)+4,rng.choice((0x6598AA,0xC87A60,0x70A186)))
     for d in range(235,10230,5):
-        if d%1780>675:continue
+        if d%1780>675 or 2184<d<2278:continue
         x,y,z=k.road.pos(d,-4.55);c=lin(rng.choice((0xBAAE90,0xBFB49A,0xC7BCA7)))
         art.box((x,y,z-.36),(4.75,.49,.89),head(d),c)
     previous=None

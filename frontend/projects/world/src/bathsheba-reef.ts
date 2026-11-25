@@ -33,8 +33,16 @@ export class BathshebaReef {
   });
   private readonly geometry = new PlaneGeometry(1, 1);
   private readonly waves = new InstancedMesh(this.geometry, this.material, 96);
+  private readonly reefColour = canvasTexture(96, 96, (g) => {
+    const bed = g.createRadialGradient(47, 49, 2, 47, 49, 46);
+    bed.addColorStop(0, 'rgba(96,196,179,.85)');
+    bed.addColorStop(0.67, 'rgba(108,201,178,.60)');
+    bed.addColorStop(1, 'rgba(126,207,190,0)');
+    g.fillStyle = bed;
+    g.fillRect(0, 0, 96, 96);
+  });
   private readonly water = new MeshBasicMaterial({
-    color: 0x64c9bc,
+    map: this.reefColour,
     transparent: true,
     opacity: 0.47,
     depthWrite: false,
@@ -129,6 +137,7 @@ export class BathshebaReef {
       this.geometry,
       this.material,
       this.water,
+      this.reefColour,
       this.foam,
       this.vapour,
       this.clouds,
