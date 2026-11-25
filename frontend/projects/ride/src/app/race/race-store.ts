@@ -230,14 +230,21 @@ export class RaceStore {
   /** The map's route profile, `main`'s, built once from its plan and its world's terrain (L2-062). */
   private readonly profile = computed(() => {
     const map = this.loaded();
-    return map ? routeProfile(map.terrain, map.plan.segments) : null;
+    return map ? routeProfile(map.terrain, map.plan.segments, map.distanceKm * 1000) : null;
   });
 
   /** What the route panel draws at the race clock's second. */
   readonly routeView = computed(() => {
     const map = this.loaded();
     const profile = this.profile();
-    return map && profile ? routeProfileView(profile, map.plan.segments, this.elapsed()) : null;
+    return map && profile
+      ? routeProfileView(
+          profile,
+          map.plan.segments,
+          this.elapsed(),
+          profile.stepMetres ? this.ridden() : 0,
+        )
+      : null;
   });
 
   /** Kilometres ridden at the virtual speed, two decimals ("1.62", L2-062 AC1). */

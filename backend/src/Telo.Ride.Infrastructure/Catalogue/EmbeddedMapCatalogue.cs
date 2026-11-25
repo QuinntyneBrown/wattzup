@@ -26,7 +26,7 @@ public sealed class EmbeddedMapCatalogue : IMapCatalogue
             m.Id, m.Name, m.RouteName, m.Place, m.DistanceKm, m.ClimbingM, m.Rating, m.World, m.ThumbnailUrl,
             m.PhotoUrl, new MapUnlock(m.Unlock.Kind, m.Unlock.MapId, m.Unlock.Stars, m.Unlock.Level),
             [.. m.Plan.Segments.Select(s => new ClassSegment(s.Kind, s.Duration, s.Level, s.CadenceAim))],
-            new MapTerrain(m.Terrain.Grade, m.Terrain.Roll),
+            new MapTerrain(m.Terrain.Grade, m.Terrain.Roll, m.Terrain.Elevation),
             m.RealPlace is { } place
                 ? new RealPlace(place.Name, place.Route, place.Latitude, place.Longitude)
                 : null))];
@@ -56,7 +56,7 @@ public sealed class EmbeddedMapCatalogue : IMapCatalogue
 
     private sealed record SegmentEntry(string Kind, int Duration, int Level, int CadenceAim);
 
-    private sealed record TerrainEntry(IReadOnlyDictionary<string, double> Grade, double Roll);
+    private sealed record TerrainEntry(IReadOnlyDictionary<string, double> Grade, double Roll, IReadOnlyList<double>? Elevation = null);
 
     private sealed record UnlockEntry(string Kind, string? MapId, int? Stars, int? Level);
 }
