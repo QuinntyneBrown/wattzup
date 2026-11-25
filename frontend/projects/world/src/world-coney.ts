@@ -158,7 +158,9 @@ export class ConeyStreet implements SceneStreet {
   private readonly horizon = new Group();
   private readonly sea = new Group();
   private wheel: Group | null = null;
-  private readonly gondolas: Group[] = [];
+  private gondolas: { seats: InstancedMesh; glass: InstancedMesh; caps: InstancedMesh } | null =
+    null;
+  private readonly cabinPose = new Matrix4();
   private readonly train: Group[] = [];
   private readonly wheelStand = new Group();
   private readonly coaster = new Group();
@@ -166,7 +168,9 @@ export class ConeyStreet implements SceneStreet {
   private time = 0;
 
   get carRadius(): number {
-    return this.gondolas[1]?.position.length() ?? 0;
+    if (!this.gondolas) return 0;
+    const positions = this.gondolas.glass.instanceMatrix.array;
+    return Math.hypot(positions[28]!, positions[29]!);
   }
 
   get trainX(): number {
@@ -225,12 +229,21 @@ export class ConeyStreet implements SceneStreet {
     // The Wonder Wheel turns slowly.
     const turn = seconds * 0.05;
     if (this.wheel) this.wheel.rotation.z = turn;
-    for (const [i, cabin] of this.gondolas.entries()) {
-      const angle = (i * Math.PI * 2) / this.gondolas.length;
-      // Gravity carries the inner cars between the two ends of their radial tracks.
-      const radius = i % 3 === 0 ? 23 : 17.5 - 3.5 * Math.sin(angle + turn);
-      cabin.position.set(radius * Math.cos(angle), radius * Math.sin(angle), 0);
-      cabin.rotation.z = -turn;
+    if (this.gondolas) {
+      const { seats, glass, caps } = this.gondolas;
+      const pose = this.cabinPose.makeRotationZ(-turn);
+      const dx = Math.sin(turn);
+      const dy = Math.cos(turn);
+      for (let i = 0; i < glass.count; i++) {
+        const angle = (i * Math.PI * 2) / glass.count;
+        const radius = i % 3 === 0 ? 23 : 17.5 - 3.5 * Math.sin(angle + turn);
+        const x = radius * Math.cos(angle),
+          y = radius * Math.sin(angle);
+        glass.setMatrixAt(i, pose.setPosition(x, y, 0));
+        seats.setMatrixAt(i, pose.setPosition(x - 0.9 * dx, y - 0.9 * dy, 0));
+        caps.setMatrixAt(i, pose.setPosition(x + 0.53 * dx, y + 0.53 * dy, 0));
+      }
+      for (const batch of [seats, glass, caps]) batch.instanceMatrix.needsUpdate = true;
     }
     for (const [i, carriage] of this.train.entries()) {
       const phase = seconds * 0.19 - i * 0.12;
@@ -566,6 +579,19 @@ export class ConeyStreet implements SceneStreet {
       fascia.rotation.y = -Math.PI / 2;
       fascia.position.set(-0.06, 3.4, 0);
       holder.add(fascia);
+      if (name.startsWith('PAUL') || name.startsWith('RUBY')) {
+        const blade = new Group();
+        const bracket = new BoxBuilder();
+        bracket.box(timber, [3.1, 0.16, 0.14], [-1.35, 4.75, 0]);
+        bracket.box(trim, [0.08, 0.48, 0.08], [-2.5, 4.5, 0]);
+        blade.add(bracket.build(this.disposables));
+        const panel = new PlaneGeometry(2.6, 0.93);
+        const lettered = new Mesh(panel, this.material({ map: sign, side: DoubleSide }));
+        this.disposables.push(panel);
+        lettered.position.set(-1.8, 3.87, 0.08);
+        blade.add(lettered);
+        holder.add(blade);
+      }
       const stripes = this.track(awningTexture(ink));
       stripes.wrapS = RepeatWrapping;
       stripes.repeat.set(width / 2, 1);
@@ -702,18 +728,16 @@ export class ConeyStreet implements SceneStreet {
     const track = new BoxBuilder();
     this.disposables.push(glazing, roof);
     this.disposables.push(car);
+    const seats = new InstancedMesh(car, white, 24);
+    const windows = new InstancedMesh(glazing, glass, 24);
+    const caps = new InstancedMesh(roof, white, 24);
+    this.gondolas = { seats, glass: windows, caps };
+    this.disposables.push(seats, windows, caps);
+    wheel.add(seats, windows, caps);
     for (let k = 0; k < 24; k++) {
       const a = (k / 24) * Math.PI * 2;
-      const cabin = new Group();
-      const shell = cars[k % cars.length]!;
-      const seat = new Mesh(car, shell);
-      seat.position.y = -0.9;
-      const windows = new Mesh(glazing, glass);
-      const cap = new Mesh(roof, shell);
-      cap.position.y = 0.53;
-      cabin.add(seat, windows, cap);
-      this.gondolas.push(cabin);
-      wheel.add(cabin);
+      seats.setColorAt(k, cars[k % cars.length]!.color);
+      caps.setColorAt(k, cars[k % cars.length]!.color);
       if (k % 3 !== 0) {
         for (const side of [-1, 1]) {
           const x = 17.5 * Math.cos(a) - side * 0.8 * Math.sin(a);

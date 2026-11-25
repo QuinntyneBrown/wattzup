@@ -11,9 +11,12 @@ export class ConeyBoardwalk {
     metres: (i - 10) * 2,
     height: 0,
   }));
-  private distance = 0;
-  private readonly height = (ahead: number): number =>
-    this.course.place(this.distance + ahead, 0, this.sample).y;
+  private readonly height = (ahead: number): number => {
+    const offset = Math.min(this.points.length - 1, Math.max(0, ahead / 2 + 10));
+    const i = Math.min(this.points.length - 2, Math.floor(offset));
+    const a = this.points[i]!.height;
+    return a + (this.points[i + 1]!.height - a) * (offset - i);
+  };
 
   constructor(
     private readonly course: Course,
@@ -32,9 +35,9 @@ export class ConeyBoardwalk {
   }
 
   place(distance: number, seconds: number): void {
-    this.distance = distance;
     this.street.setTime(seconds);
-    for (const p of this.points) p.height = this.height(p.metres);
+    for (const p of this.points)
+      p.height = this.course.place(distance + p.metres, 0, this.sample).y;
     this.street.lay(this.points, distance);
     this.street.place(distance, this.height);
     this.street.alignPark(distance);
