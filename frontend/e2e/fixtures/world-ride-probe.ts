@@ -70,12 +70,6 @@ export class WorldRideProbe {
     );
   }
 
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
-
   async millMotion(part: 'paddleHeight' | 'valleyMist'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
@@ -83,12 +77,6 @@ export class WorldRideProbe {
           ?.course?.[name] ?? null,
       part,
     );
-  }
-
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
   }
 
   async coastalMotion(part: 'foamAdvance' | 'walkerStride'): Promise<number | null> {
@@ -100,12 +88,6 @@ export class WorldRideProbe {
     );
   }
 
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
-
   async saltMotion(part: 'pushCarPosition' | 'mirageHeight'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
@@ -113,12 +95,6 @@ export class WorldRideProbe {
           ?.course?.[name] ?? null,
       part,
     );
-  }
-
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
   }
 
   async brickyardMotion(part: 'flagTip' | 'balloonHeight'): Promise<number | null> {
@@ -130,12 +106,6 @@ export class WorldRideProbe {
     );
   }
 
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
-
   async brightonMotion(part: 'bannerTip' | 'floatPosition'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
@@ -143,12 +113,6 @@ export class WorldRideProbe {
           ?.course?.[name] ?? null,
       part,
     );
-  }
-
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
   }
 
   async brooklynMotion(part: 'cabPosition' | 'ferryPosition'): Promise<number | null> {
@@ -160,12 +124,6 @@ export class WorldRideProbe {
     );
   }
 
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
-
   async bundMotion(part: 'boatPosition' | 'touristPosition'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
@@ -173,12 +131,6 @@ export class WorldRideProbe {
           ?.course?.[name] ?? null,
       part,
     );
-  }
-
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
   }
 
   async calobraMotion(part: 'coachDistance' | 'packDistance'): Promise<number | null> {
@@ -190,12 +142,6 @@ export class WorldRideProbe {
     );
   }
 
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
-
   async campolongoMotion(part: 'chairDistance' | 'cowPitch'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
@@ -203,12 +149,6 @@ export class WorldRideProbe {
           ?.course?.[name] ?? null,
       part,
     );
-  }
-
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
   }
 
   async cabotMotion(part: 'boatHeel' | 'moosePitch'): Promise<number | null> {
@@ -220,16 +160,6 @@ export class WorldRideProbe {
     );
   }
 
-  /**
-   * Call before the page loads: World Ride draws at `tier` and never drops it; with `webgl2`,
-   * through three's WebGL2 backend even where WebGPU is offered.
-   */
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
-
   async guitarHand(): Promise<number | null> {
     return this.page.evaluate(
       () =>
@@ -238,24 +168,12 @@ export class WorldRideProbe {
     );
   }
 
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
-
   async reefCrest(): Promise<number | null> {
     return this.page.evaluate(
       () =>
         (window as unknown as { __wzWorldRide?: { course?: { reefCrest?: number } } }).__wzWorldRide
           ?.course?.reefCrest ?? null,
     );
-  }
-
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
   }
 
   async ferryX(): Promise<number | null> {
@@ -274,12 +192,6 @@ export class WorldRideProbe {
     );
   }
 
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
-
   async clubLane(): Promise<number | null> {
     return this.page.evaluate(
       () =>
@@ -288,32 +200,12 @@ export class WorldRideProbe {
     );
   }
 
-  async eveningLight(): Promise<number | null> {
-    return this.page.evaluate(
-      () =>
-        (window as unknown as { __wzWorldRide?: { course?: { eveningLight?: number } } })
-          .__wzWorldRide?.course?.eveningLight ?? null,
-    );
-  }
-
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
-
   async surfCrest(): Promise<number | null> {
     return this.page.evaluate(
       () =>
         (window as unknown as { __wzWorldRide?: { course?: { surfCrest?: number } } }).__wzWorldRide
           ?.course?.surfCrest ?? null,
     );
-  }
-
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
   }
 
   async tramMetres(): Promise<number | null> {
@@ -457,12 +349,6 @@ export class WorldRideProbe {
           .__wzWorldRide?.course?.commissaireX ?? null,
     );
   }
-  /** Start at a physical viewpoint after Map Select is open and before the course loads. */
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
   /** Height of the first jogger on the granite steps. */
   async joggerHeight(): Promise<number | null> {
     return this.page.evaluate(
@@ -477,12 +363,6 @@ export class WorldRideProbe {
         (window as unknown as { __wzWorldRide?: { course?: { flagDisplacement?: number } } })
           .__wzWorldRide?.course?.flagDisplacement ?? null,
     );
-  }
-  /** Start at a physical viewpoint after Map Select is open and before the course loads. */
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
   }
   /** Height of a feeding flamingo’s bill at Chaxa. */
   async flamingoBillHeight(): Promise<number | null> {
@@ -500,12 +380,6 @@ export class WorldRideProbe {
           .__wzWorldRide?.course?.vicunaHeadHeight ?? null,
     );
   }
-  /** Start at a physical viewpoint after Map Select is open and before the course loads. */
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
   /** Height of a breaking plume at the Storseisundet approach. */
   async sprayHeight(): Promise<number | null> {
     return this.page.evaluate(
@@ -513,12 +387,6 @@ export class WorldRideProbe {
         (window as unknown as { __wzWorldRide?: { course?: { sprayHeight?: number } } })
           .__wzWorldRide?.course?.sprayHeight ?? null,
     );
-  }
-  /** Start at a physical viewpoint after Map Select is open and before the course loads. */
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
   }
   /** Lane of the horse nearest the corniche. */
   async horseLane(): Promise<number | null> {
@@ -534,12 +402,6 @@ export class WorldRideProbe {
         (window as unknown as { __wzWorldRide?: { course?: { cirqueSun?: number } } }).__wzWorldRide
           ?.course?.cirqueSun ?? null,
     );
-  }
-  /** Start at a physical viewpoint after Map Select is open and before the course loads. */
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
   }
   /** Lane of the sheep nearest the riding line. */
   async sheepLane(): Promise<number | null> {
