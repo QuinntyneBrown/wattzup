@@ -362,12 +362,16 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'ghent') {
         const { ghentArena } = await import('./ghent-arena');
         if (this.disposed) return false;
-        const arena = await ghentArena(this.course, this.tier === 0);
+        const arena = await ghentArena(this.course, this.tier === 0, gltf.scene);
         if (this.disposed) {
           arena.dispose();
           return false;
         }
         this.arena = arena;
+        // In the Kuipke the next bend is only metres away. Leave room above it for the stands and roof.
+        this.camera.clearViewOffset();
+        this.camera.fov = 68;
+        this.camera.updateProjectionMatrix();
         this.scene.add(this.arena.group);
         this.disposables.push(this.arena);
       }
@@ -903,13 +907,13 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const behind = this.arena ? 3.8 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
+    const up = this.arena ? 2.15 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
+    const ahead = course.place(metres + (this.arena ? 7.5 : LOOK_AHEAD), 0, this.there);
+    this.camera.lookAt(ahead.x, ahead.y + (this.arena ? 2.45 : LOOK_UP), ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);

@@ -62,7 +62,14 @@ export class WorldRideProbe {
   }
 
   async ghentMotion(
-    part: 'relayPosition' | 'spectatorHeight' | 'displayLap' | 'cameraRoll',
+    part:
+      | 'relayPosition'
+      | 'spectatorHeight'
+      | 'displayLap'
+      | 'cameraRoll'
+      | 'riddenMetres'
+      | 'handGap'
+      | 'restingLaneDifference',
   ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>

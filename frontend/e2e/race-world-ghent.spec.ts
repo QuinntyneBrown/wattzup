@@ -1,6 +1,7 @@
 // L2-065. The Madison riders and infield spectators follow the ride clock.
 import { newRiderProgress } from './fixtures/api';
 import { ghentCourseMap } from './fixtures/course';
+import { startRace, stepUntil } from './fixtures/race';
 import { echelonBike } from './fixtures/echelon';
 import { expect, test } from './fixtures/test';
 import { WorldMusic } from './fixtures/world-music';
@@ -112,4 +113,30 @@ test('the Ghent brass band plays when the race begins', async ({
   await expect(race.backend).toBeVisible();
 
   await expect.poll(() => music.played()).toContain('music/ghent-six-day.ogg');
+});
+
+test('Madison teammates join hands and exchange the high resting lane', async ({
+  api,
+  bluetooth,
+  page,
+  worldRide,
+}) => {
+  await worldRide.pin('low', 'webgl2');
+  const race = await startRace(page, bluetooth, api, ghentCourseMap.id, 'mode=solo', {
+    catalogue: [ghentCourseMap],
+    world: true,
+  });
+  await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
+  const seen = new Set<number>();
+  let joined = false;
+  for (let step = 0; step < 64; step++) {
+    await page.clock.runFor(250);
+    const gap = await worldRide.ghentMotion('handGap');
+    const lanes = await worldRide.ghentMotion('restingLaneDifference');
+    if (gap !== null && gap < 0.14) joined = true;
+    if (lanes !== null && Math.abs(lanes) > 1.6) seen.add(Math.sign(lanes));
+    if (joined && seen.size === 2) break;
+  }
+  expect(joined).toBe(true);
+  expect(seen.size).toBe(2);
 });

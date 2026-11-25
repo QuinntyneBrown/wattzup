@@ -70,12 +70,50 @@ THEME = {
 }
 
 
+def patron(b, rng, x, y, floor, yaw):
+    """Standing patrons turn toward one another with a drink or an elbow on the café table."""
+    shirt = lin(rng.choice([0x5A4840,0x474B52,0x8B493B,0x77764F,0x82674F,0x313D45]))
+    denim, shoe = lin(rng.choice([0x434A50,0x45403F,0x323844])), lin(0x443A32)
+    skin = lin(rng.choice([0xAC7D60,0xCFA181,0x99745F,0xCA9B79]))
+    hair = lin(rng.choice([0x49372B,0x746255,0xB09C82]))
+    def at(h,v,z):
+        return x+h*math.cos(yaw)-v*math.sin(yaw),y+h*math.sin(yaw)+v*math.cos(yaw),floor+z
+    def limb(start,end,wa,wb,tone):
+        rings=[]
+        for centre,radius in ((start,wa),(end,wb)):
+            h,v,z=centre
+            rings.append([at(h+radius*math.cos(i*math.tau/8),v+radius*math.sin(i*math.tau/8),z)
+                          for i in range(8)])
+        for i in range(8):
+            j=(i+1)%8
+            b.face((rings[0][i],rings[0][j],rings[1][j],rings[1][i]),(tone,)*4)
+    for side in (-1,1):
+        h=side*.105
+        b.box(at(h,-.035,.02),(.14,.29,.095),yaw,shoe)
+        limb((h,0,.10),(h,0,.45),.055,.075,denim)
+        limb((h,0,.45),(h*.70,.035,.87),.078,.105,denim)
+        limb((side*.105,.03,.80),(side*.12,.035,1.12),.119,.135,shirt)
+        limb((side*.12,.035,1.12),(side*.115,0,1.36),.135,.114,shirt)
+        limb((side*.19,0,1.34),(side*.26,-.02,1.07),.075,.066,shirt)
+        limb((side*.26,-.02,1.07),(side*.23,-.22,1.02+side*.1),.06,.043,skin)
+    b.tube(at(0,0,1.34),.067,.071,.115,skin,skin,8)
+    b.tube(at(0,-.006,1.43),.085,.113,.16,skin,skin,10)
+    b.tube(at(0,.006,1.57),.115,.083,.093,hair,hair,10,hair)
+
+
 def scenery(k):
     b = Painted(k)
-    def strip(d, e, left, right, colour, lift=0):
+    timber = Painted(k, "asphalt")
+    timber.b.name = "VelodromeTimber"
+    timber.b.uvs = []
+    def strip(d, e, left, right, colour, lift=0, plank=False):
         corners = [point(d, left, lift), point(e, left, lift),
                    point(e, right, lift), point(d, right, lift)]
-        b.face(corners[::-1], (lin(colour),) * 4)
+        target = timber if plank else b
+        target.face(corners[::-1], (lin(colour),) * 4)
+        if plank:
+            timber.b.uvs.extend((u * 28 / LAP, v / .96) for u,v in
+                                [(d,right),(e,right),(e,left),(d,left)])
     timbers = [0xBD8E5D, 0xB88B58, 0xCA9F6C, 0xC39763, 0xD1AA77, 0xC69B6D]
     for row in range(51):
         left = -.36 + row * .12
@@ -83,11 +121,15 @@ def scenery(k):
         for d in range(166):
             if (d + row * 3) % 6 == 0:
                 colour = k.rng.choice(timbers)
-            strip(d, d + 1, left, left + .12, colour)
+            strip(d, d + 1, left, left + .12, colour, plank=True)
     for d in range(166):
         for left, right, colour in [(-1.5,-.36,0x4298C4),(-.05,.03,0x242224),
                                     (.82,.91,0xCE3228),(3.1,3.18,0x345A8B)]:
             strip(d, d+1, left, right, colour, .021)
+        # A worn blue-grey safety deck bends down from the blue band to the infield.
+        a,c=point(d,-1.5),point(d+1,-1.5)
+        u,v=point(d,-3.15),point(d+1,-3.15)
+        b.face((a,c,(v[0],v[1],-.55),(u[0],u[1],-.55)),(lin(0x677075),)*4)
         # Inward facing vertical boards follow the track, including its pitch transitions.
         a, c = point(d,5.8), point(d+1,5.8)
         tone = lin([0xB3372B,0xF4D49C,0x304B5E,0xD9BA6B][(d//5)%4])
@@ -118,6 +160,12 @@ def scenery(k):
             b.box((x,y,13.82),(2.3,.9,.30),0,lin(0x443B38))
             for dx in (-.62,0,.62):
                 b.box((x+dx,y,13.73),(.48,.71,.12),0,light)
+                # The tubes face the racing surface. The box kit normally omits an underside.
+                lamp = [(x+dx-.24,y-.355,13.72),(x+dx-.24,y+.355,13.72),
+                        (x+dx+.24,y+.355,13.72),(x+dx+.24,y-.355,13.72)]
+                b.face(lamp,(light,)*4)
+    for y in range(-30,31,2):
+        b.box((0,y,17.58),(97,.09,.30),0,lin(0x50433E))
     # Cafés flank the riders’ cabins. High tables carry amber glasses and white beer heads.
     floor = -.57
     wood, brass = lin(0x663B2D), lin(0xD4A95B)
@@ -126,6 +174,16 @@ def scenery(k):
             y = side*5.2
             b.box((x,y,floor),(5.3,1.35,1.28),0,wood)
             b.box((x,y,floor+1.28),(5.5,1.5,.14),0,brass)
+            # Burgundy canvas awning and slim brass uprights over the beer counter.
+            for end in (-2.45,2.45):
+                b.tube((x+end,y,floor+1.40),.046,.046,1.51,brass,brass,8)
+            for n in range(11):
+                left=x-2.75+n*.5
+                cloth=lin(0x77322C if n%3 else 0xC69A63)
+                for dy in (-1,1):
+                    face=[(left,y,2.7),(left+.5,y,2.7),(left+.5,y+dy*.91,2.24),(left,y+dy*.91,2.24)]
+                    b.face(face if dy>0 else face[::-1],(cloth,)*4)
+                    b.face(face[::-1] if dy>0 else face,(cloth,)*4)
             for j in range(3):
                 tx,ty=x+1.65*j-1.65, y+side*(2.55+j%2)
                 b.tube((tx,ty,floor),.18,.085,1.15,wood,wood,8)
@@ -133,5 +191,8 @@ def scenery(k):
                 for n in (-.15,.16):
                     b.tube((tx+n,ty,floor+1.24),.055,.074,.17,brass,brass,8)
                     b.tube((tx+n,ty,floor+1.41),.074,.073,.035,light,light,8,light)
-                k.person((tx+.57,ty,floor),side*.9,["crowd-1","crowd-4"])
+                patron(b,k.rng,tx+.70,ty,floor,-math.pi/2)
+                if j%2==0:
+                    patron(b,k.rng,tx-.66,ty+.18,floor,math.pi/2+.2)
+
     return {"laps": int(k.length // LAP), "efforts": 0}

@@ -1,4 +1,5 @@
 import {
+  type Object3D,
   BufferGeometry,
   CanvasTexture,
   Color,
@@ -10,6 +11,7 @@ import {
   MeshBasicMaterial,
   MeshLambertMaterial,
   PlaneGeometry,
+  Quaternion,
   RepeatWrapping,
   SRGBColorSpace,
   SphereGeometry,
@@ -21,7 +23,7 @@ import { caribanaCyclists } from './caribana-cyclists';
 
 const LAP = 166;
 
-export async function ghentArena(course: Course, low: boolean) {
+export async function ghentArena(course: Course, low: boolean, map: Object3D) {
   const group = new Group();
   const resources: { dispose(): void }[] = [];
   function own<T extends { dispose(): void }>(item: T): T {
@@ -44,7 +46,7 @@ export async function ghentArena(course: Course, low: boolean) {
       const edge = course.place(d, 5.8),
         outer = course.place(d, lane);
       positions.push(outer.x, edge.y + lift, outer.z, outer.x, edge.y + lift + height, outer.z);
-      uv.push((d * repeats) / LAP, 0, (d * repeats) / LAP, 1);
+      uv.push((-d * repeats) / LAP, 0, (-d * repeats) / LAP, 1);
       if (d < LAP) {
         const n = d * 2;
         indices.push(n, n + 1, n + 2, n + 2, n + 1, n + 3);
@@ -56,6 +58,38 @@ export async function ghentArena(course: Course, low: boolean) {
     geometry.setIndex(indices);
     group.add(new Mesh(geometry, material));
   }
+  const plank = document.createElement('canvas');
+  plank.width = 1024;
+  plank.height = 256;
+  const grain = plank.getContext('2d')!;
+  let seed = 166;
+  const random = () => (seed = (1664525 * seed + 1013904223) >>> 0) / 4294967296;
+  for (let row = 0; row < 8; row++) {
+    const y = row * 32;
+    grain.fillStyle = ['#bf9266', '#ceaa7d', '#c69d70', '#c8a376'][row % 4]!;
+    grain.fillRect(0, y, 1024, 32);
+    grain.fillStyle = 'rgba(57,39,26,.33)';
+    grain.fillRect(0, y, 1024, 1);
+    const joint = Math.floor(random() * 1024);
+    grain.fillRect(joint, y, 1.5, 32);
+    for (let j = 0; j < 90; j++) {
+      const x = random() * 1024,
+        dy = y + 1 + random() * 30;
+      grain.strokeStyle = j % 3 ? 'rgba(95,61,35,.13)' : 'rgba(255,222,172,.22)';
+      grain.lineWidth = 0.45 + random();
+      grain.beginPath();
+      grain.moveTo(x, dy);
+      grain.quadraticCurveTo(x + 20, dy + random() * 2 - 1, x + 40 + random() * 110, dy);
+      grain.stroke();
+    }
+  }
+  const timber = own(new CanvasTexture(plank));
+  timber.colorSpace = SRGBColorSpace;
+  timber.wrapS = timber.wrapT = RepeatWrapping;
+  timber.anisotropy = 4;
+  const boards = map.getObjectByName('VelodromeTimber') as Mesh;
+  for (const material of [boards.material].flat()) material.dispose();
+  boards.material = own(new MeshBasicMaterial({ map: timber, side: DoubleSide }));
   const crowd = own(new TextureLoader().load('courses/ghent-stand.webp'));
   crowd.colorSpace = SRGBColorSpace;
   crowd.wrapS = RepeatWrapping;
@@ -137,19 +171,50 @@ export async function ghentArena(course: Course, low: boolean) {
     group.add(cyclist.group);
     return cyclist;
   });
-  const grip = own(new MeshLambertMaterial({ color: 0xbb866f }));
-  const links = riders.map(() => {
-    const arm = new Mesh(own(new CylinderGeometry(0.052, 0.064, 1, 8)), grip);
-    group.add(arm);
-    return arm;
+  // GLTFLoader sanitizes periods in the Blender bone names. Move the actual gloved hands.
+  const arms = riders.map((rider, i) => {
+    const side = i % 2 ? 'L' : 'R';
+    const upper = rider.group.getObjectByName('upperarm' + side)!;
+    const elbow = rider.group.getObjectByName('forearm' + side)!;
+    const wrist = rider.group.getObjectByName('hand' + side)!;
+    return { upper, elbow, wrist, joints: [elbow, upper] };
   });
-  const up = new Vector3(0, 1, 0),
-    a = new Vector3(),
-    b = new Vector3(),
-    dir = new Vector3();
+  const target = new Vector3(),
+    other = new Vector3(),
+    centre = new Vector3(),
+    current = new Vector3(),
+    desired = new Vector3(),
+    parentRotation = new Quaternion(),
+    delta = new Quaternion();
+  function reach(arm: (typeof arms)[number], point: Vector3, weight: number) {
+    for (let pass = 0; pass < 4; pass++) {
+      for (const joint of arm.joints) {
+        joint.getWorldPosition(centre);
+        arm.wrist.getWorldPosition(current).sub(centre).normalize();
+        desired.copy(point).sub(centre).normalize();
+        joint.parent!.getWorldQuaternion(parentRotation).invert();
+        current.applyQuaternion(parentRotation);
+        desired.applyQuaternion(parentRotation);
+        delta.setFromUnitVectors(current, desired);
+        delta.slerp(identity, 1 - weight);
+        joint.quaternion.premultiply(delta);
+      }
+    }
+  }
+  const identity = new Quaternion();
+  const lanes = [0, 0, 0, 0];
+  const places = riders.map(() => course.place(0));
   let displayLap = 0;
-  const state = { relayPosition: 0, spectatorHeight: 0, displayLap: 0 };
+  const state = {
+    relayPosition: 0,
+    spectatorHeight: 0,
+    displayLap: 0,
+    riddenMetres: 0,
+    handGap: 10,
+    restingLaneDifference: 0,
+  };
   function update(time: number, metres: number) {
+    state.riddenMetres = metres;
     const lap = Math.floor(metres / LAP) + 1;
     if (lap !== displayLap) {
       displayLap = lap;
@@ -172,27 +237,34 @@ export async function ghentArena(course: Course, low: boolean) {
       const partner = i % 2,
         team = Math.floor(i / 2),
         phase = time * 0.42 + team * 2;
-      const spread = (1 - Math.cos(phase)) * 0.5;
-      const d = (time * 9 + team * 83 + 17 + partner * (1.1 + spread * 8)) % LAP;
-      const lane = 1.55 + partner * (0.55 + spread * 2.65);
-      const at = course.place(d, lane);
+      const wave = Math.sin(phase);
+      const separation = 0.24 + 5 * Math.min(1, (wave * 4) ** 2) + 3 * wave * wave;
+      const d = (time * 9 + team * 83 + 17 + partner * separation) % LAP;
+      const lane = 1.32 + partner * 0.64 + 2.9 * Math.max(0, partner ? -wave : wave);
+      lanes[i] = lane;
+      const at = course.place(d, lane, places[i]!);
       cyclist.group.position.set(at.x, at.y + 0.015, at.z);
       cyclist.group.rotation.set(at.pitch, at.heading, at.bank ?? 0, 'YXZ');
       cyclist.pose(time * 6.8 + i, at.bank ?? 0);
       if (!i) state.relayPosition = at.x;
-      const link = links[i]!;
-      link.visible = spread < 0.12;
-      if (link.visible) {
-        a.set(partner ? -0.18 : 0.18, 1.22, -0.12);
-        b.set(partner ? -0.38 : 0.38, 1.03, partner ? 0.49 : -0.55);
-        cyclist.group.localToWorld(a);
-        cyclist.group.localToWorld(b);
-        dir.subVectors(b, a);
-        link.position.copy(a).addScaledVector(dir, 0.5);
-        link.scale.y = dir.length();
-        link.quaternion.setFromUnitVectors(up, dir.normalize());
-      }
     });
+    state.restingLaneDifference = lanes[1]! - lanes[0]!;
+    state.handGap = 10;
+    for (let team = 0; team < 2; team++) {
+      const amount = Math.max(0, 1 - Math.abs(Math.sin(time * 0.42 + team * 2)) / 0.13);
+      if (amount === 0) continue;
+      const inside = arms[team * 2]!,
+        outside = arms[team * 2 + 1]!;
+      inside.upper.getWorldPosition(target);
+      outside.upper.getWorldPosition(other);
+      target.lerp(other, 0.5);
+      target.y -= 0.19;
+      reach(inside, target, amount);
+      reach(outside, target, amount);
+      inside.wrist.getWorldPosition(current);
+      outside.wrist.getWorldPosition(desired);
+      state.handGap = Math.min(state.handGap, current.distanceTo(desired));
+    }
   }
   update(0, 0);
   return {
