@@ -3,6 +3,7 @@ import math
 from functools import lru_cache
 import bpy
 from mathutils import Vector
+from mathutils.kdtree import KDTree
 from worldkit import Painted, lin, smooth
 from sellaronda_kit import rock_tower, PASSES
 from sellaronda_kit.villages import _onion_dome_church, _village_chalet
@@ -89,43 +90,52 @@ def relief(d,l):
 
 def land(road,col,theme,bc):
     b=bc.Builder('Alpine valley and open saddle','terrain');b.colours=[]
-    lanes=(-385,-245,-145,-85,-51,-30,-17,-9,-5.0,-4.0,0,4.0,5.0,9,17,29,47,72,112,178,285,410)
-    for i in range(0,len(road.s)-1,3):
-        j=min(i+3,len(road.s)-1)
-        for a,c in zip(lanes,lanes[1:]):
-            points=[];cols=[]
-            for n,l in ((i,a),(j,a),(j,c),(i,c)):
-                d=road.s[n]['d']
-                # Cut a shelf before either neighbouring hairpin: the connecting side
-                # of the meadow must never overlap the upper or lower carriageway.
-                x,y,z=road.at(n,l,relief(d,l))
-                if abs(l)>6:
-                    _,other,dist=road.tree.find((x,y,0));nearest=road.s[other]
-                    if abs(nearest['d']-d)>60:
-                        z=min(z,nearest['z']-1.4+max(0,dist-16)*.16)
-                points.append((x,y,z))
-                patch=math.sin(d/43+l/18)+.55*math.cos(d/23-l/9)
-                if abs(l)<6:base=0x9E9983 if patch>0 else 0x8A8976
-                elif abs(l)<12 and 1100<d<3920:base=0x7A8058 if patch>0 else 0x878666
-                else:base=0x91A45C if patch>.55 else (0x7F9958 if patch>-.64 else 0x6C8956)
-                cols.append(lin(base))
-            b.quad(*points);b.colours.extend(cols)
+    points=road.s[::24];keys=KDTree(len(points))
+    for i,p in enumerate(points):keys.insert((p['x'],p['y'],0),i)
+    keys.balance()
+    cell=8
+    xmin=int(min(p['x'] for p in points))-270;ymin=int(min(p['y'] for p in points))-330
+    xmax=int(max(p['x'] for p in points))+310;ymax=int(max(p['y'] for p in points))+330
+    @lru_cache(maxsize=45000)
+    def vertex(x,y):
+        samples=keys.find_n((x,y,0),8)
+        total=0;weighted=0
+        for _,i,gap in samples:
+            w=1/(gap*gap+2800)**1.7;sample=points[i]
+            weighted+=w*(sample['z']+.10*(y-sample['y']));total+=w
+        _,i,dist=road.tree.find((x,y,0));p=road.s[i]
+        base=weighted/total+4.5*math.sin(x/136+y/119)+2.3*math.cos(x/58-y/67)
+        # One surface supports the adjacent switchbacks. A narrow cut follows each carriageway.
+        offset=-(x-p['x'])*math.sin(p['h'])+(y-p['y'])*math.cos(p['h'])
+        near=p['z']-1.02+relief(p['d'],offset)
+        bias=1-smooth(11,52,dist);z=base+(near-base)*bias
+        patch=math.sin(x/37+y/23)+.44*math.cos(x/16-y/27)
+        tint=0x91A959 if patch>.5 else (0x7D9B53 if patch>-.65 else 0x708C50)
+        return (x,y,z),lin(tint)
+    for x in range(xmin,xmax,cell):
+        for y in range(ymin,ymax,cell):
+            quad=[vertex(a,c) for a,c in ((x,y),(x+cell,y),(x+cell,y+cell),(x,y+cell))]
+            b.quad(*(q[0] for q in quad));b.colours.extend(q[1] for q in quad)
     def ground(x,y):
-        _,i,_=road.tree.find((x,y,0));p=road.s[i]
-        lateral=-(x-p['x'])*math.sin(p['h'])+(y-p['y'])*math.cos(p['h'])
-        return p['z']+relief(p['d'],lateral)
+        a=xmin+math.floor((x-xmin)/cell)*cell;c=ymin+math.floor((y-ymin)/cell)*cell
+        u=(x-a)/cell;v=(y-c)/cell
+        return sum(vertex(a+j*cell,c+k*cell)[0][2]*wx*wy for j,wx in enumerate((1-u,u)) for k,wy in enumerate((1-v,v)))
     return b.build(col),ground
 
 
 def roadway(road,st,length,col,bc):
-    asphalt=bc.Builder('Road','asphalt');paint=bc.Builder('RoadPaint','paint')
+    asphalt=bc.Builder('Road','asphalt');paint=bc.Builder('RoadPaint','paint');verge=bc.Builder('Shoulder','terrain');verge.colours=[]
     for i in range(len(road.s)-1):
         def strip(builder,a,b,h):
             builder.quad(road.at(i,a,h),road.at(i+1,a,h),road.at(i+1,b,h),road.at(i,b,h))
         strip(asphalt,-3.65,3.65,0)
-        for side in (-1,1):strip(paint,side*3.48-.055,side*3.48+.055,.014)
+        for side in (-1,1):
+            strip(paint,side*3.48-.055,side*3.48+.055,.014)
+            v=(road.at(i,side*3.64,-.015),road.at(i+1,side*3.64,-.015),
+               road.at(i+1,side*6.8,-1.22),road.at(i,side*6.8,-1.22))
+            verge.quad(*(v if side>0 else v[::-1]));verge.colours.extend((lin(0xA99F87),)*4)
         if i%4==0 and abs(road.s[i]['k'])<.010:strip(paint,-.055,.055,.016)
-    asphalt.build(col);paint.build(col)
+    asphalt.build(col);paint.build(col);verge.build(col)
 
 
 THEME={'lay':route,'land_builder':land,'road_builder':roadway,'road_half_width':3.65,
@@ -195,6 +205,18 @@ def scenery(k):
             for n in range(4):
                 radius=h*(.204-.037*n)*(1+.11*math.sin(n+d))
                 art.tube((x,y,z+h*(.20+.16*n)),radius,.05,h*(.42-.027*n),lin(tint[0]),lin(tint[min(2,n)]),7)
+    # A second row of dense conifers is visible through the near trunks. Leave
+    # alternating clear views into the valley, especially on the outward bends.
+    for d in range(915,4550,8):
+        for side in (-1,1):
+            if side<0 and d%480<240:continue
+            l=side*rng.uniform(8,21);x,y,z=ground(d,l)
+            if not k.road.clear_of_road(x,y,7,k.road.index(d),70):continue
+            h=rng.uniform(7,14)
+            art.tube((x,y,z-.18),h*.022,h*.014,h*.71,lin(0x554E3C),lin(0x8B8168),7)
+            for j in range(5):
+                r=h*(.19-.031*j)
+                art.tube((x,y,z+h*(.23+.13*j)),r,r*.14,h*.32,lin(0x354E39),lin(0x5C7A4E),7)
     for d in range(5680,7350,4):
         l=-8.7-2.0*math.sin(d/108);x,y,z=ground(d,l)
         art.box((x,y,z-.22),(.17,.18,1.48),heading(d),lin(0x977E5A))
@@ -206,7 +228,7 @@ def scenery(k):
         light=nx*.40-ny*.73+nz*.38
         if z<95:return lin(0x647957 if light>.10 else 0x566A55)
         return lin(0xCEC9B7 if light>.38 else (0xB4B2A4 if light>-.21 else 0x969FA0))
-    sx,sy,_=k.road.pos(1500,640)
+    sx,sy=2250,245
     for dx,dy,base,top,rx,ry,taper in ((0,0,-68,615,276,235,.24),(-162,72,-48,440,184,163,.62),(187,52,-57,467,143,149,.47)):
         rock_tower(peaks.b,sx+dx,sy+dy,base,top,rx,ry,14,-.69,limestone,taper=taper,flat_cap=False,seed_phase=dx*.02+5.3)
     mx,my,_=k.road.pos(8160,0);mx+=1450;my+=485
