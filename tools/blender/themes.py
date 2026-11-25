@@ -1247,3 +1247,9 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import angliru as _angliru  # noqa: E402
+
+MATERIALS["angliru-concrete"] = {"color": 0xA49F91, "rough": .9}
+THEMES["angliru"] = _angliru.THEME
+SCENERY["angliru"] = _angliru.scenery
