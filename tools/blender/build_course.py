@@ -856,6 +856,14 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     slab = Builder("Grooved concrete", "angliru-concrete") if edge == "angliru" else None
     for i in range(n - 1):
+        if edge == 'scheldt':
+            strip(asphalt,i,4.9,0,-4.9,0)
+            strip(prom,i,11,-.05,4.9,0)
+            strip(prom,i,-4.9,0,-9,-.04)
+            # Two flanged rails embedded in concrete on the dock side.
+            for offset in (3.0,4.435):
+                strip(wall,i,offset+.053,.012,offset-.053,.012)
+            continue
         if slab is not None:
             on_ramp = s[i]["g"] >= 12
             strip(slab if on_ramp else asphalt, i, 3.12, 0.0, -3.12, 0.0)
@@ -923,7 +931,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     # Chevrons up every effort: the road itself says "push".
     for stage in st:
-        if edge == "angliru" or stage["kind"] != "work":
+        if edge == "scheldt" or edge == "angliru" or stage["kind"] != "work":
             continue
         d = stage["from"] + 12
         while d < stage["to"] - 6:

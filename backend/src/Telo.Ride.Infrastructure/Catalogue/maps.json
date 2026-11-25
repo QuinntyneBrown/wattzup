@@ -3251,6 +3251,137 @@
           1101.6
         ]
       }
+    },
+    {
+      "id": "antwerp-port-sprint",
+      "name": "Antwerp Port Sprint",
+      "routeName": "Scheldt Quays",
+      "place": "Eilandje and the port of Antwerp",
+      "distanceKm": 20.9,
+      "climbingM": 18,
+      "rating": "Hard",
+      "world": "antwerp",
+      "thumbnailUrl": "maps/antwerp-port-sprint.jpg",
+      "photoUrl": "maps/antwerp-port-sprint-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 360,
+            "level": 13,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 16,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 240,
+            "level": 21,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 240,
+            "level": 18,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 21,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 240,
+            "level": 18,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 19,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 90,
+            "level": 22,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 240,
+            "level": 18,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 19,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 90,
+            "level": 21,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "cool-down",
+            "duration": 210,
+            "level": 10,
+            "cadenceAim": 80
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 0,
+          "work": 0.2,
+          "recover": -0.12,
+          "cool-down": 0,
+          "steady": 0
+        },
+        "roll": 0.08
+      }
     }
   ]
 }

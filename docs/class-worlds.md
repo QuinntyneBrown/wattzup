@@ -202,7 +202,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 167 | Hank's Hardest Training Session | Alto de Letras | 82% |  | Colombia's 80-kilometre climb through coffee country to the páramo. |
 | 168 | Ramp It Up: 50 Minute HIIT | Prague Old Town | 35% |  | Cobbles, spires and Charles Bridge ramping up to the castle. |
 | 169 | Steepest Climb in the World | Ffordd Pen Llech | 35% |  | A Welsh street in Harlech, once ranked the world's steepest. |
-| 170 | Lead Out Efforts Into Full Sprints | Antwerp Port Sprint | 84% |  | Flat docklands roads and a bunch-sprint finish in Antwerp. |
+| 170 | Lead Out Efforts Into Full Sprints | Antwerp Port Sprint | 84% | [Race views](screenshots/antwerp-port-sprint/README.md) | Flat docklands roads and a bunch-sprint finish in Antwerp. |
 | 171 | Aerobic Efforts: Drop Ollie Like a Boss | Andalusian White Villages | 35% |  | Whitewashed hill towns and olive groves in southern Spain. |
 | 172 | Un-Paced Efforts | Mongolian Steppe | 35% |  | Endless grassland, yurts and wild horses, no markers in sight. |
 | 173 | Sandwich Max Efforts | Lake Tahoe | 81% |  | Clear alpine lake shore ringed by pines and granite. |

@@ -62,6 +62,7 @@ import {
   parseCourse,
 } from './course';
 import type { AngliruRoadside } from './angliru-roadside';
+import type { AntwerpWind } from './antwerp-wind';
 import { CourseCyclistKit, type RiderModel as Cyclist } from './course-cyclist';
 import { fenceMaterial } from './fence-material';
 import { type CabinPose, gondolaPosition } from './gondola-flight';
@@ -254,9 +255,12 @@ export class CourseRenderer implements WorldRenderer {
     trainingRiderX: null as number | null,
     tukTukX: null as number | null,
     asturiasFlagAngle: 0,
+    echelonLeaderX: null as number | null,
     groups: {} as Record<string, number>,
   };
   private readonly trainingGroup: Cyclist[] = [];
+  private portWind: AntwerpWind | null = null;
+  private readonly echelon: Cyclist[] = [];
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -413,6 +417,16 @@ export class CourseRenderer implements WorldRenderer {
           if (cyclist) this.trainingGroup.push(cyclist);
         }
       }
+      if (this.course.file.id === 'antwerp') {
+        const { AntwerpWind } = await import('./antwerp-wind');
+        if (this.disposed) return false;
+        this.portWind = new AntwerpWind(this.course);
+        this.scene.add(this.portWind.root);
+        for (const [index, colour] of [0x27698a, 0xc76437, 0xeac765, 0x4d7c65].entries()) {
+          const rider = this.rider('scheldt-echelon-' + index, colour);
+          if (rider) this.echelon.push(rider);
+        }
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -479,6 +493,7 @@ export class CourseRenderer implements WorldRenderer {
     this.placeRiders(frame, metres);
     this.timing?.update(metres, frame.time);
     if (this.trainingGroup.length) this.placeTrainingGroup(frame, metres);
+    if (this.echelon.length) this.placeEchelon(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
@@ -550,6 +565,9 @@ export class CourseRenderer implements WorldRenderer {
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
+    this.portWind?.dispose();
+    this.portWind = null;
+    this.echelon.length = 0;
     this.riders.clear();
     this.lamplit.clear();
     this.lampGlow = null;
@@ -1062,6 +1080,26 @@ export class CourseRenderer implements WorldRenderer {
       const standing = this.ride(cyclist, at, index % 2 === 0 ? 1.3 : 2.2);
       cyclist.pose(elapsed * 8.9 + index, standing);
       if (index === 0) this.drawn.trainingRiderX = cyclist.group.position.x;
+    }
+  }
+
+  private placeEchelon(frame: SceneFrame, metres: number): void {
+    const time = frame.reducedMotion ? 0 : frame.time;
+    this.portWind?.draw(metres, time);
+    const lead = 28 + time * 8.4;
+    const nearest = lead + Math.round((metres - lead) / 680) * 680;
+    this.drawn.echelonLeaderX = null;
+    for (const [index, cyclist] of this.echelon.entries()) {
+      const along = nearest - index * 2.65;
+      cyclist.group.visible =
+        along >= 0 && along < this.course!.length && Math.abs(along - metres) < 155;
+      const shadow = this.shadows.get(cyclist);
+      if (shadow) shadow.visible = cyclist.group.visible;
+      if (!cyclist.group.visible) continue;
+      // Shelter from the Scheldt crosswind on the wheel ahead, diagonally across the quay.
+      const standing = this.ride(cyclist, along, -1.32 + index * 0.86);
+      cyclist.pose(time * 9.75 + index * 1.3, standing);
+      if (index === 0) this.drawn.echelonLeaderX = cyclist.group.position.x;
     }
   }
 
