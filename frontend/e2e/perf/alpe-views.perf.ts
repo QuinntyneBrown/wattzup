@@ -26,7 +26,7 @@ test('Alpe d’Huez from the valley, Dutch Corner and ski station', async ({
   for (const [name, km] of [
     ['valley', 0.1],
     ['dutch-corner', 4.86],
-    ['church', 4.90],
+    ['church', 4.9],
     ['station', 7.02],
   ] as const) {
     while (parseFloat((await race.distance.textContent())!) < km) {
