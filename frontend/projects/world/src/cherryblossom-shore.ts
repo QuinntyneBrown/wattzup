@@ -78,16 +78,17 @@ export async function blossomShore(course: Course) {
       idx.push(start, start + 1, start + 2, start, start + 2, start + 3);
     }
     for (let d = section; d < Math.min(lap, section + 135); d += 9) {
-      const memorialSteps = d > 697 && d < 808;
-      const boatLanding = d > 1410 && d < 1500;
+      const memorialSteps = d > 500 && d < 845;
+      const boatLanding = d > 950 && d < 1510;
       const festival = d > 1910 && d < 2330;
       const tile = rng() < 0.5 ? 0 : 1;
       const high = 7.4 + rng() * 2.2;
-      if (!memorialSteps && !festival) {
+      const mall = d > 2710 && d < 3140;
+      if (!memorialSteps && !festival && !mall) {
         for (const yaw of [0.32, 1.83])
-          panel(d, 5.0 + rng() * 0.5, yaw, high * 1.65, high, tile, 0xf2e5e2);
+          panel(d, 6.1 + rng() * 1.2, yaw, high * 1.65, high, tile, 0xf2e5e2);
       }
-      if (!boatLanding && d % 54 < 32 && !festival && !memorialSteps) {
+      if (!boatLanding && d % 54 < 32 && !festival && !memorialSteps && !mall) {
         for (const yaw of [0.16, 1.71])
           panel(d + 3, -5.7, yaw, high * 1.45, high * 0.91, 1 - tile, 0xfcece6);
       }

@@ -3,6 +3,7 @@
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
 // metres they have ridden. `main`'s scenes are drawn by
 // world-renderer.ts; map-renderer.ts picks between the two.
+import type { blossomFestival } from './blossom-festival';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -213,8 +214,7 @@ export class CourseRenderer implements WorldRenderer {
   /** Moves the sea's ripples on to a second of the ride's clock. */
   private waterClock: ((seconds: number) => void) | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
-  private basin: Awaited<ReturnType<typeof import('./blossom-festival').blossomFestival>> | null =
-    null;
+  private basin: Awaited<ReturnType<typeof blossomFestival>> | null = null;
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private groundEye: GroundEye | null = null;

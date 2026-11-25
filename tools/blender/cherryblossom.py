@@ -94,7 +94,7 @@ def scenery(k):
     park = Painted(k)
     monuments = Painted(k,'peaks')
     stone, white, shadow = map(lin,(0xDAD6CB,0xFFF5E4,0xADAFA8))
-    x,y,heading = pose(760,-33)
+    x,y,heading = pose(714,-32)
     for r,base,h,col in [(37,1.5,1.2,shadow),(34,2.7,1.5,stone),(31,4.2,1.1,white),
                          (24,5.3,11,shadow),(29,16.3,1.1,white),(28,17.4,1.2,stone)]:
         monuments.tube((x,y,base),r,r,h,col,col,60,col)
@@ -119,7 +119,7 @@ def scenery(k):
     monuments.box(front(0,27,16.4),(30,10,1.3),heading,white)
     monuments.face([front(15,32,17.7),front(-15,32,17.7),front(0,32,22)],(stone,white,white))
     # The two marble colours mark the historic change of stone in the obelisk.
-    x,y,_=pose(2990,-103)
+    x,y,_=pose(3110,-35)
     def square(width,z):
         return [(x+dx*width,y+dy*width,z) for dx,dy in [(-.5,-.5),(.5,-.5),(.5,.5),(-.5,.5)]]
     for a,b,z,end,tint in [(16.8,15.4,2,47,0xD7D0BC),(15.4,10.5,47,151,0xE8E1CE),(10.5,.02,151,168,0xEBE3CB)]:
@@ -169,7 +169,7 @@ def scenery(k):
         tint=rng.choice((0xB6A8AC,0xB5AAA8,0xA4A7A2)) if near_trees else rng.choice((0x9DBABE,0x96B3B7,0x87A9AF))
         park.box((x,y,.602),(rng.uniform(.8,4.8),rng.uniform(.12,.55),.008),h,lin(tint))
     # Foreshortened reflections of the memorial colonnade and the obelisk in the inshore water.
-    for station,span,reach in [(760,55,57),(2990,15,90)]:
+    for station,span,reach in [(760,55,57),(3110,15,90)]:
         for l in range(13,reach,2):
             factor=1-(l-13)/reach*.65
             for j in range(5 if span>20 else 2):
