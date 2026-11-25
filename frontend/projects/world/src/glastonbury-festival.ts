@@ -36,7 +36,11 @@ const wardrobe = { tops: palette, bottoms: ['#263546'], skins: ['#b78561'] };
 export function glastonburyFestival(course: Course) {
   const group = new Group(),
     owned: { dispose(): void }[] = [];
-  type Station = { at: ReturnType<Course['place']>; station: number; phase: number };
+  interface Station {
+    at: ReturnType<Course['place']>;
+    station: number;
+    phase: number;
+  }
   const flags: (Station & { height: number; width: number; colour: Color; pennant: boolean })[] =
     [];
   const people: (Station & {
