@@ -44,6 +44,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   fuji: 'courses/fuji',
   furka: 'courses/furka',
   galibier: 'courses/galibier',
+  gardena: 'courses/gardena',
   ibiza: 'courses/ibiza',
   alpe: 'courses/alpe',
   dubai: 'courses/dubai',

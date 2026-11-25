@@ -1068,3 +1068,18 @@ The existing class repeats 360 metres of snow banks, Tour road paint, fans and f
 | Summit, 25.82 km | A rough stone plinth carries the altitude and both departmental signs. Real 03, 07, 13 and 15, games 01 and 05. |
 
 The map catalogue supplies the original 20 class stages. CourseRenderer loads the Blender road, elevation samples and tier-appropriate scenery only when the rider enters the course. Use short terrain sections around the summit fork and retaining walls. Give the nearby stone arch and engraved memorial physical depth, with the fixed glaciated skyline beyond the valley. Share repeatable road and slate textures with the class where practical. Use instancing for cycling fans, ride-clock flag movement and clouds. Release their materials, textures and geometry on exit. ADRs 0021, 0023, 0030, 0034 and 0035 govern rendering and quality. Follow the performance design for two headed simulated-tablet rides, measuring actual submissions after nine seconds of warm-up.
+
+## Passo Gardena (#2124)
+
+The class’s 480 m loop already supplies meadows, cows, larches, hikers, gliders, flags and shelters. A full car-free race needs a peloton, distinct opposing mountain faces and a fixed sequence of bends and rifugi. Join the Selva approach to the 2,121 m saddle in 8.975 km, with 506 m of climbing. Keep GCN’s ten progressive efforts and 20:00 duration.
+
+| Rider viewpoint | Composition and reference |
+| --- | --- |
+| Selva, 0.08 km | Bike Day riders leave the larch-lined approach with Sassolungo behind the return bend. Real 03, 06 and 14, games 01–02. |
+| Barns, 1.44 km | Dark timber hay barns overlook flowered pasture and grazing cattle. Real 01, 07, 12 and 14, games 01 and 03. |
+| Sella, 3.18 km | A pale sheer Sella wall rises above the larches on the right. Real 02, 04, 09–11 and 15, games 02–03. |
+| Hairpins, 5.43 km | Cyclists ahead climb the next hairpin arm across the meadow. Real 03–04, 06 and 08, games 01–02. |
+| Cir, 7.13 km | The Cir needles stand apart on the left as the road turns towards the saddle. Real 05–06 and 12–14, games 03–05. |
+| Saddle, 8.76 km | The final bend opens onto the pass-top rifugi, parking and trilingual pass sign. Real 01, 08–09 and 13, games 01, 04 and 05. |
+
+The catalogue supplies the class plan and sampled elevation. CourseRenderer loads the Blender road and a lazy Gardena scene. Place Sella, Cir and Sassolungo separately in world coordinates so a return bend changes which face the rider sees. Model the foreground barns and rifugi, batch larches, and use the Ride One cyclist kit for the nearest Bike Day riders. Bound the number of pedalling riders; place riders on the sampled road, cattle and trees on the same meadow surface drawn beneath them. This addresses rider report #948 about floating props. Use ride time for the peloton, grazing and cloud drift. Release all scene-owned geometry, materials and textures on exit. ADRs 0021, 0023, 0030, 0034 and 0035 apply. Measure submitted frames on the lower road and crowded middle hairpins after nine seconds of warm-up.

@@ -1470,3 +1470,10 @@ for name in ("galibier-pasture", "galibier-scree", "galibier-snow", "galibier-ta
     MATERIALS[name] = {"color": 0x82807c, "rough": 1.0, "vertex": True}
 THEMES["galibier"] = _galibier.THEME
 SCENERY["galibier"] = _galibier.scenery
+
+import gardena as _gardena
+
+for name in ("gardena-pasture", "gardena-scree", "gardena-tarmac"):
+    MATERIALS[name] = {"color": 0x818378, "rough": 1.0, "vertex": True}
+THEMES["gardena"] = _gardena.THEME
+SCENERY["gardena"] = _gardena.scenery
