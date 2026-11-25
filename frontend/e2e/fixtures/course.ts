@@ -1,3 +1,4 @@
+import glasgowElevation from './glasgow-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,44 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const glasgowCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'glasgow-world-championships',
+  name: 'Glasgow World Championships',
+  routeName: 'George Square circuit',
+  place: 'Glasgow, Scotland',
+  world: 'glasgow',
+  distanceKm: 13.1,
+  climbingM: 91,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: glasgowElevation,
+  },
+  thumbnailUrl: 'maps/glasgow-world-championships.jpg',
+  photoUrl: 'maps/glasgow-world-championships-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 10, 80),
+      seg('work', 120, 16, 85),
+      seg('recover', 120, 13, 80),
+      seg('work', 90, 24, 100),
+      seg('work', 90, 19, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 90, 19, 90),
+      seg('work', 90, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 90, 24, 100),
+      seg('work', 90, 19, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 150, 19, 90),
+      seg('work', 150, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('cool-down', 120, 13, 80),
+    ],
   },
 };
