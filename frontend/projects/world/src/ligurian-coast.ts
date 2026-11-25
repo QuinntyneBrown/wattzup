@@ -3,13 +3,13 @@ import {
   BoxGeometry,
   BufferGeometry,
   Color,
-  DirectionalLight,
+  type DirectionalLight,
   DoubleSide,
   Float32BufferAttribute,
   Group,
   Mesh,
   MeshLambertMaterial,
-  Scene,
+  type Scene,
   SphereGeometry,
 } from 'three/webgpu';
 import type { Course } from './course';
