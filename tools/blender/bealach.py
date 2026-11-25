@@ -52,8 +52,8 @@ def layby(d):
 
 
 def road(road, stages, length, col, bc):
-    t=bc.Builder('Single track and passing places','asphalt')
-    rough=bc.Builder('Mended patches and central grass','terrain');rough.colours=[]
+    t=bc.Builder('Road','asphalt')
+    rough=bc.Builder('Shoulder','terrain');rough.colours=[]
     for i in range(len(road.s)-1):
         d=road.s[i]['d']; end=road.s[i+1]['d']
         t.quad(road.at(i,-HALF_WIDTH),road.at(i+1,-HALF_WIDTH),road.at(i+1,HALF_WIDTH+layby(end)),road.at(i,HALF_WIDTH+layby(d)))
@@ -83,7 +83,10 @@ def land(road,col,theme,bc):
         _,j,r=road.tree.find((x,y,0))
         p=road.s[j]
         shape=(7*math.sin(x/79+y/55)+4*math.cos(y/21-x/46))*smooth(13,95,r)
-        return weighted/total+shape-2.6*(1-smooth(16,46,r))
+        general = weighted/total + shape
+        # Cut the wide grid beneath the complete carriageway even at sharp changes of direction.
+        near_road = p['z'] - 3.4 - .09*r
+        return near_road + smooth(13,49,r)*(general-near_road)
     b=bc.Builder('Heather moor and corrie','terrain');b.colours=[]
     cells=set()
     for p in road.s[::12]:
@@ -102,14 +105,16 @@ def land(road,col,theme,bc):
     # Continuous shoulders meet the tarmac; the wider mesh falls below the cut.
     for i in range(len(road.s)-1):
         for side in (-1,1):
-            corners=[]
-            for j,w in ((i,.1),(i+1,.1),(i+1,1),(i,1)):
-                d=road.s[j]['d'];l=side*(HALF_WIDTH+(layby(d) if side==1 else 0)+7*w-.85)
-                x,y,z=road.at(j,l)
-                blend=smooth(.12,1,w)
-                corners.append((x,y,z-.10+blend*(height(x,y)-z+.38)))
-            if side<0:corners.reverse()
-            b.quad(*corners);b.colours.extend((lin(moor_colour(*corners[0])),)*4)
+            for inner,outer in ((-.15,6.9),(6.9,14.0)):
+                corners=[]
+                for j,w in ((i,inner),(i+1,inner),(i+1,outer),(i,outer)):
+                    d=road.s[j]['d']; l=side*(HALF_WIDTH+(layby(d) if side==1 else 0)+w)
+                    x,y,z=road.at(j,l)
+                    lip=z-.12-.05*max(0,abs(l)-HALF_WIDTH)
+                    blend=smooth(6.9,14,w)
+                    corners.append((x,y,lip+blend*(height(x,y)-lip+.31)))
+                if side<0:corners.reverse()
+                b.quad(*corners);b.colours.extend(lin(moor_colour(*v)) for v in corners)
     sea=bc.Builder('Loch Kishorn and Inner Sound','sea')
     sea.quad((-12000,-12000,0),(20000,-12000,0),(20000,2000,0),(-12000,2000,0));sea.build(col)
     return b.build(col),height
@@ -207,20 +212,28 @@ def rock(art,x,y,z,r,h,phase,c):
 
 def islands(k):
     art=Painted(k,'peaks')
-    for row,(cy,base,amplitude) in enumerate(((-4100,175,73),(-6500,245,310))):
-        for j in range(76):
-            def at(i):
-                x=-2800+i*190
-                surface=abs(math.sin(i*.57)+.43*math.sin(i*1.68)) if row else .42+.38*math.sin(i*.26)+.16*math.cos(i*.71)
-                return x,cy+190*math.sin(i*.27+row),base+amplitude*surface
-            a,b=at(j),at(j+1)
-            art.face(((a[0],a[1]+260,-14),(b[0],b[1]+260,-14),b,a),(lin(0x8C9B9D),lin(0x8C9B9D),lin(0x748891),lin(0x758991)))
+    for row,(cy,base,amplitude) in enumerate(((-1240,165,96),(-2130,350,265))):
+        previous=None
+        for i in range(156):
+            x=-2800+i*104
+            mass=.6+.24*math.sin(i*.15+row)+.16*math.sin(i*.33)
+            teeth=abs(math.cos(i*.63)*math.sin(i*.19))
+            high=base+amplitude*(mass+(.57 if row else .18)*teeth)
+            y=cy+190*math.sin(i*.14+row)
+            current=((x,y+440,-10),(x+12,y+286,high*.34),(x-16,y+140,high*.71),(x,y,high))
+            if previous:
+                for layer,palette in enumerate(((0x9AA8A8,0xA9B2B3),(0x91A1A5,0xA6B0B3),(0x899BA2,0xA1ACB0))):
+                    tint=lin(palette[row]);light=tuple(min(1,c*(1+.065*math.sin(i*.83))) for c in tint[:3])+(1.0,)
+                    points=(previous[layer+1],current[layer+1],current[layer],previous[layer])
+                    art.face(points,(light,tint,tint,light))
+            previous=current
+
 
 
 def scenery(k):
     art=Painted(k);rng=k.rng;islands(k)
     for d in range(173,9000,307):sign(k,art,d,'passing')
-    sign(k,art,96,'warning')
+    sign(k,art,114,'warning')
     for d in (117,1810,5370,8400):
         for j in range(11):
             a=k.road.pos(d+j*.16,-1.9,.026);b=k.road.pos(d+j*.16,1.9,.026)
@@ -258,4 +271,23 @@ def scenery(k):
         z=k.height_at(x,y)
         for layer in range(4):
             rock(art,x,y+3.6*layer,z+layer*9,18-layer*1.7,13.5,rng.uniform(0,.4),[0x84746D,0x927C73,0x84726F,0xA18B7F][layer])
+    # Two fixed shoulders enclose the reversing road; each bench has a broken lip and scree apron.
+    for wall_x,side in ((5990,-1),(6640,1)):
+        prev=None
+        for i in range(82):
+            y=1330+i*7.4
+            wav=11*math.sin(i*.24)+4*math.sin(i*.77)
+            x=wall_x+wav
+            h=590+130*math.exp(-((y-1680)/230)**2)+23*math.sin(i*.19)+9*math.sin(i*.75)
+            current=[(x+side*off,y,h-rel) for off,rel in ((-34,155),(-15,88),(-9,69),(-11,65),(-4,43),(-6,38),(0,16),(4,0))]
+            if prev:
+                for j in range(len(current)-1):
+                    pts=(prev[j],current[j],current[j+1],prev[j+1])
+                    co=lin((0x89816E,0x8E766B,0xA78975,0x806D65,0xA28B77,0x83716A,0x918378)[j])
+                    art.face(pts if side>0 else pts[::-1],(co,)*4)
+            prev=current
+    # Summit cairn and survey pillar above the Inner Sound.
+    for i in range(42):
+        a=i*2.4;r=1.43*(1-i/45);x,y,z=k.road.pos(9004+math.cos(a)*r,4.8+math.sin(a)*r)
+        rock(art,x,y,z+i*.044,.6-i*.008,.34,a,0x958D7F)
     return {'efforts':0}
