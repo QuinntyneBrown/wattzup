@@ -215,3 +215,11 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+### Hardknott Pass · L2-2135
+
+The original World Ride loops its verge every 400 m. Preserve its sign artwork, bracken, scree and fell colour where possible and give the race a continuous 10.3 km centreline. Start on the Eskdale side, climb past Mediobogdum and the upper ramps, then cross the watershed towards the Duddon. Real 01–04, 07 and 11–13 establish the road section, upland contours and valley relationships. Game 02 informs how far the next turn remains visible.
+
+Put the warning signs and cattle grid at the foot. Real 08–09 show the roadside boards in context. Keep grass discontinuous down the centre of the damp, narrow tarmac. Carry dry-stone walls on the bank outside the turn, retaining the existing clear road through sharp hairpins. Real 05–06 and 10 inform these wall and bend profiles. Model the fort as low, rectangular stone enclosures with gate gaps on a fixed spur. A meandering Esk, enclosed fields, scattered farms and the summit ridge give the turns a fixed frame of reference. Real 14 supplies a neighbouring beck and bridge study, real 15 a local rock study.
+
+Give Herdwicks stocky grey bodies, white faces and distinct grazing and walking poses. Apply the ride clock to sheep movement, thin strips of mist and broad breaks in the light. Games 01 and 03 inform silhouette and visibility in mist, game 04 the grass texture scale and game 05 the legibility of grade and road markings. Batch stone courses, grass, sheep and scree. Cull roadside detail by distance. Compare the sign, Eskdale, fort, Herdwick verge, upper hairpin and summit approaches with the six race mocks and measure the two tablet sections.
