@@ -80,6 +80,7 @@ def scenery(k):
     for j in range(1,39):
         art.tube(at(0,0,j*.79),8.14,8.14,.096,slate,steel,48)
     panel(logo,at,[(-8.2,-4.8,24.4),(-8.2,4.8,24.4),(-8.2,4.8,31.5),(-8.2,-4.8,31.5)])
+    panel(logo,at,[(-8.35,-3.4,5.2),(-8.35,3.4,5.2),(-8.35,3.4,9.9),(-8.35,-3.4,9.9)])
     for d,side,w,ht in ((165,35,72,25),(820,35,55,34),(100,115,42,103),(250,-140,39,126)):
         building(d,side,w,ht,23,0)
     # Faceted QFRONT screen wraps the corner; each section has continuous horizontal UV.
@@ -95,16 +96,18 @@ def scenery(k):
         for u in (-3.3,3.3):
             art.box(at(u,0,8.3),(.22,108,.87),h,slate)
         for v in (-48,-26,26,48):art.box(at(0,v,-.5),(2.1,2.2,8),h,steel)
-    # The statue is seated, with pointed ears, upturned muzzle, forelegs and curled tail.
-    at,h=site(k,139,13.7);bronze=lin(0x897A5A)
-    art.box(at(0,0,.15),(2.1,1.75,1.15),h,lin(0x807F82))
-    art.tube(at(0,0,1.3),.46,.30,.89,bronze,bronze,12)
-    art.tube(at(-.22,0,2.05),.29,.32,.55,bronze,bronze,12)
-    art.box(at(-.52,0,2.31),(.46,.32,.22),h,bronze)
-    for v in (-.19,.19):
-        art.tube(at(-.22,v,2.56),.14,.01,.26,bronze,bronze,5)
-        beam(art,at(-.25,v,1.97),at(-.39,v,1.31),.12,bronze)
-    beam(art,at(.32,0,1.49),at(.57,.16,1.85),.17,bronze)
+    # Bunkamura-dori splits left of the 109 drum. Its painted edges clear the tower.
+    at,h=site(k,1478,0)
+    for i in range(0,128,4):
+        def fork(u,v,z):
+            return at(u,5+u*.82+v,z+.016*u)
+        pts=[fork(i+a,b,.16) for a,b in ((0,-5),(4,-5),(4,5),(0,5))]
+        art.face(pts,(lin(0x41444E),)*4)
+        for v in (-4.8,4.8):
+            art.face([fork(i+a,v+b,.185) for a,b in ((0,0),(4,0),(4,.14),(0,.14))],(light,)*4)
+    # Paving and a low stone curb frame the bronze portrait outside the station entrance.
+    at,h=site(k,132,13.4)
+    art.box(at(0,1,.12),(10,4.6,.22),h,lin(0x888795))
     # Two diagonal zebras, with separate straight strips on the four perimeter crossings.
     at,h=site(k,745,0)
     for angle,length,offset in ((.79,49,0),(-.79,49,0),(0,37,-17),(0,37,17),(math.pi/2,35,-17),(math.pi/2,35,17)):
@@ -119,6 +122,6 @@ def scenery(k):
             for j,c in enumerate((0x52FFAF,0x5A5039,0x5B3540)):art.box(at(-.24,-.4+j*.4,4.57),(.04,.28,.28),h,lin(c))
     return {'efforts':0}
 
-THEME={'lay':route,'land_builder':land,'road_builder':road,'terrain':{'sea':False},'road_half_width':12,'land':{'mid':0x333544},
+THEME={'rain':.6,'wet':.93,'lay':route,'land_builder':land,'road_builder':road,'terrain':{'sea':False},'road_half_width':12,'land':{'mid':0x333544},
        'sky':[0x3B3454,0x302942,0x211E3B,0x181729,0x101123],'haze':0x514868,'light':[0xC2CCFF,1.05],
        'fill':[0xB8BCE0,0x82759D],'sun_altitude':.32,'sun_azimuth':.8}
