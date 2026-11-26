@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import telaviv as _telaviv
+
+THEMES['telaviv'] = _telaviv.THEME
+SCENERY['telaviv'] = _telaviv.scenery

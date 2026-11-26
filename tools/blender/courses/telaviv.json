@@ -1,0 +1,97 @@
+{
+  "id": "telaviv",
+  "name": "Tel Aviv Promenade",
+  "world": "telaviv",
+  "theme": "telaviv",
+  "seed": 2228,
+  "layout": 0,
+  "class": {
+    "id": "30-second-sprint-intervals",
+    "title": "30 Second Sprint Intervals",
+    "channel": "GCN Training",
+    "videoId": "YipJAsAj5Kc",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
