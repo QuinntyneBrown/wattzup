@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Trollstigen (#2235)
+
+The map catalogue and course renderer currently have no Trollstigen entry. Restore its historical class plan, expose the climb through Race and load its assets only after selection. Trace 12 km from Isterdalen to the summit. Lay eleven direction reversals into the route itself so riders encounter the same bridge, peaks and valley from different angles.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The Isterdalen approach, 0.14 km | Real 01–03 and game 01 | A narrow wet road climbs out of green Isterdalen between the dark walls of the U-shaped valley. |
+| The lower switchbacks, 2.45 km | Real 02–07 and games 02–04 | The next return bend cuts across the grey wall above the rider. Individual stone parapet blocks mark the exposed edge. |
+| Stigfossen bridge, 4.98 km | Real 07–09, 12 and game 03 | Water drops in white ribbons from the cliff above the stone bridge and rejoins the torrent below the arch. |
+| Tourist traffic, 7.28 km | Real 04, 09–11 and games 01–02 | A camper van leads a car and touring motorbike around the narrow upper bend. |
+| The upper skyline, 9.45 km | Real 01, 07, 12–15 and games 03–05 | Separate Kongen, Dronninga and Bispen silhouettes rise through moving cloud, with summer snow caught on ledges. |
+| The summit overlook, 11.78 km | Real 05, 07, 12–15 and games 04–05 | Visitors stand on a rusted steel cantilever over Isterdalen. The low visitor centre follows the line of the upper stream. |
+
+Use Caribana’s fixed skyline and merged static detail for the named peaks, retaining walls and platform. Map original granite and heath textures across terrain in world coordinates. Keep water and cloud motion tied to elapsed ride time and share geometry across the three traffic vehicles. A tier change or route exit releases the meshes, materials and textures. Capture the six positions through Race on low and measure sixty seconds each on the approach and traffic bend. See ADRs 0021, 0023, 0030, 0034 and 0035.
