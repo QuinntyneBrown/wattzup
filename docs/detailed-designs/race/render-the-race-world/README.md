@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Seven Sisters Cliffs (#2207)
+
+The previous world used rolling road defaults. Restore the historical GCN class to the catalogue. Two sets of seven efforts ride east along the chalk and return on a parallel downland lane after Belle Tout. Both look out on one fixed coast. Each summit opens a different view of the next chalk face.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Coastguard Cottages, 0.10 km | Real 03, 08, 13 and 15. Games 02 and 04. | White cottages with dark pitched roofs and paired chimneys overlook the haven. Their foreground roofs sit below a receding sequence of chalk headlands. |
+| Cuckmere valley, 0.93 km | Real 05, 07 and 10. Games 01 and 03. | The road looks down across a looping tidal river, grazing sheep and a timber field gate. Flint walls flank the chalk lane. |
+| Chalk brows, 2.55 km | Real 03, 09, 12, 13 and 15. Games 02 and 04. | Deep green-swarded saddles separate the white cliff brows. A gull banks above a cliff edge and the grey-blue Channel extends beyond it. |
+| Birling Gap, 5.45 km | Real 09, 11 and 12. Games 01 and 04. | The road rises above a grey flint beach. A low line of whitewater reaches the shingle and recedes beneath the worn chalk faces. |
+| Belle Tout, 6.29 km | Real 02, 04, 06 and 14. Games 02 and 05. | The squat white tower, black-glazed lantern and attached keeper’s house mark the eastward turn. The chalk track curves up to the lighthouse. |
+| Return over the downs, 9.61 km | Real 01, 05, 06 and 07. Games 01 and 03. | The white-edged road pitches over open sheep-grazed downs. Flowering gorse, a National Trust waymarker and split timber fences frame the next crest. |
+
+Cut flutes into the chalk, tint flint bands in the surface and round the turf over the lip. A stepped shingle beach takes the tide beneath the brows. Use foreground gates and hedges for parallax and draw the distant profile as a continuous silhouette on Low. The lighthouse is the squat clifftop Belle Tout shown in real-04, 06 and 14. Cuckmere is a river with cut-off oxbows in a flat floodplain. Drive near sheep necks, gull wings and breakers from ride time. Dispose geometry, textures and buffers on exit. Measure the two busiest moving sections as in the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.
