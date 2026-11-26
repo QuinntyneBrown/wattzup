@@ -30,7 +30,7 @@ def road(r,st,length,col,bc):
     asphalt.build(col)
 
 def land(r,col,theme,bc):
-    sand=bc.Builder('GoldSand','terrain');sand.colours=[];sand.uvs=[];sea=bc.Builder('PacificSwell','terrain');sea.colours=[];sea.uvs=[];last=None
+    shore=bc.Builder('GoldWash','terrain');shore.colours=[];shore.uvs=[];sand=bc.Builder('GoldSand','terrain');sand.colours=[];sand.uvs=[];sea=bc.Builder('PacificSwell','terrain');sea.colours=[];sea.uvs=[];last=None
     for i in range(0,len(r.s),3):
         p=r.s[i];row=[]
         for v in (260,33,8,0,-9,-16,-26,-47,-62,-71,-96,-140,-800):
@@ -38,12 +38,21 @@ def land(r,col,theme,bc):
             x,y,h=r.at(i,v,z);row.append((x,y,h))
         if last:
             for j,(a,b,c,e) in enumerate(zip(last,last[1:],row[1:],row)):
-                pts=(a,e,c,b);picture(sand if j<9 else sea,pts,[(x/9,y/9) for x,y,h in pts])
+                pts=(a,e,c,b)
+                if j<7:picture(sand,pts,[(x/9,y/9) for x,y,h in pts])
+                elif j<10:
+                    near,far=((47,62),(62,71),(71,96))[j-7]
+                    u0=r.s[max(0,i-3)]['d']/53;u1=p['d']/53
+                    v0=(near-47)/49;v1=(far-47)/49
+                    picture(shore,pts,((u0,v0),(u1,v0),(u1,v1),(u0,v1)))
+                else:
+                    near,far=((71,96),(96,140),(140,800))[j-9]
+                    picture(sea,pts,((r.s[max(0,i-3)]['d']/16,near/8),(p['d']/16,near/8),(p['d']/16,far/8),(r.s[max(0,i-3)]['d']/16,far/8)))
         last=row
-    sand.build(col);sea.build(col);return None,lambda x,y:elevation(r.s[r.tree.find((x,y,0))[1]]['d'])-.13
+    sand.build(col);shore.build(col);sea.build(col);return None,lambda x,y:elevation(r.s[r.tree.find((x,y,0))[1]]['d'])-.13
 
 def scenery(k):
-    art=Painted(k);sides=pictured(k,'GoldBalconies');green=pictured(k,'ForeshorePalms');rim=pictured(k,'PacificRim');arch=pictured(k,'CavillArch')
+    art=Painted(k);sides=pictured(k,'GoldBalconies');green=pictured(k,'ForeshorePalms');rim=pictured(k,'PacificRim');arch=pictured(k,'CavillArch');patrol=pictured(k,'PatrolNotice')
     cream,concrete,rail,glass,slate,red,yellow,blue=map(lin,(0xE9E7D7,0xB4BAB5,0x8A999B,0x91B9C5,0x53666B,0xC24C43,0xE4B646,0x486D87))
     def tower(d,v,w,dep,ht,i):
         at,h=site(k,d,v);art.box(at(0,0,.04),(w,dep,ht),h,glass);u=i/4
@@ -54,12 +63,15 @@ def scenery(k):
                     picture(sides,pts,((u,0),(u+.249,0),(u+.249,1),(u,1)))
         art.box(at(0,0,ht),(w+.49,dep+.49,.54),h,cream)
     for j,d in enumerate(range(-60,13270,43)):
-        if 12660<d<13100 or 2330<d<2430:continue
+        if 12660<d<13100 or 2175<d<2625:continue
         w=18+(j*5)%9;dep=15+j%5;ht=24+(j*23)%52
         tower(d,18+dep/2,w,dep,ht,j%4)
         if j%2==0:tower(d+17,65,20,18,55+j*11%71,(j+1)%4)
+    # Low podiums along the first block leave the Q1 crown visible over the street.
+    for j,d in enumerate(range(2200,2570,34)):
+        tower(d,26,20,13,7.2+j%3,j%4)
     # The tapered Q1 crown and slender mast stay fixed behind the foreshore.
-    tower(2422,36,24,22,124,1);at,h=site(k,2422,36)
+    tower(2590,36,25,23,124,1);at,h=site(k,2590,36)
     for v in (-11.07,11.07):art.face([at(x,v,z) for x,z in ((-12,124),(12,124),(12,144),(-12,131))],(glass,glass,cream,glass))
     for u,z in ((-12,131),(12,144)):
         beam(art,at(u,-11,124),at(u,-11,z),.34,cream);beam(art,at(u,-11,z),at(u,11,z),.34,cream)
@@ -85,7 +97,9 @@ def scenery(k):
             if j%3==0:
                 art.tube(at(0,9.3,.16),.093,.066,5.92,rail,rail,8)
                 beam(art,at(0,9.3,6.02),at(0,6.5,6.02),.044,slate);beam(art,at(0,6.5,6.02),at(45,6.5,6.02),.02,slate)
-    at,h=site(k,6662,-10.8)
+    base,h=site(k,6662,-10.8)
+    # Cavill Avenue meets the beachfront at an angle; its arch reads from the street.
+    def at(u,v,w=0):return base(.34*u-.94*v,.94*u+.34*v,w)
     for post in (-1,1):
         beam(art,at(post*5.4,-1,.14),at(post*6.8,0,6.5),.14,rail)
         beam(art,at(post*5.4,1,.14),at(post*6.8,0,6.5),.108,rail)
@@ -96,12 +110,21 @@ def scenery(k):
             beam(art,pin(j),pin(j+1),.106,rail)
             if j%2==0:beam(art,pin(j),at(-6.5+13*j/18,0,pin(j)[2]-at(0,0)[2]+.71),.064,rail)
     picture(arch,[at(x,.07,z) for x,z in ((-6.5,5.0),(6.5,5.0),(6.5,6.35),(-6.5,6.35))],((0,0),(1,0),(1,1),(0,1)))
+    # The notice faces beachgoers from both the promenade and the crossing.
+    notice,h=site(k,9064,-12)
+    for v in (-.52,.52):art.box(notice(0,v,-.13),(.09,.09,1.90),h,rail)
+    picture(patrol,[notice(0,v,z) for v,z in ((-.77,.9),(.77,.9),(.77,2.0),(-.77,2.0))],((0,0),(1,0),(1,1),(0,1)))
     for d in (4450,9068,9168):
         at,h=site(k,d,-25);art.tube(at(0,0,-.62),.077,.059,3.88,cream,cream,8)
     at,h=site(k,9078,-18)
     for x in (-1.45,1.45):
         for v in (-1.21,1.21):art.box(at(x,v,-.4),(.16,.16,2),h,cream)
     art.box(at(0,0,1.62),(3.5,3.0,1.63),h,yellow);art.box(at(0,0,2.54),(3.53,3.03,.67),h,glass);art.roof(at(0,0,3.25),4.1,3.55,.63,h,red)
+    for x in (-1.24,-.42,.42,1.24):
+        art.box(at(x,1.54,2.54),(.09,.08,.69),h,cream)
+    for x in (-1.35,1.35):
+        beam(art,at(x,-1.1,-.10),at(x,1.1,1.6),.055,cream);beam(art,at(x,1.1,-.10),at(x,-1.1,1.6),.055,cream)
+    for u in range(5):art.box(at(-1.82-u*.22,0,1.30-u*.25),(.25,.84,.14),h,cream)
     at,h=site(k,12914,11.5);art.box(at(0,0,.12),(38,3.7,.45),h,concrete)
     for x in range(-15,16,6):art.box(at(x,0,.57),(.16,.16,3.5),h,rail)
     art.box(at(0,0,4.03),(37,4.2,.26),h,cream)
