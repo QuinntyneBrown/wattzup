@@ -1,3 +1,4 @@
+import stampedeElevation from './stampede-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const stampedeCourseMap = {
   place: 'Calgary, Alberta',
   world: 'stampede',
   distanceKm: 13.2,
-  climbingM: 0,
+  climbingM: 145,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: stampedeElevation,
   },
   thumbnailUrl: 'maps/calgary-stampede.jpg',
   photoUrl: 'maps/calgary-stampede-photo.jpg',
