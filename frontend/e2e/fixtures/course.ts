@@ -1,3 +1,4 @@
+import palouseElevation from './palouse-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const palouseCourseMap = {
   place: 'Washington, United States',
   world: 'palouse',
   distanceKm: 18.1525,
-  climbingM: 0,
+  climbingM: 229,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: palouseElevation,
   },
   thumbnailUrl: 'maps/the-palouse.jpg',
   photoUrl: 'maps/the-palouse-photo.jpg',
