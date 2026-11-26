@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Utrecht Bike City (#2237)
+
+The Race catalogue and native course registry currently lack Utrecht. Bind the historical class to a 22.59 km route with short rises at canal bridges. Give the water, wharf, cellar fronts and upper road separate heights, seen together from the opposite bank. Use a fixed Dom Tower with square lower tiers, an open octagonal belfry and a spire.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Oudegracht aan de Werf, 0.14 km | Real 01–03, 10, 13 and games 01–02 | An upper brick street looks across a lower cafe terrace, vaulted cellar doors and the green canal beneath the gabled houses. |
+| The Dom Tower approach, 4.25 km | Real 01, 04, 12–13 and games 02–03 | A straight street frames the square Gothic tower. The open bell lantern rises above the rooftops. |
+| Stationsplein bicycle garage, 8.36 km | Real 05, 07–09 and game 05 | A red two-way bicycle ramp leads under the station canopy. Two tiers of parked bikes line the illuminated garage entrance. |
+| The red cycle lane, 12.32 km | Real 05–07, 12, 15 and games 03–04 | White shark teeth and dashed lane markings lead up to traffic lights where a cargo bike joins waiting Dutch cyclists. |
+| Nieuwegracht bridge, 16.78 km | Real 02–03, 10–11, 14 and games 01, 04 | A low brick arch with iron railings spans the green canal. A tour boat and a paddler pass beneath the trees. |
+| The wharf finish, 22.32 km | Real 01–03, 10, 13–14 and games 01–02 | Gabled trading houses, lit cellar cafes, hanging greenery and the distant Dom mark the return to the old wharves. |
+
+Adapt Caribana’s tower proportions, layered skyline and animated middle distance. Build cellar-front walls and narrow canal houses in runs; vary frontage, roof, greenery and terraces. Share geometry for the garage racks, boats and street traffic, render distant landmarks at low detail, and release the course-specific resources on exit. Capture the six rider locations and measure the two tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
