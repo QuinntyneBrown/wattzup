@@ -68,7 +68,7 @@ def land(r,col,theme,bc):
 
 
 def scenery(k):
-    art=Painted(k)
+    art=Painted(k); gothic=pictured(k,'RingGothic')
     oper=pictured(k,'Staatsoper'); palaces=pictured(k,'RingPalaces'); trees=pictured(k,'RingTrees')
     stone, light, bronze, copper, iron, leaf, slate = map(lin,(0xC8BCA5,0xE7D9BC,0x73684F,0x749182,0x5A5A57,0x76804D,0x645F61))
     def facade(mesh,at,width,height,uv=(0,0,1,1),side=1):
@@ -131,22 +131,48 @@ def scenery(k):
         art.tube(at(x,-5.1,11.76),.95,1,.52,light,light,10)
     art.box(at(0,-3,12.2),(38,8,.91),h,light)
     for v in (-7.1,1.1):art.face([at(-19,v,13.1),at(19,v,13.1),at(0,v,17.8)],(stone,light,light))
+    for x in list(range(-44,-18,3))+list(range(21,46,3)):
+        for z in (4,9):
+            art.box(at(x,.92,z),(1.28,.18,3),h,slate)
+            art.box(at(x,.82,z+3),(1.61,.31,.22),h,light)
+    for sign in (-1,1):
+        for x in range(6):
+            art.box(at(sign*(4+x*2.25),-7.15,14.45+(5-x)*.38),(.8,.24,.73),h,stone)
     at,h=site(k,2053,17.2)
     art.tube(at(0,0,.12),3.7,3.75,.65,stone,light,22,cap=copper)
     art.tube(at(0,0,.75),1.02,.55,4.8,stone,light,12)
     art.tube(at(0,0,5.55),.57,.35,1.65,light,light,10);art.tube(at(0,0,7.2),.25,.29,.5,bronze,bronze,10)
     beam(art,at(-.63,0,5.7),at(-.63,0,8.21),.046,bronze)
     for d,kind in ((2584,'rathaus'),(3154,'votiv')):
-        at,h=site(k,d,32)
+        at,h=site(k,d,140)
         width=73 if kind=='rathaus' else 34
         art.box(at(0,5,0),(width,13,18),h,stone)
         art.roof(at(0,5,18),width,14,7,h,slate)
-        spires=((-30,33),(-18,39),(0,76),(18,39),(30,33)) if kind=='rathaus' else ((-12,64),(12,64))
-        for x,ht in spires:
-            spire(at,x,-2,0,ht)
-            for dx in (-2.7,2.7):spire(at,x+dx,-4,ht*.37,ht*.19)
+        # Recess the modeled tower returns behind the pierced stone elevation.
+        for x in ((0,) if kind=='rathaus' else (-10,10)):
+            spire(at,x,1,17,23)
+        front=lambda x,v,z:at(x,-12+v,z)
+        facade(gothic,front,97 if kind=='rathaus' else 55,80 if kind=='rathaus' else 69,(0,0,.55,1) if kind=='rathaus' else (.595,0,.964,1))
         for x in range(-width//2+3,width//2,4):
             art.box(at(x,-1.64,3),(1.9,.2,7.2),h,iron)
+    # Stadtpark: tree layers behind a wrought-iron fence, with benches facing the path.
+    for j,d in enumerate(range(4410,5010,6)):
+        at,h=site(k,d,15.7)
+        beam(art,at(0,0,.12),at(0,0,1.45),.075,iron)
+        for z in (.45,1.2):beam(art,at(0,0,z),k.road.pos(d+6,15.7,z),.041,iron)
+        for x in range(1,6):beam(art,at(x,0,.18),at(x,0,1.31),.026,iron)
+        if j%3==0:
+            at,h=site(k,d,19)
+            art.box(at(0,0,.42),(2.5,.65,.13),h,bronze)
+            art.box(at(0,.27,.51),(2.5,.13,.63),h,bronze)
+        if j%2==0:
+            for row in (0,1):
+                at,h=site(k,d+row*8,24+row*13+(j%4)*1.4)
+                a,b=((0,.22),(.22,.48),(.48,.85),(.85,1))[(j//2+row)%4]
+                width=10+(j%4); ht=11+(j%5)
+                for axis in (0,1):
+                    pts=[at(x if axis==0 else 0,x if axis else 0,z) for x,z in ((-width/2,0),(width/2,0),(width/2,ht),(-width/2,ht))]
+                    picture(trees,pts,((a,0),(b,0),(b,1),(a,1)))
     return {'efforts':0}
 
 
