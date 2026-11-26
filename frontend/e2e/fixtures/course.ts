@@ -3588,3 +3588,40 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const provenceCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'provence-lavender',
+  name: 'Provence Lavender',
+  routeName: 'The Valensole road',
+  place: 'Valensole Plateau, France',
+  world: 'provence',
+  distanceKm: 18.545,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/provence-lavender.jpg',
+  photoUrl: 'maps/provence-lavender-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 360, 15, 82),
+      seg('work', 300, 21, 95),
+      seg('recover', 60, 13, 90),
+      seg('work', 180, 21, 95),
+      seg('recover', 60, 13, 90),
+      seg('work', 180, 21, 95),
+      seg('recover', 60, 13, 90),
+      seg('work', 180, 21, 95),
+      seg('recover', 60, 13, 90),
+      seg('work', 180, 21, 95),
+      seg('recover', 60, 13, 90),
+      seg('work', 180, 21, 95),
+      seg('recover', 60, 13, 90),
+      seg('work', 180, 21, 95),
+      seg('cool-down', 360, 13, 82),
+    ],
+  },
+};
