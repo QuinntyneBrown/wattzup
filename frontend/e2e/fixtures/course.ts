@@ -3588,3 +3588,40 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const poggioCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'the-poggio',
+  name: 'The Poggio',
+  routeName: 'The coast road to San Remo',
+  place: 'Sanremo, Italy',
+  world: 'poggio',
+  distanceKm: 11.55,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/the-poggio.jpg',
+  photoUrl: 'maps/the-poggio-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 16, 80),
+      seg('work', 180, 19, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 19, 80),
+      seg('recover', 180, 16, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 22, 80),
+      seg('recover', 180, 18, 80),
+      seg('work', 30, 22, 100),
+      seg('cool-down', 300, 12, 80),
+    ],
+  },
+};
