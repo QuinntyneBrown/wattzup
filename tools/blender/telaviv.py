@@ -54,7 +54,7 @@ def land(r,col,theme,bc):
     return bed.build(col),lambda x,y:elevation(r.s[r.tree.find((x,y,0))[1]]['d'])-.19
 
 def scenery(k):
-    art=Painted(k);facade=pictured(k,'TelAvivHotels');palms=pictured(k,'DatePalms');jaffa=pictured(k,'JaffaStone');pool=pictured(k,'GordonPool');sky=pictured(k,'WesternSky')
+    cafe=pictured(k,'TayeletCafe');art=Painted(k);facade=pictured(k,'TelAvivHotels');palms=pictured(k,'DatePalms');jaffa=pictured(k,'JaffaStone');pool=pictured(k,'GordonPool');sky=pictured(k,'WesternSky')
     cream,stucco,wood,steel,gold,blue,red,stone,leaf=map(lin,(0xE6D4BB,0xC6BBAC,0x977E61,0x656D73,0xF1D7A1,0x567D8D,0xA3594A,0x9F988C,0x757C51))
     def panel(group,pts,idx=0,cols=1):
         u=idx/cols;v=(idx+1)/cols;picture(group,pts,((u+.0005,0),(v-.0005,0),(v-.0005,1),(u+.0005,1)))
@@ -80,7 +80,7 @@ def scenery(k):
                 panel(facade,[at(x,v,z) for x,z in ((-w/2,.05),(w/2,.05),(w/2,ht),(-w/2,ht))],j//2%4,4)
             for u in (-w/2-.04,w/2+.04):panel(facade,[at(u,v,z) for v,z in ((-dep/2,0),(dep/2,0),(dep/2,ht),(-dep/2,ht))],(j//2+1)%4,4)
             for f in range(1,int(ht/3.1),2):art.box(at(0,-7.68,f*3.1),(w+.33,.87,.19),h,cream)
-        if j%11==0 and d<9800:
+        if j%11==0 and d<9800 and not 6360<d<6650:
             at,h=site(k,d,-18);base=sand(d,-18)-elevation(d)
             for u in (-2.4,2.4):
                 for v in (-1.8,1.8):art.box(at(u,v,base),(.2,.2,2.52),h,wood)
@@ -102,9 +102,9 @@ def scenery(k):
     for d in (4240,4280,4330):
         at,h=site(k,d,-22);base=sand(d,-22)-elevation(d)
         for v in (-5,5):
-            art.tube(at(0,v,base),.11,.105,2.65,blue,blue,8)
-        for n in range(5):beam(art,at(0,-5,base+1.65+n*.23),at(0,5,base+1.65+n*.23),.024,cream)
-        for v in range(-5,6):beam(art,at(0,v,base+1.65),at(0,v,base+2.59),.025,cream)
+            art.tube(at(v*.67,v*.74,base),.11,.105,2.65,blue,blue,8)
+        for n in range(5):beam(art,at(-3.35,-3.7,base+1.65+n*.23),at(3.35,3.7,base+1.65+n*.23),.043 if n<4 else .072,gold if n==4 else cream)
+        for v in range(-5,6):beam(art,at(v*.67,v*.74,base+1.65),at(v*.67,v*.74,base+2.59),.030,cream)
         for u in (-8,8):beam(art,at(u,-5,base+.06),at(u,5,base+.06),.06,blue)
     for j,d in enumerate(range(6360,6746,13)):
         at,h=site(k,d,-14);base=sand(d,-14)-elevation(d)
@@ -115,13 +115,16 @@ def scenery(k):
         art.tube(at(0,0,base),.068,.055,2.17,wood,wood,7)
         art.tube(at(0,0,base+2.1),2.16,.17,.88,(cream,red,blue)[j%3],cream,10,cap=cream)
         for v in (-1.1,1.1):art.box(at(0,v,base+.26),(2.06,.72,.15),h,cream)
+    for d in (6506,6556):
+        at,h=site(k,d,-16);base=sand(d,-16)-elevation(d)
+        panel(cafe,[at(-3.7,v,z+base) for v,z in ((-7,0),(7,0),(7,4.6),(-7,4.6))])
     # Static headland and the church and clock towers sit beyond the curving southern path.
     at,h=site(k,10565,-26);art.box(at(0,0,-1.7),(41,58,2.12),h,stone)
     panel(jaffa,[at(0,v,z) for v,z in ((-49,.13),(49,.13),(49,30),(-49,30))])
     at,h=site(k,10588,9);art.box(at(0,0,0),(4.8,4.8,16.4),h,cream);art.box(at(0,0,16.4),(5.34,5.34,.6),h,stucco)
     art.roof(at(0,0,17),5.2,5.2,3,h,red)
-    for j in range(48):
-        a=math.pi*(1+j/48);b=math.pi*(1+(j+1)/48);u=j/48;v=(j+1)/48
+    for j in range(96):
+        a=math.pi*(1+j/48);b=math.pi*(1+(j+1)/48);u=j/96;v=(j+1)/96
         def e(t,z):return 5200+10800*math.cos(t),11200*math.sin(t),z
         picture(sky,(e(a,-570),e(b,-570),e(b,3800),e(a,3800)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
