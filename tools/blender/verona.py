@@ -54,9 +54,11 @@ def land(r,col,theme,bc):
 
 def scenery(k):
     art=Painted(k);fronts=pictured(k,'VeronaFacades');crowd=pictured(k,'VeronaTifosi');hills=pictured(k,'TorricelleVista')
-    water=pictured(k,'AdigeWater');paving=pictured(k,'ListonPaving');finish=pictured(k,'VeronaSigns')
+    masonry=pictured(k,'ArenaStone');water=pictured(k,'AdigeWater');paving=pictured(k,'ListonPaving');finish=pictured(k,'VeronaSigns')
     rose,brick,cream,wood,iron,green,pink=map(lin,(0xC79783,0xA76B50,0xE0D2AE,0x7D6249,0x555A59,0x516C41,0xCD577B))
     def panel(m,pts,u,v):picture(m,pts,((u,0),(v,0),(v,1),(u,1)))
+    def stone_face(pts):
+        picture(masonry,pts,[(x*.21+z*.18,y*.21+z*.22) for x,y,z in pts])
     def arch(at,wide,depth,spring,rise,colour,segments=13):
         # Voussoirs retain the open span. Darker undersides give the arcade depth.
         inner=wide/2;outer=inner+.54
@@ -65,8 +67,8 @@ def scenery(k):
             def pt(t,r,v):return at(r*math.cos(t),v,spring+rise*r/inner*math.sin(t))
             c=tuple(ch*(.90+.10*((j*5)%7)/6) for ch in colour[:3])+(1,)
             for v in (-depth/2,depth/2):
-                art.face((pt(a,inner,v),pt(a,outer,v),pt(b,outer,v),pt(b,inner,v)),(c,)*4)
-            art.face((pt(a,inner,-depth/2),pt(b,inner,-depth/2),pt(b,inner,depth/2),pt(a,inner,depth/2)),(c,)*4)
+                stone_face((pt(a,inner,v),pt(a,outer,v),pt(b,outer,v),pt(b,inner,v)))
+            stone_face((pt(a,inner,-depth/2),pt(b,inner,-depth/2),pt(b,inner,depth/2),pt(a,inner,depth/2)))
     def cypress(at,h):
         for z,r,up in ((0,.16,1.4),(.7,.75,h*.42),(h*.42,1.0,h*.38),(h*.78,.48,h*.22)):
             art.tube(at(0,0,z),r,max(.035,r*(.06 if z>h*.7 else .7)),up,green if z else wood,green,7,cap=green)
@@ -81,7 +83,7 @@ def scenery(k):
                 for off in (0,3.6,7.2):
                     for q in (-6,6):art.box(at(q,off,1),(0.1,.12,1.75),h,wood)
                     art.box(at(0,off,1.47),(11.9,.72,.55),h,green)
-        if 10300<d<23680 and abs(d-11460)>95 and abs(d-21890)>75:
+        if 10300<d<23680 and abs(d-11460)>95 and abs(d-21890)>75 and not 16698<d<16840:
             for side in (-1,1):
                 v=side*(18 if d>21400 else 12.4);at,h=site(k,d,v);idx=(j+side)%4;w=17.8;high=(8.2,10.1,12.3,9.5)[idx]
                 art.box(at(0,side*3.1,-.32),(w,6.2,high),h,(rose,cream,brick,cream)[idx])
@@ -116,8 +118,20 @@ def scenery(k):
             art.box(at(u,side*3.44,.84),(20.45,.76,.16),h,cream)
         art.box(at(u-10.2,0,-6.6),(1.5,7.55,6.05),h,cream)
     at,h=site(k,11523,5.8);art.box(at(0,0,-.2),(6,5.2,11.2),h,brick);art.roof(at(0,0,11),6.5,5.5,2,h,brick)
+    # Stone embankments and contiguous riverside houses face the bridge.
+    at,h=site(k,11460)
+    for side in (-1,1):
+        for j in range(-8,9):
+            v=j*13.8
+            if abs(v)<10:continue
+            u=side*(66+2*math.sin(v/37))
+            w=13.5;high=7.3+(j%4)*1.6;idx=(abs(j)+side)%4
+            art.box(at(u,v,-1.5),(6.5,w,high+1.5),h,(rose,cream,brick,cream)[idx])
+            art.roof(at(u,v,high),6.7,w,1.24,h,brick)
+            panel(fronts,[at(u-side*3.29,v+y,z) for y,z in ((-w/2,0),(w/2,0),(w/2,high),(-w/2,high))],idx/4,(idx+1)/4)
+            art.box(at(side*54,v,-6.4),(1.65,14,6.25),h,rose)
     # Lamberti shaft, clock and octagonal bell chamber over the market.
-    at,h=site(k,16759,18)
+    at,h=site(k,16801,26)
     art.box(at(0,0,-.3),(6.35,6.35,27),h,brick)
     for j in range(12):art.box(at(0,0,j*1.55+.7),(6.39,6.39,.36),h,cream)
     art.box(at(0,0,26.7),(7.1,7.1,3.25),h,cream)
@@ -129,6 +143,11 @@ def scenery(k):
     for j in range(9):
         at,h=site(k,16698+j*9,6.8);art.tube(at(0,0,0),.073,.055,2.38,wood,wood,6)
         art.tube(at(0,0,2.15),2.1,.2,.81,cream,rose,8,cap=cream)
+    for j in range(8):
+        at,h=site(k,16710+j*12,-13)
+        art.box(at(0,0,.5),(2.9,1.58,.21),h,wood)
+        for y in (-.8,.8):beam(art,at(0,y,.66),at(0,y,2.77),.045,iron)
+        art.roof(at(0,0,2.65),3.9,2.5,.66,h,cream if j%2 else rose)
     # The southern archway straddles the racing line; the second arch opens onto the Liston.
     at,h=site(k,21903)
     for v in (0,8):
@@ -141,6 +160,15 @@ def scenery(k):
         at,h=site(k,d,-8.3);art.tube(at(0,0,-.2),.10,.08,2.69,wood,wood,6)
         art.tube(at(0,0,2.45),1.95,.11,.64,cream,cream,8,cap=cream)
         for x in (-1,1):art.box(at(x,0,.37),(.69,.59,.13),h,wood)
+    for d in range(21935,22260,16):
+        at,h=site(k,d,17)
+        art.tube(at(0,0,-.1),.32,.20,3.65,wood,wood,8)
+        art.tube(at(0,0,2.98),1.65,3.15,2.9,green,green,10)
+        art.tube(at(0,0,5.81),3.13,.54,2.2,green,green,10,cap=green)
+    at,h=site(k,21970,12)
+    art.tube(at(0,0,-.16),4.6,4.6,.61,rose,cream,26,cap=cream)
+    art.tube(at(0,0,.47),4,4,.09,green,green,26,cap=green)
+    art.tube(at(0,0,.57),.65,.44,2.3,cream,cream,12,cap=cream)
     # Arena long axis follows the finish straight. Leave an open entrance at the near end.
     at,h=site(k,23998);radius=66;short=48;n=54
     def rim(t,rx,ry,z):return at(rx*math.cos(t),ry*math.sin(t),z)
@@ -157,14 +185,27 @@ def scenery(k):
         arch(lambda x,y,z:bay(x,y,z+7.55),length-1.32,2.42,1.48,2.42,cream)
         art.box(bay(-length/2,0,7.52),(1.22,2.45,4.3),math.atan2(ty,tx),rose)
         art.box(bay(0,0,11.85),(length+.23,2.68,.72),math.atan2(ty,tx),cream)
+        # The surviving Ala is a taller isolated fragment of the outer wall.
+        if 4<=j<=7:
+            arch(lambda x,y,z:bay(x,y,z+12.6),length-1.24,1.81,.83,2.75,rose)
+            art.box(bay(-length/2,0,12.57),(1.32,1.86,4.0),math.atan2(ty,tx),rose)
+            art.box(bay(0,0,16.55),(length+.13,1.89,.53),math.atan2(ty,tx),cream)
         if entrance:continue
         for row in range(13):
             rx=39+row*1.95;ry=23+row*1.78;z=.3+row*.82
             corners=(rim(t,rx,ry,z),rim(u,rx,ry,z),rim(u,rx+1.97,ry+1.81,z),rim(t,rx+1.97,ry+1.81,z))
-            art.face(corners,(cream if row%3==0 else rose,)*4)
-            art.face((corners[0],corners[1],rim(u,rx,ry,z-.79),rim(t,rx,ry,z-.79)),(rose,)*4)
+            stone_face(corners)
+            stone_face((corners[0],corners[1],rim(u,rx,ry,z-.79),rim(t,rx,ry,z-.79)))
+            if row%3==1 and (j+row)%7!=0:
+                lo=((j+row)%3)/3
+                panel(crowd,[rim(a,rx+.49,ry+.49,z+b) for a,b in ((t+.004,0),(u-.004,0),(u-.004,1.77),(t+.004,1.77))],lo,lo+1/3)
     for side in (-1,1):art.box(at(0,side*4.4,-.2),(.55,.55,5.7),h,pink)
     panel(finish,[at(0,v,z) for v,z in ((4.65,4.28),(-4.65,4.28),(-4.65,5.57),(4.65,5.57))],.25,1)
+    # Scarf holders and companions flank the last metres inside the arena.
+    for d in (23954,23966,23979,23990,23999):
+        for side in (-1,1):
+            at2,h2=site(k,d,side*4.9);idx=(d+side)%3
+            panel(crowd,[at2(x,0,z) for x,z in ((-1.85,0),(1.85,0),(1.85,1.83),(-1.85,1.83))],idx/3,(idx+1)/3)
     for d in range(19400,24150,16):
         pts=[k.road.pos(a,v,-.04) for a,v in ((d,-26),(d+16,-26),(d+16,26),(d,26))]
         picture(paving,pts,[(x/5,y/5) for x,y,z in pts])
@@ -172,7 +213,7 @@ def scenery(k):
         a=j*math.tau/80;b=(j+1)*math.tau/80;u=j%20/20;v=u+.05
         if j//20%2:u,v=1-u,1-v
         def skyline(t,z):return 10200+19900*math.cos(t),17400*math.sin(t),z
-        panel(hills,(skyline(a,-7800),skyline(b,-7800),skyline(b,10600),skyline(a,10600)),u,v)
+        panel(hills,(skyline(a,-5700),skyline(b,-5700),skyline(b,1800),skyline(a,1800)),u,v)
     return {'efforts':0}
 
 THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':3.45,'terrain':{'sea':False},'land':{'mid':0x9A946F},'sky':[0xDEE0D8,0xC4D7E2,0xA4C6DC,0x86B0CE,0x6B9CC2],'haze':0xD3D6CC,'light':[0xFFF3DA,1.4],'fill':[0xDBE2EA,0xB7A782],'sun_altitude':.79,'sun_azimuth':-.79}
