@@ -207,6 +207,7 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  RondaLarches: 1150,
   RondaRoad: 810,
   RondaMeadow: 2300,
   RondaInns: 610,
@@ -2795,6 +2796,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.z += (rider.z + 14 * uz - ahead.z) * overlook;
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
+    this.sellaRonda?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(

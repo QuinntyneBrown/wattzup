@@ -293,6 +293,45 @@ def build_scenery(road, st: list[dict], length: float, height_at, course: dict, 
     from iten_landmarks import pictured
     pictured(kit, "RondaPassPlates")
     pictured(kit, "RondaInns")
+    from iten_landmarks import picture
+    grove = pictured(kit, "RondaLarches")
+    # Weathered west face at the foot of the same Sassolungo group sculpted in peaks.py.
+    # The relief folds away from the road at both ends, in front of the existing towers.
+    relief = pictured(kit,"RondaLangkofel")
+    base = road.s[road.index(7750)]
+    dx,dy = base["x"]-cx,base["y"]-cy
+    radius=math.hypot(dx,dy)
+    dx,dy=dx/radius,dy/radius
+    previous=None
+    for i in range(42):
+        u=i/41
+        along=(u-.5)*1840
+        column=[]
+        for v in (0,.19,.39,.62,.84,1):
+            depth=570+230*v+90*abs(2*u-1)+17*math.sin(i*.49+v*2)
+            column.append(((base["x"]+dx*depth-dy*along,base["y"]+dy*depth+dx*along,-12+675*v),(u,v)))
+        if previous:
+            for j in range(len(column)-1):
+                pts=(previous[j],column[j],column[j+1],previous[j+1])
+                picture(relief,[p for p,uv in pts],[uv for p,uv in pts])
+        previous=column
+    # Trees grow on the hillsides. Leave village streets, terraces, and col sightlines clear.
+    forest_rng = random.Random(16821)
+    for at in range(24, int(length), 22):
+        idx = road.index(at)
+        for side in (-1, 1):
+            off = side * forest_rng.uniform(38, 132)
+            x, y, _ = road.at(idx, off)
+            if not road.clear_of_road(x, y, 28, idx):
+                continue
+            z = height_at(x, y) - 0.3
+            tall = forest_rng.uniform(7.5, 17.5)
+            u = forest_rng.randrange(4) * 0.25
+            uv = ((u,0),(u+0.25,0),(u+0.25,1),(u,1))
+            for ang in (s[idx]["h"]+0.63, s[idx]["h"]+2.20):
+                dx,dy = math.cos(ang)*tall*.32, math.sin(ang)*tall*.32
+                picture(grove, ((x-dx,y-dy,z),(x+dx,y+dy,z),(x+dx,y+dy,z+tall),(x-dx,y-dy,z+tall)),uv)
+
 
     # 3. Four pass summit signs, monuments & chapels
     m_passes = _try_module("passes")

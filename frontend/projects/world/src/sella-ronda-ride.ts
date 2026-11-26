@@ -14,6 +14,7 @@ import {
   TorusGeometry,
   type BufferGeometry,
   type Texture,
+  type Vector3,
 } from 'three/webgpu';
 import { attribute, positionWorld, texture, vec2 } from 'three/tsl';
 import type { Course, CoursePlace } from './course';
@@ -22,9 +23,20 @@ import { caribanaCyclists, type SceneRider } from './caribana-cyclists';
 import { rifugioFlags } from './rifugio-flags';
 const names = ['asphalt', 'meadow', 'limestone', 'rifugio', 'pass-plates'] as const;
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
+// Rider station, landmark station, rightward offset and height above the road.
+const VIEWS = [
+  [200, 275, 24, 12],
+  [2060, 2088, 8.3, 4],
+  [3080, 3135, -25, 12],
+  [4900, 4935, 12, 7],
+  [7440, 7468, 3, 3],
+  [10100, 10130, 12, 6],
+] as const;
 export class SellaRondaRide {
   readonly root = new Group();
   readonly materials = {
+    RondaLangkofel: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.45, fog: false }),
+    RondaLarches: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.42 }),
     RondaRoad: new MeshLambertNodeMaterial({ side: DoubleSide }),
     RondaMeadow: new MeshLambertNodeMaterial({ side: DoubleSide }),
     Peaks: new MeshLambertNodeMaterial({ side: DoubleSide, fog: false }),
@@ -51,7 +63,9 @@ export class SellaRondaRide {
     const loader = new TextureLoader(),
       plain = new MeshLambertMaterial({ vertexColors: true });
     const results = await Promise.allSettled(
-      names.map((n) => loader.loadAsync('courses/sellaronda-' + n + '.webp')),
+      [...names.map((n) => 'sellaronda-' + n), 'gardena-larches', 'gardena-sassolungo'].map((n) =>
+        loader.loadAsync('courses/' + n + '.webp'),
+      ),
     );
     const maps = results.flatMap((r) => (r.status === 'fulfilled' ? [r.value] : []));
     const failure = results.find((r) => r.status === 'rejected');
@@ -74,9 +88,9 @@ export class SellaRondaRide {
     private readonly plain: MeshLambertMaterial,
     private readonly kit: Awaited<ReturnType<typeof caribanaCyclists>>,
   ) {
-    for (let i = 0; i < maps.length; i++) {
-      maps[i]!.colorSpace = SRGBColorSpace;
-      maps[i]!.flipY = false;
+    for (const map of maps) {
+      map.colorSpace = SRGBColorSpace;
+      map.flipY = false;
     }
     const surfaces = [this.materials.RondaRoad, this.materials.RondaMeadow, this.materials.Peaks];
     for (const [i, m] of surfaces.entries()) {
@@ -95,6 +109,8 @@ export class SellaRondaRide {
               sample.mul(i === 2 ? 1.75 : 1.45).add(i === 2 ? 0.63 : 0.51),
             );
     }
+    this.materials.RondaLangkofel.map = maps[6]!;
+    this.materials.RondaLarches.map = maps[5]!;
     this.materials.RondaInns.map = maps[3]!;
     this.materials.RondaPassPlates.map = maps[4]!;
     this.flags = rifugioFlags(course);
@@ -208,6 +224,35 @@ export class SellaRondaRide {
       if (!i) state.bunchCrank = crank;
     }
     this.kit.roll(time * 5.4);
+  }
+  /** Keep the rider and the landmark on screen through each village or summit approach. */
+  frameView(metres: number, camera: Vector3, ahead: CoursePlace) {
+    const view = VIEWS.find((v) => Math.abs(v[0] - metres) < 58);
+    if (!view) return;
+    const rider = this.course.place(metres, 0, this.pose);
+    const site = this.course.place(view[1], view[2], this.focus);
+    if (view[0] === 7440) {
+      // The massif lies across the saddle. Frame the relief above the pass settlement.
+      const summit = this.course.place(7750, 0, this.focus);
+      const ox = summit.x + 33.515,
+        oz = summit.z - 1280.78;
+      const horizontal = Math.hypot(ox, oz);
+      site.x += (680 * ox) / horizontal;
+      site.z += (680 * oz) / horizontal;
+      site.y += 86;
+    }
+    const dx = site.x - rider.x,
+      dz = site.z - rider.z;
+    const distance = Math.max(1, Math.hypot(dx, dz));
+    const u = Math.min(1, (58 - Math.abs(view[0] - metres)) / 24);
+    const w = u * u * (3 - 2 * u);
+    camera.x += (rider.x - (5.2 * dx) / distance - camera.x) * w;
+    camera.z += (rider.z - (5.2 * dz) / distance - camera.z) * w;
+    camera.y += (rider.y + 2.6 - camera.y) * w;
+    ahead.x += (rider.x + (14 * dx) / distance - ahead.x) * w;
+    ahead.z += (rider.z + (14 * dz) / distance - ahead.z) * w;
+    ahead.y +=
+      (rider.y + 1.7 + (19 * (site.y + view[3] - rider.y - 2.6)) / (distance + 5.2) - ahead.y) * w;
   }
   report() {
     return this.reads;

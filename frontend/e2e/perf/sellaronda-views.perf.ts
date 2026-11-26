@@ -38,7 +38,7 @@ test('Ride the four Dolomite passes from Corvara beneath the Sella massif', asyn
     ['campolongo', 2.06],
     ['arabba', 3.08],
     ['pordoi', 4.9],
-    ['sella', 7.7],
+    ['sella', 7.44],
     ['gardena', 10.1],
   ] as const) {
     // Both versions are native. Hold the clock at the measured rider position.
