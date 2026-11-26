@@ -44,7 +44,8 @@ def swells(d,v):
 
 def height(r,i,v):
     p=r.s[i];d=p['d'];spread=smooth(3.8,128,abs(v))
-    return p['z']-.14+(swells(d,v)-swells(d,0)*.52)*spread-16*smooth(10,96,abs(v))+9*smooth(110,510,abs(v))
+    overlook=smooth(16100,17360,d)*(1-smooth(17790,18400,d))*smooth(4,110,v)
+    return p['z']-.14-97*overlook+(swells(d,v)-swells(d,0)*.52)*spread-16*smooth(10,96,abs(v))+9*smooth(110,510,abs(v))
 
 
 def land(r,col,theme,bc):
@@ -61,9 +62,12 @@ def land(r,col,theme,bc):
     for i in range(0,len(r.s)-4,4):
         j=i+4;d=r.s[i]['d']
         for l,e in zip(offsets,offsets[1:]):
-            mid=(l+e)/2;cell=int(math.floor((d+75*math.sin(mid/103))/243))+3*int(math.floor((mid+39*math.sin(d/106))/128))
-            c=palette[cell%len(palette)]
-            loc=((i,l),(j,l),(j,e),(i,e));b.quad(*(pt(n,v) for n,v in loc));b.colours.extend(tint(n,v,c) for n,v in loc)
+            loc=((i,l),(j,l),(j,e),(i,e));b.quad(*(pt(n,v) for n,v in loc));# Sample crop colour at shared physical vertices so contour boundaries cross section seams.
+            for n,v in loc:
+                along=r.s[n]['d'];band=(along+87*math.sin(v/117))/260+1.6*math.sin(v/220+along/970)
+                seed=math.floor(band);fraction=band-seed;blend=smooth(.42,.63,fraction)
+                ca=tint(n,v,palette[seed%len(palette)]);cb=tint(n,v,palette[(seed+1)%len(palette)])
+                b.colours.append(tuple(ca[k]+(cb[k]-ca[k])*blend for k in range(3))+(1,))
     b.build(col)
     def sample(x,y):
         _,i,_=r.tree.find((x,y,0));s=r.s[i];v=(y-s['y'])*math.cos(s['h'])-(x-s['x'])*math.sin(s['h']);return height(r,i,v)
@@ -99,7 +103,7 @@ def scenery(k):
             picture(barns,(at(-7.52,y,.04),at(7.52,y,.04),at(7.52,y,4.94),at(-7.52,y,4.94)),((.501,0),(.999,0),(.999,1),(.501,1)))
         at,h=grounded(d+21,v+9);cylinder(at,h,3.4,11.4,0xAAA69A)
         for i in range(7):
-            tree,_=grounded(d-17+i*7,v+19);stripe(flora,tree,.58,2,3,4.1,12+i%3)
+            tree,_=grounded(d-17+i*7,v+19);stripe(flora,tree,.58,2,3,4.1,12+i%3);stripe(flora,tree,2.1,2,3,4.1,12+i%3)
     for d,v in ((2810,26),(6980,-76),(14830,52)):barn(d,v)
     for d in range(-60,18280,13):
         for side in (-1,1):
@@ -118,15 +122,26 @@ def scenery(k):
     for d,v in ((8164,29),(8215,39),(8390,25)):
         at,h=grounded(d,v);art.box(at(0,0,0),(16,7,3.5),h,lin(0xC4AC8B));art.roof(at(0,0,3.5),16.6,7.6,1.91,h,lin(0x8F8E81))
     # Steptoe's quartzite summit is one fixed relief above the softer surrounding folds.
-    at,h=site(k,12770,927);base=698-k.road.pos(12770)[2];levels=((0,1),(.17,.83),(.38,.63),(.63,.42),(.82,.27),(.94,.13),(1,.022))
+    at,h=site(k,12830,1250);base=687-k.road.pos(12770)[2];levels=((0,1),(.17,.83),(.38,.63),(.63,.42),(.82,.27),(.94,.13),(1,.022))
     for (lo,a),(hi,b) in zip(levels,levels[1:]):
         for j in range(44):
             def ring(idx,r,q):
                 t=idx*math.tau/44;w=1+.08*math.sin(3*t)+.055*math.cos(5*t)
-                return at(624*r*w*math.cos(t)+67*q,453*r*w*math.sin(t),base+351*q)
+                return at(624*r*w*math.cos(t)+67*q,453*r*w*math.sin(t),base+224*q)
             color=0x8C9164 if lo<.63 else 0x857F66 if lo<.94 else 0x767367
             c=lin(color+int(13*math.cos(j*math.tau/44+1.1))*0x010101)
             art.face((ring(j,a,lo),ring(j+1,a,lo),ring(j+1,b,hi),ring(j,b,hi)),(c,)*4)
+    # These farm ridges have fixed positions across the valley. The image wraps
+    # across a curved terrain profile; nearby fields and the quartzite remain solid.
+    for name,d,v,width,base_z,relief in (('ButteView',12760,810,1800,679,412),('PalouseOverlook',17750,485,1620,611,246)):
+        mesh=pictured(k,name);at,h=site(k,d,v);base=base_z-k.road.pos(d)[2]
+        def pt(u,q):
+            taper=.20+.80*smooth(0,.14,u)*(1-smooth(.86,1,u))
+            return at((u-.5)*width,58*math.cos(6*u)+48*q,base+q*relief*taper)
+        for i in range(36):
+            for j in range(5):
+                a=i/36;b=j/5;uv=((a,b),(a+1/36,b),(a+1/36,b+.2),(a,b+.2))
+                picture(mesh,tuple(pt(u,q) for u,q in uv),uv)
     for d,v,w in ((420,855,365),(3210,-901,515),(7900,1300,630),(11432,-985,554),(16400,990,601)):
         at,h=site(k,d,v);picture(clouds,(at(-w*.5,-85,132),at(w*.5,85,132),at(w*.5,85,261),at(-w*.5,-85,261)),UV)
     return {'efforts':0}

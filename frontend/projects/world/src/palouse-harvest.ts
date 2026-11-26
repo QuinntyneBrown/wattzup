@@ -1,6 +1,6 @@
 import {
   BoxGeometry,
-  BufferGeometry,
+  type BufferGeometry,
   CylinderGeometry,
   DoubleSide,
   Group,
@@ -22,11 +22,13 @@ const views = [
   [5480, 5519, 13.4, 2.2],
   [8250, 8302, -24, 8],
   [12320, 12770, -927, 87],
-  [17620, 17910, -160, 7],
+  [17620, 17760, -500, -8],
 ] as const;
 export class PalouseHarvest {
   readonly root = new Group();
   readonly materials = {
+    ButteView: new MeshBasicMaterial({ side: DoubleSide, fog: false, alphaTest: 0.42 }),
+    PalouseOverlook: new MeshBasicMaterial({ side: DoubleSide, fog: false, alphaTest: 0.42 }),
     LoessFields: new MeshBasicNodeMaterial({ side: DoubleSide }),
     PalouseLanes: new MeshBasicNodeMaterial({ side: DoubleSide }),
     PalouseCrops: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.41 }),
@@ -51,7 +53,7 @@ export class PalouseHarvest {
   };
   static async load(course: Course) {
     const results = await Promise.allSettled(
-      ['crops', 'barn', 'machinery', 'clouds'].map((k) =>
+      ['crops', 'barn', 'machinery', 'clouds', 'butte', 'ridges'].map((k) =>
         new TextureLoader().loadAsync('courses/palouse-' + k + '.webp'),
       ),
     );
@@ -111,7 +113,9 @@ export class PalouseHarvest {
       t.flipY = false;
       t.colorSpace = SRGBColorSpace;
     }
-    const [crops, barn, machinery, cloud] = textures;
+    const [crops, barn, machinery, cloud, butte, ridges] = textures;
+    this.materials.ButteView.map = butte!;
+    this.materials.PalouseOverlook.map = ridges!;
     this.materials.PalouseCrops.map = crops!;
     this.materials.WhitmanBarn.map = barn!;
     this.materials.PalouseMachines.map = machinery!;
