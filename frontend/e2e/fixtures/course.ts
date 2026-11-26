@@ -3588,3 +3588,36 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const serpentineCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'serpentine-hyde-park',
+  name: 'Serpentine, Hyde Park',
+  routeName: 'Serpentine Road',
+  place: 'Hyde Park, London',
+  world: 'serpentine',
+  distanceKm: 6.6375,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/serpentine-hyde-park.jpg',
+  photoUrl: 'maps/serpentine-hyde-park-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 180, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 16, 85),
+      seg('work', 180, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 16, 85),
+      seg('work', 180, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 16, 85),
+      seg('cool-down', 60, 10, 80),
+    ],
+  },
+};
