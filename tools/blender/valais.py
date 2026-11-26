@@ -32,13 +32,20 @@ def road(r,st,length,col,bc):
 def land(r,col,theme,bc):
     m=bc.Builder('AlpineMeadow','terrain');m.colours=[];m.uvs=[]
     xs=[p['x'] for p in r.s];ys=[p['y'] for p in r.s]
+    ox,oy,oz=r.pos(11777);oh=heading(11777)
     def height(x,y):
         j=max(1,min(len(xs)-1,bisect_left(xs,x)));a,b=r.s[j-1:j+1]
         base=a['z']+(b['z']-a['z'])*(x-a['x'])/max(.01,b['x']-a['x'])
         _,i,dist=r.tree.find((x,y,0));p=r.s[i]
         raw=base+min(18,dist*.061)*(math.sin(x/77)*math.cos(y/89)+.42*math.sin(y/49))
         weight=max(0,min(1,(dist-5)/34))
-        return p['z']-.74+(raw-p['z'])*weight
+        z=p['z']-.74+(raw-p['z'])*weight
+        along=(x-ox)*math.cos(oh)+(y-oy)*math.sin(oh)
+        down=(x-ox)*math.sin(oh)-(y-oy)*math.cos(oh)
+        if down>4 and abs(along)<180:
+            fade=max(0,min(1,(180-abs(along))/55))
+            z-=min(76,(down-4)*.32)*fade*min(1,dist/12)
+        return z
     last=None
     for x in range(int(min(xs))-380,int(max(xs))+385,11):
         row=[(x,y,height(x,y)) for y in range(int(min(ys))-300,int(max(ys))+310,11)]
@@ -49,7 +56,7 @@ def land(r,col,theme,bc):
     return m.build(col),height
 
 def scenery(k):
-    art=Painted(k);houses=pictured(k,'ValaisTimber');trees=pictured(k,'ValaisPines');rim=pictured(k,'ValaisRange');sign=pictured(k,'ValaisSigns')
+    art=Painted(k);houses=pictured(k,'ValaisTimber');trees=pictured(k,'ValaisPines');rim=pictured(k,'ValaisRange');clad=pictured(k,'MazotLogs');valley=pictured(k,'RhoneValley');sign=pictured(k,'ValaisSigns')
     white,stone,slate,wood,iron,glass,earth,leaf,bell=map(lin,(0xdddcd0,0x9a978c,0x687178,0x644b3b,0x545e60,0x859cab,0x75614d,0x79844f,0xb6a06c))
     def panel(mesh,pts,idx,count):
         a=idx/count;b=(idx+1)/count;picture(mesh,pts,((a+.001,0),(b-.001,0),(b-.001,1),(a+.001,1)))
@@ -83,9 +90,16 @@ def scenery(k):
                     art.tube(at(u,a,ground+.88),.84,.91,.23,stone,stone,9,cap=stone)
         art.box(at(0,0,base),(depth,w,high*.67),h,wood)
         for s in (-1,1):
-            panel(houses,[at(s*(depth/2+.06),y,base+z) for y,z in ((-w/2,0),(w/2,0),(w/2,high),(-w/2,high))],idx,4)
-            panel(houses,[at(u,s*(w/2+.06),base+z) for u,z in ((-depth/2,0),(depth/2,0),(depth/2,high),(-depth/2,high))],idx,4)
-        art.roof(at(0,0,base+high*.68),depth+1.2,w+1.2,high*.29,h,slate)
+            facade_height=high*.69 if idx==1 else high
+            panel(houses,[at(s*(depth/2+.06),y,base+z) for y,z in ((-w/2,0),(w/2,0),(w/2,facade_height),(-w/2,facade_height))],idx,4)
+            if idx!=3:
+                picture(clad,[at(u,s*(w/2+.045),base+z) for u,z in ((-depth/2,0),(depth/2,0),(depth/2,high*.68),(-depth/2,high*.68))],((0,0),(4,0),(4,2),(0,2)))
+            for u in (-depth*.28,0,depth*.28):
+                art.box(at(u,s*(w*.5+.05),base+high*.27),(1.05,.15,1.31),h,white)
+                art.box(at(u,s*(w*.5+.14),base+high*.28),(.81,.08,1.13),h,glass)
+            for j in range(8):
+                art.box(at(0,s*(w*.5+.015),base+j*high*.081),(depth,.08,.075),h,wood)
+        art.roof(at(0,0,base+high*.68),depth+.6,w+.66,high*.26,h,slate)
         if idx==3:
             art.box(at(-depth*.3,-w*.52,base),(2.7,2.7,high+2.8),h,white)
             art.tube(at(-depth*.3,-w*.52,base+high+2.8),2.05,.13,4.8,slate,iron,4,cap=iron)
@@ -109,12 +123,23 @@ def scenery(k):
             for a in (pts[3],pts[9]):
                 x,y,z=a;art.tube((x,y,z-1.9),.065,.065,1.9,iron,iron,5)
                 art.box((x,y,z-2.19),(1.9,.64,.18),h,wood);art.box((x,y+.23,z-2.04),(1.9,.12,.64),h,glass)
+    # Place the Rhône valley below the rider, beyond the modelled vine rows.
+    view,_=site(k,11777)
+    for j in range(18):
+        a=(j-9)*17;b=a+17
+        def valley_point(u,z):return view(u,-118+.0016*u*u,z)
+        picture(valley,(valley_point(a,-38),valley_point(b,-38),valley_point(b,29),valley_point(a,29)),((j/18,0),((j+1)/18,0),((j+1)/18,1),(j/18,1)))
     # Terraced vine lines below the last overlook.
-    at,h=site(k,11786,95)
+    at,h=site(k,11777,-64)
     for j in range(22):
-        v=j*3.8
+        v=-j*3.8
         a=at(-38,v);b=at(38,v);za=k.height_at(*a[:2]);zb=k.height_at(*b[:2])
-        beam(art,(*a[:2],za+.75),(*b[:2],zb+.75),.53,leaf)
+        beam(art,(*a[:2],za+.75),(*b[:2],zb+.75),.91,leaf)
+        for i in range(7):
+            a=at(-36+i*12,v);z=k.height_at(*a[:2]);art.tube((*a[:2],z),.12,.09,1.16,wood,wood,5)
+    for i in range(12):
+        a=at((i%6)*9-26,-93-(i//6)*14);z=k.height_at(*a[:2])
+        art.box((*a[:2],z),(6.7,5.5,4.3),h,white);art.roof((*a[:2],z+4.3),7.3,6.1,1.95,h,slate)
     for j in range(72):
         a=j*math.tau/72;b=(j+1)*math.tau/72;u=j%24/24;v=u+1/24
         if j//24%2:u,v=1-u,1-v
