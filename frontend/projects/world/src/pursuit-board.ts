@@ -18,7 +18,7 @@ export class PursuitBoard {
   private lap = 0;
   private second = -1;
 
-  constructor() {
+  constructor(private readonly venue = 'AGUASCALIENTES') {
     this.face.width = 512;
     this.face.height = 176;
     this.texture.colorSpace = SRGBColorSpace;
@@ -43,7 +43,7 @@ export class PursuitBoard {
     ink.textAlign = 'center';
     ink.fillStyle = '#bde4dd';
     ink.font = 'bold 32px sans-serif';
-    ink.fillText('AGUASCALIENTES', 256, 40);
+    ink.fillText(this.venue, 256, 40);
     ink.fillStyle = '#ffde83';
     ink.font = 'bold 51px monospace';
     ink.fillText('LAP ' + lap, 256, 99);

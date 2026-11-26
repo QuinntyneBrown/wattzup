@@ -26,7 +26,7 @@ def scenery(k):
         a,b=point(d,-2.5),point(d+1,-2.5)
         art.face((a,b,level(d+1,-4.4,-.5),level(d,-4.4,-.5)),(blue,)*4)
         base=[point(t,7.95,z) for t,z in ((d,0),(d+1,0),(d+1,.85),(d,.85))]
-        idx=(d//8)%4;u=(idx+d%8/8)/4;v=u+1/32
+        idx=(d//8)%4;u=(idx+1-d%8/8)/4;v=u-1/32
         quad(banners,base,((u,0),(v,0),(v,1),(u,1)))
         quad(glass,[point(t,8,z) for t,z in ((d,.86),(d+1,.86),(d+1,1.79),(d,1.79))],((0,0),(1,0),(1,1),(0,1)))
         if d%3==0:

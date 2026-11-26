@@ -62,16 +62,20 @@ export class RaceWorld {
     const visible = signal(!doc.hidden);
     const onVisibility = () => visible.set(!doc.hidden);
     const music = signal<WorldMusicPlayer | null>(null);
+    let lapBell: WorldMusicPlayer | undefined;
     let trackLoaded = false;
     let destroyed = false;
     inject(DestroyRef).onDestroy(() => {
       destroyed = true;
       doc.removeEventListener('visibilitychange', onVisibility);
       music()?.destroy();
+      lapBell?.destroy();
     });
     void import('@telo/world').then(({ WorldScene, WorldMusicPlayer }) => {
       if (destroyed) return;
-      if (this.map().world === 'bluemountains' || this.map().world === 'ghent') {
+      if (['bluemountains', 'ghent', 'velodrome'].includes(this.map().world)) {
+        if (this.map().world === 'velodrome')
+          lapBell = new WorldMusicPlayer(() => doc.createElement('audio'), doc);
         doc.addEventListener('visibilitychange', onVisibility);
         music.set(new WorldMusicPlayer(() => doc.createElement('audio'), doc));
       }
@@ -85,6 +89,18 @@ export class RaceWorld {
     effect(() => {
       const player = music();
       if (!player) return;
+      if (this.map().world === 'velodrome') {
+        const audible = this.settings().worldMusic && this.running() && visible();
+        const metres = this.raceMetres();
+        const lapPosition = metres % 250;
+        const ringing = audible && metres > 217 && (lapPosition > 217 || lapPosition < 20);
+        if (audible) player.load('velodrome', 'music/lee-valley-stands.ogg');
+        if (ringing) lapBell?.load('velodrome', 'music/lee-valley-bell.ogg');
+        player.setVolume(0.58);
+        player.sync(audible);
+        lapBell?.sync(ringing);
+        return;
+      }
       if (this.map().world === 'ghent') {
         const audible = this.settings().worldMusic && this.running() && visible();
         if (audible) player.load('ghent', 'music/ghent-six-day.ogg');

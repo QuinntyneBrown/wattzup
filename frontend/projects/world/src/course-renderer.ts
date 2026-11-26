@@ -151,6 +151,7 @@ import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
 import type { ManxMountain } from './manx-mountain';
+import type { LeeValleyTrack } from './lee-valley-track';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -353,6 +354,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
+  private velodrome: LeeValleyTrack | null = null;
   private mountain: ManxMountain | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
@@ -850,6 +852,20 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'velodrome') {
+        const { LeeValleyTrack } = await import('./lee-valley-track');
+        if (this.disposed) return false;
+        const valley = await LeeValleyTrack.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.velodrome = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1802,6 +1818,7 @@ export class CourseRenderer implements WorldRenderer {
       this.camera.position.y,
       this.camera.position.z,
     );
+    this.velodrome?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -1961,6 +1978,7 @@ export class CourseRenderer implements WorldRenderer {
     this.bigSurCoast = null;
     this.icelandCoast = null;
     this.divide = null;
+    this.velodrome = null;
     this.mountain = null;
     this.trainingHighlands = null;
     this.trams = null;
@@ -2053,7 +2071,7 @@ export class CourseRenderer implements WorldRenderer {
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
-    const clearValley = this.course!.file.id === 'engadin';
+    const clearValley = ['engadin', 'velodrome'].includes(this.course!.file.id);
     const fogRange = this.dam
       ? ([450, 4200] as const)
       : this.course!.file.id === 'calobra'
@@ -2200,6 +2218,7 @@ export class CourseRenderer implements WorldRenderer {
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
+    if (this.velodrome) Object.assign(materials, this.velodrome.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
@@ -2278,7 +2297,7 @@ export class CourseRenderer implements WorldRenderer {
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
-      if (this.mountain && group === 'Sun') mesh.visible = false;
+      if ((this.mountain || this.velodrome) && group === 'Sun') mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
           ...glow,
@@ -2503,7 +2522,7 @@ export class CourseRenderer implements WorldRenderer {
       this.body!,
       this.course!.file.night === true,
       this.tier <= SIMPLE_RIDERS,
-      this.course!.file.id === 'aguascalientes',
+      this.course!.file.id === 'aguascalientes' || this.course!.file.id === 'velodrome',
     );
     this.kit = kit;
     // The rider wears the You jersey of the race board (L2-060).
@@ -2774,6 +2793,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.z += (rider.z + 14 * uz - ahead.z) * overlook;
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
+    this.velodrome?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
@@ -3283,6 +3303,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.strip) Object.assign(drawn, this.strip.report());
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
+    if (this.velodrome) Object.assign(drawn, this.velodrome.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
