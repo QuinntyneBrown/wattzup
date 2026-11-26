@@ -3588,3 +3588,38 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const songkranCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'songkran-bangkok',
+  name: 'Songkran, Bangkok',
+  routeName: 'Khao San Road',
+  place: 'Bangkok, Thailand',
+  world: 'songkran',
+  distanceKm: 11.75,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/songkran-bangkok.jpg',
+  photoUrl: 'maps/songkran-bangkok-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 13, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('work', 120, 19, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('work', 120, 19, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 90),
+      seg('cool-down', 300, 10, 80),
+    ],
+  },
+};
