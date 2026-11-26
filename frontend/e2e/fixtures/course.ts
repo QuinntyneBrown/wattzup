@@ -3588,3 +3588,40 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const southbeachCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'south-beach-sunrise',
+  name: 'South Beach Sunrise',
+  routeName: 'Ocean Drive',
+  place: 'Miami Beach, Florida',
+  world: 'southbeach',
+  distanceKm: 7.025,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/south-beach-sunrise.jpg',
+  photoUrl: 'maps/south-beach-sunrise-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 16, 85),
+      seg('work', 120, 18, 85),
+      seg('recover', 45, 16, 85),
+      seg('work', 45, 21, 95),
+      seg('recover', 45, 16, 85),
+      seg('work', 45, 21, 95),
+      seg('recover', 45, 16, 85),
+      seg('work', 45, 21, 95),
+      seg('recover', 45, 16, 85),
+      seg('work', 45, 21, 95),
+      seg('recover', 45, 16, 85),
+      seg('work', 45, 21, 95),
+      seg('recover', 45, 16, 85),
+      seg('work', 45, 21, 95),
+      seg('cool-down', 120, 15, 85),
+    ],
+  },
+};
