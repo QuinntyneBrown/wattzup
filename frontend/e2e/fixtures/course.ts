@@ -1,3 +1,4 @@
+import viennaElevation from './vienna-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const viennaRingCourseMap = {
   place: 'Vienna, Austria',
   world: 'vienna',
   distanceKm: 14,
-  climbingM: 0,
+  climbingM: 18,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: viennaElevation,
   },
   thumbnailUrl: 'maps/vienna-ringstrasse.jpg',
   photoUrl: 'maps/vienna-ringstrasse-photo.jpg',
