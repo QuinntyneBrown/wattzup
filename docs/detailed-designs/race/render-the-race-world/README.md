@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## The Palouse (#2185)
+
+Map Select and Race Setup load the historical class into the authored-course renderer. The sampled centreline supplies the elevation for the road, rider and HUD. Carry the crops across every fold of the terrain. The butte stays fixed and rises above the lower fields as the elevation and viewing angle change. All 15 real photos, five game views and accompanying credits are present in docs/worlds/palouse.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Wheat-hill road, 0.08 km | Real 01, 07 and 13. Games 02 and 04. | A narrow striped country road crests between fresh barley and ripe wheat. The next two folds overlap against a broad afternoon sky. |
+| Red barn hollow, 2.76 km | Real 02, 05 and 10. Games 01 and 04. | A red gambrel barn with white doors sits below the road with a farm silo, gravel apron and a line of tall poplars. |
+| Harvest turn, 5.48 km | Real 03, 09 and 12. Games 01–03. | The gravel section runs beside a weathered hillside combine with a cutting reel. An old grain truck waits at the edge of the stubble. |
+| Colfax grain siding, 8.25 km | Real 02, 07, 12 and 13. Games 03 and 04. | White grain elevators tower over the low country buildings. A rail siding, loading spout and grain hoppers distinguish the elevator from the farm silo. |
+| Steptoe Butte, 12.32 km | Real 01, 06 and 15. Games 02 and 05. | A single steep rounded butte rises above the softer loess ridges. The road skirts its base between contour-ploughed fields. |
+| Golden-hour overlook, 17.62 km | Real 03–04, 06, 11 and 14. Games 01, 03 and 05. | The last crest reveals green lentils, yellow barley and brown stubble in curved strips across the folds. Sunlit shoulders alternate with long blue-brown shadows. |
+
+Give farmstead and railroad buildings separate silhouettes. Alternate crop colours across broad plots and run the finer harvest lines along their contours. Bake relief and long field shadows into vertex colours. Use the ride clock for near-field wheat, the reel and grain hoppers. Bound the active actors by distance and release their shared geometry and textures on exit. Compare submitted frames at the opening and grain siding with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/palouse/SOURCES.md.
