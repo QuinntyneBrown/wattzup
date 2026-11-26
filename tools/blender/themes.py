@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import murdehuy as _murdehuy
+
+THEMES['murdehuy'] = _murdehuy.THEME
+SCENERY['murdehuy'] = _murdehuy.scenery
