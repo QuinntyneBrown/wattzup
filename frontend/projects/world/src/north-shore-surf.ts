@@ -32,6 +32,7 @@ function winterSwell() {
   const geo = new BufferGeometry(),
     xyz: number[] = [],
     rgb: number[] = [],
+    uv: number[] = [],
     idx: number[] = [];
   const cross = [
     [0, 0, 0x318e9a],
@@ -53,7 +54,8 @@ function winterSwell() {
         (u - 0.5) * 42,
       );
       const c = new Color(tint!);
-      rgb.push(c.r, c.g, c.b);
+      rgb.push(0.58 + 0.42 * c.r, 0.69 + 0.31 * c.g, 0.72 + 0.28 * c.b);
+      uv.push(u, 0.9 - (0.59 * y!) / 3.8);
       if (i > 0 && j > 0) {
         const n = i * cross.length + j,
           b = n - cross.length;
@@ -62,6 +64,7 @@ function winterSwell() {
     }
   }
   geo.setAttribute('position', new Float32BufferAttribute(xyz, 3));
+  geo.setAttribute('uv', new Float32BufferAttribute(uv, 2));
   geo.setAttribute('color', new Float32BufferAttribute(rgb, 3));
   geo.setIndex(idx);
   geo.computeVertexNormals();
@@ -100,7 +103,7 @@ export class NorthShoreSurf {
   };
   static async load(course: Course) {
     const results = await Promise.allSettled(
-      ['flora', 'shops', 'trucks', 'signs', 'ridges', 'breakers', 'clouds'].map((key) =>
+      ['flora', 'shops', 'trucks', 'signs', 'ridges', 'breakers', 'clouds', 'swell'].map((key) =>
         new TextureLoader().loadAsync('courses/northshore-' + key + '.webp'),
       ),
     );
@@ -155,7 +158,8 @@ export class NorthShoreSurf {
       t.flipY = false;
       t.colorSpace = SRGBColorSpace;
     }
-    const [flora, shop, truck, signs, ridge, breaker, clouds] = textures;
+    const [flora, shop, truck, signs, ridge, breaker, clouds, swell] = textures;
+    this.swellPaint.map = swell!;
     this.materials.TradeClouds.map = clouds!;
     this.materials.ShoreFlora.map = flora!;
     this.materials.HaleiwaFronts.map = shop!;
