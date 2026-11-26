@@ -1,3 +1,4 @@
+import timessquareElevation from './timessquare-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const timessquareCourseMap = {
   place: 'New York City, USA',
   world: 'timessquare',
   distanceKm: 8.7,
-  climbingM: 0,
+  climbingM: 3,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: timessquareElevation,
   },
   thumbnailUrl: 'maps/times-square-new-years-eve.jpg',
   photoUrl: 'maps/times-square-new-years-eve-photo.jpg',
