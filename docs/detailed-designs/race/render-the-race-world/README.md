@@ -1290,3 +1290,16 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+### Lee Valley Velodrome (#2242)
+
+The 8.725 km session covers 34 full 250 m laps and a final 225 m. Use the same physical oval on every lap. Store cumulative distance for the workout and race rankings. Place timber seams along the direction of travel and vary the bank continuously from the straights to the bends. Keep the shared track surface and arena in memory once. Place the crowd behind the glass, with the lower infield visible from the boards. Reuse the shared cyclist kit for close pursuit riders, adding track wheels and aero helmets. Scope the riders, scoreboard, audio and textures to the race. The app's sound preference and ride clock govern the bell and crowd.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Home straight, 0.51 km | Real 02, 05, 06 and game 01 | Pale pine strips run along the riding line. A blue apron separates the boards from the pens. |
+| Pursuit bend, 1.58 km | Real 01, 03, 12–13 and game 04 | The outer boards climb to 42 degrees. Three pursuit riders lean together above the red sprinter line. |
+| Team pens, 3.14 km | Real 07, 09, 14 and games 02–03 | A coach watches a rider warm up on rollers among spare wheels and the low pen dividers. |
+| Roof lattice, 4.69 km | Real 02, 04–05, 11, 15 and game 05 | Arched timber and roof cables cross above the far stands. Floodlights follow the straights. |
+| Back straight stands, 6.30 km | Real 07–10 and games 01, 04 | Spectators rise behind clear safety panels. The lit arena screen stays legible across the track. |
+| Lap board, 8.51 km | Real 03, 06–08, 12 and game 01 | An official rings the bell beside the start line. The lap board changes as the rider crosses. |
