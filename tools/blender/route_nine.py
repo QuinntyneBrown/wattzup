@@ -107,4 +107,6 @@ def scenery(k):
     for x in (-38,-20,24,42):
         art.box(at(x,11.4,base+1.03),(14.1,2.91,2.6),0,lin(0x9D8672))
         for dx in range(-6,7,3):art.box(at(x+dx,9.90,base+1.03),(.14,.15,2.75),0,steel)
-    return {'farms':8,'turbines':116,'efforts':0}
+    from themes import CROWD
+    efforts = k.gates('accent', 'accent-2', CROWD)
+    return {'farms': 8, 'turbines': 116, 'efforts': efforts}
