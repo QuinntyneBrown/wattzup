@@ -98,9 +98,9 @@ export class SellaClimb {
     private readonly plain: MeshLambertMaterial,
     private readonly kit: Awaited<ReturnType<typeof caribanaCyclists>>,
   ) {
-    for (let i = 0; i < maps.length; i++) {
-      maps[i]!.colorSpace = SRGBColorSpace;
-      maps[i]!.flipY = false;
+    for (const map of maps) {
+      map.colorSpace = SRGBColorSpace;
+      map.flipY = false;
     }
     const surfaces = [this.materials.Tarmac, this.materials.Pasture, this.materials.Scree];
     for (const [i, m] of surfaces.entries()) {
