@@ -3588,3 +3588,43 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const yosemiteValleyCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'yosemite-valley',
+  name: 'Yosemite Valley',
+  routeName: 'Northside Drive',
+  place: 'California, United States',
+  world: 'yosemite',
+  distanceKm: 13.15,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/yosemite-valley.jpg',
+  photoUrl: 'maps/yosemite-valley-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 18, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 24, 90),
+      seg('recover', 120, 11, 90),
+      seg('work', 120, 24, 90),
+      seg('recover', 120, 11, 90),
+      seg('work', 120, 24, 90),
+      seg('recover', 120, 11, 90),
+      seg('work', 120, 24, 90),
+      seg('recover', 120, 11, 90),
+      seg('work', 120, 24, 90),
+      seg('recover', 120, 11, 90),
+      seg('work', 120, 24, 90),
+      seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
