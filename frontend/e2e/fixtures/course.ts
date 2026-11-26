@@ -3598,7 +3598,7 @@ export const palouseCourseMap = {
   place: 'Washington, United States',
   world: 'palouse',
   distanceKm: 18.1525,
-  climbingM: 229,
+  climbingM: 293,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
