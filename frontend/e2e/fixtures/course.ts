@@ -3588,3 +3588,43 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const steppeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mongolian-steppe',
+  name: 'Mongolian Steppe',
+  routeName: 'The steppe track',
+  place: 'Khentii, Mongolia',
+  world: 'steppe',
+  distanceKm: 19.15,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/mongolian-steppe.jpg',
+  photoUrl: 'maps/mongolian-steppe-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 360, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 180, 16, 85),
+      seg('work', 30, 21, 90),
+      seg('work', 30, 10, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 180, 16, 85),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 18, 85),
+      seg('work', 180, 24, 100),
+      seg('recover', 240, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 240, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 120, 13, 80),
+      seg('recover', 120, 18, 85),
+      seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
