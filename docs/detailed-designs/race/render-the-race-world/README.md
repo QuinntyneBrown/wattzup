@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Great St Bernard Pass (#2216)
+
+Keep the grade tied to the GCN climbing efforts. Above the gallery the route turns back across the valley and then enters the rocky saddle around the lake. Place the hospice, customs and statue on the same summit approach so they grow in the view as the rider climbs. Real 10 documents the scale and setting of a different memorial; use it for the knoll and bronze silhouette.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Avalanche gallery, 0.12 km | Real 01, 04 and 06. Games 01 and 03. | Heavy concrete piers and a thick roof shelter the road. Spaced openings reveal a rising granite wall, roadside snow poles and the cold light at the gallery mouth. |
+| Granite switchbacks, 4.12 km | Real 01, 03–06, 13 and 15. Games 02 and 05. | The narrow road doubles back across scree and rough tundra. Hairpins remain visible on the opposing slope; roadside posts and granite blocks mark the outside of the bend. |
+| Snow cutting, 8.24 km | Real 02, 04 and 14. Games 01–04. | A tall cut bank stands just outside the tarmac. Dirty melt layers, wind scallops and shallow runoff interrupt the pale face; high cloud moves past jagged peaks. |
+| Summit lake, 12.75 km | Real 08, 09, 12 and 14. Games 01 and 05. | The cold lake fills its rocky basin beside the road. Wind shifts patches of exposed water between irregular sheets of shore ice. The roof of the hospice rises at the far end. |
+| Hospice and kennels, 15.51 km | Real 07, 09 and 11. Games 01 and 03. | The steep grey roofs, many rows of small windows and contrasting granite wings form the hospice court. A heavy-coated Saint Bernard turns its head by the kennel rail. |
+| Swiss–Italian border, 17.09 km | Real 07, 10 and 11. Games 02 and 04. | Customs huts and flags mark the road across the col. A bronze figure stands on a rocky knoll beyond the border signs while the flags move in the wind. |
+
+Model the snow gallery roof and piers, the hospice wings and their slate roof planes. Use original granite, compacted snow and pale stone surface textures. Batch scree and snow poles by section; use a fixed far ridge. The lake ripples through gaps in the ice, a dog turns in the kennel and border flags move with ride time. Release the scene resources on exit. Compare six matched rider captures and measure actual submissions through the gallery and hospice. See ADRs 0021, 0023, 0030, 0034 and 0035.
