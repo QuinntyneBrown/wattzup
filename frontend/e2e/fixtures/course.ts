@@ -3588,3 +3588,42 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const winterludeOttawaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'winterlude-ottawa',
+  name: 'Winterlude, Ottawa',
+  routeName: 'The Rideau Canal',
+  place: 'Ottawa, Canada',
+  world: 'winterlude',
+  distanceKm: 17.35,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/winterlude-ottawa.jpg',
+  photoUrl: 'maps/winterlude-ottawa-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 16, 85),
+      seg('work', 240, 21, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 240, 21, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 240, 21, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 240, 21, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 330, 10, 80),
+      seg('work', 120, 21, 90),
+      seg('recover', 60, 16, 85),
+      seg('work', 120, 21, 90),
+      seg('cool-down', 300, 10, 80),
+    ],
+  },
+};
