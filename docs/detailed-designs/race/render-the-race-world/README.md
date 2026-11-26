@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Pike Place at Dawn (#2188)
+
+Map Select and Race Setup load the historical workout into the local authored-course renderer. Extend the market street and waterfront approach to the workout distance. The clock, steel sign frame, low stall roofs, downhill sightline and ferries give the rider distinct near, middle and distant landmarks. Retain the actual market sign wording and model its steel supports.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Public Market Center clock, 0.08 km | Real 01, 04, 06–08 and 12. Games 01 and 03. | The red Public Market Center letters and round clock rise on a steel frame above the brick intersection. A crosswalk, parked delivery truck and morning shoppers establish scale. |
+| Fish counter, 1.79 km | Real 02, 09 and 13. Games 02 and 04. | Warm pendant lamps light silver salmon on crushed ice, crab and handwritten price cards. A vendor tosses a salmon above the counter. |
+| Farmers Market arcade, 3.38 km | Real 01, 05, 07–08 and 15. Games 01 and 03. | Green columns and a striped awning frame produce pyramids and bouquets. Meet the Producer lettering runs above the stalls opposite the Corner Market. |
+| Post Alley entrance, 5.22 km | Real 03, 08 and 14. Games 02, 04 and 05. | A narrow brick side lane recedes under the Post Alley sign. Dawn catches steam above the café and vent at the opening. |
+| Elliott Bay descent, 7.69 km | Real 03, 10–12. Games 01 and 05. | The downhill street opens onto a white-and-green ferry crossing Elliott Bay. The Great Wheel, piers and Olympic skyline stand beyond the lower market roofs. |
+| Downtown dawn, 10.13 km | Real 03, 05 and 10–12. Games 03–05. | An open view frames downtown glass towers, the Space Needle and warm reflections on Elliott Bay. Brick paving and a final arc of market spectators bring the route home. |
+
+Use brick courses and crosswalk paint aligned with the physical road. Open the Post Alley gap between brick buildings. The Seattle skyline, wheel and Olympic ridgeline are fixed in world space, while a bounded fish toss, coffee steam and ferry read the shared ride clock. Merge repeated stalls and curb detail by section. Release textures, geometry and materials on exit. Compare the submitted frames at the clock and the produce arcade with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/pikeplace/SOURCES.md.
