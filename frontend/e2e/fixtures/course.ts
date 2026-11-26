@@ -3588,3 +3588,41 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const winnatsPassCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'winnats-pass',
+  name: 'Winnats Pass',
+  routeName: 'The Winnats road',
+  place: 'Derbyshire, England',
+  world: 'winnats',
+  distanceKm: 13.5,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/winnats-pass.jpg',
+  photoUrl: 'maps/winnats-pass-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 330, 14, 80),
+      seg('work', 60, 19, 90),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 20, 90),
+      seg('recover', 90, 12, 80),
+      seg('work', 300, 19, 75),
+      seg('work', 300, 20, 70),
+      seg('recover', 60, 12, 80),
+      seg('work', 210, 22, 70),
+      seg('recover', 90, 13, 80),
+      seg('work', 75, 22, 70),
+      seg('recover', 15, 13, 80),
+      seg('work', 75, 22, 70),
+      seg('recover', 15, 13, 80),
+      seg('work', 100, 22, 70),
+      seg('cool-down', 348, 11, 80),
+    ],
+  },
+};
