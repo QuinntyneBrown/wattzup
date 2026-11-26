@@ -3598,7 +3598,7 @@ export const penllechCourseMap = {
   place: 'Harlech, Wales',
   world: 'penllech',
   distanceKm: 14.266666666666666,
-  climbingM: 162,
+  climbingM: 180,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

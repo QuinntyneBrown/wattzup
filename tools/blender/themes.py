@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import penllech as _penllech
+
+THEMES['penllech'] = _penllech.THEME
+SCENERY['penllech'] = _penllech.scenery
