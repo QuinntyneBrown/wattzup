@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Mur de Huy (#2173)
+
+The 26-minute class returns to the climb over successive efforts. Fit each ascent and recovery to the interval profile. At the steep bend put the spectators behind grade-aligned barriers so the rider can see the pitch against the vertical posts.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Lower town, 0.08 km | Real 06, 09 and 10. Games 02 and 05. | Terraces crowd the foot of the climb. Dark wheel tracks and worn white names lead into the lane. |
+| Chemin des Chapelles, 2.34 km | Real 01, 04 and 08. Games 01 and 04. | A white roadside oratory sits inside the chicane. Its pointed roof and recessed niche stand clear of the passing riders. |
+| Steepest bend, 4.81 km | Real 02–05, 07 and 13. Games 01 and 05. | The 26% pitch tips the painted tarmac upward between steel crowd barriers. Spectators reach over the outside rail. |
+| Meuse valley, 6.53 km | Real 14 and 15. Game 03. | The road shoulder opens above the Meuse and Huy rooftops. The fort rises from its rocky bluff beside the river. |
+| Wooded slope, 8.80 km | Real 03, 06, 07 and 12. Games 01 and 04. | Leafy branches arch over the riders while damp patches break up the spring light on the lane. |
+| Notre-Dame de la Sarte, 10.82 km | Real 01, 04 and 11. Games 02 and 05. | The summit finish arch frames the lane beside the church. Flags and spectators line the approach. |
+
+Keep the citadel fixed above the river and give nearby chapels dimensional roofs, plinths and niches. Repeat the barrier pickets and share crowd geometry. Drive the cyclists, flags and spectators from elapsed race time. Release all course-owned geometry and materials on exit. Reference credits are in docs/worlds/murdehuy/SOURCES.md.
