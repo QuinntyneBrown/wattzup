@@ -51,7 +51,7 @@ def land(r,col,theme,bc):
     return m.build(col),lambda x,y:r.s[r.tree.find((x,y,0))[1]]['z']-.42
 
 def scenery(k):
-    art=Painted(k);terminal=pictured(k,'TerminalBays');grass=pictured(k,'SkylarkGrass');garden=pictured(k,'AllmendeBeds');rim=pictured(k,'BerlinHorizon');sign=pictured(k,'AirfieldSigns')
+    people=pictured(k,'FieldVisitors');art=Painted(k);terminal=pictured(k,'TerminalBays');grass=pictured(k,'SkylarkGrass');garden=pictured(k,'AllmendeBeds');rim=pictured(k,'BerlinHorizon');sign=pictured(k,'AirfieldSigns')
     stone,iron,glass,grasscol,gold,white,red,wood,blue=map(lin,(0xB9AD96,0x646D6B,0x536B73,0x797D50,0xE8AF47,0xD5D1BC,0xA85449,0x8C7459,0x627E94))
     def panel(m,pts,idx=0,cols=1):
         u=idx/cols;v=(idx+1)/cols;picture(m,pts,((u+.001,0),(v-.001,0),(v-.001,1),(u+.001,1)))
@@ -62,7 +62,7 @@ def scenery(k):
                 pts=[k.road.pos(d+u,v,.06) for u,v in ((-6,-.35),(6,-.35),(6,.35),(-6,.35))];art.face(pts,(white,)*4)
             if j%5==0:
                 for v in (-w+.7,w-.7,0):art.tube(at(2,v,.073),.12,.084,.032,iron,gold,9,cap=gold)
-            if d<210 and j%7==0:
+            if d in (18,162):
                 for v in (-17,-14.4,-11.8,-9.2,-6.6,6.6,9.2,11.8,14.4,17):art.box(at(0,v,.068),(20.3,1.38,.016),h,white)
         else:
             pts=[k.road.pos(d+u,v,.06) for u,v in ((-6,-.072),(6,-.072),(6,.072),(-6,.072))];art.face(pts,(gold,)*4)
@@ -106,6 +106,10 @@ def scenery(k):
         if j%4==0:
             art.box(at(0,-4.2,.65),(2.4,.82,.14),h,wood)
             for v in (-4.95,-3.45):art.box(at(0,v,.38),(2.41,.45,.12),h,wood)
+    for j,d in enumerate((684,812,2420,2545,4720,4808,4890,4976,7090,7130,7178,7230,7280,8930,9050,12670)):
+        at,h=site(k,d,(width(d)+4.2)*(-1 if j%3==1 else 1));kind=j%4
+        w=(3.4,1.2,3.8,1.7)[kind];ht=(1.88,1.76,1.33,1.7)[kind]
+        panel(people,[at(0,v,z) for v,z in ((-w/2,-.42),(w/2,-.42),(w/2,ht-.42),(-w/2,ht-.42))],kind,4)
     # Fernsehturm and church spires are separate silhouettes above the distant roofs.
     at,h=site(k,9760,270);art.tube(at(0,0,-1),1.29,.66,38,stone,white,12)
     art.tube(at(0,0,37),2.9,4.2,2.6,iron,white,14);art.tube(at(0,0,39.6),4.2,2.1,2.7,white,iron,14,cap=iron)
@@ -116,7 +120,7 @@ def scenery(k):
         a=j*math.tau/64;b=(j+1)*math.tau/64;u=j%16/16;v=u+1/16
         if j//16%2:u,v=1-u,1-v
         def e(t,z):return 1300+6200*math.cos(t),800+6100*math.sin(t),z
-        picture(rim,(e(a,-300),e(b,-300),e(b,1670),e(a,1670)),((u,0),(v,0),(v,1),(u,1)))
+        picture(rim,(e(a,-580),e(b,-580),e(b,4000),e(a,4000)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
 
 THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':4.6,'terrain':{'sea':False},'land':{'mid':0x898966},'sky':[0xBED3DF,0xA6C8E1,0x8AB4D7,0x619BCC,0x4F83B6],'haze':0xB9C9D2,'light':[0xFFF1D4,1.40],'fill':[0xC9DDE6,0x958E7F],'sun_altitude':.65,'sun_azimuth':-.81}
