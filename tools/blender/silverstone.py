@@ -43,19 +43,27 @@ def road(r,st,length,col,bc):
         edge.quad(r.at(i,a,lift),r.at(i+1,a,lift),r.at(i+1,b,lift),r.at(i,b,lift));edge.colours.extend((lin(c),)*4)
     for i,p in enumerate(r.s[:-1]):
         if p['d']<0 or p['d']>=LAP:continue
-        j=min(i+2,len(r.s)-1);bend=r.s[j]['k']
+        j=min(i+3,len(r.s)-1)
+        # Survey vertices along an apex are tens of metres apart. Average the approaching
+        # change of direction so a kerb and gravel trap remain continuous between them.
+        bend=math.sin(r.s[min(j+7,len(r.s)-1)]['h']-r.s[max(0,j-7)]['h'])/(14*bc.STEP)
+        d=p['d']
+        # The entry and exit strips extend beyond the geometric turn, as at Becketts and Stowe.
+        zones=((3150,3350,-1),(3360,3490,1),(3490,3595,-1),(3595,3740,1),(3740,3835,-1),
+               (4580,4770,-1),(4770,4920,1),(5420,5510,1))
+        kerb_side=next((side for start,end,side in zones if start<=d<end),0)
         # A separate rubbered strip follows the approaching apex across the actual road width.
         racing=3.65*math.tanh(bend*135)
-        for a,b,shade in ((-8,racing-1.42,1.),(racing-1.42,racing+1.42,.68),(racing+1.42,8,1.)):
+        for a,b,shade in ((-8,racing-1.42,1.),(racing-1.42,racing+1.42,.88),(racing+1.42,8,1.)):
             pts=[r.at(i,a),r.at(i+1,a),r.at(i+1,b),r.at(i,b)];picture(track,pts,((0,0),(1,0),(1,1),(0,1)))
             track.colours[-4:]=[(shade,shade,shade,1)]*4
         for side in (-1,1):
             def ribbon(a,b,c,h=.035):band(i,*sorted((side*a,side*b)),c,h)
             ribbon(7.78,8.03,0xEFEBE0)
-            if abs(bend)>.002:
-                if side*bend>0:
-                    ribbon(8.04,9.58,0xC64546 if i%2 else 0xEBE9DF,.08)
-                    ribbon(9.58,12.4,0x688F72)
+            if kerb_side or abs(bend)>.0016:
+                if side==(kerb_side or (1 if bend>0 else -1)):
+                    ribbon(7.93,10.28,0xBA2C3D if i%2 else 0xF2EEE4,.085)
+                    ribbon(10.28,13.7,0x4A8C70)
                 else:
                     ribbon(8.1,13.3,0x596664)
                     ribbon(13.4,36,0xB2A79A)
@@ -63,13 +71,26 @@ def road(r,st,length,col,bc):
 
 def land(r,col,theme,bc):
     b=bc.Builder('AirfieldGrass','terrain');b.colours=[]
-    for i in range(0,len(r.s)-3,3):
-        if not 0<=r.s[i]['d']<LAP:continue
-        for side in (-1,1):
-            for n,(a,c) in enumerate(((0,0x849360),(14,0x899962),(44,0x819561),(95,0x92A071),(240,0x82915D))):
-                z=-.49 if n<2 else -1.1-n*.5;v=(14,44,95,240,600)[n]
-                pts=[r.at(k,side*u,z) for k,u in ((i,a),(i+3,a),(i+3,v),(i,v))]
-                b.quad(*(pts if side>0 else pts[::-1]));b.colours.extend((lin(c),)*4)
+    # A single terrain mesh covers the airfield. Outfield at one corner cannot cover a neighbouring racing surface.
+    size=18
+    points={}
+    for p in r.s[::4]:
+        if not 0<=p['d']<=LAP:continue
+        ix,iy=math.floor(p['x']/size),math.floor(p['y']/size)
+        for i in range(ix-9,ix+10):
+            for j in range(iy-9,iy+10):points[(i,j)]=None
+    for i,j in points:
+        x,y=i*size,j*size
+        near=r.tree.find_n((x,y,0),20)
+        z=min(r.s[n]['z'] for _,n,_ in near)-.72
+        points[(i,j)]=b.v((x,y,z))
+    for i,j in points:
+        coords=((i,j),(i+1,j),(i+1,j+1),(i,j+1))
+        if all(q in points for q in coords):
+            b.faces.append(tuple(points[q] for q in coords))
+            for a,c in coords:
+                tone=.94+.055*math.sin(a*.54+c*.09)+.035*math.cos(c*.42)
+                b.colours.append(tuple(v*tone for v in lin(0x879B63)[:3])+(1,))
     return b.build(col),lambda x,y:r.s[r.tree.find((x,y,0))[1]]['z']-.4
 
 def scenery(k):
@@ -91,7 +112,20 @@ def scenery(k):
         for v,w,drop,rise,c in ((-14,2,-1.5,1.1,metal),(2,14,1.1,.12,white)):
             art.face([at(a,v,z+drop),at(b,v,zz+drop),at(b,w,zz+rise),at(a,w,z+rise)],(c,)*4)
         art.face([at(a,14,z-.32),at(b,14,zz-.32),at(b,14,zz+.12),at(a,14,z+.12)],(red,)*4)
+        # Solid silver soffit and end cheeks make the folded roof readable from rider height.
+        pts=[at(a,13.8,10.5),at(b,13.8,10.5),at(b,13.8,zz-.35),at(a,13.8,z-.35)]
+        art.face(pts,(lin(0x879498),lin(0xAEB9BE),white,metal));art.face(pts[::-1],(white,metal,metal,white))
+        for endpoint,top in ((a,z),(b,zz)):
+            side=[at(endpoint,-13.9,10.4),at(endpoint,-13.9,top-1.5),at(endpoint,14,top),at(endpoint,14,10.4)]
+            art.face(side,(iron,metal,white,iron));art.face(side[::-1],(iron,white,metal,iron))
         beam(art,at(a,11,8.2),at(a,14,z),.27,iron)
+    # Start line and grid boxes painted flush with Hamilton Straight.
+    start,sh=site(k,148,0)
+    for i in range(24):
+        for row in (0,1):
+            v=-7.8+i*.65;u=row*.65
+            art.face([start(u+a,v+b,.075) for a,b in ((0,0),(.65,0),(.65,.65),(0,.65))],
+                     (white if (i+row)%2 else iron,)*4)
     for i in range(-130,141,7):
         art.box(at(i,22,.06),(6.93,.48,.92),h,white)
     def stand(d,side,span):
@@ -124,6 +158,15 @@ def scenery(k):
                 panel(at,[(0,0,-.05),(14,0,-.05),(14,0,1.05),(0,0,1.05)],3)
             elif d%42==0:
                 art.box(at(0,side*64,-1),(35,3.25,2.35),h,lin(0x687D4F))
+    for i in range(0,5540,67):
+        for side in (-1,1):
+            at,h=site(k,i,side*(85+26*math.sin(i*.16)))
+            if k.road.tree.find((*at(0,0,0)[:2],0))[2]<47:continue
+            for j in range(3):
+                x,y,z=at(j*3.5,1.2*math.cos(j+i),-1.1)
+                art.tube((x,y,z),.39,.26,3.4,iron,iron,6)
+                art.tube((x,y,z+2.25),3.2,3.55,2.5,lin(0x495F45),lin(0x637B55),9)
+                art.tube((x,y,z+4.75),3.55,.64,2.65,lin(0x637B55),lin(0x809069),9)
     return {'efforts':0}
 
 THEME={'lay':route,'land_builder':land,'road_builder':road,'terrain':{'sea':False},'road_half_width':8,
