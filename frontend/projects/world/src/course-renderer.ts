@@ -151,6 +151,7 @@ import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
 import type { ManxMountain } from './manx-mountain';
+import type { KhaoSanRoad } from './khao-san-road';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -206,6 +207,12 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  KhaoSanShops: 360,
+  FestivalCrowds: 120,
+  BangkokCarts: 220,
+  ThaiTemple: 520,
+  KhaoSanSigns: 290,
+  SongkranRoad: 260,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -345,6 +352,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 }
 
 export class CourseRenderer implements WorldRenderer {
+  private khaoSan: KhaoSanRoad | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -850,6 +858,18 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'songkran') {
+        const { KhaoSanRoad } = await import('./khao-san-road');
+        if (this.disposed) return false;
+        const street = await KhaoSanRoad.load(this.course);
+        if (this.disposed) {
+          street.dispose();
+          return false;
+        }
+        this.khaoSan = street;
+        this.scene.add(street.root);
+        this.disposables.push(street);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1786,7 +1806,12 @@ export class CourseRenderer implements WorldRenderer {
       const bay = this.course?.file.id === 'bayofislands';
       const progress = Math.max(
         0,
-        Math.min(1, (metres - (bay ? 19_500 : 14_300)) / (bay ? 7900 : 5050)),
+        Math.min(
+          1,
+          this.khaoSan
+            ? (metres - 5000) / 3900
+            : (metres - (bay ? 19_500 : 14_300)) / (bay ? 7900 : 5050),
+        ),
       );
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
@@ -1794,6 +1819,7 @@ export class CourseRenderer implements WorldRenderer {
       if (this.scene.fog instanceof Fog)
         this.scene.fog.color.setRGB(0.402 + 0.43 * t, 0.604 - 0.27 * t, 0.658 - 0.43 * t);
     }
+    this.khaoSan?.update(metres, frame.reducedMotion ? 0 : frame.time, this.evening?.value ?? 0);
     this.aim(metres, frame.reducedMotion);
     this.mountain?.update(
       metres,
@@ -1912,6 +1938,7 @@ export class CourseRenderer implements WorldRenderer {
       if (mesh.isMesh) mesh.geometry.dispose();
     });
     this.boardwalk?.group.removeFromParent();
+    this.khaoSan = null;
     this.boardwalk = null;
     this.daytonaBoardwalk = null;
     this.daytonaShore = null;
@@ -2052,7 +2079,8 @@ export class CourseRenderer implements WorldRenderer {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
-    if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
+    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'songkran')
+      this.evening = eveningUniform();
     const clearValley = this.course!.file.id === 'engadin';
     const fogRange = this.dam
       ? ([450, 4200] as const)
@@ -2201,6 +2229,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
+    Object.assign(materials, this.khaoSan?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -2775,6 +2804,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
     this.mountain?.frameView(metres, this.camera.position, ahead);
+    this.khaoSan?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
@@ -3284,6 +3314,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
     if (this.mountain) Object.assign(drawn, this.mountain.report());
+    if (this.khaoSan) Object.assign(drawn, this.khaoSan.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

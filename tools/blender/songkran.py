@@ -88,13 +88,13 @@ def scenery(k):
         s=-1 if i%2 else 1;at,h=site(k,d,s*5.55)
         tile(carts,[at(-1.5,-s*.92,.14),at(1.5,s*.92,.14),at(1.5,s*.92,2.78),at(-1.5,-s*.92,2.78)],i%2,2,1)
     # The temple compound opens onto the avenue. A shallow relief displays its fine gable carving.
-    at,h=site(k,2362,-15);art.box(at(0,0,-.2),(23,12,4.8),h,cream)
+    at,h=site(k,2362,-15);art.box(at(7,-7,-.25),(16,8,3.2),h,cream)
     for j in range(3):
-        length=26-j*4;width=16-j*3;art.roof(at(0,0,4.3+j*1.45),length,width,4.4-j*.65,h,red)
-        for v in (-1,1):art.box(at(0,v*width/2,4.24+j*1.45),(length,.21,.27),h,gold)
+        length=26-j*4;width=16-j*3;art.roof(at(7,-7,3.1+j*1.13),length*.7,width*.71,2.9-j*.4,h,red)
+        for v in (-1,1):art.box(at(7,-7+v*width*.355,3.04+j*1.13),(length*.7,.21,.27),h,gold)
     for j in range(9):
         def panel(u,v):
-            return at((u-.5)*28,-5.1+11.0*u+1.1*math.sin(u*math.pi),-.1+v*15.4)
+            return at(-2+(u-.5)*15,1.0+(u-.5)*20+.65*math.sin(u*math.pi),.12+v*13.4)
         a=j/9;b=(j+1)/9
         picture(temple,(panel(a,0),panel(b,0),panel(b,1),panel(a,1)),((a,0),(b,0),(b,1),(a,1)))
     return {'efforts':0}
