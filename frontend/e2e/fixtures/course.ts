@@ -3588,3 +3588,42 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const pikeplaceCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'pike-place-at-dawn',
+  name: 'Pike Place at Dawn',
+  routeName: 'The market street',
+  place: 'Seattle, United States',
+  world: 'pikeplace',
+  distanceKm: 10.4375,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/pike-place-at-dawn.jpg',
+  photoUrl: 'maps/pike-place-at-dawn-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 10, 80),
+      seg('work', 90, 13, 80),
+      seg('recover', 30, 10, 80),
+      seg('work', 180, 18, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 18, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 18, 85),
+      seg('work', 120, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 18, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 30, 18, 85),
+      seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
