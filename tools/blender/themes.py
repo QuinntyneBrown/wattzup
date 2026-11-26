@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import route_nine as _route_nine
+
+THEMES['prairie'].update(lay=_route_nine.route,road_builder=_route_nine.road,land_builder=_route_nine.land)
+SCENERY['prairie'] = _route_nine.scenery
