@@ -3588,3 +3588,41 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const outbackCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'outback-highway',
+  name: 'Outback Highway',
+  routeName: 'The Lasseter Highway',
+  place: 'Northern Territory, Australia',
+  world: 'outback',
+  distanceKm: 10.775,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/outback-highway.jpg',
+  photoUrl: 'maps/outback-highway-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 80),
+      seg('work', 120, 14, 80),
+      seg('work', 120, 19, 90),
+      seg('recover', 120, 11, 80),
+      seg('work', 120, 22, 100),
+      seg('recover', 60, 18, 85),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 18, 85),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 18, 85),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 18, 85),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 18, 85),
+      seg('work', 180, 21, 90),
+      seg('cool-down', 180, 11, 80),
+    ],
+  },
+};
