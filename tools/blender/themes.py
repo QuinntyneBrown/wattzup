@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import silverstone as _silverstone
+
+THEMES['silverstone'] = _silverstone.THEME
+SCENERY['silverstone'] = _silverstone.scenery
