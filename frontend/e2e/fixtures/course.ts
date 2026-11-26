@@ -3588,3 +3588,40 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const maunakeaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mauna-kea',
+  name: 'Mauna Kea',
+  routeName: 'the summit road',
+  place: 'Hawaiʻi Island, Hawaiʻi',
+  world: 'maunakea',
+  distanceKm: 25.825,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/mauna-kea.jpg',
+  photoUrl: 'maps/mauna-kea-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 600, 15, 85),
+      seg('work', 240, 14, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 240, 11, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 240, 11, 80),
+      seg('work', 300, 23, 100),
+      seg('recover', 240, 11, 80),
+      seg('work', 720, 22, 90),
+      seg('recover', 270, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 330, 10, 80),
+    ],
+  },
+};
