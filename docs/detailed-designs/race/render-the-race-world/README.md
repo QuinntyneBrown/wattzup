@@ -1290,3 +1290,16 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+### Wicklow Gap (#2249)
+
+The older street module establishes the race chalk, granite, tricolour, flowers and marshals at the opening. The Race map needs fixed valleys and a true descent through the Glendalough lake district. Use original repeatable ground material at metre scale. Model the bog pools, granite outcrops, reservoir wall and tower as fixed terrain features. Place cutout vegetation in road sections, keeping the crest open. Middle-distance spruce blocks follow the lower hillside. Draw the sheep’s black heads and legs separately from their fleece so their grazing and steps remain legible beside the road. Move a near flag and low cloud on ride time. Share geometry and materials on low and release all resources with the course. Reference 01 and 06–07 show Lough Tay and inform the treatment of water and terrain. Use 08–09 for Glendalough’s actual valley and tower.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Hollywood approach, 0.14 km | Real 01, 02 and game 02 | Gorse, low granite walls and a dashed centre line lead the R756 past a dark Sitka plantation. |
+| Blanket bog pools, 3.06 km | Real 03–05, 12, 13 and games 01, 03 | Tussocks break the black water of peat cuttings below round brown-purple slopes. |
+| Blackface sheep bend, 6.24 km | Real 04, 10–12 and games 01, 05 | Blackface sheep graze beside a low stone wall, one stepping down toward the verge. |
+| Turlough Hill turn, 8.68 km | Real 02, 05, 10–12 and games 01, 04 | A service road climbs away from the saddle to the stone embankment and pumped-storage reservoir. |
+| Tonelagee and Camaderry, 10.15 km | Real 02, 10, 11, 14 and games 01, 03 | Low cloud drifts across rounded summits while a roadside tricolour strains in the wind. |
+| Glendalough descent, 14.87 km | Real 06–09, 13–15 and games 04, 05 | The road drops through spruce toward the upper lake, with the round monastic tower below. |
