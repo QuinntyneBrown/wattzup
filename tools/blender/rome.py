@@ -91,6 +91,7 @@ def land(r,col,theme,bc):
 def scenery(k):
     art=Painted(k);stone=pictured(k,'RomanTravertine');brick=pictured(k,'ImperialBrick')
     relief=pictured(k,'ArchReliefs');trees=pictured(k,'RomanPines');people=pictured(k,'RomanWalkers')
+    palazzi=pictured(k,'RomanPalazzi');market=pictured(k,'MarketBays');monument=pictured(k,'MarbleMonument');horse=pictured(k,'BronzeHorse')
     def panel(mesh,pts,s=1,t=1):
         picture(mesh,pts,((0,0),(s,0),(s,t),(0,t)))
     def block(mesh,at,u,v,z,w,d,h,tex=3):
@@ -105,6 +106,7 @@ def scenery(k):
         for j in range(n):
             angle=(j+.5)*math.tau/n
             tiers=3 if depth==0 and (j>n*.45 and j<n*.77) else 4 if depth==0 and (j<n*.31 or j>n*.86) else 2 if depth else 3
+            if depth==0 and j>=n*.50 and j<n*.68:tiers=2
             for tier in range(tiers):
                 bottom=base+tier*height0;hi=bottom+height0
                 def p(t,w,z):return ellipse((j+t)*math.tau/n,depth+w,z)
@@ -174,6 +176,33 @@ def scenery(k):
             for v in (-10.83,-9.25):art.box(at(uu,v,25),(.3,.38,.93),h,lin(0x485446))
         art.box(at(side*29,-12.73,25.0),(2.8,2.3,1.9),h,lin(0x4C5649))
         art.tube(at(side*29,-12.6,26.77),.39,.34,2.1,lin(0x52604F),lin(0x56634E),8)
+    # The broad stair and silhouetted quadrigas read together along the oblique approach.
+    panel(monument,[at(u,-4.9,z) for u,z in ((-39,-.1),(39,-.1),(39,27.8),(-39,27.8))])
+    block(stone,at,0,5.9,.15,8.2,4.1,4.2)
+    panel(horse,[at(u,5.9,z) for u,z in ((-4.9,4.35),(4.9,4.35),(4.9,10.25),(-4.9,10.25))])
+    # Front elevations face the traffic on the near side of the excavated market.
+    for j in range(15):
+        a,b=math.pi*j/15,math.pi*(j+1)/15
+        def frontage(t,z):return (mx+47*math.cos(t),my+32*math.sin(t),16+z)
+        panel(market,[frontage(a,.1),frontage(b,.1),frontage(b,11.5),frontage(a,11.5)],.45,1)
+    # Warm rendered palazzi, roof terraces and church domes enclose the city beyond the ruins.
+    for first,last,side,step,setback in ((-70,240,1,24,29),(273,918,-1,34,85),(1680,2460,1,39,54),(2750,4550,-1,49,38),(4200,4910,1,41,39)):
+        for d in range(first,last,step):
+            near,h0=site(k,d,side*(setback+k.rng.uniform(-3,4)))
+            w=step*k.rng.uniform(.73,.97);high=k.rng.uniform(12,22);depth=k.rng.uniform(10.5,14)
+            art.box(near(0,0,-1.1),(w,depth,high+1.1),h0,lin(k.rng.choice((0xCC9D70,0xC99D77,0xD1AB87))))
+            v=-side*(depth/2+.05)
+            panel(palazzi,[near(x,v,z) for x,z in ((-w/2,0),(w/2,0),(w/2,high),(-w/2,high))])
+            art.roof(near(0,0,high),w+.48,depth+.74,1.9,h0,lin(0xAB755F))
+            for end in (-1,1):
+                for z in range(2,int(high)-2,4):
+                    for y in (-depth*.27,depth*.18):art.box(near(end*(w/2+.05),y,z),(.1,1.1,2.0),h0,lin(0x786C5E))
+    for d,side in ((670,-89),(208,96),(2350,86),(3490,-97)):
+        near,h0=site(k,d,side);rc=lin(0xAC8066);pale=lin(0xD4BD99)
+        art.box(near(0,0,0),(19,17,14.5),h0,pale)
+        for z,r1,r2,hi in ((14,8.4,8.4,4.5),(18.5,8.4,7.7,3.2),(21.7,7.7,5.4,3.3),(25,5.4,2.2,2.3),(27.3,2.2,1.3,2.1)):
+            art.tube(near(0,0,z),r1,r2,hi,rc,rc,18)
+        art.tube(near(0,0,29.4),1.3,.15,2.3,pale,pale,10)
     # Arch of Constantine, three through passages and four detached Corinthian columns on each face.
     at,h=site(k,1386,17.5)
     for u,w in ((-11.1,2.7),(-4.9,2.5),(4.9,2.5),(11.1,2.7)):

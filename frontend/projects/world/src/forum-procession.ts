@@ -5,6 +5,7 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial,
+  MeshLambertMaterial,
   PlaneGeometry,
   RepeatWrapping,
   SphereGeometry,
@@ -31,11 +32,15 @@ export class ForumProcession {
   readonly root = new Group();
   readonly materials = {
     Sampietrini: surface(),
-    RomanTravertine: surface(),
-    ImperialBrick: surface(),
+    RomanTravertine: new MeshLambertMaterial({ side: DoubleSide }),
+    ImperialBrick: new MeshLambertMaterial({ side: DoubleSide }),
     ArchReliefs: surface(),
     RomanPines: surface(true),
     RomanWalkers: surface(true),
+    RomanPalazzi: surface(),
+    MarketBays: surface(),
+    MarbleMonument: surface(true),
+    BronzeHorse: surface(true),
   };
   private readonly box = new BoxGeometry();
   private readonly oval = new SphereGeometry(1, 14, 9);
@@ -57,9 +62,18 @@ export class ForumProcession {
   static async load(course: Course) {
     const loader = new TextureLoader();
     const result = await Promise.allSettled(
-      ['setts', 'travertine', 'brick', 'relief', 'pines', 'tourists'].map((name) =>
-        loader.loadAsync('courses/rome-' + name + '.webp'),
-      ),
+      [
+        'setts',
+        'travertine',
+        'brick',
+        'relief',
+        'pines',
+        'tourists',
+        'palazzi',
+        'market',
+        'monument',
+        'horse',
+      ].map((name) => loader.loadAsync('courses/rome-' + name + '.webp')),
     );
     const textures = result.flatMap((r) => (r.status === 'fulfilled' ? [r.value] : []));
     const failure = result.find((r) => r.status === 'rejected');
