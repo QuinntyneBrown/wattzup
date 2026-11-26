@@ -1,0 +1,151 @@
+{
+  "id": "monaco",
+  "name": "Monaco Street Circuit",
+  "world": "monaco",
+  "theme": "monaco",
+  "seed": 2166,
+  "layout": 0,
+  "class": {
+    "id": "non-stop-sprinting",
+    "title": "Non-Stop Sprinting",
+    "channel": "GCN Training",
+    "videoId": "v7Tn3KUjEng",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 15,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 23,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 17,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 15,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

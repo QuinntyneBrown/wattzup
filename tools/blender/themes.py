@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import monaco as _monaco
+
+THEMES['monaco'] = _monaco.THEME
+SCENERY['monaco'] = _monaco.scenery
