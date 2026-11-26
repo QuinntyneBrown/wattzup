@@ -3588,3 +3588,43 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const stradeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'strade-bianche',
+  name: 'Strade Bianche',
+  routeName: 'The white roads',
+  place: 'Siena, Italy',
+  world: 'strade',
+  distanceKm: 8.25,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/strade-bianche.jpg',
+  photoUrl: 'maps/strade-bianche-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 18, 85),
+      seg('work', 30, 21, 90),
+      seg('work', 30, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('cool-down', 180, 11, 80),
+    ],
+  },
+};
