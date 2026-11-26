@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Old Québec (#2196)
+
+Set the lower town at the foot of a fixed château cliff. Two circuits climb to the stone ramparts and return to the same cobbled square. The catalogue holds the historical class and shares the road elevation with the HUD.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Place Royale, 0.08 km | Real 01, 12, 13 and 15. Games 01 and 04. | Fieldstone houses with steep dormered roofs frame the cobbled square. A clear gap above the eaves places the copper-roofed château on the cliff. |
+| Petit-Champlain and the steps, 1.08 km | Real 04–07 and 12. Games 01, 02 and 04. | Shop signs, iron globe lamps, flower boxes and café tables line the tight lane. The Escalier Casse-Cou climbs between the façades beside the rider. |
+| Côte de la Montagne, 2.26 km | Real 01, 02, 04, 08 and 14. Games 02 and 03. | The twisting cobbled road climbs sharply between the stone wall and houses. Château Frontenac shows its brick wings, tall central tower and oxidized copper roofs above the bend. |
+| Porte Saint-Louis, 3.39 km | Real 03, 04 and 09. Games 02 and 04. | The road passes beneath the grey limestone gate. A round turret, crenellations and the grass-topped wall read against autumn maples. |
+| Terrasse Dufferin, 4.63 km | Real 08, 10, 11, 14 and 15. Games 03 and 05. | The iron rail and boardwalk run above the St. Lawrence. Green-and-white gazebos, globe lamps, flags and a moving ferry share the view with the far shore. |
+| Porte Kent and the ramparts, 12.17 km | Real 03, 08, 09 and 15. Games 01, 04 and 05. | A second castellated opening and the long grassy glacis carry the penultimate descent. Historic cannon carriages sit along the wall under red and gold maples. |
+
+Frame the single central tower from each bend with low roofs and clearings in the maples. Make the gate openings and boardwalk plane actual geometry. Place the ferry below the terrace on the river. Merge distant stone frontages, limit moving flags and signs to their local groups and release their resources when leaving the race. See ADRs 0021, 0023, 0030, 0034 and 0035, the performance-budget design and docs/worlds/quebec/SOURCES.md.
