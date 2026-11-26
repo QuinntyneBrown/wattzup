@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import wicklow as _wicklow
+
+THEMES['wicklow'] = _wicklow.THEME
+SCENERY['wicklow'] = _wicklow.scenery
