@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import shibuya as _shibuya
+
+THEMES['shibuya'] = _shibuya.THEME
+SCENERY['shibuya'] = _shibuya.scenery
