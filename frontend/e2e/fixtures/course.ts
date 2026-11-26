@@ -1,3 +1,4 @@
+import montroyalElevation from './montroyal-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const montroyalCourseMap = {
   place: 'Montréal, Québec',
   world: 'montroyal',
   distanceKm: 25.49,
-  climbingM: 0,
+  climbingM: 644,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: montroyalElevation,
   },
   thumbnailUrl: 'maps/mont-royal.jpg',
   photoUrl: 'maps/mont-royal-photo.jpg',
