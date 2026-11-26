@@ -3588,3 +3588,37 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const leeValleyCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'lee-valley-velodrome',
+  name: 'Lee Valley Velodrome',
+  routeName: 'The boards',
+  place: 'London, England',
+  world: 'velodrome',
+  distanceKm: 8.725,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/lee-valley-velodrome.jpg',
+  photoUrl: 'maps/lee-valley-velodrome-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 10, 80),
+      seg('work', 60, 13, 80),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 19, 90),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 210, 19, 95),
+      seg('recover', 120, 10, 80),
+      seg('work', 210, 21, 95),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
