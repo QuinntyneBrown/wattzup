@@ -170,7 +170,7 @@ def build_terrain(road, col, Builder, cell: float = 28.0):
     rock_c = srgb(0xCFC4B4)
 
     heights, dist = {}, {}
-    b = Builder("Terrain", "terrain")
+    b = Builder("RondaMeadow", "terrain")
     b.colours = []
     index = {}
 
@@ -290,15 +290,20 @@ def build_scenery(road, st: list[dict], length: float, height_at, course: dict, 
             if abs(s[i]["k"]) > 1 / 95 or s[i]["z"] > 70.0:
                 kit.fence(i, kit.kerb + 0.9, 0.95)
 
+    from iten_landmarks import pictured
+    pictured(kit, "RondaPassPlates")
+    pictured(kit, "RondaInns")
+
     # 3. Four pass summit signs, monuments & chapels
     m_passes = _try_module("passes")
     if m_passes:
         m_passes.build_four_passes(B, kit, road, height_at)
 
     # 4. Pass rifugi & hotels with sun terraces, parasols & flags
+    rifugio_flags = []
     m_rifugi = _try_module("rifugi")
     if m_rifugi:
-        m_rifugi.build_rifugi_and_hotels(B, kit, road, height_at)
+        m_rifugi.build_rifugi_and_hotels(B, kit, road, height_at, rifugio_flags)
     else:
         for p in PASSES:
             idx = road.index(p["at"])
@@ -385,6 +390,7 @@ def build_scenery(road, st: list[dict], length: float, height_at, course: dict, 
         "lights": kit.lights,
         "cableways": cableways,
         "gliders": gliders,
+        "rifugioFlags": rifugio_flags,
     }
 
 
