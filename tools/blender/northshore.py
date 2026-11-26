@@ -62,7 +62,7 @@ def land(r,col,theme,bc):
 
 
 def scenery(k):
-    art=Painted(k);flora=pictured(k,'ShoreFlora');shops=pictured(k,'HaleiwaFronts');trucks=pictured(k,'KahukuTruck');signs=pictured(k,'NorthShoreSigns');ridges=pictured(k,'KoolauRidges');breakers=pictured(k,'OahuBreakers')
+    art=Painted(k);flora=pictured(k,'ShoreFlora');shops=pictured(k,'HaleiwaFronts');trucks=pictured(k,'KahukuTruck');signs=pictured(k,'NorthShoreSigns');ridges=pictured(k,'KoolauRidges');breakers=pictured(k,'OahuBreakers');clouds=pictured(k,'TradeClouds')
     timber=lin(0x88684B);steel=lin(0x868D85);sand=lin(0xE0BF94);white=lin(0xE2E0CF);stone=lin(0x938C7E);dark=lin(0x434640)
     def plant(d,off,n,w,h):
         a,_=site(k,d,off);u=n/3
@@ -85,7 +85,7 @@ def scenery(k):
         art.roof(a(0,0,4.03),12.2,7.4,1.45,h,lin(0x767C65));art.box(a(0,4.28,3.11),(12.4,2.46,.21),h,lin(0x668777))
         for u in (-5.6,0,5.6):art.box(a(u,5.26,-.15),(.13,.15,3.33),h,white)
         picture(shops,(a(-5.9,3.57,-.14),a(5.9,3.57,-.14),a(5.9,3.57,4.0),a(-5.9,3.57,4.0)),UV)
-    for idx,(d,side) in enumerate(((108,1),(2898,1),(4520,1),(8499,-1))):
+    for idx,(d,side) in enumerate(((108,1),(2928,1),(4563,1),(8469,-1))):
         a,h=site(k,d,side*6.2)
         for v in (-1.43,1.43):art.box(a(0,v,-.2),(.16,.18,3.32),h,timber)
         u=idx%2*.5;v=(1-idx//2)*.5
@@ -112,15 +112,27 @@ def scenery(k):
         for j in range(3):
             d=centre+j*37;off=shore(d)+11+j*7;a,h=site(k,d,off);z=.27-k.road.pos(d)[2]
             picture(breakers,(a(-20,0,z),a(20,0,z),a(20,0,z+4.4),a(-20,0,z+4.4)),UV)
-    a,h=site(k,2948,shore(2948)-3)
-    base=.16-k.road.pos(2948)[2]
+    a,h=site(k,2898,shore(2898)-3)
+    base=.16-k.road.pos(2898)[2]
     art.tube(a(0,0,base),6.8,4.4,4.63,lin(0x544A3E),lin(0x716551),9,lin(0x81755D))
-    a,h=site(k,2929,-20);art.box(a(0,0,0),(12,7.3,4.42),h,white);art.roof(a(0,0,4.4),12,7.3,3.1,h,lin(0x758778))
+    a,h=site(k,2944,shore(2944)-1);bank=k.road.pos(2944)[2];art.tube(a(0,0,-bank),18.6,8.8,bank,lin(0x8A8064),lin(0x81A16B),15,lin(0x7B965C));art.box(a(0,0,0),(12,7.3,4.42),h,white);art.roof(a(0,0,4.4),12,7.3,3.1,h,lin(0x758778))
     art.box(a(-4.9,0,3.68),(3.3,3.3,5.5),h,white);art.tube(a(-4.9,0,9.18),2.55,.09,4.18,lin(0x596B62),lin(0x596B62),4)
-    for d in (175,2980,6640):
+    for d in (175,2980,6640,8530):
         a,h=site(k,d+122,-259)
-        picture(ridges,(a(-375,-90,-13),a(375,90,-13),a(375,90,167),a(-375,-90,167)),UV)
-    for n,d in enumerate((8487,8524,8553)):
+        picture(ridges,(a(-375,-90,-13),a(375,90,-13),a(375,90,232),a(-375,-90,232)),UV)
+    for d in (230,1510,2930,4600,6740,8610):
+        for side in (-1,1):
+            a,h=site(k,d+420,side*370)
+            picture(clouds,(a(-355,side*130,38),a(355,-side*130,38),a(355,-side*130,133),a(-355,side*130,133)),UV)
+    # The fruit shack has a corrugated lean-to and open trays under its awning.
+    a,h=site(k,129,-7.9);art.box(a(0,0,.65),(3.9,1.08,.21),h,timber)
+    for u in (-1.95,1.95):
+        for v in (-.85,.85):art.box(a(u,v,-.10),(.10,.1,2.8),h,timber)
+    art.roof(a(0,0,2.65),4.19,2.32,.35,h,lin(0xB66C4B))
+    for n,c in enumerate((0xD2AD51,0x99AD47,0xD38C40)):
+        u=-1.3+n*1.26;art.box(a(u,0,.87),(1.18,.85,.12),h,timber)
+        for j in range(6):art.tube(a(u-.42+(j%3)*.33,-.18+(j//3)*.34,.98),.15,.12,.21,lin(c),lin(c),8,lin(c))
+    for n,d in enumerate((8505,8528,8553)):
         a,h=site(k,d,-12-n%2*3);art.box(a(0,0,.56),(6.44,2.62,2.72),h,white);art.box(a(3.30,0,.48),(2.08,2.49,1.93),h,white)
         art.box(a(3.64,1.26,1.53),(1.13,.05,.74),h,lin(0x728E94))
         for side in (-1,1):

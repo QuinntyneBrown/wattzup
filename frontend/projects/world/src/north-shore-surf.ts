@@ -23,10 +23,10 @@ const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 const stops = [
   [80, 108, -5.5, 1.9],
   [1330, 1360, -2.4, 2.0],
-  [2860, 2918, -38, 2.1],
+  [2860, 2902, -42, 1.6],
   [4490, 4544, -47, 1.7],
   [6560, 6599, -8, 2.25],
-  [8490, 8524, 14, 2.05],
+  [8490, 8506, 12.2, 1.75],
 ] as const;
 function winterSwell() {
   const geo = new BufferGeometry(),
@@ -77,6 +77,7 @@ export class NorthShoreSurf {
     KahukuTruck: new MeshBasicMaterial({ side: DoubleSide }),
     NorthShoreSigns: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.44 }),
     KoolauRidges: new MeshBasicMaterial({ side: DoubleSide, transparent: true, depthWrite: false }),
+    TradeClouds: new MeshBasicMaterial({ side: DoubleSide, transparent: true, depthWrite: false }),
     OahuBreakers: new MeshBasicMaterial({ side: DoubleSide, transparent: true, depthWrite: false }),
   };
   private readonly cube = new BoxGeometry(1, 1, 1);
@@ -99,7 +100,7 @@ export class NorthShoreSurf {
   };
   static async load(course: Course) {
     const results = await Promise.allSettled(
-      ['flora', 'shops', 'trucks', 'signs', 'ridges', 'breakers'].map((key) =>
+      ['flora', 'shops', 'trucks', 'signs', 'ridges', 'breakers', 'clouds'].map((key) =>
         new TextureLoader().loadAsync('courses/northshore-' + key + '.webp'),
       ),
     );
@@ -154,7 +155,8 @@ export class NorthShoreSurf {
       t.flipY = false;
       t.colorSpace = SRGBColorSpace;
     }
-    const [flora, shop, truck, signs, ridge, breaker] = textures;
+    const [flora, shop, truck, signs, ridge, breaker, clouds] = textures;
+    this.materials.TradeClouds.map = clouds!;
     this.materials.ShoreFlora.map = flora!;
     this.materials.HaleiwaFronts.map = shop!;
     this.materials.KahukuTruck.map = truck!;
@@ -184,10 +186,10 @@ export class NorthShoreSurf {
     this.torso(this.shoulders, 0xe4a746, 0xad795a);
     for (const side of [-1, 1])
       this.piece(this.customer, this.cube, 0x3e5455, side * 0.11, 0.46, 0, 0.17, 0.91, 0.2);
-    this.stand(this.customer, 8519, 9.56);
+    this.stand(this.customer, 8503, 9.56);
     this.customer.rotation.y -= Math.PI / 2;
     this.root.add(this.customer, this.surfer, this.swell);
-    for (const [i, d] of [8491, 8522, 8525, 8529, 8555].entries()) {
+    for (const [i, d] of [8501, 8506, 8509, 8529, 8555].entries()) {
       const person = this.customer.clone();
       this.stand(person, d, 9.2 + (i % 2) * 0.85);
       person.rotation.y -= 1.13;
@@ -220,7 +222,7 @@ export class NorthShoreSurf {
         18 * (1 - Math.exp(-(((d - 2920) / 285) ** 2)));
       this.stand(this.swell, d, -width - 13 - 2.2 * Math.cos(time * 0.44));
       this.swell.position.y = 0.21;
-      this.swell.scale.y = 0.9 + 0.17 * Math.sin(time * 0.73);
+      this.swell.scale.y = 1.58 + 0.23 * Math.sin(time * 0.73);
       this.swell.rotation.z = 0.04 * Math.sin(time * 0.55);
       this.shown.waveCrest = this.swell.scale.y;
     }
@@ -234,7 +236,7 @@ export class NorthShoreSurf {
       this.legs[1]!.rotation.x = -stride;
       this.shown.surferStride = stride;
     }
-    this.customer.visible = Math.abs(metres - 8519) < 150;
+    this.customer.visible = Math.abs(metres - 8503) < 150;
     this.shown.queueTurn = null;
     if (this.customer.visible) {
       this.shoulders.rotation.y = 0.4 * Math.sin(time * 0.83);
