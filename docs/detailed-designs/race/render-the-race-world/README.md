@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Tremola, Gotthard Pass (#2234)
+
+Climb from the Leventina side to 2,106 m in 10.875 km. Carry the historic Low Cadence Workout stages into the Race catalogue. The carriageway reverses on granite terraces while the Ticino runs down the valley. Build the hospice and lake into the finishing plateau.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The historic road, 0.14 km | Real 01–03, 08, 12 and games 01–02 | Hand-set granite fans lead uphill between low granite bollards, a yellow pass sign and the historic Tremola plaque. |
+| Val Tremola turns, 2.34 km | Real 02–06, 10–13 and games 02–04 | The returning road climbs above massive dry-stone retaining walls. Several carriageways can be seen at different heights across the valley. |
+| The Ticino crossing, 4.61 km | Real 06, 09, 11–13 and games 03–04 | A stone arch spans the stream. Bright water crosses grey blocks below lingering snow patches on the rock face. |
+| Airolo overlook, 6.55 km | Real 04–05, 08, 10–13 and games 03–05 | Houses and a motorway viaduct lie far below the stone parapet, with switchbacks winding into the Leventina valley. |
+| The PostAuto bend, 8.46 km | Real 01–03, 06–07, 12 and games 02–03 | A yellow postbus passes a burgundy vintage car. A road cyclist climbs at low cadence alongside the granite edge stones. |
+| The summit hospice, 10.69 km | Real 08, 13–15 and games 03–05 | The pink hospice and stone museum overlook a small summit lake at 2,106 m. A yellow sign gives the pass name. |
+
+Adapt Caribana’s separation of fixed landmarks, moving middle distance and textured foreground. Lay the setts by distance along the road and across its width to keep the fans aligned through each bend. Model the curved wall, edge stones, arch and viaduct in depth. Share a small fleet and cyclist geometry and animate from the ride clock. Use original artwork for stone, vehicles and the hospice with the world folder retaining source attribution. Release resources on exit and measure sixty seconds in each tablet section. See ADRs 0021, 0023, 0030, 0034 and 0035.
