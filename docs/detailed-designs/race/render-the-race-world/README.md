@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Oregon Coast (#2181)
+
+Condense the north-to-south Highway 101 landmarks into the historical FTP Builder stages. Keep the ocean on the west side and spruce on the inland slope. Shape the two lighthouse sites separately. Render the tidal channel under the steel bridge and the opening in the Boardman arch from the rider’s side of the guardrail.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Highway 101, 0.08 km | Real 01–05 and 13. Games 01 and 03. | A rain-darkened two-lane highway curves between wind-shaped Sitka spruce, a silver guardrail and weathered shingle buildings. |
+| Cannon Beach, 3.18 km | Real 06, 07, 13 and 14. Games 01 and 05. | The broad basalt base and blunt, sloping crown of Haystack Rock rise above the Needles. Bleached logs lie across the grey beach. |
+| Yaquina Bay Bridge, 6.83 km | Real 03, 10 and 11. Games 02 and 04. | Green through-arch ribs, diagonal trusses and slender vertical hangers frame the rider above a tidal channel. |
+| Yaquina Head, 9.96 km | Real 05, 11 and 15. Games 01 and 04. | The tall white tower and dark lantern stand clear of a low spruce headland. A brown pullout sign and low coastal fog sit nearer the road. |
+| Heceta Head, 14.34 km | Real 08, 09, 12 and 15. Games 03 and 04. | A short white lighthouse and red-roofed service buildings overlook surf that wraps around the steep wooded point. |
+| Boardman headlands, 18.86 km | Real 02, 05, 12–14. Games 01, 03 and 05. | Water shows through a dark basalt arch. White breakers curl in front of it and wind-shaped spruce bracket the distant stacks. |
+
+Use merged native meshes for the rock, truss, roadway and keeper buildings. Vary the silhouette and spacing of spruce clumps. Place beach logs, pale breakers and distant headlands at different depths. Sample wind, beacon and breaker movement from the ride clock. Compare the submitted frames on the forest and lighthouse stretches to Caribana. Credits are in docs/worlds/oregon/SOURCES.md.
