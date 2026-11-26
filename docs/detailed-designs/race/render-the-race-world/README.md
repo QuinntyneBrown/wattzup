@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Playground Park Loop (#2189)
+
+Five circuits share the same park furniture and terrain. Distance and elapsed time continue across the painted lap line. The route curves round a central pond. Keep the play structures and the water visible through openings in the mature tree canopy.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Tree-lined park gate, 0.08 km | Real 11, 12 and 15. Games 01 and 03. | Worn twin yellow lines lead between mature trees. Gaps in the canopy cast patches of sun across the path beside a wayfinding sign and benches. |
+| Climbing fort, 0.43 km | Real 02, 03, 07 and 09. Games 01 and 02. | Two roofed climbing decks flank a rope bridge. Open steps, a curved slide and a bank of suspended swing seats are visible from the path. |
+| Splash terrace, 0.89 km | Real 01, 03–06 and 13. Games 02 and 05. | Red and green spray stems stand on blue and ochre wet paving under a triangular shade sail. A child runs between staggered jets. |
+| Family promenade, 1.32 km | Real 08–12 and 15. Games 01 and 03. | A parent pushes a hooded stroller along the wide shoulder. A helmeted child on a scooter passes a bench and a double-headed park lamp. |
+| Fountain pond, 1.85 km | Real 04, 06 and 14. Games 04 and 05. | A stone lip follows the pond and its central fountain. Water gleams between reeds, with lawns and the city edge behind. |
+| Picnic meadow, 2.30 km | Real 07, 10, 11 and 13. Games 02–04. | Families sit on checkered blankets beneath spreading shade trees. A pavilion and distant apartment buildings mark the return toward the playground. |
+
+Model the climbing frames, slides, swings, benches and shaded canopy at rider scale. Use fixed meshes for path paint and shadows, batch repeated furniture, and use the shared ride clock for the swing angle, spray and stroller wheels. Release each course resource on exit. Compare the gate and splash terrace with Caribana’s tablet capture. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/playground/SOURCES.md.
