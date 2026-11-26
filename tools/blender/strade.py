@@ -51,22 +51,22 @@ def land(r,col,theme,bc):
     return m.build(col),lambda x,y:height(r.s[r.tree.find((x,y,0))[1]]['d'])-.17
 
 def scenery(k):
-    art=Painted(k);sky=pictured(k,'CreteRidge');sign=pictured(k,'SectorBoards')
+    art=Painted(k);sky=pictured(k,'CreteRidge');sign=pictured(k,'SectorBoards');fans=pictured(k,'SectorTifosi');trees=pictured(k,'ValCypresses');fronts=pictured(k,'SienaFronts')
     olive,forest,shadow,bark,ochre,brick,cream,black,metal=map(lin,(0x839174,0x4C6346,0x344B39,0x685D49,0xB89263,0xA45F46,0xDED4B5,0x4A4945,0xA5A9A2))
     def cypress(at,along,across,ht,w):
-        art.tube(at(along,across,-.3),.2,.15,ht*.32,bark,bark,7)
-        for n,(z,r,s,h) in enumerate(((.2,.47,.89,.21),(.4,.89,1,.24),(.63,1,.72,.2),(.82,.72,.06,.19))):
-            art.tube(at(along,across,ht*z),w*r,w*s,ht*h,shadow,forest,9,cap=forest)
+        i=int(abs(ht*4+along))%4;u=i/4
+        for phi in (.48,2.05):
+            dx=w*2.25*math.cos(phi);dy=w*2.25*math.sin(phi)
+            picture(trees,[at(along+x,across+y,z) for x,y,z in ((-dx,-dy,-.24),(dx,dy,-.24),(dx,dy,ht),(-dx,-dy,ht))],((u,0),(u+.25,0),(u+.25,1),(u,1)))
+    def wall(at,offset,width,ht,tile):
+        u=tile/4;picture(fronts,[at(x,offset,z) for x,z in ((-width/2,.02),(width/2,.02),(width/2,ht),(-width/2,ht))],((u+.001,0),(u+.249,0),(u+.249,1),(u+.001,1)))
     for j,d in enumerate(range(180,7740,24)):
         side=(-1,1)[j%2];v=side*(6.6+5*(j%4));at,h=site(k,d,v)
         if 1290<d<1830 or 4190<d<4800 or j%4==0:cypress(at,0,0,9.4+j%5,.98+.12*(j%3))
     for j,(d,v) in enumerate(((364,39),(1570,25),(1860,-31),(3048,54),(4818,-28),(6315,37),(7170,43))):
         at,h=site(k,d,v);art.box(at(0,0,-.5),(14,9,7.1),h,ochre);art.roof(at(0,0,6.6),14.3,9.2,2.5,h,brick)
         art.box(at(-8.3,0,-.5),(4,6,5.7),h,ochre);art.roof(at(-8.3,0,5.2),4.2,6.2,1.8,h,brick)
-        for u in (-5,-1.7,1.7,5):
-            for z in (1,4.7):
-                art.box(at(u,-4.56,z),(1.23,.15,1.49),h,black)
-                art.box(at(u+.77,-4.64,z),(.34,.07,1.51),h,forest)
+        for v in (-4.53,4.53):wall(at,v,14.01,6.56,0)
         for n in range(6):cypress(at,-13+n*4.1,7,9+n%3,1.05)
         for n in range(8):
             a=(n%4)*4.2-7;b=10+(n//4)*4;art.tube(at(a,b,0),.23,.14,2.7,bark,bark,7)
@@ -81,11 +81,14 @@ def scenery(k):
             art.box(at(0,0,4.18),(.59,8.1,.89),h,brick);panel(at,-.31,0,4.2,8.02,.82,3)
             for q in range(-6,13):
                 for side in (-1,1):art.box(at(q*2,side*4.55,.12),(1.86,.16,.82),h,brick)
+    for j,d in enumerate(list(range(6280,6470,9))+list(range(8080,8210,9))):
+        for side in (-1,1):
+            at,h=site(k,d,side*(5.3 if d<7000 else 7.3));w=5.7+.2*(j%4);u=(0,1) if (j+side)%2 else (1,0)
+            picture(fans,[at(a,0,z) for a,z in ((-w/2,.08),(w/2,.08),(w/2,1.98),(-w/2,1.98))],((u[0],0),(u[1],0),(u[1],1),(u[0],1)))
     # Siena’s two landmarks are separated in both plan and height.
-    at,h=site(k,8120,-31)
+    at,h=site(k,8200,-30)
     art.box(at(0,0,0),(42,16,17),h,brick)
-    for u in range(-18,20,4):
-        for z in (2.2,8.4,13):art.box(at(u,8.11,z),(1.55,.15,2.45),h,black)
+    for v in (-8.04,8.04):wall(at,v,42,17,1)
     for u in range(-20,22,3):art.box(at(u,7.2,17),(1.4,1.2,.95),h,brick)
     art.box(at(13,2,0),(7.2,7.2,73),h,brick)
     art.box(at(13,2,72),(9.1,9.1,3.9),h,cream)
@@ -103,11 +106,10 @@ def scenery(k):
     art.tube(at(5,0,26.8),1.45,1.23,3.8,cream,cream,10,cap=cream)
     for j,d in enumerate(range(7830,8290,21)):
         for side in (-1,1):
-            if side==-1 and 8080<d<8168:continue
+            if side==-1 and 8163<d<8244:continue
             at,h=site(k,d,side*(23+2*math.sin(j)));ht=11+j%4
             art.box(at(0,0,0),(20.7,9,ht),h,(ochre,brick,cream)[j%3]);art.roof(at(0,0,ht),20.7,9,1.8,h,brick)
-            for u in (-7,-2.3,2.3,7):
-                for z in (1.0,4.8,8.6):art.box(at(u,-side*4.56,z),(1.23,.16,1.95),h,black)
+            wall(at,-side*4.55,20.71,ht,2+j%2)
     for j in range(64):
         a=math.tau*j/64;b=math.tau*(j+1)/64;u=j%16/16;v=u+1/16
         if j//16%2:u,v=1-u,1-v
