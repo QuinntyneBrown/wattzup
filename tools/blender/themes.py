@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import songkran as _songkran
+
+THEMES['songkran'] = _songkran.THEME
+SCENERY['songkran'] = _songkran.scenery
