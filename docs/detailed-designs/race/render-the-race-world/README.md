@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Teotihuacán (#2230)
+
+Use the historic Threshold Pyramid plan to space out the ceremonial axis over 22.275 km. Keep the Sun pyramid on the east side and the Moon pyramid beyond the finishing plaza. Stretch the distances between monuments to follow the class while retaining each building’s proportions. The map catalogue selects the authored centre line and a lazily loaded scene on Race entry.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| La Ciudadela, 0.14 km | Real 10, 12–14 and game 01 | Serpent heads project from the sloped masonry of the southern enclosure. The first platform leaves an open sightline north. |
+| Calzada de los Muertos, 4.20 km | Real 01–05, 14–15 and games 03 and 05 | Parallel platforms frame a straight strip of packed earth. Low agave and nopal grow in the verges below the distant ridge. |
+| Pirámide del Sol, 8.48 km | Real 06, 08–10 and game 02 | Five broad levels rise around the central stair on the east side. Recessed masonry and small chinking stones catch the morning light. |
+| Morning balloons, 12.78 km | Real 03, 06, 11 and games 02 and 03 | Striped balloons drift across the mountain silhouette, well above the low terraces. Their envelopes, ropes and baskets read against the clouds. |
+| The vendors’ court, 17.45 km | Real 07, 10–13 and game 04 | A hat seller and visitors animate the edge of the avenue beside craft blankets, shaded tables and a pepper tree. |
+| Plaza de la Luna, 22.05 km | Real 01, 05, 12, 14–15 and games 01 and 05 | The spreading staircase and nested platforms of the Moon pyramid close the avenue below Cerro Gordo. |
+
+As in Caribana, separate the fixed distant ridge, middle-distance landmark geometry and close moving figures. Model the terraces, central stairs and serpent relief in depth. Share textured walls and baked masonry shadows across all levels. Merge low platforms by course section, keep landmark silhouettes at distance and release all actor geometry and materials on exit. Compare six riding positions and measure the southern enclosure and Sun pyramid over separate sixty-second windows. See ADRs 0021, 0023, 0030, 0034 and 0035.
