@@ -3588,3 +3588,34 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const teideCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mount-teide',
+  name: 'Mount Teide',
+  routeName: 'The caldera road',
+  place: 'Tenerife, Spain',
+  world: 'teide',
+  distanceKm: 13.5,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/mount-teide.jpg',
+  photoUrl: 'maps/mount-teide-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 90),
+      seg('work', 120, 16, 90),
+      seg('work', 60, 24, 90),
+      seg('work', 300, 21, 90),
+      seg('recover', 180, 13, 90),
+      seg('work', 300, 21, 90),
+      seg('recover', 180, 13, 90),
+      seg('work', 300, 21, 90),
+      seg('cool-down', 180, 13, 90),
+    ],
+  },
+};
