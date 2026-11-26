@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import tremola as _tremola
+
+THEMES['tremola'] = _tremola.THEME
+SCENERY['tremola'] = _tremola.scenery
