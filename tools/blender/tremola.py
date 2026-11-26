@@ -50,7 +50,7 @@ def land(r,col,theme,bc):
         across=-(x-creekx)*math.sin(creekh)+(y-creeky)*math.cos(creekh)
         if 5<across<145 and abs(along)<20:
             depth=min(1,(across-5)/8,(145-across)/14)*max(0,1-abs(along)/20)
-            z=min(z,z+(creekz-2.4-.10*across-z)*depth)
+            z=min(z,z+(creekz-4.8-.10*across-z)*depth)
         return z
     step=8;last=None
     for x in range(int(min(xs))-200,int(max(xs))+209,step):
@@ -74,6 +74,8 @@ def scenery(k):
     def frontage(at,w,depth,high,idx):
         panel(summit,[at(-depth/2-.045,v,z) for v,z in ((w/2,0),(-w/2,0),(-w/2,high),(w/2,high))],idx,4)
         panel(summit,[at(u,-w/2-.05,z) for u,z in ((-depth/2,0),(depth/2,0),(depth/2,high),(-depth/2,high))],idx,4)
+        panel(summit,[at(depth/2+.045,v,z) for v,z in ((-w/2,0),(w/2,0),(w/2,high),(-w/2,high))],idx,4)
+        panel(summit,[at(u,w/2+.05,z) for u,z in ((depth/2,0),(-depth/2,0),(-depth/2,high),(depth/2,high))],idx,4)
     for j,d in enumerate(range(-72,10960,6)):
         signside=1 if math.sin(heading(d))>=0 else -1;at,h=site(k,d)
         for side in (-1,1):
@@ -111,12 +113,12 @@ def scenery(k):
         for v in (-2.2,2.2):
             ux=7.3*math.cos(a);vx=7.3*math.cos(b)
             rock([arch(a,7.3,v),arch(b,7.3,v),at(vx,v,1.9),at(ux,v,1.9)])
-    for j in range(40):
-        out=9+j*2.5;x0=1.8*math.sin(out/8)
+    for j in range(50):
+        out=-12+j*2.5;x0=1.8*math.sin(out/8)
         pts=[at(x0+x,out+n,-1.25-.1*(out+n+18)) for x,n in ((-3.8,0),(3.8,0),(3.8,2.7),(-3.8,2.7))]
         picture(lake,pts,[(x/4,y/4) for x,y,z in pts])
     # A distant motorway viaduct stands on piers above Airolo's clustered roofs.
-    at,h=site(k,6620,180)
+    at,h=site(k,6550,-104)
     def town(u,v,z):
         x,y,_=at(u,v);return x,y,k.height_at(x,y)+z
     for j in range(24):
