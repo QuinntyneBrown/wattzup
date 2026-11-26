@@ -7,6 +7,26 @@ from worldkit import Painted,lin
 UV=((0,0),(1,0),(1,1),(0,1))
 
 
+def route(course,theme,bc):
+    from worldkit import smooth
+    rows,st,length,mean,grade=bc.lay_centre_line(course,theme)
+    middle=min(rows,key=lambda r:abs(r['d']-4340))['h']
+    x,y=rows[0]['x'],rows[0]['y']
+    previous=None
+    for row in rows:
+        d=row['d'];h=row['h']
+        if 4238<d<4442:
+            blend=smooth(4238,4300,d)*(1-smooth(4380,4442,d))
+            target=middle+math.pi*(.25-.5*smooth(4330,4350,d))
+            h+=blend*math.atan2(math.sin(target-h),math.cos(target-h))
+        if previous is not None:
+            delta=math.atan2(math.sin(h-previous),math.cos(h-previous))
+            x+=bc.STEP*math.cos(previous+delta*.5);y+=bc.STEP*math.sin(previous+delta*.5)
+            row['k']=delta/bc.STEP
+        row.update(x=x,y=y,h=h);previous=h
+    return rows,st,length,mean,grade
+
+
 def road(r,st,length,col,bc):
     stones=bc.Builder('MarktSetts','terrain')
     stones.colours=[];stones.uvs=[]
@@ -39,9 +59,9 @@ def facades(k,art,elevations):
 
 
 def sprint_square(k,art,portal,stage):
-    d=stage['to']+26
-    off=32
-    if not k.room(k.road.index(d),off,16,72):off=-off
+    d=stage['to']-26
+    off=27
+    if not (10300<d<10700) and not k.room(k.road.index(d),off,16,72):off=-off
     at,h=site(k,d,off)
     block=lin(0xB7AFA0);trim=lin(0xD3CBBC);slate=lin(0x56565C);shadow=lin(0x5A6264)
     art.box(at(12,0,-3),(36,16,22),h,block);art.roof(at(12,0,19),36,16,7,h,slate)
@@ -78,6 +98,11 @@ def race_day(k,art):
             for row in range(3 if packed else 1):
                 u=(row%2)*1.5+(.4 if d%14 else 0);v=side*(.58+row*.73);high=1.8+.1*row;w=4.7+row*.28
                 picture(crowd,(at(u,v,.17),at(u+w,v,.17),at(u+w,v,high+.17),at(u,v,high+.17)),UV)
+    for d in range(4324,4363,4):
+        for side in (-1,1):
+            at,h=site(k,d,side*5.41)
+            art.tube(at(0,0,.13),.19,.14,.80,lin(0x484747),lin(0x636057),10)
+            art.tube(at(0,0,.86),.145,.17,.10,cream,cream,10,cream)
     for d in (7008,7022,7036):
         at,h=site(k,d,-8.24)
         art.tube(at(0,0,.16),.08,.065,2.63,wood,wood,8)

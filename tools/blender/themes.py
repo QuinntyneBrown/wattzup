@@ -746,6 +746,10 @@ def oldtown(k: Kit) -> dict:
     for side in (1, -1):
         i = 2
         while i < k.n - 4:
+            # A clear market square separates each sprint line from the cathedral steps.
+            if any(stage['kind']=='work' and stage['to']-155<s[i]['d']<stage['to']+66 for stage in k.st):
+                i+=2
+                continue
             if not k.straight(i, 2, 1 / 45):
                 i += 2
                 continue
@@ -762,8 +766,6 @@ def oldtown(k: Kit) -> dict:
             k.gable(B["roof-tile"], k.P(i, 0, off, floors * fh + 0.8), 10.0, width, 3.0, yaw + math.pi / 2)
             wall = off - 5.05 * side
             frontages(i,wall,width,floors*fh,side,houses)
-            k.windows(B["window"], i, 0, wall, width, floors - 1, 3.6, fh, yaw, 2.4)
-            B["dark"].box(k.P(i, rng.uniform(-1.5, 1.5), wall, 0.12), (1.3, 0.2, 2.4), yaw)
             if rng.random() < 0.25:
                 for c in range(2):
                     ux, uy, uz = k.P(i, -1.5 + c * 3, off - 6.6 * side, 0.12)
@@ -1541,6 +1543,8 @@ import iten as _iten
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
 
-from oldtown_markt import road as _markt_road
+from oldtown_markt import road as _markt_road, route as _markt_route
+
+THEMES['oldtown']['lay'] = _markt_route
 
 THEMES["oldtown"]["road_builder"] = _markt_road

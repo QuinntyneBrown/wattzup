@@ -21,8 +21,8 @@ const viewpoints = [
   [2530, 2600, -4, 4],
   [4310, 4344, 7, 5],
   [6980, 7011, 8.1, 3],
-  [10450, 10651, -32, 18],
-  [14050, 14123, 0, 4.2],
+  [10450, 10599, -27, 18],
+  [14050, 14086, 0, 4.2],
 ] as const;
 
 export class MarktRaceFurniture {
@@ -112,7 +112,7 @@ export class MarktRaceFurniture {
     this.box(this.bell, 0x574d40, 0, -0.6, 0, 0.12, 0.48, 0.12);
     this.box(this.gantry, 0x253c3a, -4.62, 2.8, 0, 1.38, 1.09, 0.12);
     this.box(this.gantry, 0xffe8a5, -4.6, 2.82, 0.08, 0.12, 0.7, 0.05);
-    this.locate(this.gantry, 14123, 0);
+    this.locate(this.gantry, 14086, 0);
     this.supporters.add(this.staff);
     const bodies = new PlaneGeometry(3.8, 2.27),
       uv = bodies.attributes['uv']!;
@@ -190,7 +190,7 @@ export class MarktRaceFurniture {
         flag.rotation.x = 0.29 * Math.sin(time * 2.3 + i * 0.77);
       this.readings.pennantRise = this.pennants[3]!.rotation.x;
     }
-    this.gantry.visible = Math.abs(metres - 14123) < 320;
+    this.gantry.visible = Math.abs(metres - 14086) < 320;
     this.readings.bellSwing = null;
     if (this.gantry.visible) {
       this.bell.rotation.z = 0.36 * Math.sin(time * 3.7);

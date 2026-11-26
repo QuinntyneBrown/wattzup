@@ -1293,7 +1293,7 @@ The finished grade rises or falls one percentage point for each resistance level
 
 ## Old Town Criterium (#2180)
 
-Retain the existing Blender road samples, stage distances, advertised climb and starter unlock. Model the visible faces of the spire, portal and gables in silhouette, match the size of the setts to the bicycle tyres and keep the street furniture outside the riding line. The bannered rails and the three crowd rows overlap at different depths. Keep objects anchored to the local grade.
+Retain the existing elevation samples, stage distances, advertised climb and starter unlock. Redistribute the heading through the townhouse corner over a 20 m arc, with a straight entry and exit. Open the frontage beside the seventh sprint so the west portal is visible across the square. Model the visible faces of the spire, portal and gables in silhouette, match the size of the setts to the bicycle tyres and keep the street furniture outside the riding line. The bannered rails and the three crowd rows overlap at different depths. Keep objects anchored to the local grade.
 
 | Rider view | References | Design |
 | --- | --- | --- |
