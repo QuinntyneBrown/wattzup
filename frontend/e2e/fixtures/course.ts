@@ -3588,3 +3588,39 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const paineCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'torres-del-paine',
+  name: 'Torres del Paine',
+  routeName: 'The Pehoé gravel',
+  place: 'Patagonia, Chile',
+  world: 'paine',
+  distanceKm: 13.025,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/torres-del-paine.jpg',
+  photoUrl: 'maps/torres-del-paine-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 10, 80),
+      seg('work', 60, 13, 80),
+      seg('recover', 60, 16, 85),
+      seg('work', 60, 19, 90),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 22, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 120, 22, 100),
+      seg('cool-down', 240, 10, 80),
+    ],
+  },
+};
