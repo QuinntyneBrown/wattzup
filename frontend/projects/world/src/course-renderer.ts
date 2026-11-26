@@ -207,8 +207,6 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
-  BerlinHorizon: 62000,
-  TerminalBays: 1800,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
