@@ -1,3 +1,4 @@
+import maunakeaElevation from './maunakea-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const maunakeaCourseMap = {
   place: 'Hawaiʻi Island, Hawaiʻi',
   world: 'maunakea',
   distanceKm: 25.825,
-  climbingM: 0,
+  climbingM: 2037,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: maunakeaElevation,
   },
   thumbnailUrl: 'maps/mauna-kea.jpg',
   photoUrl: 'maps/mauna-kea-photo.jpg',

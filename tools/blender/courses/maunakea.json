@@ -1,0 +1,109 @@
+{
+  "id": "maunakea",
+  "name": "Mauna Kea",
+  "world": "maunakea",
+  "theme": "maunakea",
+  "seed": 2162,
+  "layout": 0,
+  "class": {
+    "id": "60-minutes-of-brutal-power",
+    "title": "60 Minutes of Brutal Power",
+    "channel": "GCN Training",
+    "videoId": "qIh2PXq1Oz0",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 600,
+        "level": 15,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 720,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 270,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 330,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

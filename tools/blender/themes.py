@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import maunakea as _maunakea
+
+THEMES['maunakea'] = _maunakea.THEME
+SCENERY['maunakea'] = _maunakea.scenery
