@@ -39,7 +39,7 @@ def land(r,col,theme,bc):
     return m.build(col),lambda x,y:elevation(r.s[r.tree.find((x,y,0))[1]]['d'])-.12
 
 def scenery(k):
-    art=Painted(k);fronts=pictured(k,'AlsaceFronts');chalets=pictured(k,'AlsaceChalets');cathedral=pictured(k,'CathedralStone');fir=pictured(k,'KleberFir');water=pictured(k,'IllWater')
+    art=Painted(k);fronts=pictured(k,'AlsaceFronts');chalets=pictured(k,'AlsaceChalets');cathedral=pictured(k,'CathedralStone');fir=pictured(k,'KleberFir');water=pictured(k,'IllWater');shoppers=pictured(k,'MarketShoppers');garlands=pictured(k,'MarketGarlands');towers=pictured(k,'PontsStone')
     brown,slate,iron,gold,red,cream,blue,stone,wood=map(lin,(0x694942,0x343642,0x3A3841,0xFFE2A1,0xA64741,0xCABDAC,0x687FCC,0x9E816F,0x916344))
     def wall(mesh,at,offset,w,z0,z1,i,cols):
         u=i/cols;v=(i+1)/cols
@@ -48,7 +48,7 @@ def scenery(k):
         canal=9510<d<10145;square=max(0,1-abs(d-7240)/155)*11+max(0,1-abs(d-1900)/145)*7
         for side in (-1,1):
             if canal and side==1:continue
-            if side==1 and 1890<d<2010:continue
+            if side==1 and 1950<d<2070:continue
             dep=6.0;v=side*(8.0+square+dep/2);at,h=site(k,d,v);ht=9.5+((j+side)*7%5)
             art.box(at(0,0,.1),(11.89,dep,ht),h,brown);art.roof(at(0,0,ht+.10),11.93,dep,3.2,h,slate)
             wall(fronts,at,-side*(dep/2+.035),11.94,.08,ht+.12,(j*7+side)%4,4)
@@ -57,6 +57,8 @@ def scenery(k):
                 art.tube(at(0,-side*(dep/2+1.6),3.65),.20,.27,.54,gold,gold,6,cap=iron)
         if j%3==0 and not canal and square<4:
             at,h=site(k,d)
+            u=.5 if 5000<d<5610 else 0
+            picture(garlands,[at(0,v,z) for v,z in ((-7,4.6),(7,4.6),(7,7.4),(-7,7.4))],((u,.05),(u+.499,.05),(u+.499,1),(u,1)))
             def light(v):return at(0,v,5.95+.024*v*v)
             for v in range(-7,7):
                 beam(art,light(v),light(v+1),.027,iron)
@@ -71,13 +73,19 @@ def scenery(k):
             side=1 if j%2==0 else -1;v=side*(5.55+square);at,h=site(k,d,v)
             art.box(at(0,0,.10),(5.15,2.85,2.45),h,wood);art.roof(at(0,0,2.5),5.6,3.5,.99,h,brown)
             wall(chalets,at,-side*1.45,5.14,.13,2.57,j%4,4)
+            for a in (-2.60,2.60):
+                u=(j%4)/4
+                picture(chalets,[at(a,b,z) for b,z in ((-1.42,.14),(1.42,.14),(1.42,2.50),(-1.42,2.50))],((u,0),(u+.249,0),(u+.249,1),(u,1)))
             for a in (-2.55,2.55):art.tube(at(a,-side*1.45,.1),.085,.077,2.51,brown,wood,6)
             for a in range(-2,3):art.tube(at(a,-side*1.65,2.55),.059,.055,.11,gold,gold,5)
+            if j%3 or 3400<d<3700:
+                v=-side*2.01;w=4.7
+                wall(shoppers,at,v,w,.1,1.95,0,1)
     # The west front stands across the square, its nave rising behind the portal screen.
-    at,h=site(k,1961,25)
+    at,h=site(k,2024,25)
     art.box(at(12,0,0),(81,31,28),h,stone);art.roof(at(12,0,28),81,31,10,h,slate)
     picture(cathedral,[at(-30,v,z) for v,z in ((-24,.2),(24,.2),(24,93),(-24,93))],((0,0),(1,0),(1,1),(0,1)))
-    at,h=site(k,7252,-10.3)
+    at,h=site(k,7276,-10.3)
     art.tube(at(0,0,0),2.4,2.35,.49,wood,wood,14,cap=wood)
     for a in (.12,1.68):
         dx=7.8*math.cos(a);dy=7.8*math.sin(a)
@@ -86,11 +94,16 @@ def scenery(k):
         at,h=site(k,d)
         picture(water,[at(x,v,-3.0) for x,v in ((-4.4,6),(4.4,6),(4.4,72),(-4.4,72))],((0,0),(1,0),(1,1),(0,1)))
         art.box(at(0,5.12,-3.3),(8.25,.81,4.20),h,stone)
-    for d,v in ((9908,15),(9908,53),(10054,40)):
+    for d,v in ((9935,15),(9935,53),(10054,40)):
         at,h=site(k,d,v);art.box(at(0,0,-3.45),(8.4,8.4,16),h,stone);art.roof(at(0,0,12.57),8.4,8.4,6.1,h,slate)
+        for v0 in (-4.23,4.23):wall(towers,at,v0,8.4,-3.43,12.56,0,2)
+        for x0 in (-4.23,4.23):
+            picture(towers,[at(x0,y,z) for y,z in ((-4.2,-3.4),(4.2,-3.4),(4.2,12.55),(-4.2,12.55))],((0,0),(.499,0),(.499,1),(0,1)))
         for u in (-2.3,2.3):art.box(at(u,-4.26,7.9),(.86,.17,2.03),h,iron)
-    at,h=site(k,9908,34);art.box(at(0,0,.10),(7.4,60,1.2),h,stone)
+    at,h=site(k,9935,34);art.box(at(0,0,.10),(7.4,60,1.2),h,stone)
     for u in (-3.4,3.4):art.box(at(u,0,1.3),(.40,60,.79),h,stone)
+    for x0 in (-3.76,3.76):
+        picture(towers,[at(x0,v,z) for v,z in ((-30,-3.0),(30,-3.0),(30,2.05),(-30,2.05))],((.501,0),(1,0),(1,1),(.501,1)))
     return {'efforts':0}
 
-THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':3.6,'terrain':{'sea':False},'land':{'mid':0x534B58},'sky':[0x555775,0x333E65,0x23345A,0x1D2C50,0x15223F],'haze':0x555575,'light':[0xFFE1A5,1.13],'fill':[0xB2C1E0,0x807183],'sun_altitude':.21,'sun_azimuth':-.95}
+THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':3.6,'terrain':{'sea':False},'land':{'mid':0x534B58},'sky':[0x464867,0x303755,0x202B49,0x14203B,0x0D1625],'haze':0x404660,'light':[0xFFE1A5,1.13],'fill':[0xB2C1E0,0x807183],'sun_altitude':.21,'sun_azimuth':-.95}
