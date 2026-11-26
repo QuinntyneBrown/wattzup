@@ -25,10 +25,13 @@ def route(course,theme,bc):
     return rows,stages,length,sum((s['to']-s['from'])*s['level'] for s in stages)/length,1
 
 def ground(d,v):
-    z=elevation(d);edge=abs(v)-5.3
+    z=elevation(d)
+    bench=max(0,min(1,(900-d)/190),min(1,(d-9800)/150))
+    if 4120<d<4530:bench=max(bench,.35)
+    edge=abs(v)-5.3-31*bench
     if edge<0:return z-.24
     rugged=math.sin(d/28+v*.064)*math.cos(d/57-v*.081)
-    slope=.59 if v<0 else -.48-.32*math.sin(d/480)
+    slope=.32 if v<0 else -.33-.21*math.sin(d/480)
     if 5700<d<7850 and v>0:slope=-.72
     return z-.24+edge*slope+min(1,edge/17)*rugged*(1+edge*.045)
 
@@ -81,6 +84,8 @@ def scenery(k):
             card(herd,raised,(2.8,2.45,2.53,2.75)[j%4],(1.15,1.62,1.65,1.13)[j%4],j%4)
         if (d<700 or d>9300) and j%4==0:
             at,h=site(k,d,4.5);art.box(at(0,0,-.18),(1.28,.56,.73),h,stone)
+    for j,(d,v) in enumerate(((4334,6.1),(4338,6.4),(4340,8.9),(4342,7.4),(4355,7.4),(4362,9))):
+        at,h=site(k,d,v);card(herd,at,(2.4,2.7,2.6,2.5)[j%4],(1.25,1.65,1.78,1.17)[j%4],j%4)
     for j,d in enumerate(range(-40,670,44)):
         for side in (-1,1):
             v=side*(17+j%4);at,h=site(k,d,v);high=6+(j%4)*3.1
@@ -96,11 +101,22 @@ def scenery(k):
         idx=0 if j<2 else 1 if j<4 else j-2
         panel(markers,[at(-.216,v,z) for v,z in ((.305,.08),(-.305,.08),(-.305,1.08),(.305,1.08))],idx,4)
     # The observatory occupies the crown of a ridge, not a screen-facing card.
-    at,h=site(k,6840,-210);summit=elevation(6840)+125
+    at,h=site(k,6750,141);summit=elevation(6750)+36
     def ridge(u,v,z):
         x,y,_=at(u,v);return x,y,summit+z
-    art.tube(ridge(0,0,-112),105,25,112,slate,gray,17,cap=gray)
-    art.box(ridge(0,0,0),(34,13,5),h,stone)
+    bed=pictured(k,'PicBedrock')
+    rings=[]
+    for j,(radius,height) in enumerate(((127,-85),(85,-37),(52,-15),(24,0))):
+        ring=[]
+        for i in range(27):
+            t=i*math.tau/27;size=radius*(1+.10*math.sin(5*t+j*.49)+.09*math.cos(8*t+j*.43))
+            ring.append(ridge(size*math.cos(t),size*.74*math.sin(t),height+(.6 if j==3 else 6)*math.sin(7*t+j)))
+        rings.append(ring)
+    for lo,hi in zip(rings,rings[1:]):
+        for i in range(27):
+            n=(i+1)%27;pts=(lo[i],lo[n],hi[n],hi[i]);picture(bed,pts,[(x*.15+z*.07,y*.15-z*.09) for x,y,z in pts])
+    art.box(ridge(0,0,-.7),(45,17,8.2),h,white)
+    art.box(ridge(0,0,4.5),(45.5,17.4,1.8),h,glass)
     def ellipsoid(at,rx,ry,rz,c):
         for j in range(7):
             a=-math.pi/2+j*math.pi/7;b=a+math.pi/7
@@ -108,13 +124,14 @@ def scenery(k):
                 u=i*math.tau/16;v=u+math.tau/16
                 point=lambda t,f:at(rx*math.cos(f)*math.cos(t),ry*math.cos(f)*math.sin(t),rz*math.sin(f))
                 art.face((point(u,a),point(v,a),point(v,b),point(u,b)),(c,)*4)
-    for u,r in ((-11,5.1),(2,3.0),(12,4.25)):
-        art.tube(ridge(u,0,5),r,r,2.6,gray,white,16)
-        ellipsoid(lambda x,y,z:ridge(u+x,y,7.7+z),r,r,r,white)
-    art.tube(ridge(19,0,0),.72,.16,35,iron,white,9)
+    for u,r in ((-14,6.4),(1,4.25),(14,5.1)):
+        art.tube(ridge(u,0,7),r,r,2.6,gray,white,16)
+        ellipsoid(lambda x,y,z:ridge(u+x,y,9.7+z),r,r,r,white)
+    art.tube(ridge(22,0,0),.8,.17,46,iron,white,9)
     # The summit memorial faces across the pass, with open wheels, spokes and bent limbs.
-    at,h=site(k,10260,-7.4);art.box(at(0,0,-.28),(5.6,2.5,1.21),h,stone)
-    U=lambda u,v,z:at(u,v,z+1)
+    at,h=site(k,10244,-7.1);art.box(at(0,0,-.28),(3.1,6.2,1.28),h,stone)
+    U=lambda u,v,z:at(-v,u,z+1.03)
+    panel(markers,[at(-1.56,v,z) for v,z in ((.99,.07),(-.99,.07),(-.99,1.02),(.99,1.02))],3,4)
     for cx in (-1.35,1.35):
         for i in range(30):
             a=i*math.tau/30;b=(i+1)*math.tau/30
@@ -135,7 +152,7 @@ def scenery(k):
         a=j*math.tau/80;b=(j+1)*math.tau/80;u=j%20/20;v=u+1/20
         if j//20%2:u,v=1-u,1-v
         def e(t,z):return 4400+11300*math.cos(t),9600*math.sin(t),z+1800
-        picture(peaks,(e(a,-3450),e(b,-3450),e(b,4550),e(a,4550)),((u,0),(v,0),(v,1),(u,1)))
+        picture(peaks,(e(a,-7400),e(b,-7400),e(b,10300),e(a,10300)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
 
 THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':3.85,'terrain':{'sea':False},'land':{'mid':0x85885F},'sky':[0xD0D9E0,0xB6CEE2,0x96BADA,0x6497C6,0x477DB3],'haze':0xCBD5DB,'light':[0xFFF1D7,1.44],'fill':[0xC6D9ED,0x998C72],'sun_altitude':.77,'sun_azimuth':-.91}
