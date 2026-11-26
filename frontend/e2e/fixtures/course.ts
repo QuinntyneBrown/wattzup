@@ -1,3 +1,4 @@
+import telavivElevation from './telaviv-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const telAvivCourseMap = {
   place: 'Tel Aviv, Israel',
   world: 'telaviv',
   distanceKm: 10.7,
-  climbingM: 0,
+  climbingM: 2,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: telavivElevation,
   },
   thumbnailUrl: 'maps/tel-aviv-promenade.jpg',
   photoUrl: 'maps/tel-aviv-promenade-photo.jpg',
