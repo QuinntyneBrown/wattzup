@@ -1,0 +1,115 @@
+{
+  "id": "outback",
+  "name": "Outback Highway",
+  "world": "outback",
+  "theme": "outback",
+  "seed": 2182,
+  "layout": 0,
+  "class": {
+    "id": "running-on-empty",
+    "title": "Running on Empty",
+    "channel": "GCN Training",
+    "videoId": "5nwxi58BiaQ",
+    "syncOffsetSeconds": 4
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

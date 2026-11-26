@@ -3598,7 +3598,7 @@ export const outbackCourseMap = {
   place: 'Northern Territory, Australia',
   world: 'outback',
   distanceKm: 10.775,
-  climbingM: 18,
+  climbingM: 25,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

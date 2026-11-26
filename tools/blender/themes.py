@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import outback as _outback
+
+THEMES['outback'] = _outback.THEME
+SCENERY['outback'] = _outback.scenery
