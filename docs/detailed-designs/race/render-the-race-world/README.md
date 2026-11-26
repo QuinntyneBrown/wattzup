@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Marrakech Medina (#2161)
+
+Use the original Fast Fitness: High Cadence 30 intervals to determine stage length. The race leaves the square for the spice and lantern souks and returns past the ramparts. The existing class registry supplies its warm dusk palette, gentle bends and flat sprint profile. Give the square depth through a fixed Koutoubia silhouette, a nearer tier of roof terraces and the stalls and passersby closest to the rider.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Jemaa el-Fnaa at dusk, 0.08 km | Real 01, 03–06 and 14. Games 01–03. | Koutoubia’s square sandstone minaret rises above the open plaza, beyond grill canopies, palm crowns and glowing café windows. |
+| Night grill stalls, 2.16 km | Real 01–06. Games 01 and 03. | Steam and charcoal smoke drift above rows of numbered canvas stalls. Bare bulbs pick out seated diners and cooks. |
+| Spice and juice market, 4.32 km | Real 02, 11–12. Games 01 and 04. | Orange pyramids, spice mounds and striped awnings narrow the passage. A donkey cart passes the juice sellers. |
+| Souk Semmarine, 6.68 km | Real 07–10 and 15. Games 01 and 05. | Reed screens stripe the lane. Hanging rugs and leather slippers give way to perforated brass lamps. A moped threads between the stalls. |
+| Musicians and performers, 9.24 km | Real 01–04 and 09. Games 02–03. | A half-ring of onlookers gathers around a seated pipe player, a rising snake and a percussionist. A clear line through the square stays visible to the rider. |
+| Ramparts and café terraces, 12.24 km | Real 04–06 and 13–15. Games 02, 04 and 05. | Crenellated red walls and a passage under a horseshoe arch frame the closing lane. Lit rooftop cafés overlook the square, with the Atlas behind the minaret. |
+
+Adapt Caribana’s baked occlusion and bounded moving foreground. Alternate sun-warmed lime plaster, darker patched areas and small pools of pierced light along the souk passage. Batch reed slats, hanging goods and roof silhouettes. Use a bounded set of smoke planes, a moving scooter and foreground musicians. Course geometry, materials, images and animation buffers follow the renderer lifetime. Reference credits are in docs/worlds/marrakech/SOURCES.md. The issue-title search returned #2161.
