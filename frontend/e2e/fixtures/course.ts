@@ -1,3 +1,4 @@
+import sellaRondaElevation from './sellaronda-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -129,8 +130,8 @@ export const sellaRondaCourseMap = {
   name: 'Sella Ronda',
   routeName: 'Over/Under Intervals on the Passo Sella',
   place: 'Four Dolomite passes circling the Sella massif',
-  distanceKm: 11.7,
-  climbingM: 357,
+  distanceKm: 11.65,
+  climbingM: 364,
   rating: 'Hard',
   world: 'sellaronda',
   thumbnailUrl: 'maps/sella-ronda.jpg',
@@ -141,6 +142,7 @@ export const sellaRondaCourseMap = {
   terrain: {
     grade: { 'warm-up': 3, work: 7, recover: 4, 'cool-down': 2, steady: 5 },
     roll: 0.6,
+    elevation: sellaRondaElevation,
   },
 };
 
