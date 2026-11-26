@@ -35,6 +35,8 @@ interface ParkRiderView {
 export class BrooklynPark {
   readonly root = new Group();
   readonly materials = {
+    BrooklynSigns: new MeshBasicMaterial({ side: DoubleSide }),
+    Lullwater: new MeshBasicNodeMaterial({ side: DoubleSide }),
     BrooklynCanopy: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.42 }),
     AudubonFacade: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.41 }),
     BrooklynLawn: new MeshBasicNodeMaterial({ side: DoubleSide }),
@@ -55,7 +57,7 @@ export class BrooklynPark {
   static async load(course: Course) {
     const loader = new TextureLoader();
     const results = await Promise.allSettled(
-      ['canopy', 'boathouse', 'actors'].map((key) =>
+      ['canopy', 'boathouse', 'actors', 'signs'].map((key) =>
         loader.loadAsync('courses/prospect-' + key + '.webp'),
       ),
     );
@@ -80,6 +82,7 @@ export class BrooklynPark {
     this.materials.BrooklynCanopy.map = textures[0]!;
     this.materials.AudubonFacade.map = textures[1]!;
     this.paint.map = textures[2]!;
+    this.materials.BrooklynSigns.map = textures[3]!;
     const leaves = sin(positionWorld.x.mul(0.37).add(sin(positionWorld.z.mul(0.8)).mul(2.7))).add(
       sin(positionWorld.z.mul(0.25).add(positionWorld.x.mul(0.34))),
     );
@@ -89,7 +92,15 @@ export class BrooklynPark {
     this.materials.BrooklynDrive.colorNode = vertexColor()
       .rgb.mul(leaves.smoothstep(-0.37, 0.24).mul(0.27).add(0.73))
       .mul(grit);
-    this.materials.BrooklynLawn.colorNode = vertexColor().rgb.mul(grit);
+    const grass = sin(positionWorld.x.mul(1.87).add(sin(positionWorld.z.mul(0.91))))
+      .add(sin(positionWorld.z.mul(2.1).add(positionWorld.x.mul(0.83))))
+      .mul(0.058)
+      .add(0.97);
+    this.materials.BrooklynLawn.colorNode = vertexColor().rgb.mul(grit).mul(grass);
+    const water = sin(positionWorld.z.mul(4.1).add(sin(positionWorld.x.mul(1.29)).mul(2.4)))
+      .add(sin(positionWorld.z.mul(9.8).add(positionWorld.x.mul(0.81))))
+      .smoothstep(0.18, 1.64);
+    this.materials.Lullwater.colorNode = vertexColor().rgb.mul(water.mul(0.35).add(0.84));
     for (let id = 0; id < 6; id++) {
       const tile = new PlaneGeometry(1, 1),
         uv = tile.getAttribute('uv');

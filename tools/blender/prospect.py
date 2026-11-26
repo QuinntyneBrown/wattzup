@@ -101,6 +101,8 @@ def scenery(k):
     art=Painted(k)
     trees=pictured(k,'BrooklynCanopy')
     front=pictured(k,'AudubonFacade')
+    signs=pictured(k,'BrooklynSigns')
+    water_mesh=pictured(k,'Lullwater')
     stone,bronze,green,iron,wood=[lin(c) for c in (0xD8CEB4,0x485A4E,0x345D45,0x343F3F,0x947052)]
     def panel(at,mesh,x,y,z,w,h,angle,uv=(0,0,1,1)):
         dx=math.cos(angle)*w/2
@@ -125,6 +127,7 @@ def scenery(k):
             trunk(d,v,k.rng.choice((0,1,2,4,5)),k.rng.uniform(12,22))
     for d in range(4900,5825,43):
         trunk(d,154+(d%17),3,16+d%7)
+    for d in range(4800,5890,19):trunk(d,168+d%55,d%6,18+d%9)
     for d in range(1100,1410,22):trunk(d,105+d%17,d%3,17+d%5)
     # Cast-iron single lanterns with flared feet, green slatted benches and park signs.
     for d in range(18,LAP,57):
@@ -140,16 +143,24 @@ def scenery(k):
         at,h=site(k,d,7)
         box(at,h,0,0,0,.13,.13,2.16,iron)
         box(at,h,0,0,1.39,.17,1.38,.85,green)
-        for j in range(3):box(at,h,-.093,0,1.59+j*.14,.03,.83-.14*j,.045,stone)
+        panel(at,signs,-.096,0,1.395,1.38,.85,-math.pi/2,(.002,.502,.498,.998))
     # Grand Army Plaza's triumphal arch. Its opening goes through the entire stone vault.
     at,h=site(k,2901,14)
     arch_radius=6.15
     for y in (-8.7,8.7):
         box(at,h,0,y,0,8.9,6.0,.93,stone)
-        box(at,h,0,y,.93,7.9,5.3,12.4,stone)
+        box(at,h,0,y,.93,7.9,5.3,16.25,stone)
         for yy in (-1.72,1.72):
             for x in (-4.0,4.0):art.tube(at(x,y+yy,.94),.59,.48,12,stone,stone,12,stone)
         box(at,h,-4.18,y,5.6,.42,3.1,4.2,bronze)
+        for row in range(19):
+            z=1.5+row*.78
+            box(at,h,-3.968,y,z,.045,5.26,.065,lin(0xB5AB96))
+        for j in range(5):
+            yy=y+(j-2)*.51
+            art.tube(at(-4.56,yy,6.1+abs(j-2)*.18),.28,.17,1.41,bronze,bronze,9,bronze)
+            art.tube(at(-4.57,yy,7.46+abs(j-2)*.18),.16,.14,.33,bronze,bronze,9,bronze)
+            beam(art,at(-4.54,yy,7.17),at(-4.87,yy+.43,7.88),.13,.14,bronze)
     for j in range(27):
         a=math.pi*j/27
         b=math.pi*(j+1)/27
@@ -166,6 +177,13 @@ def scenery(k):
         for x in (-.92,.70):
             for yy in (-.20,.20):beam(art,at(x,y+yy,22.65),at(x-.39,y+yy,20.64),.20,.17,bronze)
     box(at,h,1.55,0,20.61,2.5,3.4,2.9,bronze)
+    for y in range(-10,11):
+        box(at,h,-4.52,y,17.16,.23,.30,.41,lin(0xAEA38E))
+    for j in range(28):
+        angle=math.pi*j/27
+        y=6.40*math.cos(angle)
+        z=10.4+6.4*math.sin(angle)
+        box(at,h,-3.99,y,z,.23,.51,.37,lin(0xC0B69F))
     # Park Slope brownstone stoops, recessed sash windows and projecting cornices.
     for j in range(40):
         d=2590+j*11
@@ -190,6 +208,12 @@ def scenery(k):
         corners=[at(x,y,2.52) for x,y in ((-3,-2.4),(3,-2.4),(3,2.4),(-3,2.4))]
         for a,b in zip(corners,corners[1:]+corners[:1]):art.face((a,b,at(0,0,4.07)),(cloth,)*3)
         box(at,h,0,-1.49,0,5.1,.99,.92,wood)
+        index=1+j%3
+        u=(index%2)/2
+        v=(1-index//2)/2
+        panel(at,signs,0,-2.42,1.90,3.6,.72,0,(u+.002,v+.002,u+.498,v+.498))
+        for stripe in range(9):
+            box(at,h,-2.48+stripe*.61,-2.37,2.30,.30,.12,.22,cloth if stripe%2 else stone)
         for jx in range(-2,3):box(at,h,jx,-1.51,.93,.67,.65,.31,lin((0xAF4638,0x7D945A,0xD6A548)[jx%3]))
         for n in range(5):k.person(at((n%3-1)*1.15, -3.7-(n%2)*1.1,0),h+.31*n,CROWD)
     for d in (3990,4120):
@@ -207,7 +231,8 @@ def scenery(k):
         pts=[]
         for t,side in ((d,-1),(d+5,-1),(d+5,1),(d,1)):
             pts.append(lake(t,83+side*(52+3*math.sin(t/43))*width(t)))
-        art.face(pts,(lin(0x61847B),lin(0x688B85),lin(0x395D55),lin(0x425F54)))
+        picture(water_mesh,pts,((0,0),(1,0),(1,1),(0,1)))
+        water_mesh.colours[-4:]=[lin(0x64857B),lin(0x678982),lin(0x375D55),lin(0x42675E)]
     at,h=site(k,5760,75)
     z=WATER-height(5760)
     box(at,h,0,0,z-.3,47,17,1.5,stone)
