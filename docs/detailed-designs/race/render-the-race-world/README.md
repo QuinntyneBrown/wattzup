@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Andalusian White Villages (#2195)
+
+Use one Blender course for the opening olive road, the lake descent, the limestone climb and the bridge deck. Map Select restores the historical class and the HUD draws its profile from the exported road samples. The villages are a compressed riding itinerary across Andalusia.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Olive road, 0.08 km | Real 01, 04, 14 and 15. Games 01 and 02. | Silver olive rows follow the ochre contours beside narrow edge-painted asphalt. The stone wall curves past a break in the orchard, framing distant white houses. |
+| Zahara de la Sierra, 3.42 km | Real 02, 03, 08 and 09. Games 01 and 04. | A square Moorish keep crowns a jagged rock above stacked white roofs, while the road stays low enough to read the castle against the sky. |
+| Zahara-El Gastor reservoir, 6.21 km | Real 03, 08 and 09. Games 01 and 05. | The verge drops away to uneven turquoise coves. A small boat crosses the water below olive terraces, and the distant shoreline stays fixed behind it. |
+| Grazalema pass, 10.66 km | Real 01, 04, 10 and 15. Games 01 and 03. | Oak and pinsapo forest frame the mountain bend. The village appears as a band of white walls against the tilted limestone layers of the sierra. |
+| Puente Nuevo and El Tajo, 15.47 km | Real 11–14. Games 03 and 04. | Before the crossing the rider sees the tall central arch of Puente Nuevo and its upper openings between sheer cliffs. Houses line the rim, with the river far below the bridge deck. |
+| Olvera white streets, 20.91 km | Real 02, 05–08, 12 and 15. Games 02–05. | Iron grilles, hanging geraniums and terracotta pots border a tight whitewashed lane. Beyond it the bell tower, red tile roofs and ruined keep share the hilltop skyline. |
+
+Keep the masonry bridge fixed in the gorge, visible from its approach before the rider crosses the same deck. Place the castle above the roofs and give the white walls hard shade beneath every ledge and balcony. Reuse the silhouettes of the near olive trees on the distant terraces. Drive the boat, bird and bell from ride time. Bound the moving actors and release all course geometry, materials and textures on exit. See ADRs 0021, 0023, 0030, 0034 and 0035, the performance-budget design and docs/worlds/pueblos/SOURCES.md.
