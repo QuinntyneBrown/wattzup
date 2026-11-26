@@ -1290,3 +1290,16 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+### Winterlude, Ottawa (#2251)
+
+Model one winding, level canal corridor with two racing directions and smooth connecting turns. The class covers 17.35 km, returning through the same landmarks. Build the walls, snowbanks, stairs, bridge supports and warming huts once. A scratched ice material receives cold reflected light. Use original bare tree, skyline and sculpture textures. Anchor the snow and ice artworks to separate modeled plinths, with the ice gallery shaded under a canopy. Animate the skaters’ pushes, the festival flags and light colour using the ride clock. Batch repeated trees and canal sections, reduce detail on low, and release all scene resources on exit. Pair the six views at matching chainage and stage. Record 60-second moving submitted-frame samples after warm-up.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Downtown skateway, 0.14 km | Real 01, 06, 08 and games 01, 02 | Château Laurier and the Parliament towers rise beyond bare branches and a crowd on groomed ice. |
+| Pretoria Bridge, 2.26 km | Real 02–05 and game 03 | The stone lift towers, dark steel deck and truss underside span the groomed canal. |
+| Warming huts, 4.12 km | Real 06–09, 13, 14 and games 02, 04 | The ice widens by timber warming huts, a BeaverTails stand and festival tents, with families gliding past. |
+| Snow carving terrace, 6.32 km | Real 10, 11, 13 and games 01, 04 | A large snow bear and owl stand on white plinths above steps and the canal wall. |
+| Dows Lake turn, 7.74 km | Real 06–09 and games 01, 02 | The track turns at the lake in clean winter sun. Skate scratches, snowbanks and bare maples lead into the returning lane. |
+| Illuminated ice gallery, 11.34 km | Real 11, 12, 15 and games 04, 05 | Blue and violet lights pick out transparent ice carvings in a shaded festival pavilion. |
