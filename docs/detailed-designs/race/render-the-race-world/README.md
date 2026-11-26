@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Suburban Sunrise (#2222)
+
+The register of the street changes from a straight tree tunnel to gently curved residential blocks and a broad cul-de-sac. Use the Quebec, Connecticut and Wisconsin imagery for maple and porch proportions. It is a composite residential avenue. Class resistance supplies the grade across the original 6.575 km distance.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Maple canopy, 0.12 km | Real 01–04 and 10. Games 01 and 04. | Warm dawn light catches mature maple leaves above the narrow lane. Parked family cars, long tree shadows and overhead wires frame the rider. |
+| Porch row, 1.19 km | Real 05–08 and 12. Games 02 and 03. | Two-storey clapboard houses sit back from the curb behind mown lawns. Three wooden steps lead to each columned porch; a mailbox stands at a driveway. |
+| Lawn sprinklers, 2.46 km | Real 04, 07, 13 and 14. Games 01 and 03. | Small sprinklers sweep glittering arcs of droplets across a dewy lawn and adjoining concrete sidewalk. The grass strip breaks at a driveway. |
+| Newspaper delivery, 3.73 km | Real 01, 03, 06 and 12. Games 02 and 04. | A delivery cyclist follows the curb with a stack of folded papers. One rolled paper arcs from the moving rider toward a porch lawn. |
+| The waking block, 4.91 km | Real 05, 08, 11 and 12. Games 03 and 05. | A neighbour raises a coffee cup and waves from a porch. A jogger and dog walker pass a fire hydrant and a basketball hoop farther along the sidewalk. |
+| Cul-de-sac loop, 6.35 km | Real 08–10, 14 and 15. Games 01 and 05. | The pavement widens and the course bends around the end of the cul-de-sac. Cars, stop signs and wooden poles outline the return under a pink-orange sky. |
+
+Keep distant trees stationary behind the near maple branches and the delivery cyclist. Cast long dawn shadows along the road and grass strips. Set porch steps, driveways and moving actors on the course grade. Share geometry for cars and street furniture and bound the moving water droplets and paper. Dispose of their meshes and textures on exit. Capture six rider views and measure the opening and delivery scenes. See ADRs 0021, 0023, 0030, 0034 and 0035.
