@@ -74,7 +74,7 @@ def scenery(k):
             for j in range(5):
                 art.box(at(-7+j*3.5,s*2.72,-.12),(.18,.18,1.1),h,cream)
             for z in (.55,.94):beam(art,at(-7,s*2.72,z),at(7,s*2.72,z),.09,cream)
-    for d,v in ((4200,-15),(9974,23)):
+    for d,v in ((4222,-22),(9974,23)):
         at,h=site(k,d,v)
         def ring(z,r,a):return at(r*math.cos(a),r*math.sin(a),z)
         for n in range(12):
