@@ -85,6 +85,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Independence Pass (`independence`) | Over/Under Threshold Efforts (GCN Training, 35:00) | 15.200 km | 897 m | `public/courses/independence.glb` ([ride views](screenshots/independence-pass/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Isle of Man Mountain Course (`isleofman`) | Full Gas Sprints (GCN Training, 20:00) | 8.133 km | 206 m | `public/courses/isleofman.glb` ([ride views](screenshots/isle-of-man-mountain-course/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Iten, Kenya (`iten`) | 40 Minute HIIT (GCN Training, 40:00) | 17.860 km | 378 m | `public/courses/iten.glb` ([ride views](screenshots/iten-kenya/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Ffordd Pen Llech (`penllech`) | Steepest Climb in the World (GCN Training, 45:40) | 14.267 km | 180 m | `public/courses/penllech.glb` ([ride views](screenshots/ffordd-pen-llech/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
