@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import poggio as _poggio
+
+THEMES['poggio'] = _poggio.THEME
+SCENERY['poggio'] = _poggio.scenery
