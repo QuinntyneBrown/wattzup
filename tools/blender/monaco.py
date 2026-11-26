@@ -91,7 +91,7 @@ def yacht(art,a,scale,seed):
 
 
 def scenery(k):
-    art=Painted(k);facades=pictured(k,'CircuitFronts');casino=pictured(k,'CasinoFront');fences=pictured(k,'DebrisFence');palms=pictured(k,'RivieraPalms')
+    art=Painted(k);facades=pictured(k,'CircuitFronts');casino=pictured(k,'CasinoFront');fences=pictured(k,'DebrisFence');palms=pictured(k,'RivieraPalms');words=pictured(k,'TrackWords');boards=pictured(k,'CircuitBoards');palace=pictured(k,'PalaceRock')
     k.B['TunnelLamps']=type(k.B['terrain'])('TunnelLamps','terrain');light=Painted(k,'TunnelLamps')
     silver=lin(0xB1BAC0);cream=lin(0xD5C4AB);blue=lin(0x5378A3);roof=lin(0x63716E)
     for d in range(-60,10050,9):
@@ -138,6 +138,23 @@ def scenery(k):
         for angle in (.2,1.75):
             dx=3.6*math.cos(angle);dy=3.6*math.sin(angle)
             picture(palms,(a(-dx,-dy,.1),a(dx,dy,.1),a(dx,dy,8.6),a(-dx,-dy,8.6)),((0,0),(1,0),(1,1),(0,1)))
+    for d,tile,side in ((108,0,1),(1625,1,-1),(1644,0,-1),(3260,3,-1),(4683,3,1),(4880,1,-1),(6504,2,1),(6552,1,-1),(6590,2,1),(9304,0,1)):
+        a,h=site(k,d,side*5.5)
+        panel(boards,(a(-4.3,0,.88),a(4.3,0,.88),a(4.3,0,2.0),a(-4.3,0,2.0)),tile)
+    for d in (145,1640,4634,6548,6770):
+        a,h=site(k,d,-7.3)
+        art.box(a(0,0,0),(3.1,1.6,.75),h,roof)
+        for dx in (-.68,.73):
+            orange=lin(0xEA7038);helmet=lin(0xEAE8DB)
+            art.tube(a(dx,0,.74),.21,.24,.70,orange,orange,7,orange)
+            art.tube(a(dx,0,1.44),.16,.13,.30,helmet,helmet,8,helmet)
+            beam(art,a(dx-.18,0,1.32),a(dx-.42,.04,1.04),.11,.12,orange)
+    for d in (92,1635,6510,6570):
+        index=k.road.index(d)
+        u=.5 if d in (1635,6570) else 0
+        picture(words,(k.road.at(index,-1.7,.029),k.road.at(index,1.7,.029),k.road.at(index+2,1.7,.029),k.road.at(index+2,-1.7,.029)),((u,0),(u+.5,0),(u+.5,1),(u,1)))
+    a,h=site(k,9430,79)
+    picture(palace,(a(-49,0,-2.7),a(49,0,-2.7),a(49,0,42),a(-49,0,42)),((0,0),(1,0),(1,1),(0,1)))
     # The palace sits above the harbour wall on the ochre limestone rock.
     a,h=site(k,9490,96);far=Painted(k,'peaks')
     for j in range(11):
