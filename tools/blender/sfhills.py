@@ -24,7 +24,7 @@ def direction(d):
     for station,sense in TURNS:angle+=sense*math.pi/2*smooth(station-16,station+16,d)
     if CROOKED_START<d<CROOKED_END:
         f=(d-CROOKED_START)/(CROOKED_END-CROOKED_START)
-        angle+=math.radians(67)*math.tanh(3.4*math.sin(f*8*math.pi))*min(1,f*28,(1-f)*28)
+        angle+=math.radians(67)*math.tanh(1.95*math.sin(f*8*math.pi))*min(1,f*28,(1-f)*28)
     return angle
 
 
@@ -72,15 +72,23 @@ def land(r,col,theme,bc):
     m=bc.Builder('CityFoundations','terrain');m.colours=[]
     def height(x,y):
         _,j,dist=r.tree.find((x,y,0));return r.s[j]['z']-.25-1.6*smooth(7,35,dist)
-    previous=None
-    for i in range(0,len(r.s),2):
-        row=[]
-        for v in (-115,-68,-34,-16,-8,0,8,16,34,68,115):
-            x,y,_=r.at(i,v);row.append((x,y,height(x,y)-.06))
-        if previous:
-            for j in range(len(row)-1):
-                pts=(previous[j],row[j],row[j+1],previous[j+1]);m.quad(*pts);m.colours.extend([lin(0x839371 if abs(j-4)>1 else 0x958F83)]*4)
-        previous=row
+    # One continuous ground surface, including between adjacent arms of the crooked street.
+    # A ribbon per road arm can throw a strip of uphill ground across the downhill lane.
+    samples=r.s;points={}
+    for p in samples[::4]:
+        ix,iy=math.floor(p['x']/8),math.floor(p['y']/8)
+        for xx in range(ix-8,ix+9):
+            for yy in range(iy-8,iy+9):points[(xx,yy)]=None
+    vertices={}
+    for xx,yy in points:
+        x,y=xx*8,yy*8
+        near=r.tree.find_n((x,y,0),9)
+        z=min(samples[i]['z'] for _,i,_ in near)-2.85
+        vertices[(xx,yy)]=m.v((x,y,z))
+    for xx,yy in points:
+        cell=((xx,yy),(xx+1,yy),(xx+1,yy+1),(xx,yy+1))
+        if all(c in vertices for c in cell):
+            m.faces.append(tuple(vertices[c] for c in cell));m.colours.extend([lin(0x888D78)]*4)
     return m.build(col),height
 
 
@@ -99,7 +107,7 @@ def scenery(k):
     def house(d,side,w,h,index):
         # The stepped bays project independently of the facade's colour and trim.
         at,yaw=site(d,side);sgn=1 if side>0 else -1;depth=8.0;half=w/2
-        if not k.road.clear_of_road(*at()[:2],9,k.road.index(d)):return
+        if k.road.tree.find((*at()[:2],0))[2] < 7.3+math.hypot(w/2,depth/2):return
         art.box(at(0,0,-5.1),(w,depth,h+5.1),yaw,lin([0xADB59F,0xC49D89,0xA99780,0xA9ACAD][index]))
         art.box(at(0,0,h-.27),(w+.45,depth+.48,.36),yaw,cream)
         v=-sgn*4.08
@@ -114,7 +122,7 @@ def scenery(k):
         art.box(at(w*.29,1.3,h),(.62,.85,1.15),yaw,lin(0x9A7969))
     for i,d in enumerate(range(0,8960,13)):
         near=min(abs(d-f) for f in FLATS)
-        if near<15:continue
+        if near<19 or 4185<d<4263 or 8320<d<8425:continue
         for sgn in (-1,1):
             if 6520<d<6990 and i%4:continue
             side=sgn*(rng.uniform(13.7,16.3) if not 6520<d<6990 else rng.uniform(21,29))
@@ -161,8 +169,24 @@ def scenery(k):
                 x,y,z=at();dx=w*math.cos(a);dy=w*math.sin(a)
                 tile(beds,[(x-dx,y-dy,z-.09),(x+dx,y+dy,z-.09),(x+dx,y+dy,z+1.47),(x-dx,y-dy,z+1.47)],0,1,1)
     # Telegraph Hill and the Bay Bridge share a fixed horizon across the city.
-    p=k.s[k.road.index(4220)];h=p['h'];fx,fy=math.cos(h),math.sin(h);sx,sy=-fy,fx
-    bx=p['x']+fx*380+sx*145;by=p['y']+fy*380+sy*145
+    # Streets which continue straight past the two crest turns fall away towards the skyline.
+    for crest in (4212,8375):
+        at,yaw=site(crest,0);yaw=direction(crest-30)
+        ox,oy,oz=at();cs,sn=math.cos(yaw),math.sin(yaw)
+        def point(d,v,up):return (ox+cs*d-sn*v,oy+sn*d+cs*v,oz-.15*d+up)
+        for a in range(12,325,8):
+            art.face((point(a,-6,.05),point(a+8,-6,.05),point(a+8,6,.05),point(a,6,.05)),(lin(0x666663),)*4)
+            for v in (-7,7):
+                zz=point(a,v,.12);art.box(zz,(8.1,1.7,.12),yaw,cream)
+        for a in range(42,311,17):
+            for side in (-1,1):
+                x,y,z=point(a,side*16,0)
+                if k.road.tree.find((x,y,0))[2]<14:continue
+                h=9+(a%5)
+                art.box((x,y,z-1.6),(13,8,h+1.6),yaw,lin(0xB7B3A3))
+                tile(homes,[point(a+u,side*11.95,zv) for u,zv in ((-6.5,0),(6.5,0),(6.5,h),(-6.5,h))],(a+side)%4,2,2)
+    p=k.s[k.road.index(4212)];h=direction(4182);fx,fy=math.cos(h),math.sin(h);sx,sy=-fy,fx
+    bx=p['x']+fx*440+sx*34;by=p['y']+fy*440+sy*34
     sky.tube((bx,by,6),157,64,90,lin(0x617A63),lin(0x798865),28)
     sky.tube((bx,by,96),7.2,5.3,46,cream,white:=lin(0xE0DCCD),32)
     for j in range(16):
@@ -171,7 +195,7 @@ def scenery(k):
     for j in range(12):
         a=j*math.tau/12;sky.tube((bx+5.65*math.cos(a),by+5.65*math.sin(a),143),.86,.69,6.2,cream,white,7)
     sky.tube((bx,by,149.2),6.8,6.3,2.1,cream,white,24)
-    end=k.s[k.road.index(8380)];efx,efy=math.cos(end['h']),math.sin(end['h'])
+    end=k.s[k.road.index(8375)];efx,efy=math.cos(direction(8345)),math.sin(direction(8345))
     ex,ey=end['x']+efx*1320,end['y']+efy*1320
     picture(bay,[(ex-7400,ey-7300,-6),(ex+7400,ey-7300,-6),(ex+7400,ey+7300,-6),(ex-7400,ey+7300,-6)],((0,0),(1,0),(1,1),(0,1)))
     ix=ex+efy*280;iy=ey-efx*280

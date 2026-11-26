@@ -47,6 +47,7 @@ export class SanFranciscoHills {
   private readonly trolley = new Group();
   private readonly streetCar = new Group();
   private readonly fog = new Group();
+  private readonly waterfront: Mesh<PlaneGeometry, MeshBasicMaterial>;
   private readonly wheels: Group[] = [];
   private readonly steering: Group[] = [];
   private readonly clock = uniform(0);
@@ -71,6 +72,7 @@ export class SanFranciscoHills {
         'sfhills-signs',
         'sfhills-cable-side',
         'sfhills-cable-end',
+        'sfhills-waterfront',
       ];
     const results = await Promise.allSettled(
       names.map((n) => loader.loadAsync('courses/' + n + '.webp')),
@@ -139,6 +141,27 @@ export class SanFranciscoHills {
       depthWrite: false,
       fog: false,
     });
+    const crest = course.place(8375);
+    const approach = course.place(8345).heading;
+    const portrait = maps[7]!;
+    portrait.flipY = true;
+    this.waterfront = new Mesh(
+      this.panel,
+      new MeshBasicMaterial({
+        map: portrait,
+        alphaTest: 0.38,
+        side: DoubleSide,
+        fog: false,
+      }),
+    );
+    this.waterfront.position.set(
+      crest.x - 108 * Math.sin(approach),
+      crest.y + 8,
+      crest.z - 108 * Math.cos(approach),
+    );
+    this.waterfront.rotation.y = approach;
+    this.waterfront.scale.set(205, 68.3, 1);
+    this.root.add(this.waterfront);
     this.makeCableCar();
     this.makeMotorCar();
     const en = course.place(8380, 0, this.p);
@@ -264,6 +287,7 @@ export class SanFranciscoHills {
       for (const axle of this.steering) axle.rotation.y = turn;
       this.state.steeringAngle = this.steering[0]!.rotation.y;
     }
+    this.waterfront.visible = metres > 8080 && metres < 8440;
     const bay = this.course.place(8380, 0, this.p);
     this.fog.position.set(
       bay.x + Math.sin(seconds * 0.032) * 84,
@@ -277,11 +301,16 @@ export class SanFranciscoHills {
     if (!view) return;
     const r = this.course.place(metres, 0, this.p),
       site = this.course.place(view[1], view[2], this.next);
-    if (view[0] === 4220) {
-      const h = site.heading;
-      site.x += -Math.sin(h) * 320 - Math.cos(h) * 112;
-      site.z += -Math.cos(h) * 320 + Math.sin(h) * 112;
-      site.y = 122;
+    if (view[0] === 4220 || view[0] === 8360) {
+      const telegraph = view[0] === 4220;
+      const crest = telegraph ? 4212 : 8375;
+      const heading = this.course.place(crest - 30).heading;
+      this.course.place(crest, 0, site);
+      const depth = telegraph ? 440 : 1320;
+      const offset = telegraph ? 34 : 120;
+      site.x += -Math.sin(heading) * depth - Math.cos(heading) * offset;
+      site.z += -Math.cos(heading) * depth + Math.sin(heading) * offset;
+      site.y = telegraph ? 111 : 20;
     }
     const dx = site.x - r.x,
       dz = site.z - r.z,
@@ -306,6 +335,7 @@ export class SanFranciscoHills {
       this.ball,
       this.wheelShape,
       this.haze,
+      this.waterfront.material,
       this.dryFog,
       this.side,
       this.end,
