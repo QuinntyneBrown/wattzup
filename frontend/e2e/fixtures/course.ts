@@ -3588,3 +3588,36 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const oktoberfestCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'oktoberfest-munich',
+  name: 'Oktoberfest, Munich',
+  routeName: 'Oktoberfest, Munich',
+  place: 'Munich, Germany',
+  world: 'oktoberfest',
+  distanceKm: 10.651,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/oktoberfest-munich.jpg',
+  photoUrl: 'maps/oktoberfest-munich-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 149, 14, 80),
+      seg('work', 153, 18, 85),
+      seg('recover', 40, 11, 80),
+      seg('work', 197, 19, 90),
+      seg('recover', 40, 11, 80),
+      seg('work', 199, 20, 90),
+      seg('recover', 40, 11, 80),
+      seg('work', 196, 21, 90),
+      seg('recover', 40, 11, 80),
+      seg('work', 209, 22, 90),
+      seg('cool-down', 225, 11, 80),
+    ],
+  },
+};
