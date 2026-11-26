@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import mountwashington as _mountwashington
+
+THEMES['mountwashington'] = _mountwashington.THEME
+SCENERY['mountwashington'] = _mountwashington.scenery
