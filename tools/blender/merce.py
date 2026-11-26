@@ -74,27 +74,23 @@ def civic(art,stone,k,d,side,palau):
     flag(art,at,-1.1,-side*.85,high-3,2.2,3)
 
 
-def cathedral(art,stone,k,d):
-    at,h=site(k,d,21);pale=lin(0xA69686);dark=lin(0x564C47)
-    art.box(at(0,8,-.16),(27,16,17.3),h,pale);panel(stone,at,0,-.13,.03,27,17.3,2)
-    for u,span,base,tall in ((-12,2.8,16,14),(12,2.8,16,14),(0,3.45,17,26)):
-        art.tube(at(u,1,base),span,span*.78,tall*.35,dark,pale,8,pale)
-        art.tube(at(u,1,base+tall*.35),span*.87,.09,tall*.65,pale,pale,8)
-        for j in range(6):
-            a=j*math.tau/6;x=u+span*math.cos(a);y=1+span*math.sin(a)
-            art.tube(at(x,y,base+.35*tall),.37,.015,3.1,pale,pale,6)
-    for u in (-9,-6,6,9):art.tube(at(u,-.56,13.2),.43,.03,7.6,pale,pale,6)
+def cathedral(art,facade,k,d):
+    at,h=site(k,d,38);pale=lin(0x6C625C)
+    art.box(at(0,7.6,-.16),(23,14,12.5),h,pale)
+    for u in (-10,10):
+        art.tube(at(u,4,10),2.1,1.6,7.4,pale,pale,8)
+    picture(facade,(at(-13.1,0,.07),at(13.1,0,.07),at(13.1,0,33.6),at(-13.1,0,33.6)),((0,0),(1,0),(1,1),(0,1)))
 
 
 def scenery(k):
-    art=Painted(k);stone=pictured(k,'LaietanaStone');people=pictured(k,'FestivalAudience')
+    art=Painted(k);stone=pictured(k,'LaietanaStone');people=pictured(k,'FestivalAudience');facade=pictured(k,'GothicFront')
     metal=lin(0x474048);edges=lin(0xB5A18F);amber=lin(0xFFD095)
     for d in range(-64,13020,23):
         plaza=abs(d-6790)<105;gothic=8450<d<9850;w=width(d)
         for side in (-1,1):
             front=w+4.75+(14 if plaza else 0);a,h=site(k,d,side*front)
             high=k.rng.uniform(12.9,17.8) if gothic else k.rng.uniform(17.3,25);span=k.rng.uniform(21.85,22.8)
-            landmark=plaza or side>0 and abs(d-9357)<29
+            landmark=plaza or side>0 and abs(d-9377)<57
             if not landmark:
                 art.box(a(0,side*3.7,-.2),(span,7.4,high+.18),h,lin(k.rng.choice((0x82776E,0x988074,0x847575))))
                 panel(stone,a,0,-side*.065,.04,span,high,0 if (d//23+side)%3 else 1)
@@ -115,10 +111,20 @@ def scenery(k):
                 v=-w+(j+.5)*2*w/15;z=7.4-.68*math.cos(v/w*1.5)
                 t=lin(0xCE392E if j%3==0 else 0xE5B64C)
                 art.face((a(0,v-.29,z),a(0,v+.29,z),a(.06,v,z-.64)),(t,)*3)
-    civic(art,stone,k,6790,-1,False);civic(art,stone,k,6806,1,True);cathedral(art,stone,k,9357)
+    civic(art,stone,k,6790,-1,False);civic(art,stone,k,6806,1,True);cathedral(art,facade,k,9377)
     a,h=site(k,6797,-10.7);panel(people,a,0,0,.13,9.3,10.2,0,1.04)
     for d in (4530,4588,4640,4702):
         a,h=site(k,d,-5.1);panel(people,a,0,0,.1,3.4,2.15,1,1.07)
+    # Montjuïc's wooded saddle and low castle walls against the piromusical.
+    far=Painted(k,'peaks');a,h=site(k,12940,40)
+    old=None
+    for v in range(-800,861,36):
+        peak=17+39*math.exp(-((v+125)/255)**2)+5*math.sin(v/62)
+        q=(a(175,v,-6),a(175,v,peak))
+        if old:
+            tint=lin(0x302B3C);far.face((old[0],q[0],q[1],old[1]),(tint,)*4)
+        old=q
+    far.box(a(173,-132,52),(12,48,3.8),h,lin(0x4E4047))
     return {'efforts':0}
 
 
