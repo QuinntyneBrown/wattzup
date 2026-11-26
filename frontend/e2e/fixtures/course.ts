@@ -1,3 +1,4 @@
+import quebecElevation from './quebec-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const quebecCourseMap = {
   place: 'Québec City, Canada',
   world: 'quebec',
   distanceKm: 13.225,
-  climbingM: 0,
+  climbingM: 158,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: quebecElevation,
   },
   thumbnailUrl: 'maps/old-quebec.jpg',
   photoUrl: 'maps/old-quebec-photo.jpg',
