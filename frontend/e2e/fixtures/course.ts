@@ -1,3 +1,4 @@
+import oktoberfestElevation from './oktoberfest-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const oktoberfestCourseMap = {
   place: 'Munich, Germany',
   world: 'oktoberfest',
   distanceKm: 10.651,
-  climbingM: 0,
+  climbingM: 16,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: oktoberfestElevation,
   },
   thumbnailUrl: 'maps/oktoberfest-munich.jpg',
   photoUrl: 'maps/oktoberfest-munich-photo.jpg',
