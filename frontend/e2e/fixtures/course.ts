@@ -1,3 +1,4 @@
+import valaisElevation from './valais-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const valaisCourseMap = {
   place: 'Valais, Switzerland',
   world: 'valais',
   distanceKm: 12.0,
-  climbingM: 0,
+  climbingM: 333,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: valaisElevation,
   },
   thumbnailUrl: 'maps/valais-ski-stations.jpg',
   photoUrl: 'maps/valais-ski-stations-photo.jpg',
