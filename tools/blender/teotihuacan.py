@@ -67,19 +67,30 @@ def scenery(k):
     def cutout(mesh,at,width,height,index=0,cols=4):
         u=(index+.008)/cols;v=(index+.992)/cols
         picture(mesh,[at(0,y,z) for y,z in ((-width/2,-.18),(width/2,-.18),(width/2,height),(-width/2,height))],((u,0),(v,0),(v,1),(u,1)))
-    at,h=site(k,8600,152);pyramid(sun,at,113,108,5,13.25,18)
-    steps(sun,stair_from_side(8600,34,1),186,.348,.50,7.3)
+    at,h=site(k,8620,-310);pyramid(sun,at,113,108,5,13.25,18)
+    steps(sun,stair_from_side(8620,-191,-1),186,.348,.50,7.3)
+    for side in (-1,1):
+        curb=stair_from_side(8620+side*8.4,-191,-1)
+        for j in range(31):
+            lo=j*3;hi=lo+3;bottom=j*2.088
+            for v in (-.62,.62):
+                stone(sun,[curb(lo,v,bottom),curb(hi,v,bottom+2.088),curb(hi,v,bottom+3.15),curb(lo,v,bottom+1.05)])
+            stone(sun,[curb(lo,-.62,bottom+1.05),curb(hi,-.62,bottom+3.15),curb(hi,.62,bottom+3.15),curb(lo,.62,bottom+1.05)])
     at,h=site(k,22475);pyramid(moon,at,85,109,5,8.7,14)
     at,h=site(k,22378);steps(moon,at,130,.329,.58,8.7)
     at,h=site(k,227,-34);pyramid(masonry,at,37,23,4,3.5,5)
-    for j in range(18):
-        at,h=site(k,201+j*3.1,-12.3)
-        side=lambda x,y,z:at(y,x,z)
-        cutout(faces,side,2.5,2.9,0,1)
+    # The heads project from the west-facing temple wall and carry a deep receding collar.
+    for x in (165,175,185):
+        for lane in (-13,-19,-25,-31,-37,-43):
+            at,h=site(k,x,lane)
+            if x>165 and lane<-13:continue
+            art.box(at(1.1,0,-.18),(4.8,3.5,2.98),h,lin(0x8B7969))
+            art.box(at(-1.32,0,.1),(.68,2.97,2.63),h,lin(0xA39783))
+            cutout(faces,lambda u,v,z:at(-1.68,v,z+.19),2.69,2.42,0,1)
     for j,d in enumerate(range(-96,22290,79)):
         for sign in (-1,1):
             offset=sign*(34+k.rng.uniform(0,12));at,h=site(k,d,offset)
-            if sign==1 and abs(d-8600)<155 or sign==-1 and abs(d-227)<59:continue
+            if sign==-1 and abs(d-8620)<155 or sign==-1 and abs(d-227)<59:continue
             width=k.rng.uniform(9,14)
             pyramid(masonry,at,k.rng.uniform(19,32),width,2,1.45,2.9)
             steps(masonry,stair_from_side(d,offset-sign*(width+2.8),sign),13,.212,.52,3.5)
@@ -91,16 +102,23 @@ def scenery(k):
         if j%3==0:
             at,h=site(k,d+19,(-1 if j%2 else 1)*k.rng.uniform(10,16))
             cutout(people,at,3.25,1.77,2)
-    for j,d in enumerate(range(17414,17582,11)):
-        at,h=site(k,d,-8-k.rng.uniform(0,3));cutout(people,at,3.6,1.45,3)
-        if j%2==0:
-            at,h=site(k,d+1,-12);cutout(people,at,1.28,1.84,0)
+    for j,d in enumerate((17405,17431,17470,17517,17566)):
+        side=-1 if j%3 else 1
+        at,h=site(k,d,side*(9+j%2));cutout(people,at,3.4,1.22,3)
+        if j!=2:
+            at,h=site(k,d+1,side*11);cutout(people,at,1.06,1.86,0)
+        for v in (-1.8,1.8):
+            art.box(at(0,v,-.15),(.12,.12,2.58),h,lin(0x846A50))
+        art.box(at(0,0,2.43),(2.68,4.2,.16),h,lin((0x866B55,0xA0956D,0xAF6E4C)[j%3]))
+        at,h=site(k,d+5,side*15);cutout(flora,at,7.6,5.7,3)
+    for j,d in enumerate((152,169,4240,4253,4266,8515,8530,12824,12860,17470,17481,22102,22115)):
+        at,h=site(k,d,(-1 if j%2 else 1)*(10+j%4));cutout(flora,at,2.2,1.4,j%2)
     # A large elliptical backdrop keeps the mountain skyline beyond the architectural geometry.
     for j in range(96):
         a=j*math.tau/96;b=(j+1)*math.tau/96;u=j%24/24;v=u+1/24
         if j//24%2:u,v=1-u,1-v
         def point(t,z):return 11100+19800*math.cos(t),14800*math.sin(t),z+2280
-        picture(sky,(point(a,-1800),point(b,-1800),point(b,13500),point(a,13500)),((u,0),(v,0),(v,1),(u,1)))
+        picture(sky,(point(a,-3500),point(b,-3500),point(b,12200),point(a,12200)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
 
 THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':14,'terrain':{'sea':False},'land':{'mid':0xA8A26C},'sky':[0xD1C6B1,0xC0CBCA,0x9DB8CF,0x6797C3,0x4676A7],'haze':0xC8C3A9,'light':[0xFFE2B9,1.46],'fill':[0xB9D1E4,0xA68A65],'sun_altitude':.57,'sun_azimuth':-.87}
