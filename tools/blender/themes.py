@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import timessquare as _timessquare
+
+THEMES['timessquare'] = _timessquare.THEME
+SCENERY['timessquare'] = _timessquare.scenery
