@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Rio Sambadrome (#2201)
+
+Place one fixed 700 m avenue between the stands. Three complete laps of 1,866⅔ m return around the outside of the parade; the final straight completes the 6.3 km class at the white arch. Align every pass, stage and movement to the same rider distance.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Marquês de Sapucaí, 0.08 km | Real 02, 07, 11 and 13–15. Games 01 and 03. | Floodlights and crowded stepped stands converge on the single concrete runway. The white Apoteose arch marks the far end and the rider lane remains clear. |
+| Feathered alas, 0.21 km | Real 01, 07–11. Games 02 and 04. | Coordinated wings of turquoise, green and pink feathered dancers fill the flanks. Bare concrete, paint joints, cast light and scattered confetti remain visible beneath them. |
+| Carros alegóricos, 0.34 km | Real 01–06 and 12. Games 03–05. | Tall original floats stack moving performers, sculpted tropical birds, gold foliage and luminous blue scrolls. Nearby figures give their three-dimensional decks scale. |
+| Bateria, 2.34 km | Real 07–09 and 11. Games 01, 02 and 04. | Uniformed musicians stand in deep staggered ranks with surdos, raised mallets and tamborims. The foreground drumline performs beneath the stadium lights. |
+| Mestre-sala and porta-bandeira, 4.29 km | Real 03, 05 and 07–11. Games 02–04. | A flag-bearer in a wide embroidered skirt turns an original blue-and-gold school banner beside her partner, with spectators, phones and waving flags on the terraces. |
+| Praça da Apoteose, 6.25 km | Real 01, 02 and 12–15. Games 01, 03 and 05. | The runway opens out beneath Niemeyer’s white arch, with its central suspended sweep and two wide legs. The finish crosses the arch axis against layered Rio hills and favela windows. |
+
+Model Niemeyer’s arch as a continuous sculptural span with clear air under its two openings. Build original carros alegóricos with stepped decks, large figures and lamps. Use batched crowd bands along the stepped stands and animate individual foreground performers, surdo mallets and the couple’s actual cloth banner on ride time. Bake pools of coloured light and bound the confetti particles. Keep the Rio ridge and hillside windows fixed beyond the outer streets. Dispose of owned GPU resources on exit. See ADRs 0021, 0023, 0030, 0034 and 0035, Caribana’s screenshots and performance-budget design.
