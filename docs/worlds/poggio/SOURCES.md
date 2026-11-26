@@ -26,4 +26,4 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-04.jpg | Zwift: [“Mayan 8” Route Details (Watopia)](https://zwiftinsider.com/route/mayan-8/) (g0096) | © Zwift |
 | game-05.jpg | Zwift: [“Coast Crusher” Route Details (Watopia)](https://zwiftinsider.com/route/coast-crusher/) (g0020) | © Zwift |
 
-The villa and shop fronts, rubble stone, rows of flowers, palms and tifosi are original artwork created for this course with OpenAI ImageGen. The road lettering, terrain, tunnels, campanile, glasshouses and Via Roma finish are original course assets. The photographs and game images above informed proportions, surfaces and rider sightlines.
+The villa and shop fronts, rubble stone, rows of flowers, palms, tifosi, church elevations, olive trees, bedrock and the distant Ligurian coastal panorama are original artwork created for this course with OpenAI ImageGen. The road lettering, terrain, tunnels, campanile, glasshouses and Via Roma finish are original course assets. The photographs and game images above informed proportions, surfaces and rider sightlines.

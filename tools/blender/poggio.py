@@ -46,11 +46,10 @@ def land(r,col,theme,bc):
     b=bc.Builder('Riviera terraces','terrain');b.colours=[]
     sea=bc.Builder('LigurianSea','terrain');sea.colours=[]
     def height(x,y):
-        _,i,dist=r.tree.find((x,y,0));p=r.s[i];rise=p['z'];edge=smooth(5,108,dist)
-        if y>p['y']:
-            z=rise*(1-edge)-3.1*edge
-        else:z=rise+(41+12*math.sin(x/169))*edge
-        return z-.22
+        _,i,dist=r.tree.find((x,y,0));p=r.s[i];rise=p['z'];edge=smooth(19,105+2.1*rise,dist)
+        sea_side=smooth(-46,46,y-p['y']);inland=41+12*math.sin(x/169)
+        z=rise+(inland*(1-sea_side)-(rise+3.1)*sea_side)*edge
+        return z-.18
     xmin=int(min(p['x'] for p in r.s))-190;xmax=int(max(p['x'] for p in r.s))+220
     ymin=int(min(p['y'] for p in r.s))-190;ymax=int(max(p['y'] for p in r.s))+220
     step=14
@@ -75,6 +74,7 @@ def scenery(k):
     art=Painted(k);names=('RivieraVillas','ViaRomaShops','PoggioStone','FlowerRows','RivieraPalms','PoggioTifosi','RivieraSigns')
     villas,shops,stone,flowers,palms,fans,signs=[pictured(k,n) for n in names]
     ochre,pink,cream,red,green,metal=[lin(c) for c in (0xE6C394,0xD6AE97,0xE8DEBA,0xA76955,0x52775F,0x858E8D)]
+    front,bells,olives,rockface=[pictured(k,n) for n in ('SanremoChiesa','PoggioBelfry','LigurianOlives','LigurianRock')]
     def tile(mesh,points,u=1,v=1):
         picture(mesh,points,((0,0),(u,0),(u,v),(0,v)))
     def panel(at,mesh,x,y,z,w,h,angle,j,n):
@@ -109,8 +109,11 @@ def scenery(k):
     for d in (91,116,11382):
         at,h=site(k,d)
         for j in range(7):art.box(at(0,(j-3)*1.14,.075),(2.05,.59,.022),h,cream)
+    # The church square, farm terraces and shops sit on founded masonry aprons.
+    for d,v,span,depth in ((7187,17,43,28),(4840,13,52,26),(11450,0,180,21)):
+        at,h=site(k,d,v);art.box(at(0,0,-22),(span,depth,21.95),h,lin(0x9F9781))
     # Three fixed promontories with a dark road bore in the near one.
-    for d,v,length,reach,up in ((1940,46,63,36,24),(2320,118,244,112,42),(2630,184,369,183,63)):
+    for d,v,length,reach,up in ((1940,50,73,39,39),(2160,163,244,112,73),(2510,270,369,183,105)):
         at,h=site(k,d,v);base=-k.road.pos(d)[2]
         for j in range(33):
             a=j*math.tau/33;b=(j+1)*math.tau/33
@@ -123,12 +126,32 @@ def scenery(k):
         def arch(t,r,x):return at(x,r*math.cos(t),.02+r*math.sin(t))
         tile(stone,(arch(a,5.25,0),arch(b,5.25,0),arch(b,6.55,0),arch(a,6.55,0)),.49,1)
         art.face((arch(a,5.25,0),arch(b,5.25,0),arch(b,5.25,28),arch(a,5.25,28)),(lin(0x73716B),lin(0x73716B),lin(0x444642),lin(0x444642)))
+    # The bore is cut through an asymmetric limestone shoulder. Carry the rock
+    # down to ground far outside the opening so the portal belongs to the headland.
+    for n in range(28):
+        a=math.pi*n/28;b=math.pi*(n+1)/28
+        def bore(t,x):return at(x,6.55*math.cos(t),.02+6.55*math.sin(t))
+        def rock(t,x,end):
+            y=(35+10*math.cos(t)+6*math.sin(t*4))*math.cos(t)
+            z=(21+5*math.sin(t*3)+4*math.cos(t))*math.sin(t)-1.8
+            return at(x+2*math.sin(t*3)+end*3.85,y,z)
+        coords=(bore(a,.02),bore(b,.02),rock(b,2,0),rock(a,2,0));tile(rockface,coords,1.26,2.32)
+        top=(rock(a,2,0),rock(b,2,0),rock(b,26,1),rock(a,26,1));art.face(top,(lin(0x7D8969),green,lin(0x82946B),green))
+        coords=(bore(b,28),bore(a,28),rock(a,26,1),rock(b,26,1));tile(rockface,coords,1.26,2.32)
+    for n in range(20):
+        a=math.pi*n/20;b=math.pi*(n+1)/20
+        def lining(t,x):return at(x,5.23*math.cos(t),.02+5.23*math.sin(t))
+        pts=(lining(a,.05),lining(a,27.95),lining(b,27.95),lining(b,.05))
+        art.face(pts,(lin(0x5A5952),lin(0x464842),lin(0x464842),lin(0x5A5952)))
+    for side in (-1,1):
+        for j in range(5):
+            art.box(at(j*5,side*5.1,2.62),(.75,.31,.26),h,lin(0xF4D290))
     # Stepped flower beds and glasshouses, each roof divided into individual panes.
-    for d in range(3640,6470,74):
-        side=1 if d%3 else -1;at,h=site(k,d,side*11.4)
+    for d in [*range(3640,6470,74),4830]:
+        side=1 if d==4830 or d%3 else -1;at,h=site(k,d,side*11.4)
         for j in range(3):
             y=side*j*4.1;z=j*.56
-            art.box(at(0,y,z-4.8),(29,3.9,4.8),h,ochre)
+            art.box(at(0,y,z-16),(29,3.9,16),h,ochre)
             tile(flowers,(at(-14.4,y-1.92,z+.012),at(14.4,y-1.92,z+.012),at(14.4,y+1.92,z+.012),at(-14.4,y+1.92,z+.012)),4.2,1)
         at,h=site(k,d+18,side*15.3);glass=lin(0xB2CFCD);ridge=lin(0xCEE3DA)
         for j in range(8):
@@ -142,6 +165,13 @@ def scenery(k):
     # Summit church front, nave and bell tower.
     at,h=site(k,7183,16)
     art.box(at(9.2,0,-.60),(18.4,10.1,10.1),h,cream);art.roof(at(9.2,0,9.50),18.9,10.7,2.70,h,red)
+    for j in range(14):
+        a=math.pi*j/14;b=math.pi*(j+1)/14
+        def door(t,r):return at(-.49,r*math.cos(t),2.9+r*math.sin(t))
+        art.face((door(a,1.30),door(b,1.30),at(-.49,0,2.9)),(lin(0x6C5947),)*3)
+        art.face((door(a,1.30),door(b,1.30),door(b,1.60),door(a,1.60)),(ochre,)*4)
+    art.face((at(-.25,-5.15,9.45),at(-.25,5.15,9.45),at(-.25,0,12.08)),(cream,)*3)
+    for side in (-1,1):beam(art,at(-.34,side*5.2,9.45),at(-.34,0,12.09),.28,.36,ochre)
     for y in (-4.23,-2.68,2.68,4.23):art.box(at(-.21,y,.08),(.39,.50,8.84),h,ochre)
     art.box(at(-.25,0,0),(.38,2.61,3.62),h,lin(0x6C5947))
     art.box(at(-.33,0,7.15),(.30,9.91,.46),h,ochre)
@@ -149,10 +179,28 @@ def scenery(k):
     for side in (-1,1):
         art.box(at(9.6+side*1.91,7.35,13.02),(.08,1.2,2.83),h,lin(0x555A50))
         art.box(at(9.6,7.35+side*1.91,13.02),(1.20,.08,2.83),h,lin(0x555A50))
+    for n in range(32):
+        a=math.tau*n/32;b=math.tau*(n+1)/32
+        def face(t,r):return at(7.64,7.35+r*math.cos(t),11.56+r*math.sin(t))
+        art.face((at(7.64,7.35,11.56),face(a,1.06),face(b,1.06)),(cream,)*3)
+    beam(art,at(7.60,7.35,11.56),at(7.60,7.21,12.38),.07,.08,metal)
+    beam(art,at(7.59,7.35,11.56),at(7.59,7.91,11.73),.08,.08,metal)
     art.box(at(9.6,7.35,16.53),(4.34,4.34,.56),h,cream)
     for j in range(4):
         a=j*math.pi/2+math.pi/4;b=a+math.pi/2
         art.face((at(9.6+3.12*math.cos(a),7.35+3.12*math.sin(a),17.04),at(9.6+3.12*math.cos(b),7.35+3.12*math.sin(b),17.04),at(9.6,7.35,21.03)),(red,red,ochre))
+    panel(at,front,-.53,0,.03,10.12,11.56,-math.pi/2,0,1)
+    for side in (-1,1):
+        panel(at,bells,9.6+side*1.99,7.35,8.82,3.84,7.76,math.pi/2,0,1)
+        panel(at,bells,9.6,7.35+side*1.99,8.82,3.84,7.76,0,0,1)
+    for d in range(1510,9550,14):
+        if 1855<d<1925 or 7120<d<7245:continue
+        for j in range(2):
+            side=-1 if j==0 else 1;v=side*k.rng.uniform(12,42)
+            if 4780<d<4880 and side>0:continue
+            at,h=site(k,d,v);x,y,z=at(0,0);floor=k.height_at(x,y)-z-1.4
+            high=k.rng.uniform(4.2,9.1);tree=k.rng.randrange(2)
+            for angle in (.51,1.77):panel(at,olives,0,0,floor,high*(.98 if tree==0 else .8),high,angle,tree,2)
     for d in list(range(6980,7280,4))+list(range(11140,11590,4)):
         for side in (-1,1):
             at,h=site(k,d,side*(width(d)+.74))
@@ -168,6 +216,21 @@ def scenery(k):
     for j in range(22):
         for n in (0,1):
             art.box(at(n*.43,(j-10.5)*.39,.078),(.43,.39,.02),h,cream if (j+n)%2==0 else lin(0x454843))
+    capes=pictured(k,'LigurianCapes')
+    for d,v,span,high,bottom in ((2110,540,1380,284,-19),(8570,710,1710,377,-27)):
+        at,h=site(k,d,v);base=bottom-k.road.pos(d)[2]
+        for j in range(42):
+            a=j/42;b=(j+1)/42
+            def horizon(u,f):return at((u-.5)*span,72*math.cos(math.pi*(u-.5)),base+f*high)
+            picture(capes,(horizon(a,0),horizon(b,0),horizon(b,1),horizon(a,1)),((a,0),(b,0),(b,1),(a,1)))
+    # The coastal view lies down the rider's line of sight across the descent.
+    ax,ay,az=k.road.pos(8380);tx,ty,_=k.road.pos(8423,19)
+    dx,dy=tx-ax,ty-ay;leg=math.hypot(dx,dy);dx/=leg;dy/=leg
+    for j in range(44):
+        u=j/44;v=(j+1)/44
+        def skyline(t,q):
+            side=(t-.5)*1400;return (ax+dx*560-dy*side,ay+dy*560+dx*side,az-68+q*210)
+        picture(capes,(skyline(u,0),skyline(v,0),skyline(v,1),skyline(u,1)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
 
 THEME={'lay':route,'land_builder':land,'road_builder':road,'terrain':{'sea':False},'road_half_width':4.35,'land':{'mid':0x839266},'sky':[0xDBEBEA,0xB5D8EB,0x8FC2DE,0x65A3CE,0x4888BC],'haze':0xC6D9DA,'light':[0xFFEBCA,2.15],'fill':[0xC6DFE8,0xA7A18F],'sun_radius':7,'sun_altitude':.78,'sun_azimuth':-.89}
