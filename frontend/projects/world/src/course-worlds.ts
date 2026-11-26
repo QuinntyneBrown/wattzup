@@ -34,6 +34,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   calobra: 'courses/calobra',
   campolongo: 'courses/campolongo',
   cabot: 'courses/cabot',
+  seapoint: 'courses/seapoint',
   coney: 'courses/coney',
   copacabana: 'courses/copacabana',
   copenhagen: 'courses/copenhagen',

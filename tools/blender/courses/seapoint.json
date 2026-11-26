@@ -1,0 +1,181 @@
+{
+  "id": "seapoint",
+  "name": "Sea Point, Cape Town",
+  "world": "seapoint",
+  "theme": "seapoint",
+  "seed": 2203,
+  "layout": 0,
+  "class": {
+    "id": "20-40-interval-session",
+    "title": "20/40 Interval Session",
+    "channel": "GCN Training",
+    "videoId": "Le2uYl12voY",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 100,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 160,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
