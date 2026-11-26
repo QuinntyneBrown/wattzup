@@ -40,14 +40,15 @@ def land(r,col,theme,bc):
     ground=bc.Builder('WharfPaving','terrain');ground.colours=[];ground.uvs=[]
     for i in range(0,len(r.s)-1,4):
         end=min(i+4,len(r.s)-1)
-        for a,b,h in ((-130,-2.82,-.09),(2.82,5.8,-.09),(5.8,30,-4.2),(30,130,-.09)):
+        station_depth=-1.42 if 8320<r.s[i]['d']<8500 else -.09
+        for a,b,h in ((-130,-2.82,station_depth),(2.82,5.8,-.09),(5.8,30,-4.2),(30,130,-.09)):
             pts=[r.at(i,a,h),r.at(end,a,h),r.at(end,b,h),r.at(i,b,h)]
             picture(ground,pts,[(x*.43,y*.43) for x,y,_ in pts])
     return ground.build(col),lambda x,y:3.8
 
 def scenery(k):
     art=Painted(k);water=pictured(k,'OudegrachtWater');cellars=pictured(k,'WerfCellars');homes=pictured(k,'UtrechtGables')
-    trees=pictured(k,'WharfElms');bikes=pictured(k,'WharfBikes');dom=pictured(k,'Domtoren');rim=pictured(k,'UtrechtSky')
+    trees=pictured(k,'WharfElms');bikes=pictured(k,'WharfBikes');dom=pictured(k,'Domtoren');rim=pictured(k,'UtrechtSky');station=pictured(k,'StationspleinSign')
     brick,stone,dark,white,timber,zinc,green,red,lit=map(lin,(0x87594b,0xa79c8e,0x343c3e,0xeee6cf,0x724d3c,0x556968,0x527951,0xb14131,0xe5ce90))
     def panel(mesh,pts,idx=0,count=1):
         a=idx/count;b=(idx+1)/count;picture(mesh,pts,((a+.001,0),(b-.001,0),(b-.001,1),(a+.001,1)))
@@ -79,7 +80,7 @@ def scenery(k):
                 facade(homes,at,8,v,15.8,high,idx,4)
                 # Solid side returns give each frontage depth up to its roofline.
                 if j%3==0:art.box(at(.22,v+side*2.9,-.04),(.36,5.7,high*.75),h,brick)
-        if j%4==0:
+        if j%4==0 and not 8270<d<8520:
             for side,v in ((0,4.1),(1,31.1)):
                 cross(trees,at,4+j%9,v,8.3,9.2+j%4,(j//4+side)%4,4,-.1)
         if j%5==1:
@@ -99,7 +100,7 @@ def scenery(k):
                 for i in range(8):art.box(at(u,5+i*3.6,.3),(.10,.14,.86),h,dark)
                 beam(art,at(u,5,1.14),at(u,31,1.14),.1,dark)
     # Domtoren: square masonry base, recessed bell levels, open octagonal lantern and copper spire.
-    at,h=site(k,4420,1.5)
+    at,h=site(k,4500,2)
     for base,top,ra,rb,n,idx in ((0,46,10,9,4,0),(46,70,8.8,8.2,4,1),(70,91,6.9,6.1,8,1)):
         for j in range(n):
             a=(j+.5)*math.tau/n;b=(j+1.5)*math.tau/n
@@ -109,7 +110,7 @@ def scenery(k):
         art.tube(at(0,0,top-.6),rb*1.06,rb*1.06,.8,stone,stone,n,cap=stone)
     art.tube(at(0,0,91),6.4,.28,20.7,zinc,dark,8,cap=zinc)
     # The station apron descends through an array of actual two-storey racks.
-    at,h=site(k,8405,-14)
+    at,h=site(k,8396,-13)
     for j in range(6):
         u=j*8-22
         art.box(at(u,-3,-.4),(.55,.66,5.5),h,stone)
@@ -119,6 +120,20 @@ def scenery(k):
             art.box(at(u,-2,z),(7.6,1.8,.1),h,zinc)
             facade(bikes,at,u,-2,7.0,1.45,0,3,z)
         art.box(at(u,2,4.65),(5.7,.22,.14),h,lit)
+    for j in range(18):
+        u=j*1.1-25;z=-.07-.064*j
+        art.box(at(u,4.6,z-.08),(1.18,4.05,.14),h,red)
+        for v in (2.48,6.72):
+            art.box(at(u,v,z-.09),(1.16,.2,.65),h,stone)
+            beam(art,at(u-.55,v,z+.87),at(u+.55,v,z+.81),.075,dark)
+    for j in range(7):
+        v=-5+j*1.9
+        art.box(at(6,v,.05),(.32,.16,2.97),h,red)
+        art.box(at(6,v,1.54),(3.9,.16,.12),h,red)
+        cross(bikes,at,6,v,3.4,1.44,0,3,.12)
+        cross(bikes,at,6,v,3.4,1.32,0,3,1.67)
+    art.box(at(-8,2,3.3),(.37,9.7,1.06),h,dark)
+    panel(station,[at(-8.22,v,z) for v,z in ((6.82,3.38),(-2.82,3.38),(-2.82,4.30),(6.82,4.30))],0,1)
     # The priority markings at the signal form triangles pointing back at approaching bikes.
     at,h=site(k,12344)
     for n in range(8):
