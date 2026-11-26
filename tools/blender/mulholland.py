@@ -46,7 +46,7 @@ def land(r,col,theme,bc):
 
 
 def scenery(k):
-    art=Painted(k);flora=pictured(k,'CanyonPlants');basin=pictured(k,'LosAngelesBasin');valley=pictured(k,'ValleyGrid');letters=pictured(k,'MountLeeLetters');signs=pictured(k,'MulhollandSigns')
+    art=Painted(k);flora=pictured(k,'CanyonPlants');basin=pictured(k,'LosAngelesBasin');valley=pictured(k,'ValleyGrid');letters=pictured(k,'MountLeeLetters');mount=pictured(k,'MountLeeSlope');signs=pictured(k,'MulhollandSigns')
     steel=lin(0xADB3AF);timber=lin(0x896C51);earth=lin(0xB8976A);cream=lin(0xDDCDB7);dark=lin(0x42484A);glass=lin(0x70837F)
     def plant(d,off,n,r,high):
         a,h=site(k,d,off);foot=-max(0,abs(off)-5.5)*.42-.25
@@ -80,6 +80,10 @@ def scenery(k):
         for u in range(-6,7,2):art.box(a(u,3.17,.65),(.15,.16,2.79),h,cream)
         art.box(a(1.7,-1.1,3.96),(9.9,5.8,2.76),h,cream);art.box(a(1.7,1.87,4.22),(8.7,.13,1.89),h,glass)
         art.box(a(0,0,3.84),(15.6,8.6,.24),h,dark)
+        for s in (-1,1):
+            for v in (-2.2,-.8,.6,2.0):art.box(a(s*7.29,v,1.06),(.11,1.07,2.19),h,glass)
+        for j in range(13):art.box(a(-5.5+j*.91,3.25,.47),(.55,.12,.11),h,timber)
+        beam(art,a(-3.9,6.53,1.43),a(4.0,6.53,1.43),.07,.085,steel)
         for u in (-4,-2,0,2,4):art.box(a(u,6.53,-.1),(.12,.16,1.68),h,dark)
     for d,side,plate in ((2660,1,basin),(12087,-1,valley),(16455,1,basin)):
         a,h=site(k,d+100,side*172)
@@ -89,9 +93,7 @@ def scenery(k):
         beam(art,a(-12,side*4.42,1.08),a(12,side*4.42,1.08),.105,.105,steel)
         art.tube(a(1,side*3.47,.06),.15,.12,1.43,dark,dark,10,dark);beam(art,a(1,side*3.09,1.48),a(1,side*3.84,1.64),.22,.24,steel)
     a,h=site(k,8365,117);base=a;a=lambda x,y,z=0:base(x*.78+y*.63,-x*.63+y*.78,z)
-    mound=lin(0x8E805A)
-    for j in range(-7,8):
-        high=20+8*math.cos(j*.2);art.tube(a(j*9,2,-37),15,9,high+37,mound,lin(0xADA17C),10,mound)
+    picture(mount,(a(-96,2,-34),a(96,2,-34),a(96,2,38),a(-96,2,38)),UV)
     for i in range(9):
         u=(i-4)*7.05;height=15.7+2*math.cos((i-4)*.45);v=-16.6
         picture(letters,(a(u-3.35,v,height),a(u+3.35,v,height),a(u+3.35,v,height+8.3),a(u-3.35,v,height+8.3)),((i/9,0),((i+1)/9,0),((i+1)/9,1),(i/9,1)))
