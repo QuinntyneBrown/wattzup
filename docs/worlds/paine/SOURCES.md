@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Zwift Medio Fondo 2022” Route Details (Watopia)](https://zwiftinsider.com/route/zwift-medio-fondo-2022/) (g0195) | © Zwift |
 | game-04.jpg | Zwift: [“One Ride To Rule Them All” Route Details (Watopia)](https://zwiftinsider.com/route/one-ride-to-rule-them-all/) (g0113) | © Zwift |
 | game-05.jpg | Zwift: [“City and the Sgurr” Route Details (Scotland)](https://zwiftinsider.com/route/city-and-the-sgurr/) (g0018) | © Zwift |
+
+The wind-bent coirón, cushion scrub, guanacos, gravel and lenticular cloud are original generated artwork. Real 01–02 and 11 inform the gravel and vegetation, real 06 and 12 the animal proportions, and real 03–05 and 10 the clouds and mountain light. The rock, ice, shore and waterfall are original geometry.
