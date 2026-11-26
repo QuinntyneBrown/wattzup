@@ -100,6 +100,31 @@ def scenery(k):
     for name in ('Slickrock','Entrada','Wingate'):k.B[name]=type(k.B['terrain'])(name,'terrain')
     slick=Painted(k,'Slickrock');red=Painted(k,'Entrada');wall=Painted(k,'Wingate')
     far=Painted(k,'peaks');plants=pictured(k,'Juniper')
+    # Continuous stepped canyon walls flank the river; vary their rims and vertical joints along Highway 128.
+    for side in (-1,1):
+        previous=None
+        for d in range(-75,1760,17):
+            a,h=site(k,d,0);edge=side*((88 if side>0 else 63)+9*math.sin(d/113)+5*math.cos(d/42))
+            high=52+16*math.sin(d/88)+8*math.cos(d/31)+8*math.sin(d/141)
+            row=[]
+            for spread,y in ((0,-5),(4,.07),(12,.20),(14,.24),(15,.51),(17,.55),(18,.89),(21,.98),(35,1)):
+                row.append(a(0,edge+side*(spread+2.3*math.cos(d/31)),high*y))
+            if previous:
+                for j,(q,r,u,v) in enumerate(zip(previous,previous[1:],row[1:],row)):
+                    shade=.84+.08*math.cos(d/51)+j*.008;col=(shade,shade*.94,shade*.88,1)
+                    wall.face((q,r,u,v),(col,)*4)
+            previous=row
+    # Two lower foothills hide the bottom edge of the snow range.
+    x,y,z=k.road.pos(12900)
+    for i in range(2):
+        prev=None
+        for across in range(-6000,6500,95):
+            ridge=z+42+i*43+28*math.sin(across/267+i)+17*math.cos(across/169-i)+8*math.sin(across/84)
+            q=((x+2870+i*220,y+across,z-470),(x+2870+i*220,y+across,ridge))
+            if prev:
+                shade=lin(0x9A8F92 if i else 0x9E8274)
+                far.face((prev[0],q[0],q[1],prev[1]),(shade,)*4)
+            prev=q
     for d in range(-75,13190,106):
         for side in (-1,1):
             canyon=d<1730
@@ -119,12 +144,34 @@ def scenery(k):
     a,h=site(k,6580,37)
     arch(red,a,[(-22,-3,7,5),(-19,4,5,5),(-15,10,4.8,5),(-9,14,4,4.8),(-2,15,3.4,4.6),(6,15.8,3.8,4),(14,14,4.1,4.5),(19,8,4,5),(23,-2,6,5)],2)
     a,h=site(k,9288,-30)
-    arch(red,a,[(-9,-2,3.4,3.8),(-8.2,3.2,2.35,2.3),(-7.9,8.1,1.61,1.7),(-6.8,12.6,1.2,1.4),(-5.1,15.8,1.3,1.45),(-2,17.3,1.5,1.65),(1.4,16.8,1.7,1.8),(4.5,15,1.9,2.05),(6.5,11.7,2.05,2.1),(7.8,7.8,2.5,2.6),(8.7,3.2,3.3,3.4),(10.4,-2,4.5,4.3)],3.5)
+    arch(red,a,[(-9,-2,3.4,3.8),(-8.2,3.2,2.35,2.3),(-7.9,8.1,1.61,1.7),(-6.8,12.6,.94,1.15),(-5.4,15.8,1.05,1.25),(-2.6,17.3,1.6,1.85),(1.4,17.7,1.85,2.05),(4.4,15.4,1.7,1.95),(6.6,12.6,2.1,2.4),(8.9,8.3,2.9,3.0),(10.2,3.5,3.8,4.2),(12.4,-2,5,5.2)],3.5)
+    # A shallow cross-bedded bowl under Delicate Arch, with a broad saddle sweeping around its feet.
+    bowl,h=site(k,9288,-31)
+    previous=None
+    for radius,z in ((.003,.17),(.22,.24),(.46,.35),(.64,.58),(.81,.99),(.94,1.48),(1,1.42),(1.10,-.25)):
+        row=[]
+        for j in range(46):
+            t=math.tau*j/46;u=radius*28*math.cos(t);v=radius*15*math.sin(t)
+            row.append(bowl(u,v,z+radius*(.48*math.sin(t*2)+.38*math.cos(t))))
+        if previous:
+            for j in range(len(row)):
+                m=(j+1)%len(row);shade=(.94,.90,.87,1)
+                slick.face((previous[j],previous[m],row[m],row[j]),(shade,)*4)
+        previous=row
+    # The trail hugs the crown of a low Navajo outcrop beside the tarmac.
+    previous=None
+    for d in range(2080,2310,3):
+        a,h=site(k,d,0);rise=.66*math.sin(math.pi*(d-2080)/230)**2
+        row=[a(0,-off,z) for off,z in ((5.75,-.16),(6.55,rise*.40),(7.55,rise),(9.55,rise+.04),(11.3,rise*.75),(15.0,-.16))]
+        if previous:
+            for j in range(len(row)-1):
+                shade=(.94,.89,.81,1);slick.face((previous[j],previous[j+1],row[j+1],row[j]),(shade,)*4)
+        previous=row
     for d in range(-45,13060,7):
-        off=k.rng.choice((-1,1))*k.rng.uniform(6.5,34)
+        off=k.rng.choice((-1,1))*k.rng.uniform(5.7,27)
         if d<1960 and off>20:continue
         a,h=site(k,d,off);x,y,z=a(0,0);g=k.height_at(x,y)-z-.055
-        tile=0 if k.rng.random()<.19 else k.rng.randrange(1,4);size=k.rng.uniform(2.5,4.3) if tile==0 else k.rng.uniform(.47,1.10)
+        tile=0 if k.rng.random()<.27 else k.rng.randrange(1,4);size=k.rng.uniform(2.8,5.1) if tile==0 else k.rng.uniform(.47,1.10)
         u=tile%2*.5;v=(1-tile//2)*.5
         for angle in (.31,1.86):
             dx=size*.72*math.cos(angle);dy=size*.72*math.sin(angle)
