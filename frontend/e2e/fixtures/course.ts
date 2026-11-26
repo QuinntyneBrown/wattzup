@@ -3588,3 +3588,39 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const tamalpaisCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mount-tamalpais',
+  name: 'Mount Tamalpais',
+  routeName: 'The Panoramic Highway',
+  place: 'Marin County, California',
+  world: 'tamalpais',
+  distanceKm: 12.149,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/mount-tamalpais.jpg',
+  photoUrl: 'maps/mount-tamalpais-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 13, 85),
+      seg('work', 225, 19, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 225, 19, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 225, 21, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 285, 21, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 225, 22, 75),
+      seg('work', 15, 24, 100),
+      seg('recover', 225, 22, 75),
+      seg('work', 15, 24, 100),
+      seg('cool-down', 73, 11, 80),
+    ],
+  },
+};
