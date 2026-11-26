@@ -1,3 +1,4 @@
+import sellaElevation from './sella-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const sellaCourseMap = {
   place: 'The Dolomites, Italy',
   world: 'sella',
   distanceKm: 11.6375,
-  climbingM: 0,
+  climbingM: 619,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: sellaElevation,
   },
   thumbnailUrl: 'maps/passo-sella.jpg',
   photoUrl: 'maps/passo-sella-photo.jpg',
