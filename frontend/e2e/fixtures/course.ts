@@ -3598,7 +3598,7 @@ export const pamplonaCourseMap = {
   place: 'Pamplona, Spain',
   world: 'pamplona',
   distanceKm: 9.133333333333333,
-  climbingM: 27,
+  climbingM: 29,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
