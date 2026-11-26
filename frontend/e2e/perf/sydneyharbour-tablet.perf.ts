@@ -1,5 +1,5 @@
 import { newRiderProgress } from '../fixtures/api';
-import { sydneyharbourCourseMap } from '../fixtures/course';
+import { sydneyHarbourCourseMap } from '../fixtures/course';
 import { ECHELON_NOTIFY, echelonBike, resistanceFrame, workoutFrame } from '../fixtures/echelon';
 import { expect, test } from '../fixtures/test';
 import { RacePage } from '../pages/race.page';
@@ -19,7 +19,7 @@ for (const [section, offsetMetres] of [
   test(
     'Sydney Harbour Fireworks sustains 60 FPS through the ' + section,
     async ({ page, browser, bluetooth, api, worldRide }, info) => {
-      const map = sydneyharbourCourseMap;
+      const map = sydneyHarbourCourseMap;
       api.answer('GET', '/api/maps', [map]);
       api.answer('GET', '/api/progress', { ...newRiderProgress, openMapIds: [map.id] });
       const cdp = await page.context().newCDPSession(page);

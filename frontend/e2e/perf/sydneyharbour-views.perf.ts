@@ -1,5 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
-import { sydneyharbourCourseMap } from '../fixtures/course';
+import { sydneyHarbourCourseMap } from '../fixtures/course';
 import { ECHELON_NOTIFY, resistanceFrame, workoutFrame } from '../fixtures/echelon';
 import { startRace, stepUntil } from '../fixtures/race';
 import { expect, test } from '../fixtures/test';
@@ -18,8 +18,8 @@ test('Ride the Sydney Harbour Bridge under the New Year fireworks', async ({
   worldRide,
 }) => {
   await worldRide.pin('low', 'webgl2');
-  const race = await startRace(page, bluetooth, api, sydneyharbourCourseMap.id, 'mode=solo', {
-    catalogue: [sydneyharbourCourseMap],
+  const race = await startRace(page, bluetooth, api, sydneyHarbourCourseMap.id, 'mode=solo', {
+    catalogue: [sydneyHarbourCourseMap],
     world: true,
   });
   await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
