@@ -36,6 +36,7 @@ def road(r,st,length,col,bc):
 def land(r,col,theme,bc):
     turf=bc.Builder('RaumaSlope','terrain');turf.colours=[];turf.uvs=[]
     xs=[p['x'] for p in r.s];ys=[p['y'] for p in r.s]
+    bx,by,bz=r.pos(5060);bh=heading(5060)
     def height(x,y):
         j=max(1,min(len(xs)-1,bisect_left(xs,x)));a,b=r.s[j-1:j+1]
         base=a['z']+(b['z']-a['z'])*(x-a['x'])/max(.01,b['x']-a['x'])
@@ -44,7 +45,16 @@ def land(r,col,theme,bc):
         fold=math.sin(x*.021+y*.006)*math.cos(y*.023)+.38*math.sin(y*.087+x*.019)
         raw=base+cliff+min(31,dist*.28)*fold
         shoulder=max(0,min(1,(dist-5)/26))
-        return p['z']-.88+(raw-p['z'])*shoulder
+        z=p['z']-.88+(raw-p['z'])*shoulder
+        u=(x-bx)*math.cos(bh)+(y-by)*math.sin(bh)
+        v=(x-bx)*math.sin(bh)-(y-by)*math.cos(bh)
+        if abs(u)<145 and -65<v<270:
+            # The gorge passes under the road; a granite escarpment carries the falls.
+            ridge=max(0,v-20)*1.31
+            notch=max(0,1-abs(u)/15)
+            blend=min(1,(145-abs(u))/50,(270-v)/55,(v+65)/25)
+            z+=(bz+ridge-8*notch-z)*max(0,blend)*min(1,max(0,(dist-5)/14))
+        return z
     last=None
     for x in range(int(min(xs))-310,int(max(xs))+380,10):
         row=[(x,y,height(x,y)) for y in range(int(min(ys))-390,int(max(ys))+396,10)]
@@ -73,17 +83,17 @@ def scenery(k):
             v=-s*k.rng.uniform(10,20);x,y,_=at(0,v);z=k.height_at(x,y)
             art.tube((x,y,z-.6),2.9,1.7,3.4,shadow,granite,6,cap=granite)
     # Several water sheets follow a single cliff face; the bridge crosses its lower channel.
-    at,h=site(k,5015,20)
-    for a,b,za,zb,wa,wb in ((57,42,294,181,7,12),(42,25,181,78,12,9),(25,4,78,-3,9,13),(4,-12,-3,-11,13,8)):
-        picture(falls,[at(u,v,z) for u,v,z in ((-wb/2,b,zb),(wb/2,b,zb),(wa/2,a,za),(-wa/2,a,za))],((0,0),(1,0),(1,1),(0,1)))
+    at,h=site(k,5060,0)
+    for a,b,za,zb,wa,wb in ((258,172,312,198,11,21),(172,86,198,85,21,15),(86,20,85,-2,15,10),(20,-20,-2,-7,10,14)):
+        picture(falls,[at(u,-v,z) for u,v,z in ((-wb/2,b,zb),(wb/2,b,zb),(wa/2,a,za),(-wa/2,a,za))],((0,0),(1,0),(1,1),(0,1)))
         for s in (-1,1):
-            stone([at(u,v,z) for u,v,z in ((s*(wb/2+.2),b+.3,zb),(s*(wb/2+23),b+4,zb),(s*(wa/2+31),a+6,za),(s*(wa/2+.2),a+.3,za))])
+            stone([at(u,-v,z) for u,v,z in ((s*(wb/2+.2),b+.3,zb),(s*(wb/2+72),b+13,zb),(s*(wa/2+81),a+15,za),(s*(wa/2+.2),a+.3,za))])
     for j in range(18):
         a=j*math.pi/18;b=(j+1)*math.pi/18
         def arch(t,r,v):return at(r*math.cos(t),v,-6+r*math.sin(t))
-        for v in (-4,-.2):
-            stone([arch(a,5.2,v),arch(b,5.2,v),at(6.8*math.cos(b),v,1.5),at(6.8*math.cos(a),v,1.5)])
-        stone([arch(a,5.2,-4),arch(b,5.2,-4),arch(b,5.2,-.2),arch(a,5.2,-.2)])
+        for v in (-3.3,3.3):
+            stone([arch(a,5.2,v),arch(b,5.2,v),at(6.8*math.cos(b),v,.03),at(6.8*math.cos(a),v,.03)])
+        stone([arch(a,5.2,-3.3),arch(b,5.2,-3.3),arch(b,5.2,3.3),arch(a,5.2,3.3)])
     # Snow follows high rock shelves, with a tapered, uneven melt edge.
     for j in range(45):
         d=8800+j*68;s=(-1 if j%2 else 1);at,h=site(k,d,s*(42+(j*17)%81))
@@ -98,6 +108,12 @@ def scenery(k):
         for s in (-1,1):
             art.box(at(s*2.48,v,1.86),(.12,1.7,1.16),h,rust)
             beam(art,at(s*2.45,v,3.03),at(s*2.45,v-1.6,3.03),.08,metal)
+    for j in range(5):
+        v=-j*5
+        for u in (-1.9,1.9):
+            x,y,_=at(u,v);ground=k.height_at(x,y)
+            beam(art,(x,y,min(ground,-1+at(0,0)[2])),at(u,v,1.5),.32,metal)
+            beam(art,at(u,v,-1.3),at(u,v-4.8,1.48),.21,rust)
     for j in range(3):
         v=-6-j*7
         picture(visitors,[at(u,v,z) for u,z in ((-1.8,1.9),(1.8,1.9),(1.8,3.9),(-1.8,3.9))],((j/3,0),((j+1)/3,0),((j+1)/3,1),(j/3,1)))
@@ -107,7 +123,7 @@ def scenery(k):
         a=j*math.tau/72;b=(j+1)*math.tau/72;u=j%24/24;v=u+1/24
         if j//24%2:u,v=1-u,1-v
         def rim(t,z):return 1850+7900*math.cos(t),7900*math.sin(t),z+480
-        picture(sky,(rim(a,-3200),rim(b,-3200),rim(b,4600),rim(a,4600)),((u,0),(v,0),(v,1),(u,1)))
+        picture(sky,(rim(a,-5500),rim(b,-5500),rim(b,4700),rim(a,4700)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
 
 THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':2.9,'terrain':{'sea':False},'land':{'mid':0x65745c},'sky':[0xbcc8ce,0xa8bac3,0x8c9da7,0x7d929f,0x637987],'haze':0xb6c1c5,'light':[0xe8ece6,1.24],'fill':[0xcdd9df,0x869289],'sun_altitude':.66,'sun_azimuth':-.79}
