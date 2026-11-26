@@ -1299,8 +1299,8 @@ Condense the north-to-south Highway 101 landmarks into the historical FTP Builde
 | --- | --- | --- |
 | Highway 101, 0.08 km | Real 01–05 and 13. Games 01 and 03. | A rain-darkened two-lane highway curves between wind-shaped Sitka spruce, a silver guardrail and weathered shingle buildings. |
 | Cannon Beach, 3.18 km | Real 06, 07, 13 and 14. Games 01 and 05. | The broad basalt base and blunt, sloping crown of Haystack Rock rise above the Needles. Bleached logs lie across the grey beach. |
-| Yaquina Bay Bridge, 6.83 km | Real 03, 10 and 11. Games 02 and 04. | Green through-arch ribs, diagonal trusses and slender vertical hangers frame the rider above a tidal channel. |
-| Yaquina Head, 9.96 km | Real 05, 11 and 15. Games 01 and 04. | The tall white tower and dark lantern stand clear of a low spruce headland. A brown pullout sign and low coastal fog sit nearer the road. |
+| Yaquina Head, 6.83 km | Real 05, 11 and 15. Games 01 and 04. | The tall white tower and dark lantern stand clear of a low spruce headland. A brown pullout sign and low coastal fog sit nearer the road. |
+| Yaquina Bay Bridge, 9.96 km | Real 03, 10 and 11. Games 02 and 04. | Green through-arch ribs, diagonal trusses and slender vertical hangers frame the rider above a tidal channel. |
 | Heceta Head, 14.34 km | Real 08, 09, 12 and 15. Games 03 and 04. | A short white lighthouse and red-roofed service buildings overlook surf that wraps around the steep wooded point. |
 | Boardman headlands, 18.86 km | Real 02, 05, 12–14. Games 01, 03 and 05. | Water shows through a dark basalt arch. White breakers curl in front of it and wind-shaped spruce bracket the distant stacks. |
 
