@@ -86,9 +86,12 @@ def scenery(k):
         side=1 if i%2==0 else -1
         at,h=site(k,d-18,side*3.93);art.tube(at(0,0,0),.069,.052,1.85,metal,metal,8)
         tile(signs,[at(-.03,v,z) for v,z in ((-.84,1.24),(.84,1.24),(.84,2.02),(-.84,2.02))],i,6,8)
+        tile(signs,[at(.03,v,z) for v,z in ((.84,1.24),(-.84,1.24),(-.84,2.02),(.84,2.02))],i,6,8)
         if i%2==0:
             k0=d-29
             tile(paint,[k.road.pos(k0+a,v,.04) for a,v in ((0,1.5),(0,-1.5),(3.8,-1.5),(3.8,1.5))],i//2%4,4,1)
+    for i,d in enumerate((5199,5218,5232)):
+        tile(paint,[k.road.pos(d+a,v,.058) for a,v in ((0,1.2),(0,-1.2),(4,-1.2),(4,1.2))],i,4,1)
     for i,d in enumerate(range(-35,2690,13)):
         side=-1 if i%2 else 1;v=(7.5+(i%7)*3.1)*side;at,h=site(k,d,v)
         w=5.3+i%3;ht=13+i%6
