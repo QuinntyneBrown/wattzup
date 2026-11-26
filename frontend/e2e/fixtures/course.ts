@@ -3588,3 +3588,40 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const zoncolanOvaroCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'monte-zoncolan',
+  name: 'Monte Zoncolan',
+  routeName: 'The Ovaro road',
+  place: 'Friuli, Italy',
+  world: 'zoncolan',
+  distanceKm: 12.38,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/monte-zoncolan.jpg',
+  photoUrl: 'maps/monte-zoncolan-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 12, 80),
+      seg('work', 60, 16, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 240, 21, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 21, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 120, 21, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 21, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 30, 21, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 15, 21, 100),
+      seg('cool-down', 135, 12, 80),
+    ],
+  },
+};
