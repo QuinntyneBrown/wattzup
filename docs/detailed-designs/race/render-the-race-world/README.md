@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Miami Neon Nights (#2164)
+
+The existing class already rides a wet boulevard, with Atlantic surf on the left, neon hotels on the right and traffic at the kerb. Its repeated street uses invented hotel names. Keep the orientation and Ride to the Beat’s original intervals. Give the race six fixed landmarks through the maps API, native course assets and a route-scoped renderer. Commit 480826a71 records the class assignment. The original class entry and music stay available.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Colony Hotel and Ocean Drive, 0.08 km | Real 01–03 and 06. Games 02–03. | A blue vertical Colony blade rises between two curved neon eyebrows. Pink and cyan pools break over wet asphalt while the Atlantic opens beyond the palms on the other side. |
+| Carlyle sidewalk cafés, 1.44 km | Real 04–05, 09–11 and 14. Games 02–03. | Rounded Carlyle corner glazing and horizontal eyebrows overlook umbrella tables, diners and a couple strolling past raised café terraces. |
+| Ocean Drive cruisers, 2.88 km | Real 06–08, 11 and 15. Games 02 and 04. | An open convertible passes parked two-tone classics. Red tail lamps and alternating blade signs leave broken streaks in the road. |
+| Lummus Park beach, 4.36 km | Real 01, 06 and 13–14. Games 01 and 05. | A raised pastel lifeguard tower, its ladder and wraparound deck stand between coconut palms. White foam catches the moon beyond the sand. |
+| Breakwater neon frontage, 6.04 km | Real 01–05, 07–08 and 10. Games 02–03. | The stepped Breakwater crown and vertical sign alternate with blue and pink window bands. A little steam crosses the kerb near the busiest café. |
+| Brickell across the bay, 8.06 km | Real 07–08 and 12. Games 01, 03 and 05. | The boulevard opens toward illuminated Brickell and downtown tower silhouettes. Royal palms and streetlight halos frame the rider against the bay. |
+
+Use the Colony’s central blade, Breakwater’s steps and the Carlyle’s curved corner as the foreground equivalents of Caribana’s recognisable skyline. Put separate rows of umbrellas, palm trunks, beach furniture and surf between the rider and the horizon. Tie the wet streaks to their hotel signs and break them up with asphalt grain. Batch static detail into roadside sections, with fixed buildings and bounded moving car, surf and steam geometry. Release all owned geometry, materials and textures on leaving. Measure the submitted frames through Colony and Breakwater after warm-up. Credits are in docs/worlds/miami/SOURCES.md. The Miami title search returned #2164.
