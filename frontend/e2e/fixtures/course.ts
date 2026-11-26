@@ -3598,7 +3598,7 @@ export const marinabayCourseMap = {
   place: 'Marina Bay, Singapore',
   world: 'marinabay',
   distanceKm: 10.665,
-  climbingM: 10,
+  climbingM: 14,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

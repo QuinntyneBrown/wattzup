@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import marinabay as _marinabay
+
+THEMES['marinabay'] = _marinabay.THEME
+SCENERY['marinabay'] = _marinabay.scenery
