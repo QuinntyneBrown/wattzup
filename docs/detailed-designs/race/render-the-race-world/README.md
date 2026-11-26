@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Sea Point, Cape Town (#2203)
+
+Issue #908 praised the previous scene. Preserve its breaking Atlantic surf, Lion’s Head, Table Mountain, green seafront lawns and square diagonally striped lighthouse. The catalogue selects the native course from Map Select. Each 4.225 km circuit shares fixed scenery, a northbound seaside leg and a southbound inland return. Use sampled physical elevation throughout the race and HUD.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Sea Point Promenade, 0.08 km | Real 01, 05, 09 and 14. Games 01 and 03. | Beach Road runs beside a green lawn, broad concrete footway and metal seawall rail. Walkers, runners and a dog share the promenade. |
+| Atlantic rock pools, 0.69 km | Real 03, 04, 10 and 11. Games 01 and 04. | Atlantic breakers fold over exposed dark rock shelves. Green kelp fringes sheltered blue tidal pools below the rail. |
+| Sea Point Pavilion, 1.13 km | Real 05, 06, 09 and 14. Games 02 and 04. | The outdoor seawater pool sits between the promenade and the ocean, with swimming lanes, railings and a stepped spectator terrace. |
+| Mouille Point lighthouse, 1.94 km | Real 07, 08 and 14. Games 02 and 05. | The square Green Point lighthouse has diagonal red stripes, a projecting white gallery and a glazed red lantern. Short buildings cluster around its base. |
+| Lion’s Head and Signal Hill, 3.02 km | Real 02–04, 08, 14 and 15. Games 01–03. | The inland return looks up past palm trunks and the projecting balconies of white flats. A pointed granite cap rises above the long green shoulder of Signal Hill. |
+| Table Mountain, 7.87 km | Real 01, 08 and 15. Games 02, 03 and 05. | The flat summit and near-vertical sandstone faces of Table Mountain show past a gap in the apartment rows. A low tablecloth cloud spills over the ledge. |
+
+Build the fixed peaks as layered, faceted terrain with a broad Atlantic horizon. Model the lighthouse balcony and lantern, individual rock ledges, pool coping and balcony recesses. Use instancing and shared meshes for the moving surf, runners and swimmers. Advance secondary movement on the ride clock and dispose all allocated meshes and textures on exit. Reference real-13 is from Hawaii and informs only the shape of a low breaker. Benchmark the loaded opening and busiest stretch as described in meet-performance-budgets. See ADRs 0021, 0023, 0030, 0034 and 0035.
