@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import winnats as _winnats
+
+THEMES['winnats'] = _winnats.THEME
+SCENERY['winnats'] = _winnats.scenery
