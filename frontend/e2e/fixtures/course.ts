@@ -1,3 +1,4 @@
+import veronaElevation from './verona-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const veronaArenaCourseMap = {
   place: 'Verona, Italy',
   world: 'verona',
   distanceKm: 24,
-  climbingM: 0,
+  climbingM: 197,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: veronaElevation,
   },
   thumbnailUrl: 'maps/verona-arena-finale.jpg',
   photoUrl: 'maps/verona-arena-finale-photo.jpg',
