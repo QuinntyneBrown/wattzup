@@ -1290,3 +1290,16 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+### Verona Arena Finale (#2245)
+
+The 24 km race starts on the Torricelle, reaches 273 m, then descends to the Adige and the historic streets. Cross a modelled Ponte Pietra above the water. Give Portoni della Bra two open arches and a clock between them. Align an entrance in the arena's two-tier arcade with the racing line. Place the finish inside the ellipse with sightlines across the stepped seating. Real 09 depicts Bucharest and supplies no evidence of Veronese architecture. The ride clock controls the lead riders, river ripples and scarves. Release each scene resource when the rider leaves.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Torricelle climb, 0.14 km | Real 07, 10, 13, 15 and games 01, 05 | Cypresses and vineyard rows open onto red roofs below the climbing riders. |
+| Adige overlook, 6.31 km | Real 07, 08, 10 and games 03, 05 | The river curls beneath the terracotta riverfront and the stone and brick bridge. |
+| Ponte Pietra, 11.43 km | Real 07, 08, 10, 14 and game 04 | Ride between the stone parapets over the moving Adige, toward the bridge tower. |
+| Piazza delle Erbe, 16.72 km | Real 01, 10, 14 and games 03, 04 | The brick Lamberti tower and octagonal belfry rise above market parasols and pink paving. |
+| Portoni della Bra, 21.85 km | Real 01, 06, 11, 15 and games 02, 04 | The twin arches and clock lead to the cafes of the Liston behind pink crowd barriers. |
+| Arena finish, 23.97 km | Real 02-05, 12, 13 and games 01, 02 | Enter the pink limestone arcade and finish inside the seating bowl under waving pink scarves. |
