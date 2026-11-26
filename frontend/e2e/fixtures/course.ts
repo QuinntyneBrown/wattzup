@@ -3588,3 +3588,35 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const sellaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'passo-sella',
+  name: 'Passo Sella',
+  routeName: 'The Passo Sella road',
+  place: 'The Dolomites, Italy',
+  world: 'sella',
+  distanceKm: 11.6375,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/passo-sella.jpg',
+  photoUrl: 'maps/passo-sella-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 210, 13, 90),
+      seg('work', 120, 17, 90),
+      seg('work', 240, 18, 90),
+      seg('work', 120, 19, 90),
+      seg('work', 120, 20, 90),
+      seg('work', 120, 21, 90),
+      seg('work', 240, 22, 90),
+      seg('work', 120, 23, 90),
+      seg('work', 120, 24, 90),
+      seg('cool-down', 150, 11, 85),
+    ],
+  },
+};
