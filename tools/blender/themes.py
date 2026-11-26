@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import utrecht as _utrecht
+
+THEMES['utrecht'] = _utrecht.THEME
+SCENERY['utrecht'] = _utrecht.scenery
