@@ -1,3 +1,4 @@
+import mardigrasElevation from './mardigras-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const mardigrasCourseMap = {
   place: 'New Orleans, Louisiana',
   world: 'mardigras',
   distanceKm: 8.3975,
-  climbingM: 0,
+  climbingM: 4,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: mardigrasElevation,
   },
   thumbnailUrl: 'maps/mardi-gras-new-orleans.jpg',
   photoUrl: 'maps/mardi-gras-new-orleans-photo.jpg',
