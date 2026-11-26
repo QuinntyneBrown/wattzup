@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Tel Aviv Promenade (#2228)
+
+The existing seafront preset supplies the warm light. The Race catalogue resolves tel-aviv-promenade to telaviv and loads the 10.70 km authored course from the world library. Place the pool and sailboats near the northern start, the courts and cafés on distinct beaches, and the Jaffa headland at the southern end.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Herbert Samuel promenade, 0.12 km | Real 01–05 and 07. Games 01 and 03. | The red bike lane passes circles of cream and brown stone. Date palms cast long shadows between the path and the white hotel balconies. |
+| Gordon Pool and marina, 2.08 km | Real 04, 07, 12 and 15. Games 01 and 02. | Lane ropes stripe an open-air swimming pool. Masts and bobbing sailboats rise beyond its fence inside the rock breakwater. |
+| Frishman Beach courts, 4.25 km | Real 06, 08 and 09. Games 02 and 04. | A volleyball crosses a net on the sand while a pair plays matkot nearer the water. Ochre lifeguard huts and tall lamps overlook the courts. |
+| Beachfront cafés, 6.47 km | Real 01, 03, 09, 10 and 14. Games 01, 03 and 05. | Timber shade pergolas, parasols, sunbeds and café tables face the sea. White apartment and hotel towers rise behind the palms. |
+| Banana Beach, 8.36 km | Real 09–14. Games 03 and 04. | Turquoise surf breaks over warm sand as the setting sun reflects on the Mediterranean. The stone Jaffa headland marks the southern end of the coast. |
+| Old Jaffa, 10.41 km | Real 10–13. Games 02 and 05. | The clock tower, St Peter’s bell tower and stepped sandstone buildings stand above the beach ahead, behind benches and promenade lamps. |
+
+Keep Caribana’s fixed skyline and animate a small group in the near field. Tile the stone circles at walking scale, keep the shore and breakwaters continuous and layer the coastal town behind the beach. Group the hotel elevations, palms and shade shelters by course section. Share the court, sailboat and foam materials, animate from ride time and release every course resource on exit. Compare six reference positions. Count submitted frames and advancing distance in both sixty-second benchmarks. See ADRs 0021, 0023, 0030, 0034 and 0035.
