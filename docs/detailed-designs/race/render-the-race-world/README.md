@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Santa Monica Pier (#2202)
+
+The 8.85 km beach course follows an undulating concrete ribbon north to one fixed pier. Preserve the previous ride’s turquoise lifeguard towers, wheel, coaster, Pacific surf on the left and palms and hotels on the right. The bike path stays at beach level beneath the elevated access to the pier. The HUD samples the same road elevation.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Marvin Braude beach path, 0.08 km | Real 01, 02, 11 and 12. Games 01 and 04. | A dashed yellow stripe follows a narrow concrete ribbon through windblown sand. Thin fan palms, beach hotels and the Santa Monica Mountains stand inland. |
+| Lifeguard tower, 1.86 km | Real 03, 04, 09 and 11. Games 01 and 02. | A turquoise lifeguard hut stands on legs. Its long wooden access ramp, white safety rails, observation windows, number and flag read above the sand. |
+| Pacific breakers, 3.21 km | Real 06, 08, 10 and 11. Games 01 and 02. | A bend reveals parallel foamy breakers, wet sand and a surfer waiting beyond the break. A low western sun casts a warm reflection on the water. |
+| Palisades palms, 5.06 km | Real 01, 02, 11, 12 and 14. Games 03 and 04. | Slender fan palms line the bluff beyond raised beach houses. A skater and a cruiser travel along the path edge while shadows stretch across the concrete. |
+| Pacific Park, 8.49 km | Real 05–08 and 15. Games 03–05. | The pier crosses the shore on dark timber piles. The turning Pacific Wheel has open spokes and upright passenger cars; the coaster runs over its red-and-yellow track. |
+| Yacht Harbor and Route 66, 8.80 km | Real 05–08, 13 and 15. Games 03–05. | The last sprint reaches the timber pier and its elevated approach with the blue-and-gold Yacht Harbor arch, End of the Trail shield, deck rail and shadow beneath the pilings. |
+
+Build the timber deck, cross-braces and piles in place. Mount the rotating wheel on its axle with gravity-upright cars. Drive the coaster train along the actual fixed track and animate the skater, cruiser and surf from ride time. Bake plank wear, salt residue and sand drifts. Batch palms and beachgoers by distance, keep a bounded surf band, and release owned geometry and materials on exit. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.
