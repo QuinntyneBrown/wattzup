@@ -1,3 +1,4 @@
+import stbernardElevation from './stbernard-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const stbernardCourseMap = {
   place: 'Swiss–Italian border',
   world: 'stbernard',
   distanceKm: 17.4125,
-  climbingM: 0,
+  climbingM: 871,
   rating: 'Brutal',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: stbernardElevation,
   },
   thumbnailUrl: 'maps/great-st-bernard-pass.jpg',
   photoUrl: 'maps/great-st-bernard-pass-photo.jpg',
