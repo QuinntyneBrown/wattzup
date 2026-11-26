@@ -20,7 +20,10 @@ def height(d):
 
 
 def baseline(x):
-    return 92+26*math.sin(x/328)+16*math.sin(x/171)
+    return (92+.13*x+26*math.sin(x/328)+16*math.sin(x/171)
+            -182*math.exp(-((x-105)/250)**2)
+            -176*math.exp(-((x-2530)/215)**2)
+            -141*math.exp(-((x-5420)/200)**2))
 
 
 def centre(d):
@@ -29,7 +32,7 @@ def centre(d):
         return EAST+RADIUS*math.sin(a),baseline(EAST)+RADIUS*(1-math.cos(a)),a
     back=d>=EAST+math.pi*RADIUS
     x=2*EAST+math.pi*RADIUS-d if back else d
-    dy=26/328*math.cos(x/328)+16/171*math.cos(x/171)
+    dy=(baseline(x+.5)-baseline(x-.5))
     return x,baseline(x)+(2*RADIUS if back else 0),math.atan(dy)+(math.pi if back else 0)
 
 
@@ -47,7 +50,9 @@ def route(course,theme,bc):
 
 def lip(x):
     # Alternate the seaward brows with the inland coombes. The haven breaks the ridge.
-    return baseline(x)-48-24*math.sin((x-1733)/650*math.tau)-5*math.sin(x/31)-49*math.exp(-((x-950)/315)**2)
+    ordinary=48+23*math.sin((x-1733)*math.tau/650)+5*math.sin(x/31)+49*math.exp(-((x-950)/315)**2)
+    spur=max(math.exp(-((x-anchor)/95)**2) for anchor in (100,2550,5450))
+    return baseline(x)-ordinary*(1-spur)-8.4*spur
 
 
 def river_x(y):
@@ -144,11 +149,33 @@ def scenery(k):
         a=lip(x)-16;b=lip(x+36)-16
         face(ocean,[(x,a,0),(x+36,b,0),(x+36,-5600,0),(x,-5600,0)],
              ((x,a),(x+36,b),(x+36,-5600),(x,-5600)))
+    # Fold a chalk portrait onto the successive buttresses across Cuckmere Haven.
+    # The mapped top edge also bounds the grass which joins the existing downland.
+    brow=pictured(k,'CuckmereScarps')
+    skyline=((0.0025, 1.0), (0.0025, 0.9901), (0.0025, 0.9828), (0.0049, 0.9754), (0.0049, 0.9729), (0.0049, 0.9704), (0.0074, 0.9704), (0.0074, 0.9704), (0.0074, 0.9729), (0.0099, 0.9729), (0.0099, 0.9729), (0.0123, 0.9729), (0.0123, 0.9729), (0.0123, 0.9729), (0.0123, 0.9704), (0.0148, 0.9655), (0.0148, 0.9606), (0.0172, 0.9532), (0.0172, 0.9433), (0.0197, 0.9335), (0.0197, 0.9187), (0.0197, 0.9015), (0.0197, 0.8793), (0.0222, 0.8153), (0.0222, 0.7414), (0.0246, 0.7241), (0.0246, 0.7069), (0.0246, 0.6897), (0.0271, 0.67), (0.0271, 0.665), (0.0271, 0.6626), (0.0296, 0.6626), (0.0296, 0.6601), (0.032, 0.6626), (0.032, 0.665), (0.032, 0.6675), (0.0345, 0.6724), (0.0369, 0.6749), (0.0369, 0.6798), (0.0394, 0.6823), (0.0419, 0.6872), (0.0419, 0.6847), (0.0419, 0.6823), (0.0419, 0.6773), (0.0443, 0.6675), (0.0443, 0.6576), (0.0468, 0.6429), (0.0468, 0.6133), (0.0493, 0.5468), (0.0493, 0.532), (0.0493, 0.5123), (0.0517, 0.5074), (0.0542, 0.5049), (0.0542, 0.5025), (0.0542, 0.5074), (0.0567, 0.5099), (0.0567, 0.5123), (0.0591, 0.5148), (0.0616, 0.5197), (0.0616, 0.5197), (0.0616, 0.5148), (0.064, 0.5074), (0.064, 0.4951), (0.0665, 0.4754), (0.0665, 0.4507), (0.069, 0.3941), (0.069, 0.3818), (0.0714, 0.3793), (0.0739, 0.3793), (0.0739, 0.3818), (0.0764, 0.3867), (0.0764, 0.3916), (0.0788, 0.3941), (0.0788, 0.3916), (0.0813, 0.3818), (0.0813, 0.3695), (0.0837, 0.3399), (0.0862, 0.2956), (0.0862, 0.2931), (0.0887, 0.2956), (0.0887, 0.298), (0.0911, 0.303), (0.0911, 0.3054), (0.0936, 0.298), (0.0961, 0.2833), (0.0961, 0.2414), (0.0985, 0.2414), (0.0985, 0.2438), (0.101, 0.2488), (0.1034, 0.2488), (0.1034, 0.2389), (0.1034, 0.2118), (0.1059, 0.1897), (0.1084, 0.1946), (0.1084, 0.1946), (0.1084, 0.1823), (0.0025, 0.0123))
+    previous=None
+    for idx,(toe,crest) in enumerate(skyline):
+        u=idx/(len(skyline)-1)
+        x=364+1010*u
+        outer=75-221*u+12*math.sin(14*math.pi*u)
+        top_z=2+106*(crest-toe)
+        row=[]
+        for v in (0,.13,.35,.62,.84,1):
+            y=outer+v*(8+7*math.sin(u*math.pi*13))+2.2*math.sin(u*61+v*3)*math.sin(v*math.pi)
+            row.append(((x,y,1.1+(top_z-1.1)*v),(u,toe+(crest-toe)*v)))
+        inland=max(outer+4,lip(x)+2)
+        back=(x,inland,land_height(x,inland)-.19)
+        if previous:
+            prior,prev_back=previous
+            for j in range(len(row)-1):
+                pts=(prior[j],row[j],row[j+1],prior[j+1]);picture(brow,[p for p,uv in pts],[uv for p,uv in pts])
+            art.face((prior[-1][0],row[-1][0],back,prev_back),(lin(0x90A159),)*4)
+        previous=row,back
     for j in range(6):
-        x=153+j*7.1;y=baseline(x)-17-j*.67
+        x=155+j*7.1;y=baseline(155)+5.8+j*.76
         cottage(x,y,7.1,6.8,land_height(x,y)-.13)
-    for x in range(121,218,3):
-        y=baseline(x)-11.4;z=land_height(x,y)
+    for x in range(145,205,3):
+        y=baseline(155)+.7+(x-155)*.11;z=land_height(x,y)
         face(flint,[(x,y,z-.2),(x+3,y+.1,z-.2),(x+3,y+.1,z+.91),(x,y,z+.91)])
         art.box((x+1.5,y,z+.88),(3,.43,.15),0,chalk)
     # Cuckmere's sinuous channel cuts across the coastal floodplain. The lane bridges it.

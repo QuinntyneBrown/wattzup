@@ -20,13 +20,24 @@ import { attribute, color, mix, positionWorld, sin, texture, uniform, vec2 } fro
 import type { Course, CoursePlace } from './course';
 
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
-const base = (x: number) => 92 + 26 * Math.sin(x / 328) + 16 * Math.sin(x / 171);
-const lip = (x: number) =>
-  base(x) -
-  48 -
-  24 * Math.sin(((x - 1733) / 650) * Math.PI * 2) -
-  5 * Math.sin(x / 31) -
-  49 * Math.exp(-(((x - 950) / 315) ** 2));
+const bump = (x: number, center: number, width: number) => Math.exp(-(((x - center) / width) ** 2));
+const base = (x: number) =>
+  92 +
+  0.13 * x +
+  26 * Math.sin(x / 328) +
+  16 * Math.sin(x / 171) -
+  182 * bump(x, 105, 250) -
+  176 * bump(x, 2530, 215) -
+  141 * bump(x, 5420, 200);
+const lip = (x: number) => {
+  const ordinary =
+    48 +
+    23 * Math.sin(((x - 1733) * Math.PI * 2) / 650) +
+    5 * Math.sin(x / 31) +
+    49 * bump(x, 950, 315);
+  const spur = Math.max(bump(x, 100, 95), bump(x, 2550, 95), bump(x, 5450, 95));
+  return base(x) - ordinary * (1 - spur) - 8.4 * spur;
+};
 const views = [
   [100, 148, 17, 4.2],
   [930, 959, -23, 1],
@@ -40,6 +51,7 @@ export class SevenSistersDowns {
   readonly materials = {
     DownlandRoad: new MeshLambertNodeMaterial({ side: DoubleSide }),
     DownsTurf: new MeshLambertNodeMaterial({ side: DoubleSide }),
+    CuckmereScarps: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.4, fog: false }),
     ChalkScarps: new MeshBasicMaterial({ side: DoubleSide }),
     FlintShingle: new MeshBasicMaterial({ side: DoubleSide }),
     ChannelWater: new MeshLambertNodeMaterial({ side: DoubleSide }),
@@ -87,6 +99,7 @@ export class SevenSistersDowns {
       'sevensisters-lantern',
       'sevensisters-waymarks',
       'isleofman-sea',
+      'sevensisters-headlands',
     ];
     const results = await Promise.allSettled(
       names.map((n) => loader.loadAsync('courses/' + n + '.webp')),
@@ -129,6 +142,7 @@ export class SevenSistersDowns {
     surfaces.forEach((m, i) => {
       m.map = maps[i + 2]!;
     });
+    this.materials.CuckmereScarps.map = maps[11]!;
     const wind = sin(
       positionWorld.x.mul(0.33).add(positionWorld.z.mul(0.45)).add(this.second.mul(0.73)),
     );
@@ -136,7 +150,7 @@ export class SevenSistersDowns {
       maps[10]!,
       positionWorld.xz.div(vec2(26, 17)).add(vec2(wind.mul(0.008), this.second.mul(0.0008))),
     ).rgb;
-    this.materials.ChannelWater.colorNode = mix(color(0x6d8f98), wave, 0.37);
+    this.materials.ChannelWater.colorNode = mix(color(0x6d8f98), wave, 0.06);
     this.materials.CuckmereRiver.colorNode = mix(color(0x497b79), wave, 0.29);
     this.feathers.setAttribute(
       'position',
@@ -273,9 +287,17 @@ export class SevenSistersDowns {
     const p = this.course.place(metres, 0, this.p),
       site = this.course.place(v[1], v[2], this.target);
     if (v[0] === 5450) {
-      site.x = 5475;
-      site.z = -lip(5475) + 22;
-      site.y = 18;
+      site.x = 5650;
+      site.z = -lip(5650) + 24;
+      site.y = 46;
+    } else if (v[0] === 2550) {
+      site.x = 2644;
+      site.z = -base(2550) + 72;
+      site.y = p.y + 1.4;
+    } else if (v[0] === 100) {
+      site.x = 535;
+      site.z = -34;
+      site.y = 49;
     }
     const dx = site.x - p.x,
       dz = site.z - p.z;
