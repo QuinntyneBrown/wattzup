@@ -33,7 +33,9 @@ def land(r,col,theme,bc):
     b=bc.Builder('Butte','terrain');b.colours=[]
     for i in range(0,len(r.s)-3,3):
         for x,y in ((-360,-60),(-60,-12),(-12,12),(12,60),(60,360)):
-            def point(j,u):return r.at(j,u,-.13+max(0,abs(u)-12)*(.16 if u<0 else -.13))
+            def point(j,u):
+                p=r.s[j];x,y,z=r.at(j,u);blend=min(1,max(0,(abs(u)-12)/45))
+                return (x+(p['x']-x)*blend,y+(p['y']+u-y)*blend,z-.17+max(0,abs(u)-12)*(.16 if u<0 else -.13))
             b.quad(point(i,x),point(i+3,x),point(i+3,y),point(i,y));b.colours.extend([lin(0x968D77)]*4)
     b.build(col)
     def sample(x,y):
@@ -42,7 +44,7 @@ def land(r,col,theme,bc):
 
 
 def scenery(k):
-    art=Painted(k);faces=pictured(k,'ParisFronts');leaves=pictured(k,'PlaneTrees');church=pictured(k,'BasilicaFront');paint=pictured(k,'ButtePaint')
+    art=Painted(k);faces=pictured(k,'ParisFronts');leaves=pictured(k,'PlaneTrees');church=pictured(k,'BasilicaFront');paint=pictured(k,'ButtePaint');sign=pictured(k,'MetroSign')
     stone=lin(0xC5B9A6);iron=lin(0x354C40);red=lin(0xA74537);green=lin(0x376549);cream=lin(0xE2CFAE)
     def house(d,off,w,high,tile):
         a,h=site(k,d,off);side=1 if off>0 else -1
@@ -50,10 +52,19 @@ def scenery(k):
         art.roof(a(0,side*3.55,high),w+.4,7.45,2,h,lin(0x646873))
         u=tile%2*.5;v=(1-tile//2)*.5
         picture(faces,(a(-side*w/2,0,0),a(side*w/2,0,0),a(side*w/2,0,high),a(-side*w/2,0,high)),((u,v),(u+.5,v),(u+.5,v+.5),(u,v+.5)))
+        # End walls remain visible on the bends. Give each a vertical bay and a limestone sill at every storey.
+        for signend in (-1,1):
+            end=signend*(w/2+.03);v=.006
+            picture(faces,(a(end,side*.15,0),a(end,side*6.95,0),a(end,side*6.95,high),a(end,side*.15,high)),((.52,.01),(.81,.01),(.81,.49),(.52,.49)))
+            for floor in range(3,int(high),3):
+                art.box(a(signend*(w/2+.07),side*3.5,floor),(.16,7.03,.12),h,stone)
     for d in range(-44,8540,16):
         for side in (-1,1):
             if any(abs(d-m)<55 for m in (112,1610,2940,4408,6050,7965)):continue
             house(d,side*k.rng.uniform(8.5,12.6),k.rng.uniform(12.5,15.8),k.rng.uniform(6.1,12),3)
+        if d%32==-44%32:
+            house(d+7,-26,15.2,k.rng.uniform(10,16),3)
+            house(d-5,28,16,k.rng.uniform(9,14),3)
         if d%32==-44%32:
             a,h=site(k,d,6.7)
             art.tube(a(0,0,0),.13,.067,3.55,iron,iron,8,iron)
@@ -74,11 +85,30 @@ def scenery(k):
             for v in (-1,1):
                 art.tube(a(j+.17,v*.68-side,0),.17,.23,.48,stone,stone,8,stone)
                 art.box(a(j+.17,v*.86-side,.47),(.40,.08,.36),h,stone)
+    for d in range(60,8370,7):
+        if min(abs(d-m) for m in (100,1610,2940,4408,6050))<64:
+            for s in (-1,1):
+                a,h=site(k,d,s*4.57)
+                art.tube(a(0,0,.11),.115,.096,.72,iron,iron,8,iron)
+                art.tube(a(0,0,.83),.11,.062,.09,iron,iron,8,iron)
+    for d in range(2900,2990,3):
+        a,h=site(k,d,8.65)
+        for j in range(3):
+            art.tube(a(0,.10*j,.34*j),.72,.46,.55,green,lin(0x81905B),7,green)
     for d in range(2800,3070,4):
         a,h=site(k,d,-8);art.box(a(0,-.5,-.15),(4.15,1.0,1.38),h,stone)
         for row in range(3):
             p=a(0,-3-row*2,1+row*.30);art.tube(p,.085,.06,1.35,iron,iron,5,iron)
             art.box(a(0,-3-row*2,1.72+row*.30),(3.7,.79,.59),h,green)
+    for d in range(2920,2967):
+        a,h=site(k,d,7.2);art.box(a(0,0,0),(.68,.12,1.12),h,green)
+    for d in (6058,6063):
+        a,h=site(k,d,7.3)
+        for off in (-.82,.82):
+            art.tube(a(0,off,0),.11,.075,2.57,iron,iron,8,iron)
+            beam(art,a(0,off,2.4),a(-.31,off*1.4,2.95),.08,.08,green)
+            art.tube(a(-.31,off*1.4,2.94),.14,.075,.29,red,red,8,red)
+        picture(sign,(a(0,1,2.05),a(0,-1,2.05),a(0,-1,2.52),a(0,1,2.52)),UV)
     for d in range(5985,6105):
         a,h=site(k,d,-8);art.box(a(0,0,-.2),(1.07,3.5,.25+(d%10)*.12),h,stone)
         if d%4==0:
