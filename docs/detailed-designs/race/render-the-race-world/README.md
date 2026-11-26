@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## North Shore, Oahu (#2175)
+
+Rider feedback in #912 asks to preserve the existing look and feel. Compare six matching positions before and after building the course. Retain the 14-degree bends over 180 metres, gentle rolling grades and original class stages along Kamehameha Highway.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Haleiwa town, 0.08 km | Real 02, 04, 05 and 12. Games 02 and 03. | The painted surfer sign stands beside timber shops and a fruit stall. A double yellow line runs past a parked board-laden truck. |
+| Anahulu River, 1.33 km | Real 02, 06 and 10. Games 03 and 04. | Rainbow Bridge spans the river between sandy verges. The concrete arches frame the turquoise inlet and wind-bent palms. |
+| Waimea Bay, 2.86 km | Real 01, 08, 10, 11 and 14. Games 01 and 02. | The highway bends above a curved bay. White breakers peel past jumping rock, with the church tower tucked into the green hillside. |
+| Banzai Pipeline, 4.49 km | Real 08, 09, 11 and 13. Games 01 and 04. | A surfer carries a board toward the beach. Beyond the palms a winter swell curls over a turquoise face and breaks white. |
+| Sunset Beach, 6.56 km | Real 03, 06, 14 and 15. Games 02, 04 and 05. | A truss bridge carries the road beside ironwoods. Trade-wind clouds catch golden light offshore and the Koolau ridges remain inland. |
+| Kahuku shrimp trucks, 8.49 km | Real 02, 03, 07 and 12. Games 03 and 05. | Shrimp trucks face a gravel pullout. Written signatures surround the serving hatch, customers queue and picnic benches sit in palm shade. |
+
+Keep the crest of Waimea’s swell below the highway and give Pipeline a curling lip that moves sideways along the breaker. Build the food truck serving opening, palms, picnic tables and shoreline rock at rider scale. Compare the opening street and queue with Caribana. Share roadside materials and release all animated geometry on exit. Reference credits are in docs/worlds/northshore/SOURCES.md.
