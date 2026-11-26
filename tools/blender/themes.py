@@ -1552,3 +1552,7 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import sfhills as _sfhills
+THEMES['sfhills']=_sfhills.THEME
+SCENERY['sfhills']=_sfhills.scenery
