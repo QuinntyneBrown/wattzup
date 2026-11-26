@@ -28,9 +28,16 @@ for (const [section, offsetMetres] of [
       await bluetooth.remember(echelonBike);
       const race = new RacePage(page);
       const assets = Promise.all(
-        ['yosemite.glb', 'yosemite.course.json', 'rider.glb'].map((file) =>
-          page.waitForResponse((r) => r.url().endsWith('/' + file) && r.ok()),
-        ),
+        [
+          'yosemite.glb',
+          'yosemite.course.json',
+          'rider.glb',
+          'yosemite-granite.webp',
+          'yosemite-trees.webp',
+          'yosemite-shuttle.webp',
+          'yosemite-signs.webp',
+          'yosemite-visitors.webp',
+        ].map((file) => page.waitForResponse((r) => r.url().endsWith('/' + file) && r.ok())),
       );
       await race.open(map.id, 'mode=solo');
       await assets;
@@ -39,7 +46,7 @@ for (const [section, offsetMetres] of [
           (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
         }, offsetMetres);
       }
-      await expect(race.backend).toBeVisible();
+      await expect(race.backend).toBeVisible({ timeout: 30_000 });
       let active = true;
       const pedal = (async () => {
         while (active) {

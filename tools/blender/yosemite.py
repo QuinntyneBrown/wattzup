@@ -68,17 +68,26 @@ def scenery(k):
                     v=max(-.18,sn);delta=.011*math.sin(5*a+.06*m)
                 else:
                     v=max(-.57,sn);delta=.046*math.cos(5*a+.24*m)
-                row.append(at(rx*c*(scale+delta),depth*v*(scale+delta),-9+height*(z+.023*math.sin(a*3+.5)*z)))
+                along=c*(scale+delta)
+                if shape=='dome':along=max(-.30,along)+.08*z
+                row.append(at(rx*along,depth*v*(scale+delta),-9+height*(z+.023*math.sin(a*3+.5)*z)))
             if last:
                 for j in range(36):
-                    i=(j+1)%36;quad(granite,(last[j],last[i],row[i],row[j]),(j/9,(m-1)/6,(j+1)/9,m/6))
+                    i=(j+1)%36;quad(granite,(last[j],last[i],row[i],row[j]),(j/3,(m-1)/3,(j+1)/3,m/3))
             last=row
         art.face(last,(rock,)*len(last))
-    monolith(3290,909,710,280,900,'capitan')
-    monolith(12950,940,532,385,730,'dome')
+    monolith(3290,1270,710,280,900,'capitan')
+    monolith(12950,1430,625,350,690,'dome')
     for d,v,w,dep,ht in ((4680,-650,440,170,292),(9676,575,570,192,565),(10250,805,535,230,434),(6860,950,720,320,538),(8130,-880,660,310,449)):
         monolith(d,v,w,dep,ht,'wall')
-    at,h=site(k,3290,909)
+    for station,offset,side,bands in ((4860,-207,-1,[(0,0,92),(85,9,80),(150,18,61)]),(9700,229,1,[(0,0,125),(86,9,114),(148,68,98),(318,80,79)])):
+        at,h=site(k,station,offset)
+        for (lo,near,w),(hi,far,v) in zip(bands,bands[1:]):
+            for n in range(16):
+                a=n/8-1;b=(n+1)/8-1
+                def ledge(x,z,off,width):return at(x*width,side*(off+6*math.sin(x*7)+4*math.cos(x*14)),z)
+                quad(granite,(ledge(a,lo,near,w),ledge(b,lo,near,w),ledge(b,hi,far,v),ledge(a,hi,far,v)),(n/6,lo/130,(n+1)/6,hi/130))
+    at,h=site(k,3290,1270)
     for j in range(5):
         x=-170+j*10;z=427+j*7
         art.tube(at(x,-290,z),1.5,1.15,3.1,iron,gold,6)
