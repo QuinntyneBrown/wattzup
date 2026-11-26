@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## San Fermín, Pamplona (#2186)
+
+Map Select and Race Setup bind the original class to the local authored-course renderer. Extend the real encierro sequence to the workout distance. Rebuild Mercaderes as an actual right-angle turn, widen Plaza Consistorial and align the final tunnel with the road. Keep the crowds behind the double barriers and the racing lane open.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Santo Domingo approach, 0.08 km | Real 01, 07–08 and 10. Games 01 and 02. | Double rows of timber barricades enclose the first sprint. Red pañuelos stand out against white shirts behind the rails. A medic and police officer occupy a fence opening. |
+| Plaza Consistorial, 1.54 km | Real 05–06 and 09–10. Games 04 and 05. | The narrow approach opens onto the baroque Ayuntamiento. A layered stone pediment, balconies and hanging flags stand above the crowd. |
+| Mercaderes turn, 3.16 km | Real 03–04, 07 and 15. Games 02–03. | The marked right-angle turn into Calle Estafeta follows the wall and its two street plaques. Timber barriers protect the outside of the corner. |
+| Calle Estafeta, 5.02 km | Real 02–04, 08 and 09. Games 01 and 03. | Four- and five-storey houses close around the wet stone street. Their iron balconies are packed with spectators and red scarves, with warm light reaching only the upper floors. |
+| Telefónica barriers, 7.17 km | Real 01, 07–08 and 12. Games 01 and 04. | Sashed runners pass waving spectators at the double fence. Damp setts and scattered fiesta confetti lead toward the bullring. |
+| Callejón entrance, 8.92 km | Real 10–11 and 14. Games 02 and 05. | The open entrance tunnel disappears beneath the brick and stone bullring. A glimpse of the ochre arena and the rings of red-and-white spectators draws the rider forward. |
+
+Model the urban canyon, cross-street openings, balconies, town hall and the bullring portal in three dimensions. Bake the contrast between blue street shade and sunlit cornices into the building materials. Render the repeated crowds and timber sections in bounded sections. Update runner, hanging scarf and light confetti from ride time, and dispose of their textures, geometries and materials with the route. Compare the opening and packed street with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/pamplona/SOURCES.md.
