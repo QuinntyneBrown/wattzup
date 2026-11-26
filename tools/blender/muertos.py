@@ -69,6 +69,25 @@ def scenery(k):
                 l=j*1.58;r=l+1.58;z=lambda v:5.3+1.18*(v/11)**2
                 beam(art,a(0,l,z(l)),a(0,r,z(r)),.022,.022,iron)
                 n=(j+7)%4;tile(flags,(a(0,l+.05,z(l)-.83),a(0,r-.05,z(r)-.83),a(0,r-.05,z(r)),a(0,l+.05,z(l))),n)
+    # The reservation separates the parade carriageways and opens for the circle and performers.
+    for d in range(-30,8090,12):
+        if 2620<d<2830 or 3880<d<4110:continue
+        a,h=site(k,d,5.85)
+        art.box(a(0,0,.05),(11.7,1.58,.35),h,stone)
+        tile(front,(a(-5.87,-.81,.43),a(5.87,-.81,.43),a(5.87,.81,.43),a(-5.87,.81,.43)),1)
+        tile(front,(a(-5.87,-.82,.14),a(5.87,-.82,.14),a(5.87,-.82,.57),a(-5.87,-.82,.57)),1)
+        for j in (-4.6,-2.3,0,2.3,4.6):
+            blossom=lin(k.rng.choice((0xE19A25,0xDC7224,0xF0B140)))
+            art.tube(a(j,k.rng.uniform(-.45,.45),.42),.39,.36,.21,orange,blossom,8,blossom)
+    for d in (120,4019,7495):
+        a,h=site(k,d,0)
+        for j in range(27):
+            t=j*math.pi/26;v=8.15*math.cos(t);z=2.25+4.55*math.sin(t)
+            art.tube(a(0,v,z),.40,.37,.53,orange,gold,9,gold)
+            if j<26:
+                t2=(j+1)*math.pi/26;beam(art,a(0,v,z+.16),a(0,8.15*math.cos(t2),2.41+4.55*math.sin(t2)),.24,.24,orange)
+        for side in (-1,1):
+            art.tube(a(0,side*8.15,.06),.31,.29,2.48,orange,gold,9,gold)
     a,h=site(k,4014,-10.8)
     for j,(r,high) in enumerate(((7.3,.32),(6.65,.42),(5.9,.49),(5.1,.61))):
         art.tube(a(0,0,j*.40),r,r,high,stone,stone,16,stone)
