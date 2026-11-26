@@ -3588,3 +3588,43 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const skyeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'isle-of-skye-fog',
+  name: 'Isle of Skye Fog',
+  routeName: 'The Glen Brittle road',
+  place: 'Isle of Skye, Scotland',
+  world: 'skye',
+  distanceKm: 12.725,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/isle-of-skye-fog.jpg',
+  photoUrl: 'maps/isle-of-skye-fog-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 10, 80),
+      seg('work', 60, 13, 80),
+      seg('recover', 30, 21, 90),
+      seg('work', 180, 16, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 150, 19, 90),
+      seg('recover', 90, 13, 80),
+      seg('work', 120, 22, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 240, 16, 85),
+      seg('work', 30, 24, 100),
+      seg('work', 90, 10, 80),
+      seg('recover', 180, 14, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 120, 18, 85),
+      seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
