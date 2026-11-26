@@ -3588,3 +3588,28 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const penllechCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'ffordd-pen-llech',
+  name: 'Ffordd Pen Llech',
+  routeName: 'Ffordd Pen Llech',
+  place: 'Harlech, Wales',
+  world: 'penllech',
+  distanceKm: 14.266666666666666,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/ffordd-pen-llech.jpg',
+  photoUrl: 'maps/ffordd-pen-llech-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 13, 80),
+      seg('work', 2400, 19, 60),
+      seg('cool-down', 100, 11, 80),
+    ],
+  },
+};
