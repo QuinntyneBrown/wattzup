@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import teotihuacan as _teotihuacan
+
+THEMES['teotihuacan'] = _teotihuacan.THEME
+SCENERY['teotihuacan'] = _teotihuacan.scenery
