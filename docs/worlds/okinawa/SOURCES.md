@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Mech Isle Mayhem” Route Details (Makuri Islands)](https://zwiftinsider.com/route/mech-isle-mayhem/) (g0100) | © Zwift |
 | game-04.jpg | MyWhoosh: [mywhoosh-how-it-works](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/08/mywhoosh-how-it-works.jpg) (g0831) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Fine and Sandy” Route Details (Makuri Islands)](https://zwiftinsider.com/route/fine-and-sandy/) (g0046) | © Zwift |
+
+The houses, guardian shisa, pandanus and lagoon surface are original course artwork. The Route 58 signs and coral-block pattern were drawn for this course. The cloud atlas reuses the original North Shore artwork. Real 02–04, 07 and 14 guided the native bridge proportions. Real 09, 10, 12 and 13 guided the limestone profiles. Each matched rider view identifies the real and game references used for its composition.
