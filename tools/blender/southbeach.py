@@ -39,11 +39,11 @@ def land(r,col,theme,bc):
     m=bc.Builder('BeachAndDunes','terrain');m.colours=[];last=None
     def level(d,v):
         if v>-21:return height(d)-.21
-        if v>-42:return height(d)-.21+1.14*math.sin((v+21)*math.pi/21)**2
-        return max(.4,height(d)-.06*(-v-42))-.26
+        if v>-42:return height(d)-.21+0.34*math.sin((v+21)*math.pi/21)**2
+        return max(.4,height(d)-.018*(-v-42))-.26
     for i in range(0,len(r.s),3):
         d=r.s[i]['d'];line=[]
-        for v,c in ((-720,0x92BAB7),(-335,0x8AAEAC),(-133,0xC9BFA1),(-82,0xE4CFA6),(-43,0xE5D1A5),(-31,0xC9B988),(-24,0xB4B37F),(-18,0xA2AA74),(-8,0x97A86F),(0,0xA7A37D),(12,0xA6A076),(72,0xA6A076)):
+        for v,c in ((-720,0x92BAB7),(-335,0x8AAEAC),(-133,0x539DA7),(-82,0x7AB3B9),(-58,0xCBE3DA),(-55,0xBFB396),(-43,0xE5D1A5),(-31,0xDDCDA5),(-24,0xB4B37F),(-18,0xA2AA74),(-8,0x97A86F),(0,0xA7A37D),(12,0xA6A076),(72,0xA6A076)):
             x,y,_=r.at(i,v);line.append(((x,y,level(d,v)),lin(c)))
         if last:
             for a,b,c,e in zip(last,last[1:],line[1:],line):
@@ -61,7 +61,7 @@ def scenery(k):
     # Hotels face east across the promenade. Project the main fins and cantilevered window bands.
     for i,d in enumerate(range(2,7040,24)):
         hero=next((n for n,x in enumerate((143,1367,2664)) if abs(d-x)<13),None)
-        t=hero if hero is not None else 3 if i%3 else i%3
+        t=hero if hero is not None else (3,1,0,3,2,1,3)[i%7]
         at,h=site(k,d,19.65);w=22.7;ht=11.2+(i%3)*1.1;v=-6.08
         art.box(at(0,0,-.6),(w,12,ht+.56),h,(teal,white,yellow,coral)[t])
         tile(front,[at(a,v,z) for a,z in ((-w/2,0),(w/2,0),(w/2,ht),(-w/2,ht))],t,2,2)
@@ -85,6 +85,7 @@ def scenery(k):
         pts=[k.road.pos(d+a,v,.055) for a,v in ((0,1.8),(0,-1.8),(6,-1.8),(6,1.8))]
         tile(paint,pts,n%3,1,3)
     for i,d in enumerate(range(-30,7080,15)):
+        if 5152<d<5178:continue
         y=-9.8-2.3*math.sin(i*.7);at,h=site(k,d,y);t=i%3;w=5.15+(i%4)*.3;ht=10.2+(i%5)*.67
         # Two crossing planes have the same silhouette; a thin native trunk anchors their base.
         for a in (.79,2.19):
@@ -115,7 +116,7 @@ def scenery(k):
         a=-.5+j/28;b=-.5+(j+1)/28
         def coast(t,z):
             ang=t*math.pi*.94;return (4250+math.sin(ang)*6400,-math.cos(ang)*5900,z)
-        picture(dawn,(coast(a,-980),coast(b,-980),coast(b,1410),coast(a,1410)),((a+.5,0),(b+.5,0),(b+.5,1),(a+.5,1)))
+        picture(dawn,(coast(a,-510),coast(b,-510),coast(b,1720),coast(a,1720)),((a+.5,0),(b+.5,0),(b+.5,1),(a+.5,1)))
     at,h=site(k,7071,0)
     for wide,deep,z,ht,c in ((18,12,0,16,white),(14,9,16,7,teal),(10,7,23,6,white),(6.6,4,29,4,coral),(3.5,2,33,5,teal)):
         art.box(at(0,0,z),(deep,wide,ht),h,c)
