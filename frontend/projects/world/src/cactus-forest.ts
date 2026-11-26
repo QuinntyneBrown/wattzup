@@ -35,6 +35,8 @@ export class CactusForest {
     ForestDrivePavement: surface(),
     BajadaFlora: surface(true),
     ParkBoards: surface(true),
+    RinconMountains: new MeshBasicMaterial({ side: DoubleSide, vertexColors: true, fog: false }),
+    SonoranBajada: new MeshBasicMaterial({ side: DoubleSide, vertexColors: true }),
   };
   private readonly day = uniform(0);
   readonly sky = {
@@ -68,7 +70,7 @@ export class CactusForest {
   static async load(course: Course) {
     const loader = new TextureLoader();
     const results = await Promise.allSettled(
-      ['pavement', 'plants', 'boards', 'roadrunner', 'quail'].map((k) =>
+      ['pavement', 'plants', 'boards', 'roadrunner', 'quail', 'gravel'].map((k) =>
         loader.loadAsync('courses/saguaro-' + k + '.webp'),
       ),
     );
@@ -123,6 +125,11 @@ export class CactusForest {
       t.flipY = i >= 3;
       m.map = t;
     });
+    const gravel = textures[5]!;
+    gravel.colorSpace = SRGBColorSpace;
+    gravel.wrapS = gravel.wrapT = RepeatWrapping;
+    gravel.anisotropy = 2;
+    this.materials.SonoranBajada.map = gravel;
     textures[0]!.wrapS = textures[0]!.wrapT = RepeatWrapping;
     textures[0]!.anisotropy = 4;
     const direction = positionLocal.normalize(),

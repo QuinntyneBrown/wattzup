@@ -69,7 +69,7 @@ def road(r,st,length,col,bc):
 
 
 def land(r,col,theme,bc):
-    sand=bc.Builder('SonoranBajada','terrain');sand.colours=[]
+    sand=bc.Builder('SonoranBajada','terrain');sand.colours=[];sand.uvs=[]
     def ground(x,y):
         _,i,dist=r.tree.find((x,y,0));d=r.s[i]['d']%LAP
         z=height(d)-.28
@@ -81,6 +81,7 @@ def land(r,col,theme,bc):
         for y in range(int(min(ys))-300,int(max(ys))+320,28):
             xy=[(x+u,y+v) for u,v in ((0,0),(28,0),(28,28),(0,28))]
             sand.quad(*[(u,v,ground(u,v)-1.25) for u,v in xy])
+            sand.uvs.extend((u/4.7,v/4.7) for u,v in xy)
             for u,v in xy:
                 n=math.sin(u/74+v/63)+math.cos(u/34-v/44)
                 sand.colours.append(lin(0xB1906A if n>.55 else 0xA68B62 if n<-.35 else 0xB89A74))
@@ -89,6 +90,7 @@ def land(r,col,theme,bc):
         for a,b in ((-24,-13),(-13,-5),(-5,5),(5,13),(13,24)):
             xy=[pos(t,v) for t,v in ((d,a),(e,a),(e,b),(d,b))]
             sand.quad(*[(x,y,ground(x,y)-.025) for x,y,z in xy])
+            sand.uvs.extend((x/4.7,y/4.7) for x,y,_ in xy)
             c=0xC4AA7D if 2662<d<2720 else 0xAC8B68 if abs(a)<6 else 0xAE9169
             sand.colours.extend([lin(c)]*4)
     sand.build(col);return None,ground
@@ -100,24 +102,26 @@ def tile(mesh,pts,index,cols,rows):
 
 
 def scenery(k):
-    art=Painted(k);rock=Painted(k,'peaks');leaves=pictured(k,'BajadaFlora');boards=pictured(k,'ParkBoards')
+    art=Painted(k);rock=pictured(k,'RinconMountains');leaves=pictured(k,'BajadaFlora');boards=pictured(k,'ParkBoards')
     xs=[s['x'] for s in k.s];ys=[s['y'] for s in k.s]
     cx=(min(xs)+max(xs))/2;cy=(min(ys)+max(ys))/2
     # Two continuous ranges. Angular folds rise and fall along the horizon behind the fixed loop.
     for layer in (0,1):
         previous=None
-        for n in range(185):
-            a=math.tau*n/184;distance=2950+layer*860+135*math.sin(5*a)+85*math.cos(8*a)
-            peak=112+102*(.5+.5*math.sin(3*a+.6))**2+71*abs(math.sin(13*a))**3+42*abs(math.sin(39*a+.3))
+        for n in range(257):
+            a=math.tau*n/256
+            distance=3100+layer*790+124*math.sin(5*a)+95*math.cos(8*a)
+            peak=143+118*math.sin(3*a+.6)**2+65*abs(math.sin(6*a))**3+27*abs(math.sin(17*a+.25))
             ridge=[]
-            for j,(rad,high) in enumerate(((0,0),(.34,.26),(.61,.70),(.83,1),(1,.75))):
-                f=distance+rad*680
-                ridge.append((cx+f*math.cos(a),cy+f*math.sin(a),867+high*(peak+layer*123)))
+            for j,(rad,high) in enumerate(((-.47,-1.55),(-.15,-.20),(.24,.24),(.54,.62),(.83,1))):
+                f=distance+rad*780
+                ridge.append((cx+f*math.cos(a),cy+f*math.sin(a),866+high*(peak+layer*156)))
             if previous:
                 for j in range(4):
-                    c=lin((0xB29A83,0x9A8E86,0x8A8890,0x7C8090)[j] if not layer else (0xA9A1A0,0x9B9AA0,0x8E929D,0x858B99)[j])
-                    sh=.82+.17*(1+math.sin(a*16+j))/2;t=tuple(a*sh for a in c[:3])+(1,)
-                    rock.face((previous[j],ridge[j],ridge[j+1],previous[j+1]),(t,c,c,t))
+                    c=lin((0xC1A58E,0xAB9993,0x938F98,0x828697)[j] if not layer else (0xC3ABA0,0xAFA1A1,0xA3A0AC,0x989CAB)[j])
+                    sh=.88+.12*(1+math.sin(a*17+j*.64))*.5;t=tuple(v*sh for v in c[:3])+(1,)
+                    picture(rock,(previous[j],ridge[j],ridge[j+1],previous[j+1]),((0,0),(1,0),(1,1),(0,1)))
+                    rock.colours[-4:]=[t,c,c,t]
             previous=ridge
     def saguaro(d,v,h,r,arms,close):
         at,yaw=site(k,d,v);x,y,z=at(0,0);z=k.height_at(x,y)-.11;spin=k.rng.uniform(0,math.tau)
@@ -156,6 +160,17 @@ def scenery(k):
             high=k.rng.uniform(4.2,10.6);saguaro(d,v,high,high*k.rng.uniform(.034,.055),k.rng.randrange(1,5),abs(v)<16)
         if d%3==1:
             saguaro(d,k.rng.choice((-1,1))*k.rng.uniform(72,147),k.rng.uniform(5,11),.38,k.rng.randrange(1,4),False)
+    # The close groves show the scale and irregular branching of the mature cactus forest.
+    for mark in (80,1210,2680,4810,7320,9740):
+        for j in range(24):
+            d=mark+9+j*4.7;side=1 if j%3 else -1
+            if mark in (80,1210,7320) and side<0 and j<7:continue
+            offset=side*(6.1+(j*7%23));high=6.8+(j*17%61)*.097
+            saguaro(d,offset,high,.36+.09*(j%3),2+j%4,abs(offset)<15)
+    for d in range(0,int(LAP),3):
+        v=k.rng.choice((-1,1))*k.rng.uniform(3.5,11);x,y,_=pos(d,v)
+        z=k.height_at(x,y);w=k.rng.uniform(.075,.34)
+        art.tube((x,y,z-.04),w,w*.55,w*.57,lin(0x997968),lin(0xB4957C),5,lin(0xBA9E86))
     # The hawk's own perch occupies the same fixed station as the moving bird.
     saguaro(1224,-6.1,8.55,.41,3,True)
     for d in range(0,int(LAP),5):
