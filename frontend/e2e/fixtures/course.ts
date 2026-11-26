@@ -1,3 +1,4 @@
+import sevensistersElevation from './sevensisters-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const sevenSistersCourseMap = {
   place: 'East Sussex, England',
   world: 'sevensisters',
   distanceKm: 12.483333333333,
-  climbingM: 0,
+  climbingM: 458,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: sevensistersElevation,
   },
   thumbnailUrl: 'maps/seven-sisters-cliffs.jpg',
   photoUrl: 'maps/seven-sisters-cliffs-photo.jpg',

@@ -1,5 +1,5 @@
 import { newRiderProgress } from '../fixtures/api';
-import { sevensistersCourseMap } from '../fixtures/course';
+import { sevenSistersCourseMap } from '../fixtures/course';
 import { ECHELON_NOTIFY, echelonBike, resistanceFrame, workoutFrame } from '../fixtures/echelon';
 import { expect, test } from '../fixtures/test';
 import { RacePage } from '../pages/race.page';
@@ -19,7 +19,7 @@ for (const [section, offsetMetres] of [
   test(
     'Seven Sisters Cliffs sustains 60 FPS through the ' + section,
     async ({ page, browser, bluetooth, api, worldRide }, info) => {
-      const map = sevensistersCourseMap;
+      const map = sevenSistersCourseMap;
       api.answer('GET', '/api/maps', [map]);
       api.answer('GET', '/api/progress', { ...newRiderProgress, openMapIds: [map.id] });
       const cdp = await page.context().newCDPSession(page);

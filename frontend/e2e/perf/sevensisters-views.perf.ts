@@ -1,5 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
-import { sevensistersCourseMap } from '../fixtures/course';
+import { sevenSistersCourseMap } from '../fixtures/course';
 import { ECHELON_NOTIFY, resistanceFrame, workoutFrame } from '../fixtures/echelon';
 import { startRace, stepUntil } from '../fixtures/race';
 import { expect, test } from '../fixtures/test';
@@ -18,8 +18,8 @@ test('Ride the Sussex chalk brows from Cuckmere Haven to Belle Tout and back', a
   worldRide,
 }) => {
   await worldRide.pin('low', 'webgl2');
-  const race = await startRace(page, bluetooth, api, sevensistersCourseMap.id, 'mode=solo', {
-    catalogue: [sevensistersCourseMap],
+  const race = await startRace(page, bluetooth, api, sevenSistersCourseMap.id, 'mode=solo', {
+    catalogue: [sevenSistersCourseMap],
     world: true,
   });
   await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
