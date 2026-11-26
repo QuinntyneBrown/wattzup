@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Okinawa Coast Road (#2178)
+
+The island course retains the original twenty-degree bends over 120 metres outside the long Kouri Bridge crossing. Give the narrow road low seawalls so the rider can see the shift from white sand through clear lagoon to dark offshore reef.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Route 58, 0.08 km | Real 01, 05, 06 and 15. Games 01 and 03. | An orange centre line curves between the coral seawall and subtropical greenery. A Japanese route shield stands at the edge of the village. |
+| Shisa village, 2.76 km | Real 01, 05 and 06. Games 01–03. | A pair of shisa guard the red-tiled house and coral-stone gate. Pandanus and cycads break up the roofline against Yanbaru’s green hills. |
+| Kouri Bridge, 5.47 km | Real 02–04, 07 and 14. Games 01 and 04. | The bridge carries the road on a long low deck above clear shallows. Repeated piers and the distant island reveal the full crossing. |
+| Mushroom islets, 8.91 km | Real 09, 12 and 13. Games 02 and 05. | Limestone islets with narrow eroded feet stand in pale aqua water. Dark reef patches remain visible in the lagoon around their bases. |
+| Coral beach, 11.83 km | Real 08, 11–13 and 15. Games 03–05. | Fine white sand slopes into the lagoon. Parasols and swimmers sit below the road and the water deepens from pale aqua to blue. |
+| Cape Manzamo, 16.19 km | Real 05, 09, 10 and 15. Games 02 and 05. | The grass-covered headland ends in a limestone elephant trunk. Deep water and pale foam show through the opening beneath its arch. |
+
+Build the bridge deck, parapet, pier caps and regularly spaced supports in metres. The two eroded limestone landmarks need distinct silhouettes. Keep the opening in Cape Manzamo’s trunk visible to the riding camera. Give the village greenery, swimming figures and cresting foam bounded movement on race time. Compare the village and bridge with Caribana. Credits are in docs/worlds/okinawa/SOURCES.md.
