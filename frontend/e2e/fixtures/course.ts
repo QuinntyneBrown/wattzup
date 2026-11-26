@@ -3588,3 +3588,41 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const suburbiaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'suburban-sunrise',
+  name: 'Suburban Sunrise',
+  routeName: 'Maple Avenue',
+  place: 'North America',
+  world: 'suburbia',
+  distanceKm: 6.58,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/suburban-sunrise.jpg',
+  photoUrl: 'maps/suburban-sunrise-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 60, 16, 90),
+      seg('work', 60, 18, 90),
+      seg('work', 60, 19, 90),
+      seg('work', 60, 21, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 16, 90),
+      seg('work', 60, 18, 90),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 16, 90),
+      seg('work', 30, 19, 90),
+      seg('recover', 30, 24, 100),
+      seg('cool-down', 60, 10, 80),
+    ],
+  },
+};
