@@ -50,3 +50,34 @@ test('the rider sees worn setts and the cathedral west front on the seventh kick
   await expect.poll(() => worldRide.drawnCourseSections('MarktSetts')).toBeGreaterThan(0);
   await expect.poll(() => worldRide.drawnCourseSections('WestPortal')).toBeGreaterThan(0);
 });
+for (const [actor, metres, part] of [
+  ['supporter flag', 2530, 'fanWave'],
+  ['street pennants', 4310, 'pennantRise'],
+  ['finish bell', 14050, 'bellSwing'],
+] as const) {
+  test(`the ${actor} moves and holds still on pause`, async ({
+    api,
+    bluetooth,
+    page,
+    worldRide,
+  }) => {
+    const race = await enterOldTown(metres, page, api, bluetooth, worldRide);
+    await expect.poll(() => worldRide.coursePose(part)).not.toBeNull();
+    const first = await worldRide.coursePose(part);
+    await expect.poll(() => worldRide.coursePose(part)).not.toBe(first);
+    await race.pause.click();
+    await expect(race.resume).toBeVisible();
+    const held = await worldRide.coursePose(part);
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+          ),
+        ),
+    );
+    expect(await worldRide.coursePose(part)).toBe(held);
+    await race.resume.click();
+    await expect.poll(() => worldRide.coursePose(part)).not.toBe(held);
+  });
+}
