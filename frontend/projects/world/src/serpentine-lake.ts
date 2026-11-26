@@ -16,24 +16,33 @@ import {
   type BufferGeometry,
   type Texture,
 } from 'three/webgpu';
-import { color, mix, positionWorld, sin, texture, uniform } from 'three/tsl';
+import { attribute, color, mix, positionWorld, sin, texture, uniform, vec2 } from 'three/tsl';
 import type { Course, CoursePlace } from './course';
 
 const LAP = 3318.75,
   WATER = 17.65;
-const shore = (d: number) => 18 + 4 * Math.sin(d / 106) + 2.5 * Math.sin(d / 51);
+const shore = (d: number) =>
+  18 +
+  4 * Math.sin(d / 106) +
+  2.5 * Math.sin(d / 51) -
+  12 * Math.exp(-((((d % LAP) - 3042) / 47) ** 2));
 const position = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 const VIEWS = [
-  [80, 113, 19, 1.65],
-  [620, 644, -9, 1.55],
+  [80, 110, 14, 1.8],
+  [620, 632, -9.8, 0.5],
   [1290, 1330, 47, 5.3],
   [2130, 2150, 13, 2.3],
-  [3040, 3054, 24, 0.2],
+  [3040, 3048, 10, -1.2],
   [4510, 4650, 90, 4],
 ] as const;
 export class SerpentineLake {
   readonly root = new Group();
   readonly materials = {
+    PlaneShade: new MeshBasicMaterial({ side: DoubleSide, transparent: true, depthWrite: false }),
+    BridgeAshlar: new MeshBasicMaterial({ side: DoubleSide }),
+    HydeParkLawns: new MeshLambertNodeMaterial({ side: DoubleSide }),
+    LidoCafe: new MeshBasicMaterial({ side: DoubleSide }),
+    ParkSigns: new MeshBasicMaterial({ side: DoubleSide }),
     ParkTarmac: new MeshLambertNodeMaterial({ side: DoubleSide }),
     LongWater: new MeshLambertNodeMaterial({ side: DoubleSide }),
     LondonPlanes: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.43 }),
@@ -71,9 +80,18 @@ export class SerpentineLake {
   static async load(course: Course) {
     const loader = new TextureLoader();
     const results = await Promise.allSettled(
-      ['asphalt', 'planes', 'pavilion', 'visitors'].map((n) =>
-        loader.loadAsync('courses/serpentine-' + n + '.webp'),
-      ),
+      [
+        'asphalt',
+        'planes',
+        'pavilion',
+        'visitors',
+        'ashlar',
+        'grass',
+        'water',
+        'cafe',
+        'shade',
+        'signs',
+      ].map((n) => loader.loadAsync('courses/serpentine-' + n + '.webp')),
     );
     const maps = results.flatMap((r) => (r.status === 'fulfilled' ? [r.value] : []));
     const failure = results.find((r) => r.status === 'rejected');
@@ -98,6 +116,18 @@ export class SerpentineLake {
     this.materials.LondonPlanes.map = maps[1]!;
     this.materials.ParkPavilion.map = maps[2]!;
     this.materials.ParkVisitors.map = maps[3]!;
+    this.materials.BridgeAshlar.map = maps[4]!;
+    this.materials.LidoCafe.map = maps[7]!;
+    this.materials.PlaneShade.map = maps[8]!;
+    this.materials.ParkSigns.map = maps[9]!;
+    this.materials.LondonPlanes.color.setHex(0xdbe4cf);
+    for (const map of maps.slice(4, 7)) {
+      map.wrapS = map.wrapT = RepeatWrapping;
+      map.anisotropy = 4;
+    }
+    this.materials.HydeParkLawns.colorNode = attribute('color', 'vec3').mul(
+      texture(maps[5]!, positionWorld.xz.div(3.2)).rgb.mul(1.5).add(0.58),
+    );
     const ripple = sin(
       positionWorld.z
         .mul(2.8)
@@ -108,10 +138,14 @@ export class SerpentineLake {
     const breeze = sin(positionWorld.x.mul(0.078).add(positionWorld.z.mul(0.11)))
       .mul(0.5)
       .add(0.5);
+    const reflected = texture(
+      maps[6]!,
+      positionWorld.xz.div(vec2(9, 3.1)).add(vec2(ripple.mul(0.012), this.time.mul(0.0014))),
+    ).rgb;
     this.materials.LongWater.colorNode = mix(
-      color(0x4b6e72),
-      color(0xacc6c7),
-      ripple.mul(0.27).add(0.27).mul(breeze).add(0.1),
+      reflected,
+      color(0x869e9f),
+      breeze.mul(0.14).add(0.11),
     );
     for (let i = 0; i < 17; i++) this.makeBird(i);
     for (let i = 0; i < 5; i++) this.makeBoat(i);
@@ -166,7 +200,7 @@ export class SerpentineLake {
       const wake = this.part(g, 0xb6c7be, side * 0.3, -0.046, 0.61, 0.012, 0.008, 0.56);
       wake.rotation.y = side * 0.35;
     }
-    g.scale.setScalar(swan ? 1.28 : goose ? 1.01 : 0.68);
+    g.scale.setScalar(swan ? 1.78 : goose ? 1.2 : 0.84);
     this.birds.push(g);
     this.root.add(g);
   }
@@ -225,14 +259,14 @@ export class SerpentineLake {
     const lap = metres % LAP;
     this.data.swanHeading = this.data.oarSweep = this.data.joggerKnee = null;
     this.birds.forEach((g, i) => {
-      const home = [3045, 117, 1214][i % 3]!;
+      const home = [3049, 117, 1214][i % 3]!;
       g.visible = Math.abs(lap - home) < 270;
       if (!g.visible) return;
       const phase = seconds * (0.065 + i * 0.0017) + i * 1.85;
       const station = home + Math.sin(phase) * 6.2 + Math.floor(i / 3) * 3.6;
       const p = this.course.place(
         station,
-        shore(station) + 4.1 + (i % 4) * 2 + Math.cos(phase) * 2.4,
+        shore(station) + 5.5 + (i % 4) * 1.35 + Math.cos(phase) * 2.4,
         this.p,
       );
       g.position.set(p.x, WATER + 0.09 + 0.015 * Math.sin(phase * 3), p.z);
@@ -282,6 +316,18 @@ export class SerpentineLake {
     if (!v) return;
     const r = this.course.place(metres, 0, this.p);
     const t = this.course.place(v[1], v[2], this.focus);
+    if (v[0] === 3040) {
+      // At the reed bed, follow the foremost swimming bird rather than the static bank.
+      const bird = this.birds[0]!.position;
+      t.x = bird.x;
+      t.z = bird.z;
+      t.y = bird.y + 1.3;
+    } else if (v[0] === 4510) {
+      const boat = this.rowboats[0]!.group.position;
+      t.x = boat.x;
+      t.z = boat.z;
+      t.y = boat.y - 2.4;
+    }
     // Follow the bird flock on the near water and the arch span across the rider's bank.
     const dx = t.x - r.x,
       dz = t.z - r.z,
@@ -290,7 +336,7 @@ export class SerpentineLake {
       w = u * u * (3 - 2 * u);
     camera.x += (r.x - (4.8 * dx) / dist - camera.x) * w;
     camera.z += (r.z - (4.8 * dz) / dist - camera.z) * w;
-    camera.y += (r.y + 2.25 - camera.y) * w;
+    camera.y += (r.y + (v[0] === 3040 ? 3.2 : 2.25) - camera.y) * w;
     ahead.x += (r.x + (14 * dx) / dist - ahead.x) * w;
     ahead.z += (r.z + (14 * dz) / dist - ahead.z) * w;
     ahead.y += (r.y + 1.55 + (18.8 * (t.y + v[3] - r.y - 2.25)) / (dist + 4.8) - ahead.y) * w;

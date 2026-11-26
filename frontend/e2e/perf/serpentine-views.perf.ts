@@ -41,7 +41,11 @@ test('Ride Serpentine Road beside five stone arches and the boats of Hyde Park',
     ['swans', 3.04],
     ['regatta', 4.51],
   ] as const) {
-    while (parseFloat((await race.distance.textContent())!) < km) {
+    const station = async () =>
+      version === 'before'
+        ? parseFloat((await race.distance.textContent())!)
+        : ((await worldRide.courseMetres()) ?? 0) / 1000;
+    while ((await station()) < km - (version === 'before' ? 0 : 0.002)) {
       await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(18));
       await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(90));
       // The baseline integrates distance on animation frames and caps each step at
@@ -50,13 +54,14 @@ test('Ride Serpentine Road beside five stone arches and the boats of Hyde Park',
         for (let frame = 0; frame < 4; frame++) await page.clock.fastForward(250);
       } else {
         // The authored course reads the same physical race distance as the HUD.
-        await page.clock.fastForward(750);
+        if (km - (await station()) > 0.045) await page.clock.fastForward(750);
         await page.clock.runFor(64);
       }
     }
     // Capture the submitted frame with the ride clock held at this chainage. Resuming
     // for a screenshot lets a loaded browser travel metres beyond the reference position.
     await page.clock.runFor(34);
+    if (version === 'after') expect(Math.abs((await station()) - km)).toBeLessThan(0.018);
     const capture = async (path: string): Promise<void> => {
       const frame = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 91, clip });
       await writeFile(path, Buffer.from(frame.data, 'base64'));

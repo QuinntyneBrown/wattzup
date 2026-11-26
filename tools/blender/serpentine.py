@@ -47,7 +47,7 @@ BRIDGE_X = 1331.
 
 
 def shore(d):
-    return 18 + 4*math.sin(d/106) + 2.5*math.sin(d/51)
+    return 18 + 4*math.sin(d/106) + 2.5*math.sin(d/51) - 12*math.exp(-((d%LAP-3042)/47)**2)
 
 
 def road(r,st,length,col,bc):
@@ -86,7 +86,7 @@ def land(r,col,theme,bc):
     return lawn.build(col),height
 
 
-def serpentine_bridge(art):
+def serpentine_bridge(art, masonry):
     # Five elliptical ashlar arches run across the narrow western neck.
     stone=lin(0xA49B89);sun=lin(0xC6BBA7);mortar=lin(0x857E70);dark=lin(0x685F50)
     start=-202;span=39.3;deck=27.0
@@ -102,10 +102,15 @@ def serpentine_bridge(art):
                 left,right=pt(a),pt(b);top_l,top_r=pt(a,True),pt(b,True)
                 shade=sun if (arch*7+j)%4 else stone
                 art.face((left,right,top_r,top_l),(dark,stone,shade,shade))
-                art.face((top_l,top_r,(face_x,top_r[1],deck),(face_x,top_l[1],deck)),(mortar,stone,sun,stone))
+                spandrel=(top_l,top_r,(face_x,top_r[1],deck),(face_x,top_l[1],deck))
+                picture(masonry,spandrel,[(pt[1]/7.6,pt[2]/4.8) for pt in spandrel])
+                # Each joint follows the ellipse from intrados to extrados.
+                if j%2==0:beam(art,left,top_l,.072,mortar)
                 if side==1:
                     art.face((left,right,(face_x-10.5,right[1],right[2]),(face_x-10.5,left[1],left[2])),(dark,)*4)
-            art.box((face_x,cy,deck+.34),(.46,span,1.05),0,stone)
+            art.box((face_x,cy,deck+.34),(.46,span,.36),0,stone)
+            for j in range(19):
+                art.box((face_x,cy-span/2+(j+.5)*span/19,deck+.69),(.38,.32,.71),0,sun)
             art.box((face_x,cy,deck+1.39),(.68,span,.19),0,sun)
         art.box((BRIDGE_X,cy,deck-.14),(10.5,span,.5),0,stone)
         for end in ([-1,1] if arch==0 else [1]):
@@ -119,6 +124,7 @@ def serpentine_bridge(art):
 def scenery(k):
     rng=k.rng;art=Painted(k);sky=Painted(k,'peaks')
     leaves=pictured(k,'LondonPlanes');walls=pictured(k,'ParkPavilion');people=pictured(k,'ParkVisitors')
+    masonry=pictured(k,'BridgeAshlar');cafe=pictured(k,'LidoCafe');signs=pictured(k,'ParkSigns')
     cream=lin(0xE2D6B8);dark=lin(0x3D453B);wood=lin(0x826945);blue=lin(0x327EA6)
     white=lin(0xEEE9DC);green=lin(0x3E7856)
     def portrait(mesh,x,y,z,h,w,angle,uv):
@@ -129,22 +135,30 @@ def scenery(k):
         return ((u+.003,v+.003),(u+1/cols-.003,v+.003),(u+1/cols-.003,v+1/rows-.003),(u+.003,v+1/rows-.003))
     for d in range(0,int(LAP),13):
         for row in (0,1,2):
-            if row==0 and (d%187<51 or 1150<d<1450 or d<140):continue
+            if row==0 and (d%187<51 or 460<d<750 or 1150<d<1450 or d<140):continue
             off=(rng.uniform(6.4,15) if row==0 else rng.uniform(32,73) if row==1 else rng.uniform(89,170))
             x,y,z=pos(d,off);h=rng.uniform(11.7,24.5);angle=rng.uniform(0,math.pi)
             for a in (angle,angle+math.pi/2):portrait(leaves,x,y,z-.38,h,h*rng.uniform(.9,1.15),a,tile((d//13+row)%2,2,1))
-        if d%39==0:
+        if d%39==0 and not 3010<d<3070:
             x,y,z=pos(d,-4.62);art.tube((x,y,z),.14,.075,4.2,dark,dark,7)
             art.tube((x,y,z+4.16),.14,.3,.55,cream,white,4);art.tube((x,y,z+4.70),.40,0,.28,dark,dark,4)
         for v in (-4.65,):
             x,y,z=pos(d,v);art.tube((x,y,z),.048,.048,.75,dark,dark,6)
             for t in (.31,.67):beam(art,pos(d,v,t),pos(min(LAP,d+13),v,t),.05,dark)
-        if d%39==0 and not 1230<d<1470:
+        if d%39==0 and not 3005<d<3090 and not 1230<d<1470:
             x,y,z=pos(d,-8);a=centre(d)[2]+.65
             portrait(people,x,y,z-.16,1.7 if d%3 else 1.85,2.65,a,tile((d//39)%6,3,2))
+    # Dappled light under the plane avenues, leaving open sky at the bridge and lawns.
+    shade=pictured(k,'PlaneShade')
+    for d in range(12,int(LAP),17):
+        if d%187<51 or 450<d<765 or 1100<d<1470:continue
+        x,y,z=pos(d,rng.uniform(-1.5,2.0),.14)
+        angle=centre(d)[2];half=rng.uniform(2.0,4.0)
+        pts=[pos(d+u,v,.135) for u,v in ((-half,-3.52),(half,-3.52),(half,3.52),(-half,3.52))]
+        picture(shade,pts,tile(0,1,1))
     for d in list(range(460,765,12))+list(range(1975,2170,15)):
-        for j in range(2):
-            x,y,z=pos(d+rng.uniform(-4,4),7.2+j*6+rng.uniform(0,3));yaw=centre(d)[2]+rng.uniform(-.65,.65)
+        for j in range(3):
+            x,y,z=pos(d+rng.uniform(-2,2),5.1+j*4.1+rng.uniform(0,2));yaw=centre(d)[2]+rng.uniform(-.65,.65)
             def chair(u,v,h):return (x+u*math.cos(yaw)-v*math.sin(yaw),y+u*math.sin(yaw)+v*math.cos(yaw),z+h)
             for u in (-.37,.37):
                 beam(art,chair(u,-.55,-.04),chair(u,.28,1.12),.052,wood)
@@ -160,18 +174,35 @@ def scenery(k):
             for j in range(4):
                 along=(j-1.5)*w/4;v=sign*(depth/2+.025)
                 xx=x+along*math.cos(a)-v*math.sin(a);yy=y+along*math.sin(a)+v*math.cos(a)
-                portrait(walls,xx,yy,z-.15,3.43,w/4,a,tile(0,1,1))
+                portrait(cafe if name=="lido" else walls,xx,yy,z-.15,3.43,w/4,a,tile(0,1,1))
+        for side in (-1,1):
+            xx=x+side*(w/2+.055)*math.cos(a);yy=y+side*(w/2+.055)*math.sin(a)
+            portrait(cafe if name=="lido" else walls,xx,yy,z-.12,3.4,depth,a+math.pi/2,tile(0,1,1))
+            xx+=side*.06*math.cos(a);yy+=side*.06*math.sin(a)
+            portrait(signs,xx,yy,z+1.7,.82,4.5,a+math.pi/2,tile(0 if name=="boats" else 1,1,2))
+        art.box((x+2*math.cos(a),y+2*math.sin(a),z+4.45),(1.1,.85,2.2),a,lin(0x976E58))
+        if name=="lido":
+            for j in range(6):
+                xx,yy,zz=pos(d-14+j*5,-17)
+                art.tube((xx,yy,zz-.3),.052,.052,2.55,wood,wood,6)
+                art.tube((xx,yy,zz+2.25),1.55,.12,.62,green,cream,8)
+                art.tube((xx,yy,zz+.74),.67,.67,.11,cream,cream,8)
         if name=='boats':
             for t in range(7):
-                xx=x+4*t-9; yy=-shore(d)-6-(t%2)*2.8
-                art.box((xx,yy,WATER+.03),(2.5,1.15,.26),.09,blue);art.box((xx,yy,WATER+.28),(1.45,.95,.22),.09,white)
+                xx=x+2.5*t-26; yy=-shore(d)-2-(t%2)*2.2
+                for pontoon in (-.58,.58):
+                    art.box((xx,yy+pontoon,WATER+.08),(2.45,.34,.28),.09,blue)
+                art.box((xx,yy,WATER+.33),(1.62,1.32,.18),.09,white)
+                for v in (-.34,.34):
+                    art.box((xx+.12,yy+v,WATER+.51),(.62,.44,.15),.09,blue)
+                    art.box((xx+.32,yy+v,WATER+.64),(.14,.44,.29),.09,white)
                 for v in (-.49,.49):art.tube((xx+.5,yy+v,WATER+.15),.29,.27,.28,blue,white,8)
             art.box((x-8,-shore(d)-1,WATER+.15),(24,2.5,.35),0,wood)
         else:
             for t in range(19):
                 xx,yy,_=pos(d-28+t*3,-shore(d)-9)
                 art.tube((xx,yy,WATER+.02),.19,.14,.17,white if t%2 else blue,white,7)
-    serpentine_bridge(art)
+    serpentine_bridge(art,masonry)
     # Knightsbridge's pale slab and the narrower Park Lane hotels rise behind the park canopy.
     for idx,(x,y,w,depth,h) in enumerate(((1050,-435,23,17,77),(1031,-428,12,15,56),(282,-570,42,22,42),(360,-580,18,16,49),(466,-609,29,19,39),(712,-638,23,19,55))):
         sky.box((x,y,18),(w,depth,h),0,lin(0x9DA4A0))
