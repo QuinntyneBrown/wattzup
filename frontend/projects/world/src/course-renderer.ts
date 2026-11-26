@@ -1742,7 +1742,7 @@ export class CourseRenderer implements WorldRenderer {
     this.gardena?.at(frame.reducedMotion ? 0 : frame.time, metres);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
-    const standing = this.ride(you, metres, 0);
+    const standing = this.ride(you, metres, this.sevenMileChannel ? 2.65 : 0);
     // Every wheel on the road turns with the rider's: the riders keep much the same pace.
     this.kit?.roll(metres);
     this.marinaBoats?.follow(metres);
@@ -2582,7 +2582,7 @@ export class CourseRenderer implements WorldRenderer {
   private rehearse(): void {
     if (!this.you) return;
     this.lampShadows?.begin();
-    this.ride(this.you, 0, 0);
+    this.ride(this.you, 0, this.sevenMileChannel ? 2.65 : 0);
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.you.pose(0);

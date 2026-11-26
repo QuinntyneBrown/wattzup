@@ -21,8 +21,8 @@ const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 const views = [
   [80, 118, 1.6, 4],
   [1510, 1556, -35.5, 5.9],
-  [2870, 2944, -82, 4.6],
-  [4420, 4490, 38, 2.2],
+  [2870, 2920, -26, 5.3],
+  [4420, 4495, 124, 3.7],
   [6310, 6374, -35.5, 5.5],
   [8020, 8060, 1.6, 4],
 ] as const;
@@ -172,6 +172,7 @@ export class SevenMileChannel {
           [0, 1, 2],
         );
       }
+      boat.scale.setScalar(j ? 1.5 : 2.1);
       this.boats.push(boat);
       this.root.add(boat);
     }
@@ -224,13 +225,13 @@ export class SevenMileChannel {
       boat.visible = Math.abs(metres - 4440) < 390;
       if (!boat.visible) continue;
       const phase = time * 0.049 + i * 2.7,
-        along = 4481 + 38 * Math.sin(phase),
-        lane = 36 + 21 * Math.cos(phase) + i * 34;
+        along = 4495 + 22 * Math.sin(phase),
+        lane = 124 + 15 * Math.cos(phase) + i * 34;
       const p = this.course.place(along, lane, this.p);
       boat.position.set(p.x, 0.18 + 0.12 * Math.sin(time * 1.3 + i), p.z);
       boat.rotation.set(
         0,
-        p.heading + Math.atan2(-21 * Math.sin(phase), 38 * Math.cos(phase)),
+        p.heading + Math.atan2(-15 * Math.sin(phase), 22 * Math.cos(phase)),
         0.043 * Math.sin(time + i),
       );
       if (i === 0) this.readings.boatTravel = boat.position.x;
@@ -257,7 +258,7 @@ export class SevenMileChannel {
     const s = views.find((s) => Math.abs(metres - s[0]) < 92);
     if (!s) return;
     const f = Math.min(1, (1 - Math.abs(metres - s[0]) / 92) * 1.45);
-    const rider = this.course.place(metres, 0, this.p),
+    const rider = this.course.place(metres, 2.65, this.p),
       t = this.course.place(s[1], s[2], this.q);
     const dx = t.x - rider.x,
       dz = t.z - rider.z,

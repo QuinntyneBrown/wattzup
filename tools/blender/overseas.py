@@ -111,9 +111,12 @@ def scenery(k):
             for outer,inner,lo,hi,c in ((1.12,.94,.04,.56,lin(0xDED5BA)),(.94,.71,.56,1.10,lin(0x93A77C)),(.71,0,1.10,1.24,lin(0x8B9E70))):
                 pts=(rim(j,outer,lo),rim(j+1,outer,lo),rim(j+1,inner,hi),rim(j,inner,hi));art.face(pts,(c,)*4)
         return a,h,z
-    a,h,z=island(2944,82,104,52)
-    for j,(along,across) in enumerate(((-48,-12),(-29,9),(-6,-14),(14,4),(36,-9),(50,12))):
-        ax=lambda u,v,zz:a(along+u,across+v,z+1.14+zz)
+    a,h,z=island(2944,61,105,48)
+    for j,(along,across) in enumerate(((-48,-34),(-29,9),(-6,-36),(14,4),(36,-31),(50,12))):
+        # Timber cottages stand on piles above the island flood level.
+        for x in (-4.9,0,4.9):
+            for y in (-2.6,2.6):art.box(a(along+x,across+y,z+1.1),(.29,.29,2.87),h,weathered)
+        ax=lambda u,v,zz:a(along+u,across+v,z+3.97+zz)
         art.box(ax(0,0,-.03),(11.8,6.63,3.31),h,lin(0xCAB480));art.roof(ax(0,0,3.2),12.26,7.02,2.14,h,lin(0xA9ADA4))
         u=(j%2)*.5;picture(cottages,(ax(-5.9,-3.36,.04),ax(5.9,-3.36,.04),ax(5.9,-3.36,3.78),ax(-5.9,-3.36,3.78)),((u,0),(u+.5,0),(u+.5,1),(u,1)))
         art.box(ax(0,-4.52,2.63),(12.1,2.48,.17),h,white)
@@ -123,7 +126,7 @@ def scenery(k):
         plant(base,0 if j%4==0 else 1,3+j%5,6+j%6 if j%4==0 else 3.3,0,k.rng.uniform(0,math.pi))
     for j in range(9):
         u=-63+5*j;zz=z+5.68-.10*j*5
-        art.box(a(u,old-82+3+j*1.55,zz),(5.35,3.4,.35),h,weathered);art.box(a(u,old-82+3+j*1.55,z+.02),(.45,2.6,zz-z),h,concrete)
+        art.box(a(u,old-61+3+j*1.55,zz),(5.35,3.4,.35),h,weathered);art.box(a(u,old-61+3+j*1.55,z+.02),(.45,2.6,zz-z),h,concrete)
     art.box(a(-21,-48,z+1.05),(29,2.4,.26),h,weathered)
     for d,off,l,w in ((708,140,43,20),(2410,234,61,17),(6910,-218,73,26),(7550,124,41,22)):
         a,h,z=island(d,off,l,w)
@@ -137,7 +140,7 @@ def scenery(k):
         picture(signs,(a(-.10,1.01,1.55),a(-.10,-1.01,1.55),a(-.10,-1.01,2.99),a(-.10,1.01,2.99)),((u,v),(u+1/3,v),(u+1/3,v+.5),(u,v+.5)))
     for j,d in enumerate((460,2310,4190,6390,8040)):
         for side in (-1,1):
-            a,h=site(k,d+460,side*(710+49*j));picture(clouds,(a(-280,110,56),a(280,-110,56),a(280,-110,213),a(-280,110,213)),UV)
+            a,h=site(k,d+460,side*(710+49*j));picture(clouds,(a(-350,150,102),a(350,-150,102),a(350,-150,297),a(-350,150,297)),UV)
     return {'efforts':0}
 
 THEME={'lay':route,'land_builder':land,'road_builder':road,'terrain':{'sea':False},'road_half_width':5.54,'land':{'mid':0x92A47D},'sky':[0xD6EBD9,0xC5E2E8,0x98CDE6,0x78BCE0,0x58ADD9],'haze':0xB9DADD,'light':[0xFFF1D2,2.27],'fill':[0xD9ECE6,0xB9CAB6],'sun_radius':10,'sun_altitude':.75,'sun_azimuth':.77}
