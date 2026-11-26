@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Stelvio Pass (#2217)
+
+The original scene paints the wall of hairpins and fixes its horizon as the rider turns. Preserve that stable skyline and the grade-aligned props from the previous bend review. Compress the 48 numbered bends into the GCN class distance. The native road itself doubles back across a shared hillside. The profile reaches 2,757 m on the final stage. Real 03 depicts the Sustenpass, and supplies retaining-wall proportions only.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Trafoi larches, 0.10 km | Real 01, 02 and 15. Games 04 and 05. | Tall larch and pine frame the lower road, a rider climbs ahead and the first tornante plaque counts down from 48. The inner rock cut and outside posts follow the grade. |
+| Stone retaining wall, 1.57 km | Real 01–03, 06 and 12. Games 02 and 05. | The next traverse sits on a battered dry-stone wall. A motorbike leans through the bend between white edge markings and scuffed stone parapets. |
+| Trafoi wall of hairpins, 3.83 km | Real 04, 05, 07–09, 12 and 13. Games 02–04. | A view across the slope shows real traverses stacked above and below. The stone walls keep their positions as the rider turns through the numbered bend. |
+| Painted climbers’ bend, 5.21 km | Real 01, 05 and 14. Games 03 and 05. | Original rider names and encouragement follow the worn tarmac uphill. A slow camper takes the outside of the next bend while other cyclists climb on the right. |
+| Ortler snowfield, 6.73 km | Real 02, 06–08 and 14. Games 01–04. | The larches give way to fractured grey scree and lingering banks. Pale glacier tongues cut the dark Ortler massif while cloud moves below the peaks. |
+| Passo dello Stelvio summit, 8.05 km | Real 10, 11 and 14. Games 01 and 05. | The last numbered tornante opens below the pale yellow summit hotel, sausage stand and souvenir shops. The 2,757 m sign and snowfields remain visible past the finish. |
+
+Set the station and number of each physical turn from the same course geometry used by its sign. Fit the ground between adjacent traverses. Keep the Ortler massif fixed and use distance-limited sections for wall stones, larches, lettering and stalls. Animate the fellow rider, motorbike and camper on ride time. Dispose their meshes and shared material maps on exit. Retain the historical captures alongside six matched rider views, with one-minute measurements in the forest and at the upper wall. See ADRs 0021, 0023, 0030, 0034 and 0035.
