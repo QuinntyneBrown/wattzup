@@ -55,7 +55,7 @@ test('Race over Westminster Bridge through London buses and black cabs at dusk',
     }
     // Capture the submitted frame with the ride clock held at this chainage. Resuming
     // for a screenshot lets a loaded browser travel metres beyond the reference position.
-    await page.clock.runFor(34);
+    await page.clock.runFor(180);
     const capture = async (path: string): Promise<void> => {
       const frame = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 91, clip });
       await writeFile(path, Buffer.from(frame.data, 'base64'));
@@ -67,7 +67,7 @@ test('Race over Westminster Bridge through London buses and black cabs at dusk',
       const hidden = await page.addStyleTag({
         content: '.race > :not(.race-scene) { visibility: hidden !important; }',
       });
-      await page.clock.runFor(34);
+      await page.clock.runFor(180);
       await capture('projects/ride/public/maps/' + asset);
       await hidden.evaluate((style) => style.parentNode?.removeChild(style));
     }

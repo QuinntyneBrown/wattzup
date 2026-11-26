@@ -100,7 +100,7 @@ def scenery(k):
         if j%3==0:
             at,h=site(k,d)
             for v in (-6.3,-2.6,4):art.box(at(0,v,.068),(3.1,.14,.014),h,cream)
-        if not bridge and j%10==0 and (d<100 or 530<d<4650):
+        if not bridge and j%10==0 and (d<100 or 530<d<4100):
             at,h=site(k,d,-24-j%5)
             art.box(at(0,-6,-.15),(38,11.7,14+j%7),h,stone)
             panel(county,[at(x,0,z) for x,z in ((-19,0),(19,0),(19,18+j%7),(-19,18+j%7))],(0,0,1,.5))
@@ -114,6 +114,20 @@ def scenery(k):
             at,h=site(k,d,19);art.box(at(0,0,0),(34,23,.21),h,lawn)
             if j%27==0:
                 art.box(at(0,0,.21),(2.6,2.6,1.8),h,stone);art.tube(at(0,0,2),.63,.39,1.71,bronze,bronze,8);art.tube(at(0,0,3.71),.26,.24,.47,bronze,bronze,8)
+    # Parliament Square Gardens has a larger paved plinth and the standing bronze
+    # facing the traffic. Railings, trees and a paved walk give the lawn depth.
+    at,h=site(k,1246,19)
+    art.box(at(0,8,.08),(72,32,.26),h,lawn)
+    art.box(at(0,0,.31),(4.3,3.6,.47),h,light)
+    art.box(at(0,0,.78),(2.8,2.37,2.2),h,stone)
+    for side in (-1,1):
+        beam(art,at(side*.22,0,3),at(side*.18,0,4.27),.21,bronze)
+        beam(art,at(side*.31,0,4.94),at(side*.57,-.21,4.25),.155,bronze)
+    art.tube(at(0,0,4.02),.54,.39,1.08,bronze,bronze,9)
+    art.tube(at(0,0,5.1),.24,.25,.43,bronze,bronze,9)
+    for x in range(-32,37,4):
+        beam(art,at(x,-3,.2),at(x,-3,1.28),.06,iron)
+        beam(art,at(x,-3,1.1),at(x+4,-3,1.1),.046,iron)
     for d in (680,1230,2375,4110):
         at,h=site(k,d)
         for x in range(-4,5,2):art.box(at(x,0,.09),(.8,15,.014),h,cream)
