@@ -150,6 +150,7 @@ import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
+import type { MarktSquare } from './markt-square';
 import type { ManxMountain } from './manx-mountain';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
@@ -353,6 +354,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
+  private marktSquare: MarktSquare | null = null;
   private mountain: ManxMountain | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
@@ -850,6 +852,18 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'oldtown') {
+        const { MarktSquare } = await import('./markt-square');
+        if (this.disposed) return false;
+        const square = await MarktSquare.load();
+        if (this.disposed) {
+          square.dispose();
+          return false;
+        }
+        this.marktSquare = square;
+        this.scene.add(square.root);
+        this.disposables.push(square);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1962,6 +1976,7 @@ export class CourseRenderer implements WorldRenderer {
     this.icelandCoast = null;
     this.divide = null;
     this.mountain = null;
+    this.marktSquare = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.yard = null;
@@ -2200,6 +2215,7 @@ export class CourseRenderer implements WorldRenderer {
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
+    if (this.marktSquare) Object.assign(materials, this.marktSquare.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
