@@ -1,3 +1,4 @@
+import provenceElevation from './provence-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const provenceCourseMap = {
   place: 'Valensole Plateau, France',
   world: 'provence',
   distanceKm: 18.545,
-  climbingM: 0,
+  climbingM: 118,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: provenceElevation,
   },
   thumbnailUrl: 'maps/provence-lavender.jpg',
   photoUrl: 'maps/provence-lavender-photo.jpg',
