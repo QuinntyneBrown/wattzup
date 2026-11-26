@@ -83,6 +83,8 @@ def scenery(k):
     for d,width,style in ((2292,20,1),(736,16,0),(5260,14,0)):
         at,h=site(k,d,8);sidewidth=47
         art.box(at(0,0,6.5),(width,sidewidth*2,.97),h,slate)
+        art.face([at(x,y,6.49) for x,y in ((-width/2,-sidewidth),(-width/2,sidewidth),(width/2,sidewidth),(width/2,-sidewidth))],(iron,)*4)
+        for x in range(-width//2+2,width//2,3):art.box(at(x,0,6.08),(.27,sidewidth*2,.44),h,iron)
         for x in (-width/2+.4,width/2-.4):
             art.box(at(x,0,7.45),(.65,sidewidth*2,1.0),h,brown)
             for y in range(-44,46,4):
@@ -95,15 +97,25 @@ def scenery(k):
                 if style:
                     art.tube(at(x,y,-.2),2.18,2.03,10,brown,cream,16)
                     art.tube(at(x,y,9.8),2.23,2.23,.64,snow,snow,16,cap=snow)
-                    if x>0:art.tube(at(x,y,10.4),1.78,1.60,2.05,cream,cream,12,cap=slate)
+                    for row in range(6):
+                        art.tube(at(x,y,1.1+row*1.46),2.17-row*.018,2.17-row*.018,.09,slate,slate,16)
+                    if x>0:
+                        art.tube(at(x,y,10.4),1.78,1.6,2.05,cream,cream,12,cap=slate)
+                        for side in (-1,1):
+                            art.box(at(x+1.51*side,y,10.85),(.12,1.45,1.08),h,iron)
                 else:art.box(at(x,y,-.25),(3.4,4.1,6.9),h,brown)
     for j,d in enumerate((3990,4030,4079,4155,4220,4295)):
-        side=1 if j%3 else -1;at,h=site(k,d,8*side+(14 if side>0 else -4))
+        side=-1 if j in (1,3,4,5) else 1;at,h=site(k,d,side*(13 if side<0 else 21))
         if j%2:
             art.box(at(0,0,.13),(9,5.3,2.9),h,wood)
             art.roof(at(0,0,3.01),9.5,5.8,1.9,h,snow)
             art.box(at(0,-side*2.72,1.42),(5.8,.14,1.23),h,green)
-            panel(boards,[at(x,-side*2.8,z) for x,z in ((-3.9,2),(3.9,2),(3.9,3.06),(-3.9,3.06))],(0,0,1,.5) if j==3 else (0,.5,1,1))
+            for x in (-3.8,-1.1,1.1,3.8):
+                art.box(at(x,-side*2.69,1.38),(.16,.19,2.55),h,cream)
+            art.box(at(0,-side*2.83,1.49),(6.55,.36,.17),h,wood)
+            for x in (-2.1,0,2.1):art.box(at(x,-side*2.84,1.77),(.14,.09,.58),h,cream)
+            for x in (-3.9,3.9):art.box(at(x,side*1.1,3.0),(.43,.45,1.55),h,brown)
+            panel(boards,[at(x*side,-side*2.8,z) for x,z in ((-3.9,2),(3.9,2),(3.9,3.06),(-3.9,3.06))],(0,.5,1,1) if j==3 else (0,0,1,.5))
         else:
             for x in (-4.5,4.5):
                 for v in (-2.7,2.7):beam(art,at(x,v,.04),at(x,v,3.2),.078,iron)
