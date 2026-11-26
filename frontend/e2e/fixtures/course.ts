@@ -1,3 +1,4 @@
+import pueblosElevation from './pueblos-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const pueblosCourseMap = {
   place: 'Andalusia, Spain',
   world: 'pueblos',
   distanceKm: 21.377,
-  climbingM: 0,
+  climbingM: 382,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: pueblosElevation,
   },
   thumbnailUrl: 'maps/andalusian-white-villages.jpg',
   photoUrl: 'maps/andalusian-white-villages-photo.jpg',
