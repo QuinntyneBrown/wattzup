@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import quebec as _quebec
+
+THEMES['quebec'] = _quebec.THEME
+SCENERY['quebec'] = _quebec.scenery
