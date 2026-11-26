@@ -55,7 +55,7 @@ def scenery(k):
             high=k.rng.uniform(8,12) if downtown else k.rng.uniform(7.4,9.6)
             art.box(at(0,side*3.9,-.2),(length,7.8,high+.20),h,lin(k.rng.choice((0xA99D8B,0xC4B6A8,0xC1A38F))))
             art.roof(at(0,side*3.9,high),length+.4,8,2.1,h,lin(0x514D51))
-            image_panel(avenue,(at(-length/2,0,0),at(length/2,0,0),at(length/2,0,high),at(-length/2,0,high)),(.5 if downtown else 0,0))
+            image_panel(avenue,(at(-length/2,-side*.09,0),at(length/2,-side*.09,0),at(length/2,-side*.09,high),at(-length/2,-side*.09,high)),(.5 if downtown else 0,0))
             if downtown:
                 for z in (3.45,6.55):
                     art.box(at(0,-side*.82,z),(length,1.7,.16),h,iron)
@@ -66,11 +66,15 @@ def scenery(k):
                 art.roof(at(0,-side*.73,5.39),10.7,2.3,1.65,h,white)
                 for j in range(5):art.box(at(-length*.4+j*length*.2,-side*2.8,0),(.09,.1,1.16),h,iron)
             if d%3!=0:
-                p,h=site(k,d-7,side*(7.7 if side>0 else 9.6))
-                top=k.rng.uniform(8.2,12.4);width=top*1.52
+                p,h=site(k,d-7,side*(9.8 if side>0 else 12.0))
+                top=k.rng.uniform(8.2,12.4);width=top*1.24
                 for a in (0,math.pi/2):
                     dx=width*.5*math.cos(a);dy=width*.5*math.sin(a)
                     image_panel(people,(p(-dx,-dy,.14),p(dx,dy,.14),p(dx,dy,top),p(-dx,-dy,top)),(0,.5))
+                if d%4==0:
+                    for n in range(18):
+                        a=n/17
+                        art.tube(p(-1.9+3.8*a,-side*.73,top*.53-1.21*math.sin(a*math.pi)),.066,.066,.09,carnival[n%3],carnival[n%3],5)
             p,h=site(k,d+4,side*(5.2 if side>0 else 8.4))
             if d%3!=1 or 2900<d<5100 or downtown:
                 width=k.rng.uniform(3.7,5.1)
