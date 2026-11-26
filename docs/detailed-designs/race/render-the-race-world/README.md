@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Ffordd Pen Llech (#2187)
+
+Keep the famous street short within the longer historical class. Approach across Morfa Harlech and the town, put the measured steep metres and tight hairpin inside the sustained work stage, then finish above the bay. Share the centreline between rider pitch, road, grade and HUD. Keep houses vertical and step their foundations so their sills make the slope legible.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Morfa Harlech approach, 0.08 km | Real 11–15. Games 01 and 04. | The coastal plain leads toward the castle on its rock. A break in the rain lights the dunes while cloud stays on the mountain ridge. |
+| Stryd Fawr terraces, 3.42 km | Real 04–10. Games 02 and 05. | Slate-roofed stone terraces, narrow shopfronts, chimneys and bilingual street furniture mark the transition from the plain into Harlech. |
+| Ffordd Pen Llech foot, 10.86 km | Real 01–03 and 05–06. Games 02–03. | A Welsh street-name plate and steep-gradient warning guard a narrow wet lane. Mossy walls leave only a single track with no pavement. |
+| The steepest metres, 11.12 km | Real 01–04. Games 02–03 and 05. | The 37.45% section pitches the rider upward between level cottage sills and stepped walls. Locals wave from doorways and the wall top. |
+| Upper left hairpin, 11.20 km | Real 01–04, 07 and 15. Games 02–03. | A tight left-hand bend interrupts the wall. The blockwork and standing spectators stay vertical while the road changes direction on the grade. |
+| Castle and bay overlook, 13.68 km | Real 11–15. Games 01, 04 and 05. | Round towers and curtain walls rise out of the castle rock. Beyond them the coastal fields, Morfa dunes, Tremadog Bay and the mountains recede under broken grey cloud. |
+
+Model the castle gatehouse and towers on a fixed rock and shade the far mountains independently of rain over the lane. Use damp asphalt, mossy drystone and slate throughout the upper streets. Limit drizzle particles and animate the near spectator and flag on ride time. Dispose of those assets on exit. Compare the opening and the sustained climb with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/penllech/SOURCES.md.
