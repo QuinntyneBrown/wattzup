@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## San Francisco Hills (#2208)
+
+The earlier procedural world combines generic city props and a rolling road. Restore the GCN class to the catalogue and use one measured centre line for the camera, grade, vehicles and intersection flats. The 120 m Filbert pitch gains 37.8 m between 2.740 and 2.860 km. Keep railway tracks off the crooked, brick-paved Lombard block.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Russian Hill row houses, 0.10 km | Real 01, 03, 04, 10 and 13. Games 02 and 03. | Stepped, painted bay windows and raised stoops mark each lot. Overhead wires, ficus crowns, a flat zebra crossing and a cast manhole mark the first block. |
+| Powell–Hyde line, 1.38 km | Real 02, 07 and 08. Games 02 and 04. | A red-and-cream cable car moves along the steel running rails and central grip slot. Its clerestory and open riding platform remain distinct at rider height. |
+| Filbert wall, 2.82 km | Real 01, 11, 12 and 13. Games 02 and 05. | A 31.5 percent concrete pitch rises between stepped sidewalks. Parked cars lean with the road, with their wheels turned toward the curb. A level landing breaks the steep block. |
+| Telegraph Hill crest, 4.22 km | Real 03, 04, 09 and 14. Games 01 and 04. | Coit Tower’s pale fluted shaft and arched crown rise above Telegraph Hill. Alcatraz and the Bay Bridge appear beyond the sudden drop in the street. |
+| Lombard switchbacks, 6.72 km | Real 05 and 06. Games 03 and 04. | Eight tight bends wind down a continuous red-brick street. Hydrangea beds fill the inside of each turn. A local car threads the bends below the rider. |
+| Bay overlook, 8.36 km | Real 02, 07, 11 and 15. Games 01 and 05. | A fog bank slides over the water beyond the foreground wires. The island and bridge stay fixed while warm light picks out projecting bay windows on the last descent. |
+
+Model the bays, dentilled cornices, cable-car roof and Coit Tower’s top openings in silhouette. Reuse original facade elevations over stepped geometry and batch wires and window frames by block. Keep Alcatraz, the bridge and Telegraph Hill fixed across the route; a translucent marine layer moves independently of the landmarks. Measure submitted frames with the whole HUD and loaded meshes, and dispose textures, geometry and scene-local actors on exit. See the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.
