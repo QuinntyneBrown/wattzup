@@ -12,6 +12,33 @@ namespace Telo.Ride.Api.Tests;
 public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<TeloRideApiFactory>
 {
     [Fact]
+    public async Task Sella_Ronda_preserves_every_class_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "sella-ronda");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 80),
+                new Segment("work", 120, 18, 90),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("cool-down", 190, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task Iceland_preserves_every_original_stage()
     {
         var map = Assert.Single(await ReadMaps(), m => m.Id == "iceland-ring-road");
@@ -2003,7 +2030,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Vice City", 24, 60, "Moderate", "Ocean Drive to the Causeway", "A neon beachfront city at a magenta sunset"),
                 new Listed("Col du Granit", 16.1, 1240, "Brutal", null, "A high mountain pass at first light"),
                 new Listed("Ibiza Sunset Strip", 8.4, 159, "Moderate", "Intervals to the Beat", "The waterfront strip of Sant Antoni at sunset"),
-                new Listed("Sella Ronda", 11.7, 357, "Hard", "Over/Under Intervals on the Passo Sella", "Four Dolomite passes circling the Sella massif"),
+                new Listed("Sella Ronda", 11.65, 364, "Hard", "Over/Under Intervals on the Passo Sella", "Four Dolomite passes circling the Sella massif"),
                 new Listed("Cinque Terre", 17.1, 335, "Hard", "3 Mins On, 2 Mins Off", "The corniche above the Ligurian Sea"),
                 new Listed("Haleakalā", 15.8, 923, "Brutal", "Maximum Intensity Hill Climb Efforts", "The summit road from the Pacific coast to the crater rim"),
                 new Listed("Adelaide Hills", 17.11, 265, "Moderate", "The Willunga road", "Summer vineyards and gum trees on the climb to Willunga Hill"),
