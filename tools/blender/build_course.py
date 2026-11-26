@@ -675,7 +675,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             group = "Tarmac"
         elif part.name == "VelodromeTimber":
             group, chunked = "VelodromeTimber", False
-        elif part.name in ('MedinaPaving','JemaaSquare','SoukGoods','MedinaFacades','SoukLanterns','SquareFamilies'):
+        elif part.name in ('MedinaBulbs','MedinaPaving','JemaaSquare','SoukGoods','MedinaFacades','SoukLanterns','SquareFamilies'):
             group, chunked = part.name, True
         elif part.name == 'KerioRim':
             group, chunked = part.name, False
