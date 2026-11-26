@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Pico Veleta (#2241)
+
+Restore the historical class to the Race catalogue and register a native 25.25 km climb. The stage-weighted profile climbs 1,258 m from Pradollano to 3,398 m. The historical class title says 55 minutes; its stages sum to 56 minutes and the ride uses their actual durations. Keep the Granada basin, observatories and Mulhacén as fixed landmarks on the ascent.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Pradollano approach, 0.14 km | Real 02, 05, 12–14 and games 02–03 | A maintained A-395 lane passes the ski village, lift terminal and lower pines. The bare summit rises beyond the roofs. |
+| The long switchbacks, 5.47 km | Real 01, 03–05, 08 and games 01–02 | A return bend cuts through slate and broom. The carriageway above the rider shows the next switchback. |
+| The Granada overlook, 10.62 km | Real 03, 06, 11–12, 14 and games 02, 04 | The Vega and Granada lie far below the edge of the road. Brown foothills recede into blue haze. |
+| The observatory ridge, 15.26 km | Real 05, 07, 10, 13 and games 02–03 | The IRAM dish tilts above its pedestal beside the observatory domes. Snow gullies run below the crest. |
+| The upper barrier, 20.61 km | Real 01, 04, 07–09, 13 and games 01, 05 | The surface narrows and breaks up. A red-white barrier stands open beside scree and the last roadside snow. |
+| The summit ridge, 24.98 km | Real 04, 07–09, 11, 15 and games 03–05 | From Veleta, Mulhacén and a glacial lake fill the open ridge beyond the summit post. No trees reach this elevation. |
+
+Adapt Caribana’s landmark geometry, surface wear and depth separation to the dish pedestal, village and battered upper tarmac. Share the existing animated course cyclist and simplify the distant ski machinery and snowfields at low tier. Release the local scene on exit. Match six locations and measure the two busiest moving sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
