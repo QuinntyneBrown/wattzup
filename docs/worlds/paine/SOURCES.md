@@ -27,3 +27,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-05.jpg | Zwift: [“City and the Sgurr” Route Details (Scotland)](https://zwiftinsider.com/route/city-and-the-sgurr/) (g0018) | © Zwift |
 
 The wind-bent coirón, cushion scrub, guanacos, gravel and lenticular cloud are original generated artwork. Real 01–02 and 11 inform the gravel and vegetation, real 06 and 12 the animal proportions, and real 03–05 and 10 the clouds and mountain light. The rock, ice, shore and waterfall are original geometry.
+
+The Cuernos and Torres relief textures, Salto Grande water curtain and whitecaps are original artwork. Real 03–05, 08 and 13–15 guide the Cuernos cap, snow clefts, waterfall lip and lake colours. The Torres form a separate curved relief mesh with three granite needles.

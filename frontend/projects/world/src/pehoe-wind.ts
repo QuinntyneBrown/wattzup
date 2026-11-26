@@ -19,10 +19,10 @@ import type { Course, CoursePlace } from './course';
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 const views = [
   [80, 108, 0, 3],
-  [2240, 2590, -1180, 420],
+  [2240, 2590, -1120, 116],
   [4570, 4590, 9.8, 1.2],
-  [7220, 7261, -54, 7.6],
-  [9820, 9900, -1020, 398],
+  [7220, 7268, -80, 12],
+  [9820, 9900, -1040, 122],
   [12540, 12790, -480, 38],
 ] as const;
 export class PehoeWind {
@@ -30,6 +30,10 @@ export class PehoeWind {
   readonly materials = {
     PehoeGravel: new MeshBasicNodeMaterial({ side: DoubleSide }),
     PehoeWater: new MeshBasicNodeMaterial({ side: DoubleSide }),
+    PaineFarShore: new MeshBasicMaterial({ side: DoubleSide, vertexColors: true, fog: false }),
+    CuernosRelief: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.39, fog: false }),
+    TorresRelief: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.39, fog: false }),
+    SaltoCurtain: new MeshBasicMaterial({ side: DoubleSide }),
     Coiron: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.41 }),
     PaineCloud: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.22, fog: false }),
     Guanacos: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.41 }),
@@ -52,8 +56,8 @@ export class PehoeWind {
   };
   static async load(course: Course) {
     const results = await Promise.allSettled(
-      ['gravel', 'coiron', 'guanacos', 'lenticular'].map((k) =>
-        new TextureLoader().loadAsync('courses/paine-' + k + '.webp'),
+      ['gravel', 'coiron', 'guanacos', 'lenticular', 'cuernos', 'torres', 'salto', 'whitecaps'].map(
+        (k) => new TextureLoader().loadAsync('courses/paine-' + k + '.webp'),
       ),
     );
     const images = results.flatMap((r) => (r.status === 'fulfilled' ? [r.value] : []));
@@ -96,8 +100,12 @@ export class PehoeWind {
       t.flipY = false;
       t.colorSpace = SRGBColorSpace;
     }
-    const [gravel, coiron, animals, cloud] = textures;
+    const [gravel, coiron, animals, cloud, cuernos, torres, salto, whitecaps] = textures;
     gravel!.wrapS = gravel!.wrapT = MirroredRepeatWrapping;
+    this.materials.CuernosRelief.map = cuernos!;
+    this.materials.TorresRelief.map = torres!;
+    this.materials.SaltoCurtain.map = salto!;
+    whitecaps!.wrapS = whitecaps!.wrapT = MirroredRepeatWrapping;
     this.materials.Coiron.map = coiron!;
     this.materials.Guanacos.map = animals!;
     this.materials.PaineCloud.map = cloud!;
@@ -111,7 +119,13 @@ export class PehoeWind {
     const broken = sin(
       positionWorld.x.mul(1.58).add(positionWorld.z.mul(0.069)).sub(this.clock.mul(1.2)),
     ).smoothstep(0.39, 0.95);
-    this.materials.PehoeWater.colorNode = vertexColor().rgb.add(crest.mul(broken).mul(0.37));
+    this.materials.PehoeWater.colorNode = vertexColor()
+      .rgb.mul(
+        texture(whitecaps!, positionWorld.xz.mul(0.021).add(this.clock.mul(0.0032)))
+          .rgb.mul(0.49)
+          .add(0.74),
+      )
+      .add(crest.mul(broken).mul(0.035));
     const blade = new PlaneGeometry(1.6, 1.14);
     blade.translate(0, 0.57, 0);
     this.shapes.add(blade);
@@ -173,11 +187,11 @@ export class PehoeWind {
       for (const [i, m] of this.spray.children.entries()) {
         const phase = (time * 0.65 + i * 0.217) % 1,
           p = this.course.place(
-            7261 - 3.2 * phase,
+            7263 + ((i % 11) - 5) * 4.8,
             -54 + ((i % 11) - 5) * 2.85 + phase * 1.6,
             this.p,
           );
-        m.position.set(p.x, 84 + 8 * (1 - phase * phase), p.z);
+        m.position.set(p.x, 84 + 14 * (1 - phase * phase), p.z);
         m.scale.set(0.66 + phase * 0.5, 0.53 + phase * 1.05, 0.58 + phase * 0.82);
       }
       this.readings.fallSpray = this.spray.children[0]!.position.y;

@@ -91,9 +91,31 @@ def scenery(k):
                 shade=int(12*math.sin(i*1.7+seed)+7*math.cos(i*.61+j*.7));c=lin(col+shade*0x010101)
                 a,b=rings[j][i],rings[j][n];e,f=rings[j+1][n],rings[j+1][i]
                 art.face((a,b,e),(c,)*3);art.face((a,e,f),(c,)*3)
-    for args in ((1380,950,565,315,362,True,4),(2230,1180,720,590,606,True,1),(2710,1280,490,430,738,True,5),(3070,1350,470,500,580,True,3),(3790,1500,600,382,432,True,7),
-                 (9650,950,220,260,502,False,3),(9880,1080,190,265,637,False,4),(10130,1070,177,242,544,False,1),(10580,1510,730,380,405,True,8),(12130,1320,740,490,480,True,7)):
-        peak(*args)
+    # The foreground shoulders are solid rock; the farther massif follows the
+    # curved glacial wall in depth with original relief artwork across each face.
+    for station,offset,rx,ry,high,seed in ((1590,1480,590,410,120,4),(3270,1710,640,430,165,7),(9430,1220,370,260,115,3),(10490,1490,650,410,140,8),(12460,1440,760,490,170,7)):
+        peak(station,offset,rx,ry,high,True,seed)
+    for name,station,offset,width,high in (('CuernosRelief',2630,1120,1700,415),('TorresRelief',10010,1040,1360,420)):
+        relief=pictured(k,name);at,_=site(k,station,offset);base=LAKE-14-k.road.pos(station)[2]
+        def relief_point(u,v):
+            return at((u-.5)*width,82*math.cos(u*math.tau)+56*v+23*math.sin(u*math.tau*3)*v,base+high*v*(.18+.82*smooth(0,.17,u)*(1-smooth(.85,1,u))))
+        for col in range(32):
+            for row in range(6):
+                u=col/32;v=row/6;uv=((u,v),(u+1/32,v),(u+1/32,v+1/6),(u,v+1/6))
+                picture(relief,tuple(relief_point(x,y) for x,y in uv),uv)
+    # A continuous, layered shore grounds the massif and closes the lake between
+    # distant spurs. Permanent far-water geometry meets the distance-culled near lake.
+    bank_builder=type(k.B['terrain'])('PaineFarShore','terrain')
+    k.B['PaineFarShore']=bank_builder;bank=Painted(k,'PaineFarShore')
+    def bank_point(d,band):
+        row=k.s[k.road.index(d)];x=row['x'];y=row['y'];bend=43*math.sin(d/243)+64*math.cos(d/472)
+        profile=((255,LAKE-.25),(650+bend,LAKE-.25),(720+bend,LAKE+2),(810+bend,LAKE+23+10*math.sin(d/85)),(930+bend,LAKE+47+20*math.cos(d/124)),(1110+bend,LAKE+61+31*math.sin(d/228)),(1460+bend,LAKE+85+29*math.sin(d/304)),(2260,LAKE+96+18*math.cos(d/510)))
+        v,z=profile[band];return x,y+v,z
+    for d in range(-78,13172,31):
+        for j,c in enumerate((0x448B97,0x567D7D,0x7C806B,0x646E60,0x69756B,0x78837C,0x88938D)):
+            pts=(bank_point(d,j),bank_point(d+31,j),bank_point(d+31,j+1),bank_point(d,j+1))
+            dye=lin(c+int(3*math.sin(d/92))*0x010101)
+            bank.face(pts,(dye,)*4)
     def billboard(group,d,v,w,h,variant,count,alt=0):
         at,_=site(k,d,v);x,y,_=at(0,0);z=k.height_at(x,y)-k.road.pos(d)[2]+alt
         u=variant/count;uv=((u+.002,0),(u+1/count-.002,0),(u+1/count-.002,1),(u+.002,1))
@@ -106,12 +128,22 @@ def scenery(k):
     for d,v,j in ((4588,-7,0),(4594,-11,1),(4600,-16,2),(4610,-8,1),(4615,-18,0),(4622,-15,2),(4630,-23,1)):
         billboard(animals,d,v,2.1,1.67,j,3)
     # A rocky channel projects into Pehoé; the waterfall drops from the higher shelf.
-    at,h=site(k,7261,54);zero=LAKE-k.road.pos(7261)[2]
-    for j in range(12):
-        dy=-17+j*3;lip=zero+8+.4*math.sin(j*.82)
-        art.box(at(12,dy,zero-.4),(22.5,3.12,lip-zero+.4),h,lin(0x656959))
-        art.box(at(12,dy,lip),(22.6,3.11,.15),h,lin(0x75B5AD))
-        pts=(at(.76,dy-1.55,lip),at(.76,dy+1.55,lip),at(-2.6,dy+1.55,zero+.09),at(-2.6,dy-1.55,zero+.09));art.face(pts[::-1],(lin(0xC9E5DB),lin(0xB1DCD4),lin(0xECEFE2),lin(0xD9E7DB))[::-1])
+    # A basalt promontory separates the upper river from Pehoé. Present the
+    # cascade across the inlet so the rider sees its face above the near bank.
+    at,h=site(k,7263,82);zero=LAKE-k.road.pos(7263)[2]
+    falls=pictured(k,'SaltoCurtain')
+    for j in range(18):
+        x=-30+j*3.35;lip=zero+14+.24*math.sin(j*.64)
+        art.box(at(x,10,zero-.42),(3.41,20.1,lip-zero+.42),h,lin(0x5B6055))
+        art.box(at(x,10,lip),(3.4,20.1,.13),h,lin(0x80B6A7))
+        u=j/18
+        picture(falls,(at(x-1.68,-3,zero+.09),at(x+1.68,-3,zero+.09),at(x+1.68,-.06,lip+.16),at(x-1.68,-.06,lip+.16)),((u,0),(u+1/18,0),(u+1/18,1),(u,1)))
+    for side in (-1,1):
+        for j in range(8):
+            x=side*(29+j*3.3);width=5.8;high=14.8*(1-j/9)
+            a=at(x-width,0,zero+.15);b=at(x+width,-1.3,zero+.15);c=at(x+width,15,zero+.15);e=at(x-width,17,zero+.15);top=at(x+1,5,zero+high)
+            for p,q in ((a,b),(b,c),(c,e),(e,a)):
+                art.face((p,q,top),(lin(0x686858),lin(0x5F6457),lin(0x91917C)))
     for d,v,w in ((880,824,602),(3300,-960,870),(7050,1450,1100),(10130,1630,980),(12460,-870,710)):
         at,h=site(k,d,v);z=196
         picture(cloud,(at(-w/2,-100,z),at(w/2,100,z),at(w/2,100,z+110),at(-w/2,-100,z+110)),UV)
