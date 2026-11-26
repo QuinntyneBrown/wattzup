@@ -58,6 +58,17 @@ def scenery(k):
         for a in (.61,2.17):
             dx=w*.5*math.cos(a);dy=w*.5*math.sin(a)
             tile(cedars,[at(-dx,-dy,z),at(dx,dy,z),at(dx,dy,z+ht),at(-dx,-dy,z+ht)],t,3)
+    bluff=pictured(k,'StanleyCliffs')
+    for start,end in ((-12,890),(1860,2044),(2625,3190),(4100,4790),(5630,5945)):
+        last=None
+        for j,d in enumerate(range(start,end,6)):
+            at,h=site(k,d,0);ht=6.5+4.2*math.sin(d/48)+2.1*math.sin(d/23)
+            v=5.1+.49*math.sin(d/9);line=(at(0,v,-.14),at(0,v+.59,ht*.43),at(0,v+2.5,ht))
+            if last:
+                for n in (0,1):
+                    a,b,c,e=last[n],line[n],line[n+1],last[n+1]
+                    picture(bluff,(a,b,c,e),((j*.79,a[2]*.19),((j+1)*.79,b[2]*.19),((j+1)*.79,c[2]*.19),(j*.79,e[2]*.19)))
+            last=line
     # Coping and coursed granite follow the local tide-wall height.
     for i,d in enumerate(range(-15,6220,4)):
         at,h=site(k,d,-4.35);floor=height(d)
@@ -83,7 +94,19 @@ def scenery(k):
         art.face(ring,(lin(0x758060),)*faces)
     for i,d in enumerate(range(-4,6230,13)):
         at,h=site(k,d,-(7+i%16));rock(at,.72+(i%5)*.33,-height(d)-1.18,1.46+(i%4)*.52,i)
-    at,h=site(k,4504,-19);rock(at,6.3,-height(4504)-1.5,17.6,3);tree(at,1,6.3,7.5,16.1-height(4504))
+    at,h=site(k,4504,-19);stack=pictured(k,'SiwashBasalt');last=None
+    base=-height(4504)-1.2
+    for layer,(z,rad) in enumerate(((base,5.9),(base+2,7.4),(-7,7.0),(-3.8,6.2),(-2.3,6.9),(.8,5.8),(3.4,5.1),(4.6,5.35),(6.2,4.35),(7.3,4.12),(8.7,2.86),(9.1,2.4))):
+        ring=[]
+        for q in range(18):
+            ang=math.tau*q/18;r=rad*(1+.16*math.sin(3*ang+.2*layer)+.08*math.cos(5*ang))
+            ring.append(at(-.15*layer+r*math.cos(ang),.09*layer+.89*r*math.sin(ang),z+.45*math.sin(ang*2+.4*layer)))
+        if last:
+            for q in range(18):
+                pair=(last[q],last[(q+1)%18],ring[(q+1)%18],ring[q])
+                picture(stack,pair,((q*.21,last[q][2]/5),((q+1)*.21,last[(q+1)%18][2]/5),((q+1)*.21,ring[(q+1)%18][2]/5),(q*.21,ring[q][2]/5)))
+        last=ring
+    art.face(ring,(lin(0x647553),)*len(ring));tree(at,1,5.4,5.3,9.0)
     # Broad display clearing, varied pole silhouettes and a split-rail visitor boundary.
     for j,(d,v,t,ht) in enumerate(((1097,11,0,6.8),(1104,14,1,8.6),(1111,9,2,6.3),(1121,15,0,7.8),(1129,11,1,6.9))):
         at,h=site(k,d,v);w=ht*.43;art.tube(at(0,0,.08),.27,.2,ht*.83,bark,bark,10)
@@ -122,9 +145,11 @@ def scenery(k):
             beam(art,at(4.5,v,z),at(-4.5,v,z+8.4),.38,green)
         art.box(at(0,v,deck+51),(10.5,2.22,1.35),h,green)
     # Fixed mountain panorama across the inlet. Divide it at UV boundaries before chunking.
-    for j in range(24):
-        x=-2400+j*490;y=-1020+105*math.sin(j/5);x2=x+490;y2=-1020+105*math.sin((j+1)/5)
-        u=(j%8)/8;picture(mountains,((x,y,-3),(x2,y2,-3),(x2,y2,280),(x,y,280)),((u,0),(u+.125,0),(u+.125,1),(u,1)))
+    for j in range(72):
+        a=math.tau*j/72;b=math.tau*(j+1)/72;u=(j%12)/12;v=u+1/12
+        if j//12%2:u,v=1-u,1-v
+        def rim(angle,z):return 3050+4480*math.cos(angle),4450*math.sin(angle),z
+        picture(mountains,(rim(a,-75),rim(b,-75),rim(b,897),rim(a,897)),((u,0),(v,0),(v,1),(u,1)))
     for i,d in enumerate(range(42,6190,85)):
         pts=[k.road.pos(d+a,v,.045) for a,v in ((0,1.02),(0,-1.02),(3.35,-1.02),(3.35,1.02))]
         tile(paint,pts,i%2,2)
