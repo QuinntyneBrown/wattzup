@@ -1,3 +1,4 @@
+import victoriaElevation from './victoria-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const victoriaHarbourCourseMap = {
   place: 'Hong Kong',
   world: 'victoria',
   distanceKm: 9.4,
-  climbingM: 0,
+  climbingM: 4,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: victoriaElevation,
   },
   thumbnailUrl: 'maps/victoria-harbour.jpg',
   photoUrl: 'maps/victoria-harbour-photo.jpg',
