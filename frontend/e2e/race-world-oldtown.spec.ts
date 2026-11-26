@@ -81,3 +81,31 @@ for (const [actor, metres, part] of [
     await expect.poll(() => worldRide.coursePose(part)).not.toBe(held);
   });
 }
+
+test('Cathedral Circuit turns a right angle between the townhouse kerbs', async ({
+  page,
+  api,
+  bluetooth,
+  worldRide,
+}) => {
+  const course = page.waitForResponse(
+    (response) => response.url().endsWith('/courses/oldtown.course.json') && response.ok(),
+  );
+  await enterOldTown(4310, page, api, bluetooth, worldRide);
+  const road = (await (await course).json()) as {
+    startIndex: number;
+    step: number;
+    points: number[];
+  };
+  const bearing = (metres: number) => {
+    const i = 3 * (road.startIndex + Math.round(metres / road.step));
+    return Math.atan2(
+      road.points[i + 5]! - road.points[i + 2]!,
+      road.points[i + 3]! - road.points[i]!,
+    );
+  };
+  const angle = bearing(4356) - bearing(4324);
+  const degrees = (Math.abs(Math.atan2(Math.sin(angle), Math.cos(angle))) * 180) / Math.PI;
+  expect(degrees).toBeGreaterThan(84);
+  expect(degrees).toBeLessThan(96);
+});
