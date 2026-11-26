@@ -27,3 +27,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-05.jpg | Zwift: [“Kappa Quest Reverse” Route Details (Makuri Islands)](https://zwiftinsider.com/route/kappa-quest-reverse/) (g0075) | © Zwift |
 
 The merchant façades, storefronts and château brickwork are original generated artwork informed by real 01–02, 04–08 and 12–14. The limestone, setts, copper and plank textures follow real 03, 08–11 and 13. The maple cutouts use the colour and branching in real 15. The château, gates, stairs, gazebos, ferry, Canadian flag and shop sign are original course assets. Game 01–05 informed the rider-height sightlines, road texture and autumn canopy.
+
+The château’s river-facing elevation is original artwork based on the tower, dormers and copper roofs in real 02, 08 and 14. It sits on the same three-dimensional wings, round turrets and masonry foundations from both circuits. The upper view of the St. Lawrence looks seaward past the boardwalk towards the ferry.

@@ -22,7 +22,7 @@ const views = [
   [1080, 1108, -8, 3.7],
   [2260, 2450, -57, 63],
   [3390, 3420, 0, 6.8],
-  [4630, 4660, -11.8, 4.4],
+  [4630, 4644, -4.86, 4.4],
   [5557.5, 5580, 0, 6.1],
 ] as const;
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
@@ -31,12 +31,15 @@ export class QuebecTerrace {
   readonly root = new Group();
   readonly materials = {
     QuebecHouses: surface(),
+    RoyalePaving: surface(),
+    FrontenacElevation: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.46 }),
     QuebecMaples: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.44 }),
     RampartStone: surface(),
     ChateauCopper: surface(),
     DufferinPlanks: surface(),
     QuebecSetts: surface(),
-    SaintLawrence: new MeshBasicNodeMaterial({ side: DoubleSide }),
+    SaintLawrence: new MeshBasicNodeMaterial({ side: DoubleSide, fog: false }),
+    LevisShore: new MeshBasicMaterial({ side: DoubleSide, vertexColors: true, fog: false }),
   };
   private readonly sign = new Group();
   private readonly flag = new Group();
@@ -59,8 +62,8 @@ export class QuebecTerrace {
   static async load(course: Course) {
     const loader = new TextureLoader(),
       result = await Promise.allSettled(
-        ['walls', 'maples', 'limestone', 'copper', 'planks', 'setts', 'shop', 'flag'].map((k) =>
-          loader.loadAsync('courses/quebec-' + k + '.webp'),
+        ['walls', 'maples', 'limestone', 'copper', 'planks', 'setts', 'shop', 'flag', 'hotel'].map(
+          (k) => loader.loadAsync('courses/quebec-' + k + '.webp'),
         ),
       );
     const textures = result.flatMap((r) => (r.status === 'fulfilled' ? [r.value] : []));
@@ -84,7 +87,7 @@ export class QuebecTerrace {
   ) {
     let material = this.colors.get(color);
     if (!material) {
-      material = new MeshBasicMaterial({ color });
+      material = new MeshBasicMaterial({ color, fog: group !== this.ferry });
       this.colors.set(color, material);
     }
     const mesh = new Mesh(shape, material);
@@ -116,6 +119,8 @@ export class QuebecTerrace {
       this.signPaint,
       this.flagPaint,
     ].forEach((material, i) => (material.map = textures[i]!));
+    m.FrontenacElevation.map = textures[8]!;
+    m.RoyalePaving.map = textures[5]!;
     const waves = sin(positionWorld.z.mul(0.95).add(sin(positionWorld.x.mul(1.07)).mul(2.1)))
       .add(sin(positionWorld.z.mul(3.1).add(positionWorld.x.mul(0.32))))
       .smoothstep(0.33, 1.68);
@@ -133,7 +138,7 @@ export class QuebecTerrace {
       this.part(this.sign, 0x4a4e45, side * 0.76, -0.095, 0, 0.043, 0.25, 0.04);
     frame.add(this.sign);
     this.root.add(frame);
-    const flagpole = this.course.place(4660, -11.8, this.p);
+    const flagpole = this.course.place(4644, -4.86, this.p);
     this.flag.position.set(flagpole.x, flagpole.y + 7.58, flagpole.z);
     this.flag.rotation.y = flagpole.heading + 0.15;
     this.cloth.translate(1.075, -0.46, 0);
@@ -150,6 +155,7 @@ export class QuebecTerrace {
     this.part(this.ferry, 0xd6dcd7, 0, 4.41, 3.8, 3.65, 1.36, 4.52);
     this.part(this.ferry, 0x92463a, 0, 4.71, -2.5, 1.36, 1.86, 1.51);
     this.part(this.ferry, 0x334c57, 0, 4.67, 6.09, 2.9, 0.52, 0.1);
+    this.ferry.scale.setScalar(1.8);
     this.root.add(this.ferry);
   }
   update(metres: number, time: number) {
@@ -177,9 +183,9 @@ export class QuebecTerrace {
     this.ferry.visible = Math.abs(d - 4630) < 345;
     if (this.ferry.visible) {
       this.ferry.position.set(
-        1035 + 12 * Math.sin(time * 0.048),
+        1280 + 12 * Math.sin(time * 0.048),
         6.12 + 0.09 * Math.sin(time * 0.82),
-        204 + 52 * Math.sin(time * 0.057),
+        266 + 35 * Math.sin(time * 0.057),
       );
       this.ferry.rotation.y = 0.38 + 0.29 * Math.cos(time * 0.057);
       this.readings.ferryTravel = this.ferry.position.z;
@@ -192,15 +198,23 @@ export class QuebecTerrace {
     const f = Math.min(1, (1 - Math.abs(d - view[0]) / 65) * 1.6);
     const r = this.course.place(metres, 0, this.p),
       t = this.course.place(view[1], view[2], this.q);
+    const terrace = view[0] === 4630;
+    const eye = terrace ? 5.8 : 2.26;
+    if (terrace) {
+      this.course.place(metres, -2.25, r);
+      t.x = 1280;
+      t.z = 289;
+      t.y = 5;
+    }
     const dx = t.x - r.x,
       dz = t.z - r.z,
       len = Math.max(1, Math.hypot(dx, dz));
     camera.x += (r.x - (5 * dx) / len - camera.x) * f;
     camera.z += (r.z - (5 * dz) / len - camera.z) * f;
-    camera.y += (r.y + 2.26 - camera.y) * f;
+    camera.y += (r.y + eye - camera.y) * f;
     ahead.x += (r.x + (13 * dx) / len - ahead.x) * f;
     ahead.z += (r.z + (13 * dz) / len - ahead.z) * f;
-    ahead.y += (r.y + 2.26 + (18 * (t.y + view[3] - r.y - 2.26)) / (len + 5) - ahead.y) * f;
+    ahead.y += (r.y + eye + (18 * (t.y + view[3] - r.y - eye)) / (len + 5) - ahead.y) * f;
   }
   report() {
     return this.readings;

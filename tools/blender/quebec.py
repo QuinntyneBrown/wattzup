@@ -105,6 +105,7 @@ def scenery(k):
     from bondi import beam
     art=Painted(k);facades=pictured(k,'QuebecHouses');maples=pictured(k,'QuebecMaples')
     masonry=pictured(k,'RampartStone');roofing=pictured(k,'ChateauCopper');deck=pictured(k,'DufferinPlanks')
+    hotel=pictured(k,'FrontenacElevation');square=pictured(k,'RoyalePaving')
     stone,slate,green,iron,white,wood,brick,bronze=[lin(c) for c in (0x9C978C,0x6E7880,0x477365,0x34494A,0xDFDCC8,0xA2805A,0x9B6853,0x566559)]
     def site_at(d,v):
         at,h=site(k,d,v);x,y,z=at(0,0);return at,h,k.height_at(x,y)-z
@@ -144,7 +145,7 @@ def scenery(k):
     # A stone merchant square, with the row of houses facing across its paving.
     for j in range(7):building(71+j*12.8,-28,11.2,7.6,8.5+(j%3),j%3)
     at,h,z=site_at(116,-17)
-    surface(deck,(at(-30,-8,z+.14),at(50,-8,z+.14),at(50,8,z+.14),at(-30,8,z+.14)),15,4)
+    surface(square,(at(-30,-8,z+.14),at(50,-8,z+.14),at(50,8,z+.14),at(-30,8,z+.14)),15,4)
     # The Escalier Casse-Cou steps and green iron banisters climb beside the boutiques.
     at,h,z=site_at(1108,8)
     for j in range(31):
@@ -152,6 +153,16 @@ def scenery(k):
         for side in (-1,1):
             if j%4==0:art.box(at(j*.47,2.25*side,z+.19*j),(.08,.08,1.07),h,green)
             beam(art,at(j*.47,2.25*side,z+.19*j+1.08),at((j+1)*.47,2.25*side,z+.19*(j+1)+1.08),.08,.075,green)
+    for j in range(5):
+        building(1091+j*8.5,16+(j%2)*1.8,7.2,6.1,7.8+j%3,j%3)
+    building(1129,9.1,8.0,6.1,9.6,1)
+    for d in (1088,1101,1119,1139):
+        at,h,z=site_at(d,6.45)
+        art.tube(at(0,0,z+.75),.68,.68,.09,wood,wood,10,wood)
+        art.tube(at(0,0,z),.088,.088,.76,iron,iron,8,iron)
+        for x in (-.81,.81):
+            art.box(at(x,0,z+.43),(.44,.42,.085),h,wood)
+            art.box(at(x+.19,0,z+.47),(.065,.40,.48),h,wood)
     for d in range(28,6580,64):
         at,h,z=site_at(d,-5.85)
         art.tube(at(0,0,z),.19,.085,3.89,iron,iron,9,iron)
@@ -160,7 +171,11 @@ def scenery(k):
             art.tube(at(x,0,z+3.61),.12,.26,.27,white,white,10,white)
             art.tube(at(x,0,z+3.88),.26,.06,.21,white,white,10,white)
     # Château Frontenac stands once on its own cliff through both circuits.
-    at,h,z=site_at(2450,57)
+    site_chateau,h,z=site_at(2450,57)
+    turn=-1.06
+    def at(u,v,w=0):
+        return site_chateau(u*math.cos(turn)-v*math.sin(turn),u*math.sin(turn)+v*math.cos(turn),w)
+    h+=turn
     baseline=max(80-height(2450),z)
     def chateau_block(x,y,w,b,t):
         floor=baseline;art.box(at(x,y,floor-4),(w,b,t+4),h,brick)
@@ -186,12 +201,18 @@ def scenery(k):
         art.tube(at(x,y,baseline),4.7,4.7,high,brick,brick,14,stone)
         art.tube(at(x,y,baseline+high),5.5,.14,14,green,green,14,green)
     art.tube(at(0,0,baseline+81),.26,.15,6.5,iron,iron,8,iron)
+    for side in (-1,1):
+        panel(at,hotel,0,side*20,baseline,159,75,0,0,1,1)
     # A terraced masonry foundation ties the château to the rising street.
     for j in range(5):
         zz=baseline-j*7-4
         art.box(at(0,2,zz),(118+j*2.5,67+j*2.5,7.3),h,stone)
+        for side in (-1,1):
+            surface(masonry,(at(side*(59.2+j*1.25),-32-j*1.25,zz),at(side*(59.2+j*1.25),35+j*1.25,zz),at(side*(59.2+j*1.25),35+j*1.25,zz+7.3),at(side*(59.2+j*1.25),-32-j*1.25,zz+7.3)),14,2)
         surface(masonry,(at(-59-j*1.25,-32-j*1.25,zz),at(59+j*1.25,-32-j*1.25,zz),
                          at(59+j*1.25,-32-j*1.25,zz+7.3),at(-59-j*1.25,-32-j*1.25,zz+7.3)),25,2)
+    for d,v in ((2281,10.6),(2304,18),(2342,24),(2396,14),(2430,-17),(2487,-24)):
+        tree(d,v,0 if d%2 else 1,12.2+d%4)
     # Both carriageways pass through the actual semicircular gate openings.
     for station,span in ((3420,5.45),(5580,5.05)):
         at,h,z=site_at(station,0);z=-.08
@@ -201,6 +222,8 @@ def scenery(k):
                 surface(masonry,(at(x,side*span,z),at(x,side*(span+6.15),z),at(x,side*(span+6.15),z+10.1),at(x,side*span,z+10.1)),1.8,3)
             for j in range(8):
                 v=side*(span+7.1+j*4.3);art.box(at(0,v,z-1),(3.75,4.5,8.3),h,stone)
+                for x in (-1.89,1.89):
+                    surface(masonry,(at(x,v-2.24,z-1),at(x,v+2.24,z-1),at(x,v+2.24,z+7.31),at(x,v-2.24,z+7.31)),1.4,2.6)
                 art.box(at(0,v,z+7.3),(4.1,4.7,.4),h,green)
                 for yy in (-1.2,1.2):art.box(at(0,v+yy,z+7.7),(3.8,.95,.94),h,stone)
         for j in range(26):
@@ -213,23 +236,44 @@ def scenery(k):
         for y in range(-9,10,2):art.box(at(0,y,z+10.74),(5.91,1.08,.9),h,stone)
         art.tube(at(0,-span-4.8,z),2.62,2.62,12.8,stone,stone,14,stone)
         art.tube(at(0,-span-4.8,z+12.8),2.9,.12,4.3,green,green,14,green)
+        if station==5580:
+            for side in (-1,1):
+                for u in range(4):
+                    art.box(at(-3.0-u*.24,side*(span+1.55),z+u*1.42),(1.7-u*.22,1.32,2.55),h,stone)
+        for d in (station-53,station-40,station+47):
+            tree(d,-9-d%11,(d%3),11+d%3)
     # Follow the cliff edge with a plank walk and green-and-white Dufferin kiosks.
     side=1 if pos(4630,9)[0]>pos(4630)[0] else -1
     for d in range(4490,4890,3):
-        a,e=5.3*side,16.9*side
+        a,e=-9.2*side,6.8*side
         surface(deck,(pos(d,a,.21),pos(d+3,a,.21),pos(d+3,e,.21),pos(d,e,.21)),1.4,3.8)
         at,h=site(k,d,e)
         art.box(at(0,0,.20),(.085,.085,1.17),h,green)
         for zz in (.59,1.29):beam(art,pos(d,e,zz),pos(d+3,e,zz),.065,.075,green)
-    for d in (4555,4660,4735,4824):
-        at,h=site(k,d,11.8*side)
+    for d in (4555,4644,4735,4824):
+        at,h=site(k,d,4.86*side)
         for j in range(8):
             a=j*math.tau/8;b=(j+1)*math.tau/8;x=3.05*math.cos(a);y=3.05*math.sin(a)
             art.tube(at(x,y,.22),.12,.095,3.11,green,green,8,green)
             e=at(3.45*math.cos(a),3.45*math.sin(a),3.35);f=at(3.45*math.cos(b),3.45*math.sin(b),3.35)
             c=white if j%2 else green
             art.face((e,f,at(0,0,5.57)),(c,)*3)
+        for j in range(8):
+            a=j*math.tau/8;b=(j+1)*math.tau/8
+            beam(art,at(3.05*math.cos(a),3.05*math.sin(a),3.17),at(3.05*math.cos(b),3.05*math.sin(b),3.17),.13,.17,white)
+            if j!=4:
+                beam(art,at(3.05*math.cos(a),3.05*math.sin(a),1.15),at(3.05*math.cos(b),3.05*math.sin(b),1.15),.08,.07,green)
         art.tube(at(0,0,5.48),.075,.065,2.8,iron,iron,8,iron)
+    # Across the St. Lawrence, Lévis rises behind the ferry wharf and its tree-lined shore.
+    shore_mesh=pictured(k,'LevisShore')
+    for j in range(-35,36):
+        y=j*23;xx=1760+27*math.sin(j*.18)
+        picture(shore_mesh,((xx,y,4.8),(xx,y+23,4.8),(xx+95,y+23,26+7*math.sin((j+1)*.19)),(xx+95,y,26+7*math.sin(j*.19))),((0,0),(1,0),(1,1),(0,1)))
+        shore_mesh.colours[-4:]=[lin(0x859582),lin(0x8B9A85),lin(0x788E75),lin(0x7A8E77)]
+    for j in range(22):
+        y=-405+j*18;x=1807+15*math.sin(j*.73)
+        art.box((x,y,15),(12.2,13.8,8+j%5),0,white if j%2 else brick)
+        art.roof((x,y,23+j%5),12.6,14.3,4,0,slate)
     # Historic cannon silhouettes on the grassy wall walk.
     for d in range(5450,5580,21):
         at,h,z=site_at(d,8)
