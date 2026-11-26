@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import tempelhof as _tempelhof
+
+THEMES['tempelhof'] = _tempelhof.THEME
+SCENERY['tempelhof'] = _tempelhof.scenery
