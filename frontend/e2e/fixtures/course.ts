@@ -3588,3 +3588,36 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const quebecCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'old-quebec',
+  name: 'Old Québec',
+  routeName: 'The Côte de la Montagne',
+  place: 'Québec City, Canada',
+  world: 'quebec',
+  distanceKm: 13.225,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/old-quebec.jpg',
+  photoUrl: 'maps/old-quebec-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 16, 85),
+      seg('work', 60, 10, 80),
+      seg('recover', 15, 24, 100),
+      seg('work', 300, 21, 90),
+      seg('work', 15, 24, 100),
+      seg('recover', 300, 21, 90),
+      seg('work', 15, 24, 100),
+      seg('recover', 300, 21, 90),
+      seg('work', 15, 24, 100),
+      seg('recover', 300, 21, 90),
+      seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
