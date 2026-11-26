@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import mardigras as _mardigras
+
+THEMES['mardigras'] = _mardigras.THEME
+SCENERY['mardigras'] = _mardigras.scenery
