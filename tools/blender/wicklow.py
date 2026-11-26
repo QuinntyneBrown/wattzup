@@ -28,10 +28,13 @@ def ground(d,v):
     slope=.12 if v>0 else -.16
     z=base+e*slope+min(1,e/8)*min(17,e*.21)*(math.sin(d/71+v/26)*.32+math.cos(d/140-v/37)*.45)
     # Cut two different basins. The upper is pumped storage; the lower is glacial.
-    for a,side,along,across,station,water in ((8680,1,260,110,134,471),(14870,-1,550,130,150,145)):
+    for a,side,along,across,station,water in ((8680,1,260,110,134,455),(14870,-1,550,130,150,145)):
         r=((d-a)/along)**2+((v*side-station)/across)**2
         if r<1.3:
             w=max(0,min(1,(1.3-r)*2.7));z=z*(1-w)+(water-3.7)*w
+    spur=((d-14951)/78)**2+((v+40)/32)**2
+    if spur<1.7:
+        w=max(0,min(1,(1.7-spur)/.72));z=z*(1-w)+(elevation(14951)-4.2)*w
     if 2940<d<3220 and 8<v<42:z=min(z,252)
     return z
 def road(r,st,length,col,bc):
@@ -95,20 +98,30 @@ def scenery(k):
             art.box(at(.55*n,0,row*.29-.2),(2.93,.98-row*.12,.37),h,lin((0x959289,0xAAA79B,0x8F9087)[(d+row)%3]))
     for j,(d,v,l,w) in enumerate(((2990,17,11,4),(3030,23,16,7),(3073,19,17,6),(3090,33,20,5),(3135,21,13,8))):
         pool(d,v,l,w,252.64,.19,j)
-    bank=pool(8680,134,218,87,471,.045,0)
+    bank=pool(8680,134,218,87,455,.045,0)
     for a,b in zip(bank,bank[1:]+bank[:1]):
         dx=b[0]-a[0];dy=b[1]-a[1];width=math.hypot(dx,dy)
-        art.box(((a[0]+b[0])/2,(a[1]+b[1])/2,467.9),(width+.14,4.1,4.35),math.atan2(dy,dx),stone)
-    at,h=site(k,8690,0)
+        art.box(((a[0]+b[0])/2,(a[1]+b[1])/2,452.1),(width+.14,4.1,4.35),math.atan2(dy,dx),stone)
+    at,h=site(k,8510,0)
     for i in range(32):
         def lane(n,v):
-            x=3.0*n;y=3.3+1.52*n+v;return at(x,y,ground(8690+x,y)-elevation(8690)+.22)
+            x=3.0*n;y=3.3+1.52*n+v;return at(x,y,ground(8510+x,y)-elevation(8510)+.65)
         art.face((lane(i,-2),lane(i+1,-2),lane(i+1,2),lane(i,2)),(road,)*4)
     pool(14870,-150,432,104,145,.14,.9)
-    at,h=site(k,14910,-47);base=ground(14910,-47)-elevation(14910)
+    at,h=site(k,14951,-40);base=ground(14951,-40)-elevation(14951)
     art.tube(at(0,0,base),2.83,2.12,25.5,stone,light,14,cap=stone)
+    for n in range(16):
+        a=n*math.tau/16;b=(n+1)*math.tau/16
+        for j in range(5):
+            z=j*5.1;e=z+5.1;r=2.86-.71*z/25.5;s=2.86-.71*e/25.5
+            p=[at(rad*math.cos(t),rad*math.sin(t),base+height) for t,rad,height in ((a,r,z),(b,r,z),(b,s,e),(a,s,e))]
+            patch(rock,p,(0,0,1,1))
     art.tube(at(0,0,base+25.5),2.4,.12,4.9,slate,stone,12)
     for z in (4,12.5,21,23):art.box(at(0,2.20,base+z),(.58,.25,1.39),h,iron)
+    for d in range(14440,15260,19):
+        v=-278-11*math.sin(d/61);tree,h=site(k,d,v)
+        basez=ground(d,v)-elevation(d)
+        sprite(plants,lambda x,y,z:tree(x,y,z+basez),7.8,13.1,(.75,0,1,1))
     for u,v in ((7,-5),(-8,-7)):
         art.box(at(u,v,base),(6.5,4.1,3.2),h,stone);art.roof(at(u,v,base+3.2),6.7,4.2,1.85,h,slate)
     # Original race chalk and the bilingual summit/route signs.
