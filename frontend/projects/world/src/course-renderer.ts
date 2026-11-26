@@ -151,6 +151,7 @@ import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
 import type { ManxMountain } from './manx-mountain';
+import type { ForumProcession } from './forum-procession';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -354,6 +355,7 @@ export class CourseRenderer implements WorldRenderer {
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
   private mountain: ManxMountain | null = null;
+  private forumProcession: ForumProcession | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -850,6 +852,21 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'rome') {
+        const { ForumProcession } = await import('./forum-procession');
+        if (this.disposed) return false;
+        const detail = await ForumProcession.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.forumProcession = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1802,6 +1819,7 @@ export class CourseRenderer implements WorldRenderer {
       this.camera.position.y,
       this.camera.position.z,
     );
+    this.forumProcession?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -1962,6 +1980,7 @@ export class CourseRenderer implements WorldRenderer {
     this.icelandCoast = null;
     this.divide = null;
     this.mountain = null;
+    this.forumProcession = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.yard = null;
@@ -2201,6 +2220,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
+    if (this.forumProcession) Object.assign(materials, this.forumProcession.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -2775,6 +2795,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
     this.mountain?.frameView(metres, this.camera.position, ahead);
+    this.forumProcession?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
@@ -3284,6 +3305,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
     if (this.mountain) Object.assign(drawn, this.mountain.report());
+    if (this.forumProcession) Object.assign(drawn, this.forumProcession.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }
