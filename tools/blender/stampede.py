@@ -74,8 +74,9 @@ def scenery(k):
             if i%4==0:art.box(at(3,side*.6,.07),(1.62,.85,.79),h,gold)
         if urban or midway or 6450<d<7300:
             for side in (-1,1):
-                for j in range(4):
-                    at,h=site(k,d+j*3.9,side*(6+(.8 if j%3 else .1)));dx=.47;dy=side*.34;ht=1.59+.13*((i+j)%4)
+                for j in range(15 if urban or midway else 7):
+                    crowdD=d+(j%8)*2.72+k.rng.uniform(-.55,.55);crowdV=side*(6.05+(j//8)*1.18+k.rng.uniform(-.28,.28));
+                    at,h=site(k,crowdD,crowdV);dx=.40;dy=-side*.38;ht=1.59+.13*((i+j)%4)
                     tile(crowd,[at(-dx,-dy,.13),at(dx,dy,.13),at(dx,dy,ht+.13),at(-dx,-dy,ht+.13)],(i*3+j+side)%8,4,2)
     # A half-mile dirt oval lies beside the rider; two 215 m straights connect the turns.
     at,h=site(k,4665,85)
@@ -93,22 +94,37 @@ def scenery(k):
         beam(art,at((j-8)*6.55,8,0),at((j-8)*6.55,9.7,10.2),.22,steel)
         art.box(at((j-8)*6.55,-9,.3),(5.9,.55,1.65),h,cream)
         for q in (-2,0,2):art.box(at((j-8)*6.55+q,-9.4,.2),(.11,.13,1.79),h,steel)
+    bleachers=pictured(k,'RodeoStand')
+    for j in range(3):
+        a=-56+j*39; b=a+39
+        picture(bleachers,(at(a,-.8,1.3),at(b,-.8,1.3),at(b,7.9,9.9),at(a,7.9,9.9)),((0,0),(1,0),(1,1),(0,1)))
+    # The dirt infield, chute boxes and paddock surround the track.
+    art.face((at(-99,-33,.26),at(98,-33,.26),at(98,1,.26),at(-99,1,.26)),(dirt,)*4)
+    for j in range(7):
+        a=-22+j*6
+        art.box(at(a,-16,.21),(5.5,2.2,1.54),h,cream)
+        for b in (-2,0,2):art.box(at(a+b,-17.18,.28),(.13,.16,1.55),h,blue)
     for i,d in enumerate(range(8750,9520,24)):
         at,h=site(k,d,-(13+(i%3)*13))
         art.tube(at(0,0,0),3.3,.19,5.9,cream,gold,14)
         for j in range(4):
             a=j*math.pi*.5;beam(art,at(3.24*math.cos(a),3.24*math.sin(a),0),at(-.5*math.cos(a),-.5*math.sin(a),6.79),.065,wood)
         art.face((at(-.78,.2,.03),at(.78,.2,.03),at(0,-2.34,2.25)),(wood,)*3)
+    campers=pictured(k,'RiverCamp')
+    for i,(d,v,t) in enumerate(((151,5.4,2),(183,-5.1,0),(2191,6.2,2),(8948,-12,1),(9119,-11.4,1),(9138,-15,0),(9150,-9,1),(9202,-13,0))):
+        at,h=site(k,d,v);w=1.35 if t==1 else 3.55;ht=1.84 if t==1 else 3.3
+        dx=.36*w;dy=.32*w
+        tile(campers,[at(-dx,-dy,.10),at(dx,dy,.10),at(dx,dy,ht),at(-dx,-dy,ht)],t,3,1)
     # The city's profile occupies a fixed world position, with an independent freestanding Calgary Tower.
-    at,h=site(k,545,78)
+    at,h=site(k,328,28)
     art.tube(at(0,0,0),3.8,2.4,48,cream,cream,16)
     art.tube(at(0,0,48),2.9,6.7,3.8,red,red,20)
     art.tube(at(0,0,51.8),6.7,6.55,3.1,blue,blue,24)
     art.tube(at(0,0,54.9),6.75,3.4,2.5,red,red,24)
     art.tube(at(0,0,57.4),.29,.11,6.2,steel,cream,8)
-    for i,d in enumerate((710,3100,7550,13085)):
-        at,h=site(k,d,125)
-        picture(city,(at(-138,-50,-2),at(138,50,-2),at(138,50,69),at(-138,-50,69)),((0,0),(1,0),(1,1),(0,1)))
+    for i,d in enumerate((495,2800,7320,12930)):
+        at,h=site(k,d,63)
+        picture(city,(at(-50,-160,-2),at(50,160,-2),at(50,160,93),at(-50,-160,93)),((0,0),(1,0),(1,1),(0,1)))
     return {'efforts':0}
 
 THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':5.2,'terrain':{'sea':False},'land':{'mid':0xABAD76},
