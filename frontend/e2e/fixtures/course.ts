@@ -1,3 +1,4 @@
+import marrakechElevation from './marrakech-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const marrakechCourseMap = {
   place: 'Marrakech, Morocco',
   world: 'marrakech',
   distanceKm: 12.808333333333332,
-  climbingM: 0,
+  climbingM: 15,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: marrakechElevation,
   },
   thumbnailUrl: 'maps/marrakech-medina.jpg',
   photoUrl: 'maps/marrakech-medina-photo.jpg',
