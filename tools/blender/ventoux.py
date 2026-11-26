@@ -60,7 +60,7 @@ def scenery(k):
             v=side*2.91
             pts=[k.road.pos(d+x,v+off,.071) for x,off in ((-4,-.057),(4,-.057),(4,.057),(-4,.057))]
             art.face(pts,(white,)*4)
-            if d<1800:
+            if d<1790 and not (side<0 and abs(d-1760)<70):
                 for row in range(2):
                     v=side*k.rng.uniform(5.4+row*10,14+row*19);at,h=site(k,d+k.rng.uniform(-3,3),v)
                     base=ground(d,v)-elevation(d);height=k.rng.uniform(6.0,13);idx=(j+side+row)%4
@@ -69,7 +69,7 @@ def scenery(k):
                 v=side*k.rng.uniform(5.2,15);at,h=site(k,d,v);base=ground(d,v)-elevation(d)
                 r=k.rng.uniform(.24,.92);art.tube(at(0,0,base-.15),r,r*.56,r*.73,stone,cream,6,cap=cream)
         if d>2400 and j%7==0:
-            idx=j%4;lane=k.rng.uniform(-1.35,1.35)
+            idx=(j//7)%4;lane=k.rng.uniform(-1.0,1.0)
             pts=[k.road.pos(d+x,lane+v,.09) for x,v in ((-1.85,1.30),(-1.85,-1.30),(1.85,-1.30),(1.85,1.30))]
             panel(chalk,pts,idx/4,(idx+1)/4)
         if j%7==0 and (d<470 or 6630<d<7130 or d>7950):
@@ -79,8 +79,8 @@ def scenery(k):
     at,h=site(k,1758,-16)
     art.box(at(0,-4.8,-.22),(26,9.6,5.05),h,wood)
     art.roof(at(0,-4.8,4.76),26,10,3.15,h,wood)
-    panel(chalet,[at(x,.04,z) for x,z in ((-13,0),(13,0),(13,7.9),(-13,7.9))],0,.63)
-    panel(chalet,[at(-13.02,v,z) for v,z in ((-9.5,0),(0,0),(0,7.8),(-9.5,7.8))],.63,1)
+    panel(chalet,[at(x,.04,z) for x,z in ((-13,0),(13,0),(13,7.9),(-13,7.9))],.673,0)
+    panel(chalet,[at(-13.02,v,z) for v,z in ((-9.5,0),(0,0),(0,7.8),(-9.5,7.8))],.675,1)
     for x in range(-10,11,3):
         art.box(at(x,2,.51),(1.9,1.04,.16),h,wood)
         for y in (1.2,2.8):art.box(at(x,y,.23),(1.85,.34,.17),h,wood)
@@ -96,7 +96,9 @@ def scenery(k):
         art.box(at(0,-2.1+i*.51,-.25),(3.65,.58,.27+i*.22),h,stone)
     art.box(at(0,1.3,.79),(3.8,2,.57),h,cream)
     art.box(at(0,1.3,1.29),(1.04,.46,2.33),h,stone)
-    panel(signs,[at(x,1.02,z) for x,z in ((-.92,1.27),(.92,1.27),(.92,3.99),(-.92,3.99))],.27,.70)
+    panel(signs,[at(x,1.02,z) for x,z in ((-.92,1.27),(.92,1.27),(.92,3.99),(-.92,3.99))],.607,.248)
+    # The portrait and tributes face the arriving riders on the lower side of the steps.
+    panel(signs,[at(-.535,v,z) for v,z in ((2.22,1.27),(.38,1.27),(.38,3.99),(2.22,3.99))],.248,.607)
     for i in range(15):
         dx=k.rng.uniform(-1.5,1.5);y=k.rng.uniform(.44,1.02);c=lin((0xAC403A,0xCFAC4B,0x4D718D,0xE6E1D0)[i%4])
         art.tube(at(dx,y,1.34),.074,.06,.23,c,c,7,cap=c)
@@ -114,12 +116,24 @@ def scenery(k):
     block(0,0,22.8,12.3,10.6,2.4,iron);block(0,0,25,10.7,9.2,1.8,cream)
     for i in range(10):
         w=2.1-i*.16;block(0,0,26.7+i*3.42,w,w,3.44,red if i%2==0 else white)
+    # Open observing deck over the shaft and antenna hardware below the red tip.
+    for level in (7.8,12.2,16.5,20.8):
+        for dx in (-3.25,0,3.25):block(dx,-4.95,level,1.15,.18,1.9,iron)
+    block(0,0,24.7,12.55,10.9,.35,cream)
+    for j in range(7):
+        block(-5.4+j*1.8,-5.39,23,.16,.2,1.6,cream)
+    for j in range(4):block(0,0,30+j*6.2,2.45-j*.32,2.45-j*.32,.27,iron)
+    for dx in (-6.1,7.4):
+        block(dx,-2,6,.19,.19,5.4,iron)
+        for j in range(3):block(dx,-2,9+j*.72,1.6-j*.23,.13,.11,iron)
+    # Checker-painted summit retaining wall and observation terrace.
+    for j in range(10):block(-19+j*3.6,-9,-.1,3.48,.72,.79,stone)
     for j in range(8):
         block(-11+j*3.1,-6.55,2.1,1.55,.13,1.75,iron)
     for j,d in enumerate((8120,8160,8240)):
         at,h=site(k,d,-6.7);c=lin((0x5E7181,0x933F3C,0xCBC6B7)[j])
         art.box(at(0,0,.30),(4.15,1.7,.65),h,c);art.box(at(-.22,0,.89),(2.14,1.52,.61),h,lin(0x637680))
-    at,h=site(k,8260,-4.0);card(signs,at,2.9,2.35,.71,1)
+    at,h=site(k,8260,-4.0);card(signs,at,2.9,2.35,.611,1)
     for j in range(80):
         a=j*math.tau/80;b=(j+1)*math.tau/80;u=j%20/20;v=u+.05
         if j//20%2:u,v=1-u,1-v
