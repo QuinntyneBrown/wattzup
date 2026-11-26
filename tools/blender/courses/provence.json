@@ -1,0 +1,109 @@
+{
+  "id": "provence",
+  "name": "Provence Lavender",
+  "world": "provence",
+  "theme": "provence",
+  "seed": 2194,
+  "layout": 0,
+  "class": {
+    "id": "get-fit-fast-40-minute-sweet-spot",
+    "title": "Get Fit Fast: 40 Minute Sweet Spot",
+    "channel": "GCN Training",
+    "videoId": "TgspMhC3IWU",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 360,
+        "level": 15,
+        "cadenceAim": 82
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "cool-down",
+        "duration": 360,
+        "level": 13,
+        "cadenceAim": 82
+      }
+    ]
+  }
+}

@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import provence as _provence
+
+THEMES['provence'] = _provence.THEME
+SCENERY['provence'] = _provence.scenery
