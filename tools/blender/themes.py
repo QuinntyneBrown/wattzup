@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import marrakech as _marrakech
+
+THEMES['marrakech'] = _marrakech.THEME
+SCENERY['marrakech'] = _marrakech.scenery

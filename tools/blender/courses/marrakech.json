@@ -1,0 +1,145 @@
+{
+  "id": "marrakech",
+  "name": "Marrakech Medina",
+  "world": "marrakech",
+  "theme": "marrakech",
+  "seed": 2161,
+  "layout": 0,
+  "class": {
+    "id": "fast-fitness-high-cadence-30",
+    "title": "Fast Fitness: High Cadence 30",
+    "channel": "GCN",
+    "videoId": "paPUOE14KLk",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 150,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 65
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 103
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 103
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 22,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 14,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 22,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 14,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 22,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 14,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 18,
+        "cadenceAim": 64
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 22,
+        "cadenceAim": 64
+      },
+      {
+        "kind": "cool-down",
+        "duration": 110,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

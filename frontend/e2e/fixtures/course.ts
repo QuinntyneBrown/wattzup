@@ -3598,7 +3598,7 @@ export const marrakechCourseMap = {
   place: 'Marrakech, Morocco',
   world: 'marrakech',
   distanceKm: 12.808333333333332,
-  climbingM: 15,
+  climbingM: 24,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
