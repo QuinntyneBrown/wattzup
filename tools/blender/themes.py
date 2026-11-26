@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import pueblos as _pueblos
+
+THEMES['pueblos'] = _pueblos.THEME
+SCENERY['pueblos'] = _pueblos.scenery

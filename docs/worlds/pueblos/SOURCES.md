@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Sacré Trois!” Route Details (Paris)](https://zwiftinsider.com/route/sacre-trois/) (g0133) | © Zwift |
 | game-04.jpg | Zwift: [“InnsbruckConti” Route Details (Innsbruck)](https://zwiftinsider.com/route/innsbruckconti/) (g0068) | © Zwift |
 | game-05.jpg | Zwift: [“Hell of the North” Route Details (France)](https://zwiftinsider.com/route/hell-of-the-north/) (g0062) | © Zwift |
+
+The whitewashed façades and courtyard plants are original generated textures informed by real 05–08, 12 and 15. The olive, holm oak and pinsapo cutouts follow real 01–04 and 10. The original limestone and bridge masonry textures use real 08 and 11–14 for scale, colour and weathering. The road, castles, church, reservoir, Puente Nuevo and its ravine are built in the Blender source. Game 01–05 informed the spacing of landmarks, road width and sightlines.
