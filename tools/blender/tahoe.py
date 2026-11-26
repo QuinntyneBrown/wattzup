@@ -6,10 +6,19 @@ from worldkit import Painted,lin
 
 PROFILE=[[0, 1896], [2000.0, 1872.6911], [3000.0, 1888.9367], [3450.0, 1892.0622], [4450.0, 1908.3078], [4650.0, 1904.1169], [5150.0, 1912.2397], [6050.0, 1918.4907], [6550.0, 1926.6135], [8550.0, 1884.7046], [13050.0, 1915.9597], [13850.0, 1899.1961], [16100.0, 1914.8237], [16350.0, 1920.4351], [16550.0, 1916.2442], [16800.0, 1921.8556], [17000.0, 1917.6647], [17900.0, 1923.9157], [18150.0, 1929.5271], [19750.0, 1896.0]]
 
-def elevation(d):
+def stage_height(d):
     for (a,z),(b,y) in zip(PROFILE,PROFILE[1:]):
         if d<=b:return z+(y-z)*max(0,(d-a)/(b-a))
     return PROFILE[-1][1]
+
+def elevation(d):
+    # The highway stays close to water at Sand Harbor, Zephyr Cove and Tahoe City.
+    # Its rollers follow the class grade and climb to the Emerald Bay overlook.
+    cove=max(math.exp(-((d-centre)/550)**2) for centre in (3820,7180,15630))
+    overlook=26*math.exp(-((d-11240)/900)**2)
+    class_grade=.24*(stage_height(d)-1872)
+    roller=4.58906*(1+math.sin(d/298))+.9*(1+math.sin(d/137))
+    return 1874.8+(class_grade+roller)*(1-cove)+overlook
 
 def heading(d):return .30*math.sin(d/670)+.17*math.sin(d/254)+.10*math.sin(d/116)
 
@@ -24,7 +33,9 @@ def route(course,theme,bc):
 LAKE=1870
 
 def shore(d):
-    return 80+17*math.sin(d/135)+28*math.cos(d/390)+52*math.exp(-((d-7180)/275)**2)
+    base=80+17*math.sin(d/135)+28*math.cos(d/390)
+    cove=max(math.exp(-((d-c)/230)**2) for c in (3860,7215,15670))
+    return base*(1-cove)+24*cove
 
 def ground(d,v):
     z=elevation(d)
@@ -62,7 +73,7 @@ def land(r,col,theme,bc):
     water.build(col);return bed.build(col),lambda x,y:ground(r.s[r.tree.find((x,y,0))[1]]['d'],0)
 
 def scenery(k):
-    art=Painted(k);pines=pictured(k,'TahoePines');rim=pictured(k,'SierraRim');lodge=pictured(k,'MarinaLodge');sign=pictured(k,'CurveWarning')
+    blocks=pictured(k,'ShoreGranite');art=Painted(k);pines=pictured(k,'TahoePines');rim=pictured(k,'SierraRim');lodge=pictured(k,'MarinaLodge');sign=pictured(k,'CurveWarning')
     wood,steel,gold,white,stone,bark=map(lin,(0x79634E,0x858A87,0xE8BB46,0xDAD7C8,0xABA79B,0x76553E))
     def pine(x,y,z,w,h,variant):
         u=variant*.25
@@ -71,20 +82,20 @@ def scenery(k):
             picture(pines,[(x-dx,y-dy,z),(x+dx,y+dy,z),(x+dx,y+dy,z+h),(x-dx,y-dy,z+h)],((u+.001,0),(u+.249,0),(u+.249,1),(u+.001,1)))
     def boulder(x,y,z,w,h,dep):
         phase=k.rng.random()*6.28;last=None
-        for ring,rise in ((.52,-.69),(.95,-.16),(1,.18),(.77,.65),(.32,.91),(.03,1)):
+        for ring,rise in ((.52,-.69),(.86,-.36),(.96,-.12),(1,.15),(.93,.39),(.76,.65),(.55,.81),(.31,.92),(.03,1)):
             pts=[]
-            for j in range(9):
-                a=j*math.tau/9+phase;noise=1+.08*math.sin(3*a+phase)
+            for j in range(13):
+                a=j*math.tau/13+phase;noise=1+.08*math.sin(3*a+phase)
                 pts.append((x+ring*w*noise*math.cos(a),y+ring*dep*noise*math.sin(a),z+h*(rise+.05*math.sin(2*a))))
             if last:
-                for j in range(9):
-                    l=(j+1)%9;v=int(170+27*rise+12*math.cos(j*math.tau/9+phase));c=lin((v<<16)+((v-3)<<8)+v-11)
-                    art.face((last[j],last[l],pts[l],pts[j]),(c,)*4)
+                for j in range(13):
+                    l=(j+1)%13;corners=(last[j],last[l],pts[l],pts[j]);picture(blocks,corners,[((a+.34*b)/2.4,(c+.29*b)/2.4) for a,b,c in corners])
             last=pts
     for j,d in enumerate(range(-35,19800,8)):
         at,h=site(k,d)
         for v in (-4.24,-.12,.12,4.24):
-            art.box(at(0,v,.056),(8.04,.12,.012),h,gold if abs(v)<1 else white)
+            pts=[k.road.pos(d+u,v+side,.062) for u,side in ((-4,-.065),(4,-.065),(4,.065),(-4,.065))]
+            art.face(pts,((gold if abs(v)<1 else white),)*4)
         if j%2==0 and (math.sin(d/144)>.22 or min(abs(d-i) for i in [120,11240,19380])<90):
             art.box(at(0,5.27,.02),(.19,.2,.82),h,wood)
             beam(art,at(-8.1,5.22,.71),at(8.1,5.22,.71),.12,steel)
@@ -98,10 +109,14 @@ def scenery(k):
             x,y,_=at(k.rng.uniform(-6,6),v);ht=k.rng.uniform(12,28);pine(x,y,ground(d,v),ht*.36,ht,j%4)
         if j%2==0:
             v=shore(d)+k.rng.uniform(-11,14);x,y,_=at(0,v);r=k.rng.uniform(.8,3.9);boulder(x,y,ground(d,v)+r*.28,r,r*.86,r*.78)
+    for centre in (3870,3910,7310):
+        for j in range(65):
+            d=centre+k.rng.uniform(-40,40);v=shore(d)+k.rng.uniform(-6,64)
+            x,y,_=k.road.pos(d,v);rad=k.rng.uniform(1.1,4.5);boulder(x,y,LAKE+k.rng.uniform(-1.2,.8),rad,.76*rad,rad*.84)
     at,h=site(k,11345,235)
     x,y,_=at(0,0);boulder(x,y,LAKE,49,14,33)
-    for i in range(26):
-        a=k.rng.uniform(0,math.tau);r=k.rng.uniform(.24,.88);pine(x+42*r*math.cos(a),y+26*r*math.sin(a),LAKE+9*(1-r)+2,5,12,i%4)
+    for i in range(60):
+        a=k.rng.uniform(0,math.tau);r=k.rng.uniform(.24,.88);pine(x+44*r*math.cos(a),y+29*r*math.sin(a),LAKE+13*(1-r)+2,8,18,i%4)
     art.box((x+1,y,LAKE+12),(6,4,4),h,stone);art.roof((x+1,y,LAKE+16),6,4,1.5,h,wood)
     for d in (7240,15675):
         s=shore(d);at,h=site(k,d,s+8)
@@ -112,16 +127,25 @@ def scenery(k):
             u=(j%2*2-1)*7.5;v=j//2*10
             dock(u,v,15,1.56)
             x,y,_=at(u*1.79,v);art.tube((x,y,LAKE-.7),.23,.22,2.6,wood,wood,7,cap=wood)
-    at,h=site(k,15710,26)
-    z=ground(15710,26)-elevation(15710)
+    at,h=site(k,15697,17)
+    z=ground(15697,17)-elevation(15697)
     art.box(at(0,0,z),(35,12,4.7),h,wood);art.roof(at(0,0,z+4.7),35,12,3.7,h,lin(0x435D4D))
     for side in (-1,1):
         picture(lodge,[at(u,side*6.13,z+t) for u,t in ((-18,0),(18,0),(18,8.7),(-18,8.7))],((0,0),(1,0),(1,1),(0,1)))
+    for side in (-1,1):
+        # Clapboard end walls, sash windows and porch posts meet the illustrated verandah.
+        for j in range(22):
+            art.box(at(side*17.54,0,z+j*.212),(.13,12.05,.10),h,lin(0x805B43))
+        for v in (-3.4,0,3.4):
+            art.box(at(side*17.65,v,z+1.25),(.11,2.38,2.2),h,lin(0xB3936C))
+            art.box(at(side*17.73,v,z+1.36),(.08,2.15,1.96),h,lin(0x688594))
+            art.box(at(side*17.79,v,z+1.35),(.045,.10,1.99),h,wood)
+            art.box(at(side*17.79,v,z+2.25),(.045,2.16,.10),h,wood)
     for i in range(96):
         a=i*math.tau/96;b=(i+1)*math.tau/96;u=i%16/16;v=u+1/16
         if i//16%2:u,v=1-u,1-v
         def e(t,z):return 9100+16500*math.cos(t),14800*math.sin(t),z
-        picture(rim,(e(a,LAKE-690),e(b,LAKE-690),e(b,LAKE+3700),e(a,LAKE+3700)),((u,0),(v,0),(v,1),(u,1)))
+        picture(rim,(e(a,LAKE-125),e(b,LAKE-125),e(b,LAKE+6400),e(a,LAKE+6400)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
 
 THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':4.65,'terrain':{'sea':False},'land':{'mid':0x8E876F},'sky':[0xA5CADF,0x85B7DB,0x629BCC,0x518DD3,0x4279BE],'haze':0xBDD2DB,'light':[0xFFF1D1,1.48],'fill':[0xC1E1ED,0x958677],'sun_altitude':.87,'sun_azimuth':-.69}
