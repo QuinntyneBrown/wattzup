@@ -1,3 +1,4 @@
+import serpentineElevation from './serpentine-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const serpentineCourseMap = {
   place: 'Hyde Park, London',
   world: 'serpentine',
   distanceKm: 6.6375,
-  climbingM: 0,
+  climbingM: 10,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: serpentineElevation,
   },
   thumbnailUrl: 'maps/serpentine-hyde-park.jpg',
   photoUrl: 'maps/serpentine-hyde-park-photo.jpg',
