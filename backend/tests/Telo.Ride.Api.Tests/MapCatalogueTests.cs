@@ -2110,7 +2110,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Independence Pass", 15.2, 897, "Brutal", "Highway 82", "The Roaring Fork and the Continental Divide, Colorado"),
                 new Listed("Isle of Man Mountain Course", 8.133, 206, "Hard", "The Mountain Course", "The A18, the Bungalow and Creg-ny-Baa"),
                 new Listed("Iten, Kenya", 17.86, 378, "Hard", "The red-dirt road", "Iten and the Kerio Valley, Kenya"),
-                new Listed("Overseas Highway", 8.305, 18, "Easy", "Seven Mile Bridge", "Florida Keys, United States"),
+                new Listed("Overseas Highway", 8.305, 20, "Easy", "Seven Mile Bridge", "Florida Keys, United States"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }

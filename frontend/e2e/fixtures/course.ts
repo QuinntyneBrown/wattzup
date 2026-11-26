@@ -1,3 +1,4 @@
+import overseasElevation from './overseas-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const overseasCourseMap = {
   place: 'Florida Keys, United States',
   world: 'overseas',
   distanceKm: 8.305,
-  climbingM: 0,
+  climbingM: 20,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: overseasElevation,
   },
   thumbnailUrl: 'maps/overseas-highway.jpg',
   photoUrl: 'maps/overseas-highway-photo.jpg',

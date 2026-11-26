@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Fine and Sandy” Route Details (Makuri Islands)](https://zwiftinsider.com/route/fine-and-sandy/) (g0046) | © Zwift |
 | game-04.jpg | Zwift: [“Seafoam Circuit” Route Details (Watopia)](https://zwiftinsider.com/route/seafoam-circuit/) (g0137) | © Zwift |
 | game-05.jpg | Zwift: [“Island Hopper” Route Details (Makuri Islands)](https://zwiftinsider.com/route/island-hopper/) (g0069) | © Zwift |
+
+The coconut palm, red mangrove, Pigeon Key cottage fronts, shallow-water surface and cumulus are original generated artwork based on the subjects in this folder’s real references. The highway markers are original lettering. The bridge decks, railway arches, missing span, Pigeon Key terrain and cottage structures are modelled in Blender.
