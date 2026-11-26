@@ -45,7 +45,7 @@ def land(r,col,theme,bc):
     return m.build(col),lambda x,y:elevation(r.s[r.tree.find((x,y,0))[1]]['d'])-.25
 
 def scenery(k):
-    art=Painted(k);plants=pictured(k,'CanaryPlants');rim=pictured(k,'PicoTeide');flowers=pictured(k,'Tajinaste');cloud=pictured(k,'CloudSea');roques=pictured(k,'RoqueTuff')
+    tide=pictured(k,'TradeHorizon');drum=pictured(k,'IzanaDrum');flow=pictured(k,'FrozenLava');art=Painted(k);plants=pictured(k,'CanaryPlants');rim=pictured(k,'PicoTeide');flowers=pictured(k,'Tajinaste');cloud=pictured(k,'CloudSea');roques=pictured(k,'RoqueTuff')
     basalt,rust,pumice,ochre,white,steel,black,cream,green=map(lin,(0x514942,0xA65943,0xC5AE8B,0xA08160,0xECEAE1,0x7D8083,0x33363B,0xC5BAA1,0x7B775B))
     def plant(x,y,z,w,h,idx,a):
         u=idx*.25
@@ -75,12 +75,21 @@ def scenery(k):
                 pts=[]
                 for along,rise in ((-4.6,n),(4.6,n),(4.6,n+1),(-4.6,n+1)):
                     dd=d+along;v=-9.4-rise*.78;pt=k.road.pos(dd,v)
-                    pts.append((pt[0],pt[1],pt[2]+.78*rise+2.1*math.sin(dd/48)+.006*(dd-5160)))
-                art.face(pts,(c,)*4)
+                    pts.append((pt[0],pt[1],pt[2]+1.4+1.12*rise+1.2*math.sin(dd/48)+.004*(dd-5160)))
+                art.face(pts[::-1],(c,)*4)
         if d>6000 and j%2==0:
             v=k.rng.choice((-1,1))*k.rng.uniform(12,65);x,y,_=at(0,v);z=ground(d,v)
             for n in range(3):
-                r=k.rng.uniform(1.2,3.5);art.tube((x+n*1.6,y+math.sin(n*j)*1.4,z-.6),r,r*.64,r*.8,basalt,basalt,7,cap=basalt)
+                r=k.rng.uniform(1.2,3.5);cx=x+n*1.8;cy=y+math.sin(n*j)*1.4;last=None
+                for size,rise in ((.78,-.55),(1,.06),(.73,.43),(.29,.74),(.01,.87)):
+                    ring=[]
+                    for q in range(8):
+                        a=q*math.pi/4+j;scale=size*r*(1+.15*math.cos(q*3+j))
+                        ring.append((cx+scale*math.cos(a)*1.45,cy+scale*math.sin(a),z+r*(rise+.15*math.sin(q*2+j))))
+                    if last:
+                        for q in range(8):
+                            m=(q+1)%8;pts=(last[q],last[m],ring[m],ring[q]);picture(flow,pts,[(a*.37+b*.11,c*.31+b*.16) for a,b,c in pts])
+                    last=ring
     # Produce an irregular layered profile for Roque Cinchado and the neighbouring pinnacles.
     for j,(d,v,ht,sz) in enumerate(((7994,26,25,6.4),(8043,45,19,5.4),(7953,67,15,5.7),(8090,80,21,5.2),(7908,91,12,4.3))):
         at,h=site(k,d,v);base=ground(d,v)-elevation(d);old=None
@@ -106,6 +115,10 @@ def scenery(k):
                 for n in range(20):
                     c=steel if n==11 else white;art.face((last[n],last[(n+1)%20],ring[(n+1)%20],ring[n]),(c,)*4)
             last=ring
+    at,h=site(k,13244,-20);base=ground(13244,-20)-elevation(13244)
+    picture(drum,[at(-6.3,v,base+z) for v,z in ((-11,-.1),(11,-.1),(11,16),(-11,16))],((0,0),(1,0),(1,1),(0,1)))
+    at,h=site(k,2850,510)
+    picture(tide,[at(u,0,z) for u,z in ((-540,-143),(540,-143),(540,122),(-540,122))],((0,0),(1,0),(1,1),(0,1)))
     at,h=site(k,13335,-29);base=ground(13335,-29)-elevation(13335)
     art.box(at(0,0,base),(5.5,5.5,21),h,white);art.tube(at(0,0,base+21),3.7,3.1,3.1,white,white,14,cap=white)
     a,_=site(k,10531,24);b,_=site(k,10890,93)
