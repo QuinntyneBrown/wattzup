@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import tourmalet as _tourmalet
+
+THEMES['tourmalet'] = _tourmalet.THEME
+SCENERY['tourmalet'] = _tourmalet.scenery
