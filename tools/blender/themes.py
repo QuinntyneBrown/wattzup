@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import stanleypark as _stanleypark
+
+THEMES['stanleypark'] = _stanleypark.THEME
+SCENERY['stanleypark'] = _stanleypark.scenery
