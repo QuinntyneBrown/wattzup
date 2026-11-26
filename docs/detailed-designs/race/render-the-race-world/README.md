@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Mount Washington Auto Road (#2170)
+
+The class supplies the original workout, 45-degree bends and resistance-driven climbs. Its shared roadside scene lacks a grade-aligned rack railway and the changes in vegetation and exposure that make this ascent identifiable. Fit the physical climb to the class distance, leaving the outer drops open and steepening the final wall.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Auto Road forest gate, 0.08 km | Real 03–04, 07 and 11. Games 01 and 05. | Mile posts and a timber entrance sign frame a narrow patched road. Autumn hardwoods give way to dense spruce up the climb. |
+| Gravel shoulder and krummholz, 3.62 km | Real 03–07. Games 01–02 and 05. | Worn asphalt breaks into gravel along an exposed bend. Wind-stunted firs lean beside the unguarded drop. |
+| Great Gulf treeline break, 6.37 km | Real 01, 03–04, 08 and 12. Games 02–04. | Low shrubs give way to lichen-covered talus. The Great Gulf falls away beneath the long silhouettes of Adams and Madison. |
+| Cog Railway trestle, 8.49 km | Real 08, 11 and 13–14. Games 03 and 05. | The steam locomotive pushes a red passenger coach up an inclined rack railway. The plume drifts across the timber trestle. |
+| Cloud bank above treeline, 10.32 km | Real 02, 08–10, 12 and 15. Games 01 and 04. | Wind drives broken cloud over the road. Roadside cairns and rime pick out the edge at the entrance to the fog. |
+| Sherman Adams summit, 12.31 km | Real 01–02 and 08–10. Games 02–05. | Spectators ring cowbells at the final steep wall below the visitor centre. The cylindrical observatory tower and low stone Tip-Top House stand above the boulder field. |
+
+Anchor the Presidential Range behind a steep Great Gulf. Keep the road free of guardrails, weather the shoulder, step from deciduous canopies to spruce to krummholz and end with low talus. Align the cog locomotive, coach and trestle to the same inclined track. Shape the Sherman Adams building, instrument tower and Tip-Top House separately. Bound steam, cloud and spectator motion by visibility and drive it with race time. Section static detail and release course resources on exit. Compare the forest and summit to Caribana. Credits are in docs/worlds/mountwashington/SOURCES.md. The title search returned #2170.
