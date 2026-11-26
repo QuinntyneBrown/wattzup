@@ -1290,3 +1290,16 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+### Venice Beach Boardwalk (#2243)
+
+Keep the pier rooted in the coast and the bike path independent of the wider pedestrian promenade. Rise and fall by four metres of cumulative climb across 6.95 km. Use concrete joint strips, sand and dune variation, palm silhouettes at three depths, and merged shop fronts. Model the Muscle Beach exercise rigs, skatepark bowl profiles, lifeguard tower ramp and the pier on piles in Blender. Animate skaters along the bowl contours, the busker's strumming arm and the gondolas using the ride clock. Dispose of moving meshes and textures on leaving. Benchmark the market and bowls on the normal race route.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Muscle Beach, 0.14 km | Real 01, 04–05 and games 01, 03 | The lifting platforms and steel exercise frames sit inside the open gym fence. Ocean Front Walk runs beside the bike path. |
+| Ocean Front Walk, 1.32 km | Real 02–03, 05–07, 09 and game 03 | Painted arcades, souvenir racks and awnings alternate behind a separate pedestrian promenade. Palm trunks frame the sprints. |
+| Venice Skatepark, 2.64 km | Real 10–11 and games 02, 05 | Skaters carve through connected concrete bowls below metal coping. Roller skaters pass on the promenade. |
+| Venice Art Walls, 3.81 km | Real 08–09, 12 and games 01, 04 | Original painted concrete walls step down to the sand. Buskers play beside benches and strolling spectators. |
+| Lifeguard tower, 5.11 km | Real 02, 10, 14–15 and game 02 | A raised blue lifeguard tower faces breaking Pacific surf beyond broad sand. The mountains recede into summer haze. |
+| Santa Monica Pier, 6.77 km | Real 13–15 and games 02, 04 | The Pacific Park wheel turns above the timber pier, with the coaster rails and the wooden piles visible along the waterline. |
