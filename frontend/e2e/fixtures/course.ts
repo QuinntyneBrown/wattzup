@@ -3588,3 +3588,39 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const victoriaHarbourCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'victoria-harbour',
+  name: 'Victoria Harbour',
+  routeName: 'The harbourfront',
+  place: 'Hong Kong',
+  world: 'victoria',
+  distanceKm: 9.4,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/victoria-harbour.jpg',
+  photoUrl: 'maps/victoria-harbour-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 120, 16, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('cool-down', 60, 10, 80),
+    ],
+  },
+};
