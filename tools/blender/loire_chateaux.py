@@ -52,7 +52,7 @@ def chambord(k,art,facades,river):
 
 
 def chenonceau(k,art,facades,reflection,level):
-    at,h=location(k,6639,63,level,.64);cream=lin(0xDDDAC6);shade=lin(0xA9AE9E);slate=lin(0x626A72)
+    at,h=location(k,6639,63,level,-.64);cream=lin(0xDDDAC6);shade=lin(0xA9AE9E);slate=lin(0x626A72)
     def reflected(points):
         return tuple((x+math.sin(h)*(z-level)*1.45,y-math.cos(h)*(z-level)*1.45,level+.04) for x,y,z in points)
     reflection.face(reflected((at(-28,-4.38,5.2),at(28,-4.38,5.2),at(28,-4.38,11.8),at(-28,-4.38,11.8))),(lin(0x8EA7A0),)*4)
@@ -84,7 +84,22 @@ def chenonceau(k,art,facades,reflection,level):
 def clifftop(k,art,facades,d,off,chaumont):
     x,y,_=k.road.pos(d,off);z=k.road.pos(d)[2]+6;at,h=location(k,d,off,z,-.47)
     cream=lin(0xDCCFB0);slate=lin(0x535E69)
-    art.box(at(0,0,-16),(63,33,16),h,lin(0xC5BDA4));art.box(at(0,0,0),(46,13,11.7),h,cream)
+    # Varied tuffeau cliff with a narrow grassy crown and sloping riverbank.
+    rings=[]
+    for width,depth,alt in ((31,14,-.03),(32,15,-2),(34,17,-8),(40,21,-15),(47,24,-21)):
+        ring=[]
+        for j in range(40):
+            angle=j*math.tau/40
+            variation=1+.048*math.sin(3*angle)+.035*math.cos(7*angle)
+            ring.append(at(width*variation*math.cos(angle),depth*variation*math.sin(angle),alt))
+        rings.append(ring)
+    art.face(rings[0],(lin(0x8C976B),)*40)
+    for i,(top,bottom) in enumerate(zip(rings,rings[1:])):
+        for j in range(40):
+            n=(j+1)%40
+            t=lin((0x84925F,0xB6AE91,0xA79C83,0x738759)[i] if j%7 else (0x748355,0x9B997D,0x938D76,0x718156)[i])
+            art.face((top[j],bottom[j],bottom[n],top[n]),(t,)*4)
+    art.box(at(0,0,0),(46,13,11.7),h,cream)
     art.roof(at(0,0,11.7),46.6,13.4,4.9,h,slate)
     for j in range(4):elevation(facades,at,-22+j*11,-11+j*11,-6.58,.21,11.3,(0,.5))
     if chaumont:
@@ -92,7 +107,7 @@ def clifftop(k,art,facades,d,off,chaumont):
             tower(art,at,a,b,4.6,13.5,8.0,cream,slate)
         for a in (-5.4,5.4):tower(art,at,a,-9.5,3.55,11.7,6.7,cream,slate)
     else:
-        for a in (-22,22):art.tube(at(a,-10,-14),5.2,4.95,24,cream,cream,16)
+        for a in (-22,22):art.tube(at(a,-13,-14),5.2,4.95,24,cream,cream,16)
         art.box(at(16,1,10),(9,11,5.3),h,cream);art.roof(at(16,1,15.3),9.3,11.4,4.4,h,slate)
         art.box(at(-12,-11,-.2),(8,4.2,5.8),h,cream);art.roof(at(-12,-11,5.6),8.35,4.2,3.1,h,slate)
         art.tube(at(-12,-11,8.4),.75,.07,4.5,slate,slate,7)

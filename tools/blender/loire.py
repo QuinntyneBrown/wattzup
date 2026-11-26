@@ -26,7 +26,12 @@ def lane(r,st,length,col,theme):
     bc=sys.modules[type(r).__module__];b=bc.Builder('LoireLane','terrain');b.colours=[]
     for i in range(len(r.s)-1):
         for a,c,t in ((-2.58,-2.31,0xA59B7E),(-2.31,2.31,0x74716B),(2.31,2.58,0xB0A788)):
-            b.quad(r.at(i,a),r.at(i+1,a),r.at(i+1,c),r.at(i,c));b.colours.extend([lin(t)]*4)
+            b.quad(r.at(i,a),r.at(i+1,a),r.at(i+1,c),r.at(i,c))
+            for idx,side in ((i,a),(i+1,a),(i+1,c),(i,c)):
+                d=r.s[idx]['d'];under=all(abs(d-x)>110 for x in (2191,6639,9003,11682))
+                stripe=abs(((d+40+side*1.14+10.5)%21)-10.5)
+                factor=1-.32*(1-smooth(.9,4,stripe)) if under else 1
+                colour=lin(t);b.colours.append((*[v*factor for v in colour[:3]],1))
     b.build(col)
 
 
