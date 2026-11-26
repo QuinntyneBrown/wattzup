@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import tahoe as _tahoe
+
+THEMES['tahoe'] = _tahoe.THEME
+SCENERY['tahoe'] = _tahoe.scenery
