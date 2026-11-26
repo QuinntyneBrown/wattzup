@@ -1,0 +1,205 @@
+{
+  "id": "redoute",
+  "name": "La Redoute",
+  "world": "redoute",
+  "theme": "redoute",
+  "seed": 2197,
+  "layout": 0,
+  "class": {
+    "id": "ramp-it-up-punchy-intervals",
+    "title": "Ramp It Up: Punchy Intervals",
+    "channel": "GCN Training",
+    "videoId": "4u1G51P756U",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import redoute as _redoute
+
+THEMES['redoute'] = _redoute.THEME
+SCENERY['redoute'] = _redoute.scenery
