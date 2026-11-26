@@ -3588,3 +3588,40 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const muertosCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'dia-de-muertos-parade',
+  name: 'Día de Muertos Parade',
+  routeName: 'Paseo de la Reforma',
+  place: 'Ciudad de México, México',
+  world: 'muertos',
+  distanceKm: 8,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/dia-de-muertos-parade.jpg',
+  photoUrl: 'maps/dia-de-muertos-parade-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 90, 21, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 90, 21, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 22, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 60, 21, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 120, 21, 80),
+      seg('cool-down', 90, 11, 80),
+    ],
+  },
+};
