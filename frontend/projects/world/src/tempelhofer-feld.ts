@@ -15,7 +15,7 @@ import {
   Vector3,
   type Texture,
 } from 'three/webgpu';
-import { color, mix, positionWorld, sin, smoothstep, texture, uniform, uv, vec2 } from 'three/tsl';
+import { mix, positionWorld, sin, smoothstep, texture, uniform, uv, vec2 } from 'three/tsl';
 import type { Course, CoursePlace } from './course';
 const views = [
   [120, 180, 0, 3],
