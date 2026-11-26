@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import suburbia as _suburbia
+
+THEMES['suburbia'] = _suburbia.THEME
+SCENERY['suburbia'] = _suburbia.scenery
