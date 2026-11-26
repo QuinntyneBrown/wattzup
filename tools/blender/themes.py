@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import venice as _venice
+
+THEMES['venice'] = _venice.THEME
+SCENERY['venice'] = _venice.scenery
