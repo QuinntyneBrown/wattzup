@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Isle of Skye Fog (#2211)
+
+Retain the muted light and moist single-track road of the existing world palette. The rider enters via the catalogue and the course registry loads the original 12.725 km course with the GCN class. Use distinct relief for the dark gabbro ridge and the rounded rusty hills. Ground the pools, bridges, houses and animals against the measured road.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Carbost crofts, 0.10 km | Real 02, 03 and 14. Games 01 and 02. | White harled houses, a chapel bellcote and dark slate roofs step down to Loch Harport. A white diamond marks a passing place on the narrow damp road. |
+| Loch Harport, 1.78 km | Real 03, 12 and 14. Games 01 and 05. | Grey water and a handful of moorings lie below the grassy bank. The road leaves the coastal strip for rough heather, with rounded red granite ahead. |
+| Red Cuillin shoulder, 3.98 km | Real 06, 11 and 15. Games 03 and 05. | The Red Cuillin rises in smooth russet screes. A horned Highland cow turns its head beside the passing bay while sheep crop the unfenced verge. |
+| Fairy Pools burn, 6.32 km | Real 04, 05 and 07. Games 03 and 04. | Under the footbridge a short white cascade drops into a clear blue-green rock pool. The dark gabbro skyline rises behind the boulders. |
+| Black Cuillin mist, 8.84 km | Real 01, 05, 08, 09 and 13. Games 02 and 04. | A ragged gabbro ridge appears through moving low cloud. The white passing-place diamond and near sheep stay readable against the heather. |
+| Glen Brittle shore, 12.14 km | Real 01, 04, 10 and 11. Games 01 and 05. | The glen opens onto grey sea water below the crofts. A shaft of light touches the last grassy shoulder; the dark ridge stays fixed on the horizon. |
+
+The ridge is fixed beyond the travelling bike. Place low moving fog in the glen between rider and peaks, keeping nearby signs and the HUD clear. A separate water surface carries the falls over the lip of the rock cut. Keep the two lochs in their own valleys. Batch bracken, stones and roadside clumps, use one reusable rig for grazing cattle, and release the glen materials and moving groups on exit. Use the budgets and backends in ADRs 0021, 0023, 0030, 0034 and 0035.
