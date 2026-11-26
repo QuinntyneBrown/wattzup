@@ -1,3 +1,4 @@
+import teideElevation from './teide-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const teideCourseMap = {
   place: 'Tenerife, Spain',
   world: 'teide',
   distanceKm: 13.5,
-  climbingM: 0,
+  climbingM: 375,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: teideElevation,
   },
   thumbnailUrl: 'maps/mount-teide.jpg',
   photoUrl: 'maps/mount-teide-photo.jpg',
