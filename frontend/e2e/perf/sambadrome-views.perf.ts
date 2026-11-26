@@ -56,7 +56,10 @@ test('Race the samba schools down Marquês de Sapucaí to the Praça da Apoteose
         // The authored course reads the same physical race distance as the HUD.
         const remaining = km - (await station());
         if (remaining < 0.045) await page.clock.runFor(100);
-        else await page.clock.fastForward(1000);
+        else {
+          await page.clock.fastForward(750);
+          await page.clock.runFor(48);
+        }
       }
     }
     // Capture the submitted frame with the ride clock held at this chainage. Resuming

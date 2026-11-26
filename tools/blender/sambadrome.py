@@ -120,7 +120,8 @@ def scenery(k):
             return y,outer,inner
         a,b=section(i/100),section((i+1)/100)
         for x in (698.9,701.1):
-            arch.face((p(x,a[0],a[2]),p(x,b[0],b[2]),p(x,b[0],b[1]),p(x,a[0],a[1])),(lin(0xE8E7DB),)*4)
+            face=(p(x,a[0],a[2]),p(x,b[0],b[2]),p(x,b[0],b[1]),p(x,a[0],a[1]))
+            arch.face(face[::-1] if x<700 else face,(lin(0xE8E7DB),)*4)
         for idx,tint in ((1,0xF2ECDB),(2,0xA6A7AD)):
             arch.face((p(698.9,a[0],a[idx]),p(701.1,a[0],a[idx]),p(701.1,b[0],b[idx]),p(698.9,b[0],b[idx])),(lin(tint),)*4)
     for side in (-1,1):
