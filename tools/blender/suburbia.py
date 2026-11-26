@@ -33,22 +33,31 @@ def road(r,st,length,col,bc):
 
 def land(r,col,theme,bc):
     lawn=bc.Builder('MapleLawns','terrain');lawn.colours=[];lawn.uvs=[]
+    # A single ground elevation at each world coordinate keeps the returning road above its lawn.
+    # Sample the closest centreline and project along the local tangent to interpolate its grade.
+    def ground(x,y):
+        _,i,_=r.tree.find((x,y,0))
+        p=r.s[i];dx=x-p['x'];dy=y-p['y'];h=p['h'];v=-dx*math.sin(h)+dy*math.cos(h)
+        along=p['d']+max(-5,min(5,dx*math.cos(h)+dy*math.sin(h)))
+        return elevation(along)-.26+min(1,abs(v)/85)*.52*math.sin(x/162+y/63)
+    xmin=min(p['x'] for p in r.s)-400;xmax=max(p['x'] for p in r.s)+400
+    ymin=min(p['y'] for p in r.s)-360;ymax=max(p['y'] for p in r.s)+360
     prev=None
-    for i in range(0,len(r.s),2):
-        row=[]
-        for v in (-650,-120,-36,-22,-12,-4,0,4,12,22,36,120,650):
-            x,y,z=r.at(i,v);row.append((x,y,z-.12+min(1,abs(v)/80)*1.1*math.sin(r.s[i]['d']/177+v/39)))
+    for x in range(math.floor(xmin),math.ceil(xmax)+8,8):
+        row=[(x,y,ground(x,y)) for y in range(math.floor(ymin),math.ceil(ymax)+8,8)]
         if prev:
             for a,b,c,e in zip(prev,prev[1:],row[1:],row):
-                picture(lawn,(a,e,c,b),[(x/9,y/9) for x,y,z in (a,e,c,b)])
+                picture(lawn,(a,e,c,b),[(xx/9,yy/9) for xx,yy,z in (a,e,c,b)])
         prev=row
     return lawn.build(col),lambda x,y:elevation(r.s[r.tree.find((x,y,0))[1]]['d'])-.12
 
 def scenery(k):
-    art=Painted(k);trees=pictured(k,'MapleCanopy');fronts=pictured(k,'MapleClapboard');signs=pictured(k,'AvenueSigns');dawn=pictured(k,'MapleDawn')
+    art=Painted(k);trees=pictured(k,'MapleCanopy');fronts=pictured(k,'MapleClapboard');signs=pictured(k,'AvenueSigns');dawn=pictured(k,'MapleDawn');shade=pictured(k,'MapleShade');cars=pictured(k,'AvenueCars')
     wood,white,curb,walk,slate,postmetal,rubber,glass,red=map(lin,(0x997659,0xDEDCD0,0xA8A69F,0xC3BCB0,0x64696A,0x777F7D,0x3B3C40,0x819299,0xB54E42))
     colours=list(map(lin,(0x6F8793,0x848D76,0xC9B897,0xA16A5C)))
     def tree(at,u,v,ht,w,t):
+        left=t/4
+        picture(shade,[at(u+x,v+y,.16) for x,y in ((-w*.44,0),(w*.44,0),(w*.44-3,ht*.95),(-w*.44-3,ht*.95))],((left,0),(left+.25,0),(left+.25,1),(left,1)))
         for a in (.49,2.07):
             dx=w*.5*math.cos(a);dy=w*.5*math.sin(a);left=t/4
             picture(trees,[at(u+x,v+y,z) for x,y,z in ((-dx,-dy,-.12),(dx,dy,-.12),(dx,dy,ht),(-dx,-dy,ht))],((left,0),(left+.25,0),(left+.25,1),(left,1)))
@@ -58,7 +67,7 @@ def scenery(k):
         picture(signs,[at(0,side+y,z) for y,z in ((-w/2,ht),(w/2,ht),(w/2,ht+.79),(-w/2,ht+.79))],((u,0),(u+.25,0),(u+.25,1),(u,1)))
     for j,d in enumerate(range(-45,6630,18)):
         # Omit duplicate household plots inside the turning bulb.
-        if 6268<d<6394:continue
+        if 6225<d<6425:continue
         for side in (-1,1):
             at,h=site(k,d);drive=5.8 if j%2==0 else -5.8;setback=14.8+(j*5%4);col=(j+side)%4
             art.box(at(0,side*4.56,.01),(18,.25,.14),h,curb);art.box(at(0,side*6.95,.02),(17.94,1.39,.13),h,walk)
@@ -67,6 +76,8 @@ def scenery(k):
             art.box(at(0,side*setback,-.07),(9,6.2,5.85),h,colours[col]);art.roof(at(0,side*setback,5.77),9.4,6.65,2.42,h,slate)
             v=side*(setback-3.12);u=col/4
             picture(fronts,[at(x,v,z) for x,z in ((-4.48,.06),(4.48,.06),(4.48,5.76),(-4.48,5.76))],((u,0),(u+.25,0),(u+.25,1),(u,1)))
+            for x0 in (-4.52,4.52):
+                picture(fronts,[at(x0,side*setback+y,z) for y,z in ((-3.1,.06),(3.1,.06),(3.1,5.76),(-3.1,5.76))],((u+.005,0),(u+.167,0),(u+.167,1),(u+.005,1)))
             art.box(at(0,v-side*.9,.05),(7.6,1.91,.45),h,wood);art.roof(at(0,v-side*.77,2.88),7.8,2.46,.51,h,slate)
             for x in (-3.55,-1.22,1.22,3.55):art.box(at(x,v-side*1.79,.5),(.15,.15,2.44),h,white)
             for n in range(3):art.box(at(0,v-side*(2.04+.30*n),.04),(1.49,.34,.36-.10*n),h,walk)
@@ -80,10 +91,22 @@ def scenery(k):
                 origin=at(along,lane,.1);cs=math.cos(yaw);sn=math.sin(yaw)
                 def car(x,y,z):return (origin[0]+x*cs-y*sn,origin[1]+x*sn+y*cs,origin[2]+z)
                 paint=lin((0x738B95,0xB84B42,0xC7C5B7,0x596963)[col])
-                art.box(car(0,0,.28),(4.35,1.76,.68),yaw,paint);art.box(car(.07,0,.96),(2.38,1.56,.50),yaw,glass);art.box(car(.05,0,1.46),(1.92,1.48,.12),yaw,paint)
-                for x in (-1.36,1.31):
-                    for y in (-.87,.87):art.box(car(x,y,.11),(.59,.14,.49),yaw,rubber)
-                for y in (-.61,.61):art.box(car(2.18,y,.64),(.03,.31,.14),yaw,white)
+                art.box(car(0,0,.3),(4.32,1.77,.61),yaw,paint)
+                for e in (-1,1):
+                    tile=(col+int(e<0))%4/4
+                    picture(cars,[car(x*e,y,z) for x,y,z in ((2.17,-.88,.30),(2.17,.88,.30),(2.17,.88,.91),(2.17,-.88,.91))],((tile,0),(tile+.249,0),(tile+.249,.54),(tile,.54)))
+                    picture(cars,[car(x*e,y,z) for x,y,z in ((1.62,-.82,.91),(1.62,.82,.91),(.93,.70,1.46),(.93,-.70,1.46))],((tile,.54),(tile+.249,.54),(tile+.249,1),(tile,1)))
+                    art.box(car(e*1.87,0,.89),(.56,1.75,.065),yaw,paint)
+                art.box(car(0,0,1.45),(1.91,1.42,.09),yaw,paint)
+                for side0 in (-1,1):
+                    pts=[car(x,side0*y,z) for x,y,z in ((-1.62,.82,.91),(1.62,.82,.91),(.93,.70,1.46),(-.93,.70,1.46))]
+                    art.face(pts,(glass,)*4)
+                    beam(art,car(0,side0*.83,.91),car(0,side0*.705,1.45),.034,postmetal)
+                    for x in (-1.36,1.36):
+                        corners=[car(x+.34*math.cos(t*math.tau/12),side0*.905,.39+.34*math.sin(t*math.tau/12)) for t in range(12)]
+                        art.face(corners,(rubber,)*12)
+                        hubs=[car(x+.18*math.cos(t*math.tau/10),side0*.917,.39+.18*math.sin(t*math.tau/10)) for t in range(10)]
+                        art.face(hubs,(postmetal,)*10)
             if side==1 and j%3==0:
                 art.tube(at(-6.8,8,.08),.18,.12,8.3,wood,wood,8);art.box(at(-6.8,8,7.85),(.19,2.22,.16),h,wood)
                 for v in (7.25,8.7):beam(art,at(-6.8,v,8.1),at(47.2,v,8.1),.024,rubber)
