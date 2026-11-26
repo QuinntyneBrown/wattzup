@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import veleta as _veleta
+
+THEMES['veleta'] = _veleta.THEME
+SCENERY['veleta'] = _veleta.scenery
