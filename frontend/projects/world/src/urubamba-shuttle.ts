@@ -4,7 +4,7 @@ import {
   CylinderGeometry,
   Float32BufferAttribute,
   Mesh,
-  MeshLambertMaterial,
+  type MeshLambertMaterial,
   type BufferGeometry,
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
