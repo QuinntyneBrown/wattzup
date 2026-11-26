@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import zoncolan as _zoncolan
+
+THEMES['zoncolan'] = _zoncolan.THEME
+SCENERY['zoncolan'] = _zoncolan.scenery
