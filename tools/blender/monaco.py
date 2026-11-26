@@ -106,16 +106,20 @@ def scenery(k):
             a,h=site(k,d,0);e,eh=site(k,d+9,0)
             for side in (-1,1):
                 for v1,z1,v2,z2 in ((6.5,0,6.5,3.7),(6.5,3.7,5.2,5.4),(5.2,5.4,2.8,6.4),(2.8,6.4,0,6.55)):
-                    c=lin(0x72716D if z1<1 else 0x504D49);art.face((a(0,side*v1,z1),e(0,side*v1,z1),e(0,side*v2,z2),a(0,side*v2,z2)),(c,)*4)
+                    c=lin(0x72716D if z1<1 else 0x504D49)
+                    shell=(a(0,side*v1,z1),e(0,side*v1,z1),e(0,side*v2,z2),a(0,side*v2,z2))
+                    art.face(shell if side>0 else shell[::-1],(c,)*4)
                 light.box(a(0,side*4.78,5.4),(4.2,.30,.13),h,lin(0xFFF0C7))
                 art.box(a(0,side*6.3,1.22),(8.68,.16,1.02),h,lin(0xA84E47))
     for d in range(-64,9950,26):
         a,h=site(k,d,-15);high=k.rng.uniform(10,22);span=25.6
         if not (1490<d<1840 or 3100<d<3420 or 4650<d<4990 or 6300<d<6780):
             art.box(a(0,-3.6,0),(span,7.2,high),h,cream);panel(facades,(a(-span/2,.055,0),a(span/2,.055,0),a(span/2,.055,high),a(-span/2,.055,high)),0)
-        if d%3==0:
-            a,h=site(k,d,-54);art.box(a(0,0,7),(20,12,high+4.2),h,lin(0xCBAF98))
-            panel(facades,(a(-10,6.05,7),a(10,6.05,7),a(10,6.05,11+high),a(-10,6.05,11+high)),0)
+        for setback,lift in ((-42,10),(-72,22),(-112,33)):
+            a,h=site(k,d+k.rng.uniform(-4,4),setback);w=k.rng.uniform(8,12)
+            art.box(a(0,0,lift),(w*2,12,high),h,lin(0xCBAF98))
+            panel(facades,(a(-w,6.05,lift),a(w,6.05,lift),a(w,6.05,lift+high),a(-w,6.05,lift+high)),0)
+            art.roof(a(0,0,lift+high),2*w+.4,12.3,1.1,h,lin(0xA87966))
         if d<1470 or 6900<d<9760:
             a,h=site(k,d,19.8);x,y,z=a(0,0)
             def sea(u,v,w):return a(u,v,SEA-z+w)
@@ -140,7 +144,7 @@ def scenery(k):
             picture(palms,(a(-dx,-dy,.1),a(dx,dy,.1),a(dx,dy,8.6),a(-dx,-dy,8.6)),((0,0),(1,0),(1,1),(0,1)))
     for d,tile,side in ((108,0,1),(1625,1,-1),(1644,0,-1),(3260,3,-1),(4683,3,1),(4880,1,-1),(6504,2,1),(6552,1,-1),(6590,2,1),(9304,0,1)):
         a,h=site(k,d,side*5.5)
-        panel(boards,(a(-4.3,0,.88),a(4.3,0,.88),a(4.3,0,2.0),a(-4.3,0,2.0)),tile)
+        panel(boards,(a(-side*4.3,0,.88),a(side*4.3,0,.88),a(side*4.3,0,2.0),a(-side*4.3,0,2.0)),tile)
     for d in (145,1640,4634,6548,6770):
         a,h=site(k,d,-7.3)
         art.box(a(0,0,0),(3.1,1.6,.75),h,roof)
@@ -152,9 +156,9 @@ def scenery(k):
     for d in (92,1635,6510,6570):
         index=k.road.index(d)
         u=.5 if d in (1635,6570) else 0
-        picture(words,(k.road.at(index,-1.7,.029),k.road.at(index,1.7,.029),k.road.at(index+2,1.7,.029),k.road.at(index+2,-1.7,.029)),((u,0),(u+.5,0),(u+.5,1),(u,1)))
+        picture(words,(k.road.at(index,-1.7,.029),k.road.at(index,1.7,.029),k.road.at(index+2,1.7,.029),k.road.at(index+2,-1.7,.029)),((u+.5,1),(u,1),(u,0),(u+.5,0)))
     a,h=site(k,9430,79)
-    picture(palace,(a(-49,0,-2.7),a(49,0,-2.7),a(49,0,42),a(-49,0,42)),((0,0),(1,0),(1,1),(0,1)))
+    picture(palace,(a(-22,43,-2.7),a(22,-43,-2.7),a(22,-43,42),a(-22,43,42)),((0,0),(1,0),(1,1),(0,1)))
     # The palace sits above the harbour wall on the ochre limestone rock.
     a,h=site(k,9490,96);far=Painted(k,'peaks')
     for j in range(11):
