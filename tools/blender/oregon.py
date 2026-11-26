@@ -68,7 +68,7 @@ def scenery(k):
     art=Painted(k);trees=pictured(k,'SitkaSpruce');village=pictured(k,'ShingleTown');signs=pictured(k,'BywaySigns');basalt=pictured(k,'CoastBasalt')
     steel=lin(0x719184);metal=lin(0xA9A9A0);concrete=lin(0xABA89B);dark=lin(0x454943);white=lin(0xE1DED2);red=lin(0x935144)
     def textured_face(pts):
-        uv=tuple(((p[0]+.53*p[1])/12,p[2]/12) for p in pts);picture(basalt,pts,uv)
+        uv=tuple(((p[0]+.53*p[1])/49,p[2]/59) for p in pts);picture(basalt,pts,uv)
     def stack(d,offset,rx,ry,high,seed):
         at,h=site(k,d,offset);base=-k.road.pos(d)[2];n=19
         def profile(j,scale,z):
@@ -131,14 +131,20 @@ def scenery(k):
                 base=k.road.pos(d)[2];art.box(a(0,0,-base-.3),(2.2,2.5,base-1.12),h,concrete)
     for d,off,scale in ((6898,-69,1.36),(14404,-70,.93)):
         a,h=site(k,d,off);z=-k.road.pos(d)[2]
+        bench=42 if d==14404 else 18
         # A sloping, wooded promontory under the station, from the surf to the lantern terrace.
         for t in range(22):
             def pt(n,r,top):
                 angle=n*math.tau/22;return a(math.cos(angle)*54*r,math.sin(angle)*25*r,z+top)
-            pts=(pt(t,1.35,-.1),pt(t+1,1.35,-.1),pt(t+1,.72,15),pt(t,.72,15));textured_face(pts)
-            pts=(pt(t,.72,15),pt(t+1,.72,15),pt(t+1,.42,18),pt(t,.42,18));art.face(pts,(lin(0x708161),)*4)
-            pts=(pt(t,.42,18),pt(t+1,.42,18),a(0,0,z+18));art.face(pts,(lin(0x879177),)*3)
-        b=z+18;w=scale
+            pts=(pt(t,1.35,-.1),pt(t+1,1.35,-.1),pt(t+1,.72,bench*.80),pt(t,.72,bench*.80));textured_face(pts)
+            pts=(pt(t,.72,bench*.80),pt(t+1,.72,bench*.80),pt(t+1,.42,bench),pt(t,.42,bench));art.face(pts,(lin(0x708161),)*4)
+            pts=(pt(t,.42,bench),pt(t+1,.42,bench),a(0,0,z+bench));art.face(pts,(lin(0x879177),)*3)
+        b=z+bench;w=scale
+        for j in range(16):
+            angle=j*math.tau/16
+            if math.cos(angle)<-.12 and math.sin(angle)>.0:continue
+            u=math.cos(angle)*26;v=math.sin(angle)*11;high=3.2+2.8*(1+math.cos(7*angle))
+            picture(trees,(a(u-2.3,v,b-1.8),a(u+2.3,v,b-1.8),a(u+2.3,v,b+high),a(u-2.3,v,b+high)),((0,0),(.497,0),(.497,1),(0,1)))
         art.tube(a(0,0,b),3.1*w,1.83*w,16.3*w,white,white,18)
         for sub,r,c in ((16.2,2.2,concrete),(16.7,2.55,dark),(18.9,1.99,dark)):
             art.tube(a(0,0,b+sub*w),r*w,r*w,.43*w,c,c,18,c)

@@ -21,7 +21,7 @@ const views = [
   [3180, 3276, 215, 34],
   [6830, 6898, 69, 34],
   [9960, 10048, 1, 13],
-  [14340, 14404, 70, 27],
+  [14340, 14404, 70, 50],
   [18860, 18927, 124, 10],
 ] as const;
 function crestGeometry() {
@@ -139,7 +139,7 @@ export class PacificHeadlands {
     const treeAt = course.place(110, -7.93, this.p);
     this.spruce.position.set(treeAt.x, treeAt.y, treeAt.z);
     const tower = course.place(14404, 70, this.p);
-    this.lamp.position.set(tower.x, 18 + 17.9 * 0.93, tower.z);
+    this.lamp.position.set(tower.x, 42 + 17.9 * 0.93, tower.z);
     this.glow.setAttribute(
       'position',
       new Float32BufferAttribute([0, 0, 0, 42, -1.3, -2.3, 42, 0.7, 2.3], 3),
