@@ -51,6 +51,13 @@ def scenery(k):
         panel(homes,[at(u+dx,v,base+z) for dx,z in ((-w/2,0),(w/2,0),(w/2,high),(-w/2,high))],idx,4)
         depth=4.8;art.box(at(u,v+side*(depth/2+.18),base),(.95*w,depth,high*.67),h,(yellow,teal,oxide,blue)[idx])
         art.roof(at(u,v+side*2.67,base+high*.67),w*.99,depth+.28,1.2,h,iron)
+        for sign in (-1,1):
+            end=u+sign*(w*.48)
+            for a in (1.18,3.48):
+                for z in (.8,high*.43):
+                    for offset,half,height,foot,tint in ((.045,.525,1.37,0,white),(.065,.415,1.17,.09,blue)):
+                        pts=[at(end+sign*offset,v+side*a+dv,base+z+foot+dz) for dv,dz in ((-half,0),(half,0),(half,height),(-half,height))]
+                        art.face(pts,(tint,)*4)
     for j,d in enumerate(range(-80,26830,24)):
         at,h=site(k,d)
         for side in (-1,1):
@@ -66,7 +73,7 @@ def scenery(k):
                 pts=[k.road.pos(d+u,-4.2+v,7.04-.82*math.sin(u/72*math.pi)) for u in (0,18,36,54,72)]
                 for a,b in zip(pts,pts[1:]):beam(art,a,b,.047,iron)
             for n in range(3):beam(art,p(0,n*.2,6.6+n*.21),p(13-n*7,9.5,5.4+n*.42),.055,iron)
-        if j%11==0:
+        if j%11==0 and all(abs(d-v)>85 for v in (5180,10350,14820,26410)):
             panel(murals,[at(u,4.19,z) for u,z in ((-5,.04),(5,.04),(5,3.1),(-5,3.1))],j//11%3,3)
     # Each step has a real horizontal tread and vertical riser; the cycling lane passes beside it.
     for d,piano in ((5200,True),(14844,False)):
@@ -93,6 +100,12 @@ def scenery(k):
             for v in (-3,3):
                 x,y,z=track(u,v,-.05);bottom=min(k.height_at(x,y),z-.3)
                 art.tube((x,y,bottom),.23,.19,z-bottom,wood,wood,6)
+    for j in range(15):
+        a=4+j*1.7;b=a+1.7
+        for v in (-3.14,3.14):
+            p0=track(a,v,-.25);p1=track(b,v,-.25)
+            q0=(*p0[:2],min(p0[2],k.height_at(*p0[:2]))-.1);q1=(*p1[:2],min(p1[2],k.height_at(*p1[:2]))-.1)
+            art.face((q0,q1,p1,p0),(stone,stone,wood,wood))
     art.box(track(30,0,-.3),(7.6,8,4.2),h,oxide);art.roof(track(30,0,3.9),8.2,9,1.8,h,iron)
     for i,(d,v,idx) in enumerate(((14840,-3.8,0),(14857,4.1,1),(26426,4.5,3))):
         at,h=site(k,d,v);panel(folks,[at(0,dx,z) for dx,z in ((-1.55,0),(1.55,0),(1.55,1.97),(-1.55,1.97))],idx,4)
@@ -102,20 +115,20 @@ def scenery(k):
         u=-12.8+j*1.5;art.box(at(u,4.61,0),(.095,.1,1.25),h,iron)
     for z in (.29,.97,1.2):beam(art,at(-13.5,4.61,z),at(13.5,4.61,z),.08,iron)
     # A dock and gantries below the mirador remain in place while the course turns.
-    at,h=site(k,26445,130)
-    art.box(at(0,0,-28),(180,108,1),h,water)
+    at,h=site(k,26445,76)
+    art.box(at(0,0,-16),(180,108,1),h,water)
     for j in range(4):
-        u=-42+j*24;ground=-25
+        u=-42+j*24;ground=-14
         for du in (-3,3):
             beam(art,at(u+du,-3,ground),at(u+du,-3,ground+18),.49,oxide)
         beam(art,at(u-4,-3,ground+17),at(u+14,-3,ground+19),.58,oxide)
         beam(art,at(u,-3,ground+22),at(u+14,-3,ground+19),.28,oxide)
-    art.box(at(6,16,-26),(43,7,2.4),h,iron)
-    for j in range(8):art.box(at(-10+j*4.4,16,-23.65),(4.1,5.8,2.1),h,(teal,oxide,blue)[j%3])
+    art.box(at(6,16,-14.5),(43,7,2.4),h,iron)
+    for j in range(8):art.box(at(-10+j*4.4,16,-12.15),(4.1,5.8,2.1),h,(teal,oxide,blue)[j%3])
     for j in range(72):
         a=j*math.tau/72;b=(j+1)*math.tau/72;u=j%18/18;v=u+1/18
         if j//18%2:u,v=1-u,1-v
         def sky(t,z):return 6200+19000*math.cos(t),18000*math.sin(t),z+180
-        picture(rim,(sky(a,-5500),sky(b,-5500),sky(b,6500),sky(a,6500)),((u,0),(v,0),(v,1),(u,1)))
+        picture(rim,(sky(a,-3200),sky(b,-3200),sky(b,8100),sky(a,8100)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
 THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':2.68,'terrain':{'sea':False},'land':{'mid':0xa89b8b},'sky':[0xf2d4c0,0xd1dae3,0xb3cbdc,0x96b6ce,0x749cb8],'haze':0xdacbc3,'light':[0xffe4bd,1.55],'fill':[0xd9e4ee,0xa28370],'sun_altitude':.65,'sun_azimuth':-.83}
