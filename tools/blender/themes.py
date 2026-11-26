@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import prospect as _prospect
+
+THEMES['prospect'] = _prospect.THEME
+SCENERY['prospect'] = _prospect.scenery

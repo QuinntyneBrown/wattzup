@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Innsbruck KOM After Party” Route Details (Innsbruck)](https://zwiftinsider.com/route/innsbruck-kom-after-party/) (g0066) | © Zwift |
 | game-04.jpg | Zwift: [“The Greenway” Route Details (New York)](https://zwiftinsider.com/route/the-greenway/) (g0160) | © Zwift |
 | game-05.jpg | Zwift: [“Richmond Loop Around” Route Details (Richmond)](https://zwiftinsider.com/route/richmond-loop-around/) (g0127) | © Zwift |
+
+The canopy atlas is original generated artwork informed by real 02–06, 11 and 12. The oak, plane, elm, willow and autumn maple share two crossed planes per tree. The original Boathouse façade texture uses real 07–09 and 15 for its arched windows, terracotta courses and roofline. The Soldiers’ and Sailors’ Arch, market tents, lake bridge and brownstones are modelled in the Blender source. Game 01–05 informed rider-height framing and canopy clearance.
