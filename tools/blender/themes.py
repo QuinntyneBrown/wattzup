@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import stampede as _stampede
+
+THEMES['stampede'] = _stampede.THEME
+SCENERY['stampede'] = _stampede.scenery
