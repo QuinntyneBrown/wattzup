@@ -70,7 +70,7 @@ def land(r,col,theme,bc):
 
 
 def scenery(k):
-    art=Painted(k);pier=Painted(k,'peaks');foam=pictured(k,'PacificFoam')
+    art=Painted(k);pier=Painted(k,'peaks');ocean=pictured(k,'PacificWater')
     palms=[pictured(k,name) for name in ('FanPalm','LeaningPalm','PairedPalms')]
     golden=lin(0xD6AE6F);wood=lin(0x715340);white=lin(0xE7DDD1)
     def panel(mesh,pts):
@@ -105,6 +105,11 @@ def scenery(k):
             beam(art,at(-2.7,v,2.95),at(-9.8,v,.81),.08,white)
         for j in range(27):
             f=j/26;art.box(at(-2.7-7.1*f,-.55,1.96-2.14*f),(.28,1.46,.11),h,wood)
+    for d in range(-64,9070,12):
+        q,_=site(k,d);next_q,_=site(k,d+12)
+        a=shore(d);b=shore(d+12)
+        vs=[q(0,a,-elevation(d)+.35),next_q(0,b,-elevation(d+12)+.35),next_q(0,2600,-elevation(d+12)+.35),q(0,2600,-elevation(d)+.35)]
+        picture(ocean,vs,((d,0),(d+12,0),(d+12,2600-b),(d,2600-a)))
     for d in range(-40,8930,9):
         for j in range(3):
             v=shore(d)+j*8+3*math.sin(d/29+j*1.3);q,_=site(k,d,v)
@@ -143,6 +148,6 @@ def scenery(k):
 
 
 THEME={'lay':route,'road_builder':road,'land_builder':land,'terrain':{'sea':True},
-       'land':{'mid':0xDBC099},'haze':0xE3C8AA,'sky':[0xE6B999,0xEBD4B8,0xBFD4D8,0x93BBCE,0x6CA2C0],
+       'road_half_width':2.38,'land':{'mid':0xDBC099},'haze':0xE3C8AA,'sky':[0xE6B999,0xEBD4B8,0xBFD4D8,0x93BBCE,0x6CA2C0],
        'light':[0xFFE1AD,1.6],'fill':[0xD7E0DC,0xBEA58C],'sun_altitude':.18,'sun_azimuth':1.08,
        'palette':{'asphalt':0xBFB7AA,'paint':0xEEE5D8,'yellow':0xDAB249}}

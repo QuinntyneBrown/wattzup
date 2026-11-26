@@ -39,6 +39,7 @@ import type { desertViewDrive } from './desert-view-drive';
 import type { blossomFestival } from './blossom-festival';
 import type { ChicagoRailway } from './chicago-railway';
 import type { chichenPlaza } from './chichen-plaza';
+import type { PacificPark } from './pacific-park';
 import type { ConeyBoardwalk } from './coney-boardwalk';
 import type { copacabanaPromenade } from './copacabana-promenade';
 import type { CopacabanaBeach } from './copacabana-beach';
@@ -206,6 +207,10 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  FanPalm: 750,
+  LeaningPalm: 750,
+  PairedPalms: 750,
+  PacificWater: 2200,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -345,6 +350,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 }
 
 export class CourseRenderer implements WorldRenderer {
+  private pacificPark: PacificPark | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -1267,6 +1273,18 @@ export class CourseRenderer implements WorldRenderer {
         this.crews = new ComunaCrews(this.course, this.scene);
         this.disposables.push(streets, this.crews);
       }
+      if (this.course.file.id === 'santamonica') {
+        const { PacificPark } = await import('./pacific-park');
+        if (this.disposed) return false;
+        const detail = await PacificPark.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.pacificPark = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
       if (this.course.file.id === 'coney') {
         const { ConeyBoardwalk } = await import('./coney-boardwalk');
         if (this.disposed) return false;
@@ -1781,6 +1799,7 @@ export class CourseRenderer implements WorldRenderer {
     this.commuters?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.copacabanaPromenade?.follow(metres);
     this.copacabana?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.pacificPark?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
@@ -1913,6 +1932,7 @@ export class CourseRenderer implements WorldRenderer {
     });
     this.boardwalk?.group.removeFromParent();
     this.boardwalk = null;
+    this.pacificPark = null;
     this.daytonaBoardwalk = null;
     this.daytonaShore = null;
     this.copacabanaPromenade?.root.removeFromParent();
@@ -2201,6 +2221,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
+    Object.assign(materials, this.pacificPark?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3239,6 +3260,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
+    if (this.pacificPark) Object.assign(drawn, this.pacificPark.report());
     if (this.boardwalk) {
       Object.assign(drawn, {
         carRadius: this.boardwalk.street.carRadius,
