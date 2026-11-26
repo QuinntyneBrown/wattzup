@@ -68,7 +68,24 @@ def land(r,col,theme,bc):
                 talus=d>9240 and d<10500 and offset[j]>13
                 mesh=b if talus else a;mesh.quad(*pts);mesh.colours.extend([lin(0xB5AD97 if talus else 0x91A060)]*4)
         prev=row
-    a.build(col);b.build(col);return None,floor
+    # Continuous foothills fill the valleys beyond the detailed roadside ribbon.
+    hills=bc.Builder('Dolomite foothills','terrain');hills.colours=[]
+    xmin=int(min(p['x'] for p in r.s))-3100;xmax=int(max(p['x'] for p in r.s))+3100
+    ymin=int(min(p['y'] for p in r.s))-3100;ymax=int(max(p['y'] for p in r.s))+3100
+    last=None
+    for x in range(xmin,xmax,67):
+        row=[]
+        for y in range(ymin,ymax,67):
+            _,j,d=r.tree.find((x,y,0));p=r.s[j]
+            roll=119*math.sin(x/453+y/719)+84*math.sin(x/238-y/359)+29*math.cos(y/149+x/187)
+            z=floor(x,y)-26+smooth(180,950,d)*roll
+            mix=.5+.5*math.sin(x/117+y/85);c=lin(0x819666 if mix>.42 else 0x71865A)
+            row.append(((x,y,z),c))
+        if last:
+            for j in range(len(row)-1):
+                vs=(last[j],row[j],row[j+1],last[j+1]);hills.quad(*(pt for pt,c in vs));hills.colours.extend(c for pt,c in vs)
+        last=row
+    hills.build(col);a.build(col);b.build(col);return None,floor
 
 
 def scenery(k):
@@ -82,7 +99,11 @@ def scenery(k):
     def mount(d,l,v,far,width,height):
         at,_=site(k,d,l);view,_=site(k,d)
         x,y,_=at(far,v);rx,ry,_=view(0,0);dx,dy=x-rx,y-ry;hyp=math.hypot(dx,dy);sx,sy=-dy/hyp,dx/hyp
-        bottom=1830
+        # Keep the whole mountain beyond the furthest road arm on this bearing.
+        fx,fy=dx/hyp,dy/hyp
+        limit=max((p['x']-rx)*fx+(p['y']-ry)*fy for p in k.s)
+        dist=max(2500,limit+2100);x=rx+fx*dist;y=ry+fy*dist
+        width=dist*1.38;height=dist*.42+845;bottom=1510
         pts=[(x+sx*t,y+sy*t,bottom+up) for t,up in ((width/2,0),(-width/2,0),(-width/2,height),(width/2,height))]
         return pts
     tile(lang,mount(7290,0,370,1480,2830,1325))
@@ -116,6 +137,8 @@ def scenery(k):
         art.box(at(0,0,base-.58),(w,depth,1.49),h,lin(0xA59C86))
         art.box(at(0,0,base+.91),(w,depth,height-.91),h,wood if j<6 else lin(0xD8CDB1))
         art.roof(at(0,0,base+height),w+1.3,depth+1.25,2.25,h,slate)
+        for u in (-w/2-.045,w/2+.045):
+            tile(huts,[at(u,v,base+up) for v,up in ((depth/2,.92),(-depth/2,.92),(-depth/2,height),(depth/2,height))],0 if j<6 else 1,3,1)
         for v in (-depth/2-.04,depth/2+.04):
             tile(huts,[at(u,v,base+up) for u,up in ((-w/2,.92),(w/2,.92),(w/2,height),(-w/2,height))],0 if j<6 else 1,3,1)
         if j<6:
@@ -144,8 +167,8 @@ def scenery(k):
                 a=j*math.tau/7+phase;xx=w*math.cos(a);yy=w*.77*math.sin(a)
                 rim.append((x+xx,y+yy,floor-.57));top.append((x+xx*.69+.2*w,y+yy*.69,floor+h*rng.uniform(.68,1)))
             for j in range(7):
-                m=(j+1)%7;tile(stone,(rim[j],rim[m],top[m],top[j]))
-                picture(stone,(top[j],top[m],(x+.13*w,y,floor+h*1.09)),((0,0),(1,0),(.54,1)))
+                m=(j+1)%7;tile(stone,(rim[j],rim[m],top[m],top[j]));tone=lin((0x938C81,0xACA493,0xB8AF9B,0x8F8D88,0xC1B6A2,0xA19B8F,0xACA194)[j]);stone.colours[-4:]=[tuple(c*.77 for c in tone[:3])+(1,),tone,tone,tone]
+                picture(stone,(top[j],top[m],(x+.13*w,y,floor+h*1.09)),((0,0),(1,0),(.54,1)));stone.colours[-3:]=[lin(0xDBCFBB)]*3
     at,h=site(k,11608,-5.55)
     for v in (-1.65,1.65):art.box(at(0,v,-.53),(.11,.16,3.7),h,slate)
     tile(signs,[at(-.10,v,z) for v,z in ((2.02,1.38),(-2.02,1.38),(-2.02,3.65),(2.02,3.65))],0,2,4)

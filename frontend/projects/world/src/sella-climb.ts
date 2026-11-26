@@ -124,6 +124,7 @@ export class SellaClimb {
       m.map = maps[i + 2]!;
       m.fog = i !== 3 && i !== 4;
     }
+    this.materials.SellaBlocks.vertexColors = true;
     this.root.add(this.cattle, this.motorbike);
     for (const z of [-0.69, 0.69]) {
       const g = new Group();
