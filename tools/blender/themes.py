@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import strasbourg as _strasbourg
+
+THEMES['strasbourg'] = _strasbourg.THEME
+SCENERY['strasbourg'] = _strasbourg.scenery
