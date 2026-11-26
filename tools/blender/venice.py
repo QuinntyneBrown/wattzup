@@ -60,7 +60,12 @@ def scenery(k):
         if j%2==0 and d<4850:
             idx=(j//2)%4;at,h=site(k,d,-20);width=19.7;high=(5.6,7.3,5.1,6.4)[idx]
             art.box(at(0,-4.2,-.2),(width,8.3,high-.4),h,(teal,ochre,white,wood)[idx])
-            panel(shops,[at(x,0,z) for x,z in ((-width/2,0),(width/2,0),(width/2,high),(-width/2,high))],idx*.25,(idx+1)*.25)
+            panel(shops,[at(x,0,z) for x,z in ((-width/2,0),(width/2,0),(width/2,high),(-width/2,high))],(idx+1)*.25,idx*.25)
+            # Wrap the corners of the arcades so the rider sees the shops on approach.
+            panel(shops,[at(-width/2-.03,v,z) for v,z in ((-8,0),(0,0),(0,high-.55),(-8,high-.55))],idx*.25,(idx+1)*.25)
+            for n in range(3):
+                dv=-13+n*.9+(j%4)*.6;cx=j%3+n*2;idx2=(j+n)%4
+                panel(players,[at(cx+x,dv+20,z) for x,z in ((-1.04,0),(1.04,0),(1.04,1.94),(-1.04,1.94))],idx2/4,(idx2+1)/4)
             if j%6==0:
                 art.box(at(2,1.8,-.15),(2.7,.9,1.05),h,wood)
                 for q in range(5):art.box(at(.9+q*.5,1.8,.92),(.33,.66,.18),h,(teal,white,ochre)[q%3])
@@ -81,6 +86,23 @@ def scenery(k):
         art.box(at(j+1.5,0,.35),(2.4,.65,.39),h,iron)
         beam(art,at(j+1,-1.4,1.3),at(j+1,1.4,1.3),.08,iron)
         for v in (-.96,.96):art.tube(at(j+1,v,.95),.4,.4,.25,iron,iron,10)
+    for j,(x,v) in enumerate(((-9,-2),(-5,2),(1,-2),(8,2),(12,0))):
+        # Lifters and spotters, with a barbell above the bench.
+        at,h=site(k,175+x,16+v)
+        col=lin((0x44658C,0x923D37,0x347566)[j%3])
+        art.tube(at(0,0,.88),.2,.31,.58,col,col,8)
+        art.tube(at(0,0,1.45),.14,.13,.25,skin,skin,8,cap=skin)
+        for side in (-1,1):
+            beam(art,at(0,side*.14,.9),at(.16,side*.23,.42),.13,col)
+            beam(art,at(.16,side*.23,.42),at(0,side*.24,.05),.1,skin)
+            beam(art,at(0,side*.24,1.4),at(.25,side*.39,1.12),.09,skin)
+            beam(art,at(.25,side*.39,1.12),at(.38,side*.41,1.43),.075,skin)
+        beam(art,at(.38,-.65,1.43),at(.38,.65,1.43),.052,iron)
+    signage=pictured(k,'BeachSigns')
+    for station,lane,index,wide in ((164,8.6,0,4.3),(2659,5.7,1,3.6),(3821,6.8,2,2.9),(5138,23,3,3.9)):
+        at,h=site(k,station,lane)
+        for v in (-wide*.44,wide*.44):beam(art,at(0,v,0),at(0,v,2.78),.08,iron)
+        panel(signage,[at(0,v,z) for v,z in ((wide/2,1.72),(-wide/2,1.72),(-wide/2,2.78),(wide/2,2.78))],index/4,(index+1)/4)
     # Intersecting concrete bowls with swept coping stand on a shared deck.
     for d,v,sx,sy in ((2665,15,13,7.5),(2692,23,15,9),(2720,14,10,6),(2750,21,12,8)):
         at,h=site(k,d,v);rings=[]
@@ -105,6 +127,9 @@ def scenery(k):
         art.box(at(-.3,-1.42,floor+1),(3.55,.10,1),h,lin(0x52788C))
         art.roof(at(-.3,.4,floor+2.35),5,4.1,.75,h,white)
         pts=[at(x,v,z) for x,v,z in ((3,-1.6,3),(3,-.4,3),(11,-.4,-.5),(11,-1.6,-.5))];art.face(pts,(teal,)*4)
+        art.box(at(-.35,-2.15,floor+.64),(5.6,.09,.10),h,white)
+        for x in (-2.9,-1.4,.2,1.7,2.4):beam(art,at(x,-2.15,floor+.3),at(x,-2.15,floor+1.36),.07,white)
+        art.box(at(-.35,-2.15,floor+1.34),(5.6,.10,.10),h,white)
         for v in (-1.6,-.4):beam(art,at(3,v,3.9),at(11,v,.5),.065,white)
     at,h=site(k,6850,0)
     art.box(at(0,105,-.3),(22,175,1.2),h,wood)
@@ -120,6 +145,12 @@ def scenery(k):
     for d in range(-80,7040,18):
         pts=[k.road.pos(t,v,-max(0,v-10)*.03-.10) for t,v in ((d,101),(d+18,101),(d+18,305),(d,305))]
         picture(ocean,pts,[(x/26,y/15) for x,y,z in pts])
+    for idx,d in enumerate(range(-60,6950,12)):
+        for crest in (0,1):
+            lane=102+crest*8+1.6*math.sin(d/57+crest)
+            finish=d+6+3*math.cos(d/41)
+            pts=[k.road.pos(t,v,-(v-10)*.03+.08) for t,v in ((d,lane),(finish,lane+.6),(finish,lane+1.15),(d,lane+.22))]
+            art.face(pts,(lin(0xCADBD8),)*4)
     for j in range(72):
         a=j*math.tau/72;b=(j+1)*math.tau/72;u=j%18/18;v=u+1/18
         if j//18%2:u,v=1-u,1-v
