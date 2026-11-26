@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Shibuya Crossing (#2209)
+
+The race catalogue selects an 8.15 km course comprising two 4.075 km laps. Use one fixed station, crossing and 109 fork. The geometry determines the grade on Dogenzaka and the HUD elevation. Original nighttime signage uses invented shop names and artwork.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Hachikō station plaza, 0.12 km | Real 02, 11, 13 and 15. Games 03 and 05. | The bronze dog stands on its stone plinth outside the station. Elevated JR tracks cross behind it, below the lit profiles of Hikarie and Scramble Square. |
+| Scramble crossing, 0.72 km | Real 02, 03, 08, 13 and 15. Games 01 and 04. | Diagonal and straight zebra stripes meet across one broad junction. Umbrella groups wait together at the curb and then walk several crossings at once. |
+| QFRONT screens, 0.81 km | Real 01, 04, 06, 07 and 08. Games 01 and 03. | The curved screen frontage rises above the crossing. Original moving graphics change colour on the panel and glimmer on wet tarmac below. |
+| 109 fork, 1.48 km | Real 05, 09, 10 and 12. Games 02 and 03. | The silver cylindrical Shibuya 109 facade stands between the two streets. A taxi passes beneath the green signals and turns onto the climbing road. |
+| Dogenzaka climb, 2.65 km | Real 03, 09, 10 and 12. Games 01, 02 and 05. | Vertical karaoke and hotel signs stack above narrow shopfronts. Clear umbrellas catch the colour of individual signs as riders climb Dogenzaka. |
+| Station return, 4.79 km | Real 04, 06, 07, 11 and 14. Games 03 and 04. | A second pass brings the screen, waiting pedestrians and elevated train into a single street-level view. The tower lights remain visible above the train. |
+
+Bake window and shop lighting into shared facade atlases. Draw the near wet-asphalt reflection in the same colours as the screen above it. One pedestrian cycle holds the umbrella groups on both corners and starts the diagonal and straight crossings together. Keep the rider lane clear. The train follows the viaduct, and the taxi follows the road. Batch repeated street and window geometry by block and retain the distinctive silhouettes on Low. Dispose the scene and its materials on exit. Use the performance design and ADRs 0021, 0023, 0030, 0034 and 0035 for the submitted-frame checks.
