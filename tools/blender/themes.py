@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import velodrome as _lee_valley
+
+THEMES['velodrome'] = _lee_valley.THEME
+SCENERY['velodrome'] = _lee_valley.scenery
