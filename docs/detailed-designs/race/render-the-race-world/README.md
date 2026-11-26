@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## St. Patrick’s Day, Dublin (#2219)
+
+Stretch the parade itinerary to the original class distance. Keep the Spire in world space and preserve the relative scale of the GPO, the median and the river. As in Caribana, the near parade articulates while recessed stone and glass establish mid-distance depth.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Luas median, 0.12 km | Real 06, 07 and 09. Games 01 and 04. | Steel Luas rails run beside the planted median. Pale March light picks out wet wheel tracks, overhead wires, plane trees and tricolour bunting. |
+| The Spire, 2.18 km | Real 07, 09 and 15. Games 02 and 05. | The Spire rises from its broad brushed-steel base to a needle point 120 metres above the stone island. The street turns just enough to separate its silhouette from the flags. |
+| General Post Office, 4.29 km | Real 06, 08 and 10. Games 03 and 05. | Six Ionic columns cast shadows beneath the GPO pediment. Across the street, a projecting clock and recessed shop windows mark Clerys. |
+| Pipe band, 6.58 km | Real 01, 02, 04 and 05. Games 01 and 03. | Pipers in dark tunics, patterned kilts and tall caps march in ranks. Drones, upright bass drums and moving drumsticks stand above rows of spectators in green behind steel barriers. |
+| Parade puppet, 8.71 km | Real 03, 11, 12 and 14. Games 01 and 04. | An oversized puppet nods above a rolling float. Spectators wave Irish flags beside a camera platform and a temporary grandstand. |
+| O’Connell Bridge, 11.79 km | Real 09, 10, 13 and 15. Games 02 and 05. | The bronze O’Connell Monument marks the bridge approach. Stone balusters and lanterns open onto the Liffey; the shopfronts drop away until the opposite quay. |
+
+Model six Ionic columns, a tapered steel Spire, bridge piers and the bronze monument. Batch the static crowd and animate bounded near figures on the ride clock. Wet stone uses baked highlights and dark recesses. Scale curb and track height to the class grade. Capture the six rider views and measure the opening and pipe band on the simulated tablet. Dispose of route textures, figures and instance buffers on exit. See ADRs 0021, 0023, 0030, 0034 and 0035.
