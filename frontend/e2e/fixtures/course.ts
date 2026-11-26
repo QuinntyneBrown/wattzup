@@ -3598,7 +3598,7 @@ export const napaCourseMap = {
   place: 'Napa Valley, California',
   world: 'napa',
   distanceKm: 8.2,
-  climbingM: 38,
+  climbingM: 51,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

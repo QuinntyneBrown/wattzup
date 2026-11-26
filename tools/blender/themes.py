@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import napa as _napa
+
+THEMES['napa'] = _napa.THEME
+SCENERY['napa'] = _napa.scenery
