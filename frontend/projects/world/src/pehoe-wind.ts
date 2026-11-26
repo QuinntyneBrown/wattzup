@@ -1,6 +1,6 @@
 import {
   BoxGeometry,
-  BufferGeometry,
+  type BufferGeometry,
   DoubleSide,
   Group,
   Mesh,
