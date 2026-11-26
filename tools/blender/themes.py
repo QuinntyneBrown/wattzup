@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import sydneyharbour as _sydneyharbour
+
+THEMES['sydneyharbour'] = _sydneyharbour.THEME
+SCENERY['sydneyharbour'] = _sydneyharbour.scenery
