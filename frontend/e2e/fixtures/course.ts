@@ -1,3 +1,4 @@
+import pamplonaElevation from './pamplona-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const pamplonaCourseMap = {
   place: 'Pamplona, Spain',
   world: 'pamplona',
   distanceKm: 9.133333333333333,
-  climbingM: 0,
+  climbingM: 27,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: pamplonaElevation,
   },
   thumbnailUrl: 'maps/san-fermin-pamplona.jpg',
   photoUrl: 'maps/san-fermin-pamplona-photo.jpg',
