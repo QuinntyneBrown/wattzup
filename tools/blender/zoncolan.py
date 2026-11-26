@@ -12,7 +12,7 @@ def elevation(d):
     return PROFILE[-1][1]
 
 def heading(d):
-    return (1.12 if d>9000 else .56)*math.tanh(2.40*math.sin((d-410)/365))+.14*math.sin(d/103)
+    return (.56+1.41*max(0,min(1,(d-8800)/1400)))*math.tanh(2.40*math.sin((d-410)/365))+.14*math.sin(d/103)
 
 def route(course,theme,bc):
     stages=bc.stages(course['plan']);length=stages[-1]['to'];rows=[];x=y=0
@@ -86,6 +86,10 @@ def scenery(k):
                     v=side*(3.8+row*3.8);at,h=site(k,d+row*2.5,v)
                     idx=(j+row+side)%4;lift=ground(d,v)-elevation(d)
                     card(fans,lambda x,y,z:at(x,y,z+lift),4.24,2.03,idx/4,(idx+1)/4)
+    for j,d in enumerate((4919,4938,4980,9716,12197,12228)):
+        v=.13*(-1)**j
+        pts=[k.road.pos(d+x,v+y,.14) for x,y in ((-1.45,1.15),(-1.45,-1.15),(1.45,-1.15),(1.45,1.15))]
+        panel(chalk,pts,((j%4)/4,0,(j%4+1)/4,1))
     for j,start in enumerate((9730,9890,10062)):
         length=(50,58,72)[j]
         # Barrel vault and stone portals follow the road grade on every four-metre span.
@@ -95,11 +99,19 @@ def scenery(k):
                 a=n*math.pi/13;b=(n+1)*math.pi/13
                 pts=[k.road.pos(t,3.23*math.cos(v),2.53+3.23*math.sin(v)) for t,v in ((d,a),(e,a),(e,b),(d,b))]
                 tint=slate if n%3 else stone;art.face(pts,(tint,)*4)
+            # A grassy rock cut covers the barrel. The road remains clear inside the vault.
+            for side in (-1,1):
+                bench=[(3.89,-.42),(3.94,2.52),(3.27,4.62),(1.44,5.98),(0,6.32)]
+                for n,((v1,z1),(v2,z2)) in enumerate(zip(bench,bench[1:])):
+                    pts=[k.road.pos(t,side*v,z) for t,v,z in ((d,v1,z1),(e,v1,z1),(e,v2,z2),(d,v2,z2))]
+                    c=stone if n<2 else green;art.face(pts,(c,)*4);art.face(pts[::-1],(c,)*4)
+                wall=[k.road.pos(t,side*v,z) for t,v,z in ((d,3.94,2.52),(e,3.94,2.52),(e,11,-.34),(d,11,-.34))]
+                art.face(wall,(stone,stone,green,green));art.face(wall[::-1],(green,green,stone,stone))
             for side in (-1,1):
                 pts=[k.road.pos(t,side*3.23,z) for t,z in ((d,-.19),(e,-.19),(e,2.53),(d,2.53))]
-                art.face(pts,(stone,slate,slate,stone))
-                if off%16==4:
-                    pts=[k.road.pos(t,side*3.20,z) for t,z in ((d,.47),(e,.47),(e,2.38),(d,2.38))]
+                art.face(pts,(stone,slate,slate,stone));art.face(pts[::-1],(stone,slate,slate,stone))
+                if off%12==0:
+                    pts=[k.road.pos(t,side*3.16,z) for t,z in ((d,.47),(e,.47),(e,2.38),(d,2.38))]
                     panel(mural,pts,(j/3,0,(j+1)/3,1))
             if off%12==0:
                 at,h=site(k,d);art.box(at(0,0,5.53),(1.2,.41,.088),h,cream)
@@ -113,6 +125,10 @@ def scenery(k):
     for j,d in enumerate(range(11860,12350,26)):
         v=(1 if j%2 else -1)*(9+j%4*2.7);at,h=site(k,d,v);lift=ground(d,v)-elevation(d)
         art.box(at(0,0,lift),(3.4,2.92,1.05),h,[cream,pink,green][j%3]);art.roof(at(0,0,lift+1.04),3.7,3.1,1.28,h,[red,cream,pink][j%3])
+    for d in range(12060,12364,4):
+        for side in (-1,1):
+            v=side*(6.0+(d%3)*.57);at,h=site(k,d,v);lift=ground(d,v)-elevation(d)
+            card(fans,lambda x,y,z:at(x,y,z+lift),3.9,1.93,((d//4)%4)/4,((d//4)%4+1)/4)
     at,h=site(k,12308)
     for side in (-1,1):art.box(at(0,side*3.6,.05),(.63,.61,5.23),h,pink)
     art.box(at(0,0,4.75),(.64,7.9,.92),h,pink)

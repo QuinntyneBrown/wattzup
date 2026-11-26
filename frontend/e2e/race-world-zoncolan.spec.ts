@@ -1,4 +1,4 @@
-// Vienna (#2247). Each moving landmark follows the ride clock while it is in view.
+// Zoncolan (#2253). Each moving landmark follows the ride clock while it is in view.
 import { newRiderProgress } from './fixtures/api';
 import { zoncolanOvaroCourseMap } from './fixtures/course';
 import { echelonBike } from './fixtures/echelon';
