@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import route66 as _route66
+
+THEMES['route66'] = _route66.THEME
+SCENERY['route66'] = _route66.scenery
