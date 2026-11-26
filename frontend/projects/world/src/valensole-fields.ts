@@ -25,7 +25,7 @@ const views = [
   [6440, 6460, -12.8, 1.3],
   [9630, 9656, -15, 2.0],
   [13720, 13754, -12, 2.75],
-  [17960, 18031, -49, 8.5],
+  [17960, 18045, -100, 10.5],
 ] as const;
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 const surface = () => new MeshBasicMaterial({ side: DoubleSide });

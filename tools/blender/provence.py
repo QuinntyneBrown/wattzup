@@ -52,6 +52,7 @@ def land(r,col,theme,bc):
         d=r.s[i]['d'];side=1 if v>0 else 0
         section=int((d+80+side*96)//191)
         if side==0 and d<350:return 2
+        if 17780<d<18060:return 3 if side==0 else 0
         if side==1 and 6320<d<6590:return 0
         if side==1 and 9500<d<9870:return 1
         return (0,1,0,2,1,0,3,1,0)[(section+3*side)%9]
@@ -111,7 +112,7 @@ def scenery(k):
         for a in (.48,2.05):panel(at,flora,0,0,z,width,high,a,index,3,2)
     for d in range(180,18400,239):
         tree(d,(1 if d%3 else -1)*(45+d%99),0 if d%4 else 1,8.3+d%6)
-    for d,v in ((159,34),(3370,23),(6469,-37),(9820,53),(17895,-33),(18008,34)):tree(d,v,1,9.2)
+    for d,v in ((3346,14),(3376,17),(159,34),(3370,23),(6469,-37),(9820,53),(17895,-33),(18008,34)):tree(d,v,1,9.2)
     def house(d,v,w,b,high,index):
         at,h,z=base(d,v)
         art.box(at(0,0,z-.25),(w,b,high+.25),h,stone)
@@ -130,10 +131,19 @@ def scenery(k):
     for center,side in ((13745,1),(18004,1)):
         for j in range(31):
             d=center+(j%9-4)*11.8+(j//9)*5;v=side*(24+(j//9)*13+3*math.sin(j*9))
+            if center==18004:
+                # Open the foreground toward the ridge. The village stacks up the slope
+                # behind the sunflowers instead of lining the road like a second square.
+                v+=65+(j//9)*6
             house(d,v,8+j%4,6.7+j%3,5.8+j%5,j%4)
-        at,h,z=base(center+41,side*55)
+        tower_offset=side*(112 if center==18004 else 37)
+        at,h,z=base(center+41,tower_offset)
+        art.box(at(-8,0,z),(16.8,10.2,11.4),h,stone)
+        art.roof(at(-8,0,z+11.4),17.3,10.7,3.05,h,tile)
         art.box(at(0,0,z),(8.1,8.1,20.4),h,stone)
+        for zz in (9.6,14.9,19.9):art.box(at(0,0,z+zz),(8.55,8.55,.49),h,lin(0xD3C39C))
         art.roof(at(0,0,z+20.4),8.5,8.5,4.5,h,tile)
+        art.tube(at(0,0,z+24.5),.15,.11,1.8,iron,iron,8,iron)
         for sidewall in (-1,1):
             for yy in (-1.45,1.45):art.box(at(sidewall*4.08,yy,z+15.3),(.11,1.22,3.1),h,iron)
         for dx in (-42,-20,5,28):tree(center+dx,-9-abs(dx)%3,5,8.9)
@@ -141,6 +151,12 @@ def scenery(k):
         at,h,z=base(d,v)
         art.box(at(0,0,z),(.10,.10,2.4),h,iron)
         panel(at,signs,-.11,0,z+1.24,2.08,1.12,-math.pi/2,index,2,2)
+    for j in range(30):
+        d=17936+j*3.8
+        for v in (-9,-13,-18):
+            at,h,z=base(d,v-j%3*.4)
+            panel(at,flora,0,0,z,1.65,1.72,1.23,4,3,2)
+    # The hive boxes sit on a bare service strip between planted bands.
     for j in range(18):
         d=6448+(j%6)*3.9;v=10.9+(j//6)*3.3;at,h,z=base(d,v)
         art.box(at(0,0,z),(1.05,.84,.25),h,wood)
