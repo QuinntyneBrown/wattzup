@@ -41,7 +41,11 @@ test('Ride the park drive past Long Meadow, Grand Army Plaza and the Boathouse',
     ['lake', 5.13],
     ['boathouse', 11.92],
   ] as const) {
-    while (parseFloat((await race.distance.textContent())!) < km) {
+    const station = async () =>
+      version === 'after'
+        ? ((await worldRide.coursePose('prospectStation')) ?? 0) / 1000
+        : parseFloat((await race.distance.textContent())!);
+    while ((await station()) < km - (version === 'after' ? 0.002 : 0)) {
       await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(18));
       await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(90));
       // The baseline integrates distance on animation frames and caps each step at
@@ -50,12 +54,23 @@ test('Ride the park drive past Long Meadow, Grand Army Plaza and the Boathouse',
         for (let frame = 0; frame < 4; frame++) await page.clock.fastForward(250);
       } else {
         // The authored course reads the same physical race distance as the HUD.
-        await page.clock.fastForward(1000);
+        const remaining = km - (await station());
+        if (remaining < 0.045) await page.clock.runFor(100);
+        else await page.clock.fastForward(1000);
       }
     }
     // Capture the submitted frame with the ride clock held at this chainage. Resuming
     // for a screenshot lets a loaded browser travel metres beyond the reference position.
     await page.clock.runFor(34);
+    if (version === 'after') {
+      await expect
+        .poll(async () => {
+          await page.clock.runFor(64);
+          return Math.abs(((await worldRide.coursePose('prospectStation')) ?? -1000) - km * 1000);
+        })
+        .toBeLessThan(28);
+      await page.clock.runFor(128);
+    }
     const capture = async (path: string): Promise<void> => {
       const frame = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 91, clip });
       await writeFile(path, Buffer.from(frame.data, 'base64'));

@@ -27,3 +27,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-05.jpg | Zwift: [“Richmond Loop Around” Route Details (Richmond)](https://zwiftinsider.com/route/richmond-loop-around/) (g0127) | © Zwift |
 
 The canopy atlas is original generated artwork informed by real 02–06, 11 and 12. The oak, plane, elm, willow and autumn maple share two crossed planes per tree. The original Boathouse façade texture uses real 07–09 and 15 for its arched windows, terracotta courses and roofline. The Soldiers’ and Sailors’ Arch, market tents, lake bridge and brownstones are modelled in the Blender source. Game 01–05 informed rider-height framing and canopy clearance.
+
+The park activity atlas contains six original generated cutouts for the runner, dog, swan, two club cyclists and a parent with a stroller. Real 01, 05, 11, 12 and 14 informed their placement. Game 02 and 03 informed the spacing and silhouette of the pace line.
