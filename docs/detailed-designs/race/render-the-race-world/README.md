@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Stanley Park Seawall (#2215)
+
+Preserve the earlier graded pavement lettering, sea to the right and sequence of landmarks from feedback #910. Use the 15-minute class to define the 6.2 km ride and its changes of grade. Keep the North Shore, offshore rocks and bridge fixed in world space.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Seawall cycle path, 0.10 km | Real 01, 03 and 14. Games 01 and 04. | A white line and bicycle markings follow the camber of the narrow path above coursed stone. The footpath and dark tidal rocks face open water on the right, with cedars inland. |
+| Brockton Point poles, 1.09 km | Real 07 and 08. Games 01 and 04. | A break in the cedar wall reveals tall painted wooden poles of different heights in the clearing. Visitors gather on the path below the broad wings. |
+| Brockton Point light, 2.04 km | Real 01, 02 and 10. Games 01 and 05. | The squat white lighthouse has a broad red band and lantern on its headland. A sailor trims the boom on a boat just off the seawall. |
+| Burrard Inlet, 3.22 km | Real 04–06, 10 and 11. Games 02 and 03. | A freighter moves across cool blue water in front of successive forested North Shore ridges. Kelp, tide pools and wet stones mark the waterline. |
+| Siwash Rock, 4.48 km | Real 03, 09, 12 and 14. Games 01 and 05. | A solitary tree leans over a weathered sea stack with a narrow base amid surf and boulders. Waves rise and fall below the basalt cliff on the other side of the path. |
+| Lions Gate Bridge, 5.91 km | Real 02, 04–06, 10, 11, 13 and 15. Games 02, 03 and 05. | The green lattice suspension towers, stiffening truss and vertical hangers grow over the rider on the closing sprint; mountains show through the open steelwork. |
+
+Give the suspension deck depth, carry its cable down to the anchored ends and brace both tower legs. Use paired crossed cutouts for the red cedars and original cliff surface artwork. Batch rocks and rough stone coping in culled road sections. Update the boom, ship and tidal wash from ride time and release all textures, meshes and animation state on exit. Retain the existing bend comparison alongside six matched views. See ADRs 0021, 0023, 0030, 0034 and 0035.
