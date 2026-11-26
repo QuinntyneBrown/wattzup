@@ -3598,7 +3598,7 @@ export const pikeplaceCourseMap = {
   place: 'Seattle, United States',
   world: 'pikeplace',
   distanceKm: 10.4375,
-  climbingM: 62,
+  climbingM: 65,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
