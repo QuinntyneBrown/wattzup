@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import skye as _skye
+
+THEMES['skye'] = _skye.THEME
+SCENERY['skye'] = _skye.scenery
