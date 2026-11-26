@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import stelvio as _stelvio
+
+THEMES['stelvio'] = _stelvio.THEME
+SCENERY['stelvio'] = _stelvio.scenery

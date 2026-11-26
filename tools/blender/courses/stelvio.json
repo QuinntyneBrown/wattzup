@@ -1,0 +1,189 @@
+{
+  "id": "stelvio",
+  "name": "Stelvio Pass",
+  "world": "stelvio",
+  "theme": "stelvio",
+  "seed": 2217,
+  "layout": 0,
+  "class": {
+    "id": "conquer-the-climb",
+    "title": "Conquer the Climb",
+    "channel": "GCN Training",
+    "videoId": "PKl09o_0Z3Y",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  },
+  "tornantiMetres": [
+    139.0,
+    313.75,
+    484.97,
+    651.12,
+    813.51,
+    975.59,
+    1140.97,
+    1311.41,
+    1485.81,
+    1660.83,
+    1832.79,
+    1999.73,
+    2162.53,
+    2324.39,
+    2489.06,
+    2658.69,
+    2832.63,
+    3007.82,
+    3180.47,
+    3348.23,
+    3511.52,
+    3673.26,
+    3837.28,
+    4006.08,
+    4179.49,
+    4354.74,
+    4528.01,
+    4696.6,
+    4860.46,
+    5022.2,
+    5185.62,
+    5353.59,
+    5526.4,
+    5701.61,
+    5875.43,
+    6044.86,
+    6209.35,
+    6371.18,
+    6534.09,
+    6701.24,
+    6873.38,
+    7048.45,
+    7222.74,
+    7392.97,
+    7558.17,
+    7720.19,
+    7882.68,
+    8049.02
+  ]
+}
