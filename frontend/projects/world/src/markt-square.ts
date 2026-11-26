@@ -8,7 +8,11 @@ import {
   type Texture,
 } from 'three/webgpu';
 
+import type { Course } from './course';
+import { MarktRaceFurniture } from './markt-race-furniture';
+
 export class MarktSquare {
+  readonly furniture: MarktRaceFurniture;
   readonly root = new Group();
   readonly materials = {
     MarktSetts: new MeshBasicMaterial({ vertexColors: true, side: DoubleSide }),
@@ -17,7 +21,7 @@ export class MarktSquare {
     MarktSupporters: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.45 }),
     RaceSponsors: new MeshBasicMaterial({ side: DoubleSide }),
   };
-  static async load() {
+  static async load(course: Course) {
     const loaded = await Promise.allSettled(
       ['setts', 'frontages', 'portal', 'supporters', 'sponsors'].map((key) =>
         new TextureLoader().loadAsync('courses/oldtown-' + key + '.webp'),
@@ -31,9 +35,12 @@ export class MarktSquare {
       for (const texture of textures) texture.dispose();
       throw failure.reason;
     }
-    return new MarktSquare(textures);
+    return new MarktSquare(course, textures);
   }
-  private constructor(private readonly textures: Texture[]) {
+  private constructor(
+    course: Course,
+    private readonly textures: Texture[],
+  ) {
     const [setts, frontages, portal, crowd, sponsors] = textures;
     for (const texture of textures) {
       texture.flipY = false;
@@ -46,8 +53,12 @@ export class MarktSquare {
     this.materials.WestPortal.map = portal!;
     this.materials.MarktSupporters.map = crowd!;
     this.materials.RaceSponsors.map = sponsors!;
+    this.furniture = new MarktRaceFurniture(course, this.materials.MarktSupporters);
+    this.root.add(this.furniture.root);
   }
   dispose() {
+    this.root.clear();
+    this.furniture.dispose();
     for (const item of [...Object.values(this.materials), ...this.textures]) item.dispose();
   }
 }

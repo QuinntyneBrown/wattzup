@@ -856,7 +856,7 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'oldtown') {
         const { MarktSquare } = await import('./markt-square');
         if (this.disposed) return false;
-        const square = await MarktSquare.load();
+        const square = await MarktSquare.load(this.course);
         if (this.disposed) {
           square.dispose();
           return false;
@@ -1816,6 +1816,7 @@ export class CourseRenderer implements WorldRenderer {
       this.camera.position.y,
       this.camera.position.z,
     );
+    this.marktSquare?.furniture.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2790,6 +2791,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.z += (rider.z + 14 * uz - ahead.z) * overlook;
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
+    this.marktSquare?.furniture.sightline(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
@@ -3299,6 +3301,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.strip) Object.assign(drawn, this.strip.report());
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
+    if (this.marktSquare) Object.assign(drawn, this.marktSquare.furniture.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
