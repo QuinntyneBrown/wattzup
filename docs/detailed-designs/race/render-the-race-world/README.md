@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Valparaíso Stairways (#2239)
+
+Restore the historical Reverse Steps class to the Race catalogue and register a lazy native hillside course. Use the hard intervals for the climbs and the lighter stages for the descent through the port neighbourhoods. Set the stairs apart from the road so all twenty-four stages remain rideable. Place the rails, wires, stacked houses and port beyond them at distinct depths.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Cerro Concepción lane, 0.14 km | Real 01–04, 07 and games 01–03 | Sunlight catches the yellow and turquoise corrugated houses. A tangle of wires crosses the street between painted timber balconies. |
+| Pasaje Piano, 5.18 km | Real 06–08, 15 and games 02–04 | White risers and black piano keys climb a pedestrian stair beside the rideable lane. A rail and an original mural wrap the landing. |
+| Ascensor El Peral, 10.35 km | Real 03–05, 09–10 and games 02–03 | Wooden funicular cars pass each other on steep rails beside the road. The port appears between the houses below the station. |
+| Cerro Alegre murals, 14.82 km | Real 02, 06–08, 14 and games 01, 03–04 | Original painted walls and rainbow steps frame a hillside cafe, an artist at work and a street dog. |
+| The trolleybus bend, 20.14 km | Real 03–04, 07, 11–12 and games 03–05 | A cream and green electric trolleybus follows its overhead wires on the lower street under the cerros. |
+| Paseo Gervasoni, 26.41 km | Real 02, 05, 11–15 and games 01–02, 05 | Iron mirador railings overlook hillside roofs, working harbour cranes and a container ship under the pink Pacific haze. |
+
+Use Caribana’s fixed landmarks, worn street surfaces and ride-clock motion for the mirador, layered street scenes, two ascensor cars and trolleybus. Give the stepped risers and murals their own UVs. Share geometry across houses and wires; release the course art, geometry and materials on exit. Match all six locations and measure the opening and busy funicular sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
