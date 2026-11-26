@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Oktoberfest, Munich (#2179)
+
+The course follows the original eight-degree bends over 150 metres. Keep enough clear road between the tents for the rider to overtake the procession. The reference folder includes all 15 photographs, five game views and their credits, restored in a3b75bcdf.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Wiesn main street, 0.08 km | Real 01–03 and 08–09. Games 01 and 03. | The wide festival avenue runs between timber beer halls, their painted gables rising above linked crowds in Dirndls and Lederhosen. |
+| Brass procession, 1.86 km | Real 04–07. Games 01 and 02. | Rows of musicians carry brass instruments and drums past the Schottenhamel bandstand. Blue-and-white pennants cross overhead. |
+| Brewery dray, 3.41 km | Real 04 and 07. Games 02 and 03. | Draught horses pull a decorated brewery wagon past the Paulaner tower. Harness, wheels, casks and greenery move together along the street. |
+| Bavaria and Ruhmeshalle, 5.79 km | Real 02, 11 and 14. Games 04 and 05. | Bavaria raises her wreath on the grassy hill beside the lion. The long Doric colonnade stands behind the bronze statue. |
+| Gingerbread market, 7.71 km | Real 01, 03, 08 and 09. Games 01 and 03. | Heart-shaped Lebkuchen, pretzels and roasted almonds line the lit stalls. People gather beneath striped awnings as the sky warms. |
+| Fairground at night, 10.19 km | Real 02, 10–13 and 15. Games 03 and 05. | Gondolas hang beneath the turning Ferris wheel. The five Olympia Looping rings and carousel canopy stand above the glowing tent roofs. |
+
+Use the painted entry gables, Bavaria’s raised wreath, the Ferris wheel spokes and the five coloured coaster loops as distinct silhouettes. Keep the horse team and dray together on the changing grade. Anchor crowd feet to the street and share stall geometry and band materials. Use the ride clock for each moving landmark and release all course assets on exit. Compare the crowded avenue and evening fairground to Caribana. Credits are in docs/worlds/oktoberfest/SOURCES.md.
