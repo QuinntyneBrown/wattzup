@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import muertos as _muertos
+
+THEMES['muertos'] = _muertos.THEME
+SCENERY['muertos'] = _muertos.scenery
