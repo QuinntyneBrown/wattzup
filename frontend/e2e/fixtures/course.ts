@@ -1,3 +1,4 @@
+import skyeElevation from './skye-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const skyeCourseMap = {
   place: 'Isle of Skye, Scotland',
   world: 'skye',
   distanceKm: 12.725,
-  climbingM: 0,
+  climbingM: 172,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: skyeElevation,
   },
   thumbnailUrl: 'maps/isle-of-skye-fog.jpg',
   photoUrl: 'maps/isle-of-skye-fog-photo.jpg',
