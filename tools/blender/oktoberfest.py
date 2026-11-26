@@ -51,12 +51,16 @@ def scenery(k):
     for n,(d,side) in enumerate(((120,-1),(320,1),(1240,-1),(1893,-1),(2360,1),(3451,-1),(4210,1),(5220,-1),(6740,-1),(7910,1),(8970,-1),(10232,-1))):
         a,h=site(k,d,side*26.5);y=-side*12.1
         art.box(a(0,0,-.24),(45,24,8.6),h,wood);art.roof(a(0,0,8.33),45.2,24.17,6.8,h,lin(0xB39570))
-        plate(halls,a,y,-.05,44.9,9.2)
+        for wing in (-1,1):
+            points=(a(wing*15-7.5,y,-.05),a(wing*15+7.5,y,-.05),a(wing*15+7.5,y,8.62),a(wing*15-7.5,y,8.62))
+            picture(halls,points,UV if side>0 else ((1,0),(0,0),(0,1),(1,1)))
+        front=y-side*.36
+        picture(halls,(a(-7.6,front,-.05),a(7.6,front,-.05),a(7.6,front,10.4),a(-7.6,front,10.4)),UV if side>0 else ((1,0),(0,0),(0,1),(1,1)))
         for u in (-18,-9,0,9,18):art.box(a(u,y-side*.12,-.06),(.28,.3,8.8),h,wood)
         for u in (-16,16):
             art.box(a(u,y-side*1.1,0),(3.4,3.1,11.7),h,cream);art.roof(a(u,y-side*1.1,11.7),3.54,3.31,2.3,h,blue)
         u=(n%2)*.5;v=(1-n//2%2)*.5
-        picture(boards,(a(-7,y-side*.4,6.65),a(7,y-side*.4,6.65),a(7,y-side*.4,9.44),a(-7,y-side*.4,9.44)),((u,v),(u+.5,v),(u+.5,v+.5),(u,v+.5)))
+        picture(boards,(a(-7,y-side*.4,6.65),a(7,y-side*.4,6.65),a(7,y-side*.4,9.44),a(-7,y-side*.4,9.44)),((u,v),(u+.5,v),(u+.5,v+.5),(u,v+.5)) if side>0 else ((u+.5,v),(u,v),(u,v+.5),(u+.5,v+.5)))
     for d in range(-65,10710,48):
         for side in (-1,1):
             if (side==1 and 5730<d<5910) or any(abs(d-v)<32 for v in (120,1893,3451,7728,10232)):continue
@@ -69,6 +73,14 @@ def scenery(k):
                 v=-9.5+j*1.9;z=6.1+.017*v*v
                 beam(art,a(0,v,z),a(0,v+1.9,6.1+.017*(v+1.9)**2),.027,.027,dark)
                 picture(flags,(a(0,v+.13,z-.88),a(0,v+1.69,z-.88),a(0,v+1.69,z),a(0,v+.13,z)),UV)
+    # Market stalls face the oncoming rider round the bend; counter lamps pick out the hearts at dusk.
+    for j in range(6):
+        a,h=site(k,7736+j*8.7,-11-(j%2)*.7)
+        art.box(a(0,0,-.11),(6.86,3.2,3.86),h,wood)
+        art.roof(a(0,0,3.74),7.04,3.65,1.37,h,lin(0x995F49))
+        picture(stalls,(a(-3.47,1.66,-.04),a(3.47,1.66,-.04),a(3.47,1.66,3.91),a(-3.47,1.66,3.91)),((1,0),(0,0),(0,1),(1,1)))
+        picture(stalls,(a(-3.49,-1.6,-.04),a(-3.49,1.6,-.04),a(-3.49,1.6,3.9),a(-3.49,-1.6,3.9)),UV)
+        for u in (-2.7,-1.35,0,1.35,2.7):art.tube(a(u,1.86,3.54),.12,.095,.17,lin(0xE1B657),lin(0xFFF2A5),8)
     for d in range(-61,10720,6):
         for side in (-1,1):
             if abs(d%560-370)<12:continue
