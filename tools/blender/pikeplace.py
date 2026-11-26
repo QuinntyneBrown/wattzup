@@ -39,12 +39,12 @@ def land(r,col,theme,bc):
     w=bc.Builder('ElliottWater','terrain');w.colours=[]
     def pt(i,v):
         p=r.s[i];x,y,z=r.at(i,v);f=smooth(16,110,abs(v));x+=(p['x']-x)*f;y+=(p['y']+v-y)*f
-        if v>0:z+=(1.18-z)*smooth(14,112,v)
+        if v>0:z+=(1.18-z)*smooth(6.3,57,v)
         else:z+=(8+6*math.sin(p['d']/330))*smooth(17,132,-v)
         return x,y,z-.16
     for i in range(0,len(r.s)-3,3):
         j=i+3
-        for a,e,c in ((-250,-30,0x8C8982),(-30,18,0xAC9D8C),(18,55,0x9D9883),(55,108,0x979283),(108,117,0xA6A293)):
+        for a,e,c in ((-250,-30,0x8C8982),(-30,6.5,0xAC9D8C),(6.5,18,0xAC9D8C),(18,55,0x9D9883),(55,108,0x979283),(108,117,0xA6A293)):
             pts=(pt(i,a),pt(j,a),pt(j,e),pt(i,e));b.quad(*pts);b.colours.extend([lin(c)]*4)
         for a,e,c in ((105,190,0x7299A5),(190,720,0x809BA6),(720,2850,0x8D9EA9)):
             pts=[(*pt(n,v)[:2],.13) for n,v in ((i,a),(j,a),(j,e),(i,e))];w.quad(*pts);w.colours.extend([lin(c)]*4)
@@ -55,7 +55,7 @@ def land(r,col,theme,bc):
 
 
 def scenery(k):
-    art=Painted(k);fronts=pictured(k,'SeattleMarket');displays=pictured(k,'ArcadeCounters');shoppers=pictured(k,'MarketShoppers');signs=pictured(k,'MarketLettering');clock=pictured(k,'PublicMarketClock');bay=pictured(k,'OlympicRidge')
+    art=Painted(k);fronts=pictured(k,'SeattleMarket');displays=pictured(k,'ArcadeCounters');shoppers=pictured(k,'MarketShoppers');signs=pictured(k,'MarketLettering');clock=pictured(k,'PublicMarketClock');bay=pictured(k,'OlympicRidge');masonry=pictured(k,'MarketMasonry')
     green=lin(0x466852);cream=lin(0xD3C6AA);brick=lin(0xA07461);steel=lin(0x59605B);red=lin(0xAD5347)
     def cross(d,v,w,h,z,mesh=signs,j=0,count=4):
         at,_=site(k,d,v);u=j/count
@@ -96,26 +96,43 @@ def scenery(k):
         lid=(at(-5.4,-side*.64,1.03),at(9,-side*.64,1.03),at(9,side*1.13,1.42),at(-5.4,side*1.13,1.42))
         picture(displays,lid,((u+.01,.04),(u+.49,.04),(u+.49,.57),(u+.01,.57)))
         art.box(at(.65,-side*.68,3.79),(15.4,2.85,.27),h,green)
+        for n in range(32):
+            x=-4.7+.82*(n%16);y=-side*(.82+.36*(n//16))
+            if index:
+                art.tube(at(x,y,1.02),.27,.19,.28,(red,green,cream)[n%3],lin((0xCF7144,0xE4B650,0x86A055)[n%3]),8)
+            else:
+                art.box(at(x,y,1.06),(.66,.20,.15),h+.23,lin(0x9CAAA8))
         for j in (-3.9,.4,5.0):
             beam(art,at(j,-side*.64,3.79),at(j,-side*.64,3.19),.044,.044,steel);art.box(at(j,-side*.64,3.12),(.68,.58,.16),h,lin(0xF8DA91))
     for d,side,j in ((1815,1,0),(1831,1,0),(1847,1,0),(3398,-1,1),(3414,-1,1),(3430,-1,1),(3600,1,1)):stall(d,6.62*side,j)
-    for d,j,v in ((1810,1,6.63),(3396,0,-6.92),(3428,0,-6.94),(5248,2,-9.6),(10160,3,8.45)):cross(d,v,5.7,1.46,3.72,signs,j,4)
+    for d,j,v in ((1810,1,6.63),(3396,0,-6.92),(3428,0,-6.94)):cross(d,v,5.7,1.46,3.72,signs,j,4)
     # A real opening between parallel brick walls forms the alley, with the hanging sign above it.
-    at,h=site(k,5253,-6.99)
+    origin,h=site(k,5253,-11.45)
+    angle=-.32;cs=math.cos(angle);sn=math.sin(angle)
+    def alley(x,y,z=0):return origin(x*cs-y*sn,x*sn+y*cs,z)
     for side in (-1,1):
-        art.box(at(side*3.66,-12.7,0),(2.3,25.1,8.9),h,brick)
-        for n in range(5):art.box(at(side*2.42,-2.8-4.7*n,3.8),(.15,1.74,2.12),h,lin(0x576169))
-    beam(art,at(-2.65,-.9,4.8),at(2.65,-.9,4.8),.12,.11,steel)
-    picture(signs,(at(-2.5,-.74,3.58),at(2.5,-.74,3.58),at(2.5,-.74,4.89),at(-2.5,-.74,4.89)),((.502,0),(.748,0),(.748,1),(.502,1)))
+        art.box(alley(14,side*4.13,-.35),(28.0,3.15,9.6),h+angle,brick)
+        def facade(coords,repeat):
+            picture(masonry,[alley(*c) for c in coords],[(0,0),(repeat,0),(repeat,4.1),(0,4.1)])
+        facade([(0,side*2.54,0),(28,side*2.54,0),(28,side*2.54,9.25),(0,side*2.54,9.25)],9)
+        facade([(-.02,side*5.70,0),(-.02,side*2.54,0),(-.02,side*2.54,9.25),(-.02,side*5.7,9.25)],1)
+        for n in range(6):
+            art.box(alley(2+n*4.5,side*2.48,4.6),(1.64,.13,2.1),h+angle,lin(0x53636C))
+            art.box(alley(2+n*4.5,side*2.4,4.52),(1.85,.32,.15),h+angle,cream)
+        art.box(alley(-.12,side*4.1,.15),(.16,1.48,2.78),h+angle,green)
+    beam(art,alley(0,-2.65,5.35),alley(0,2.65,5.35),.13,.13,steel)
+    picture(signs,(alley(-.14,2.53,4.06),alley(-.14,-2.53,4.06),alley(-.14,-2.53,5.33),alley(-.14,2.53,5.33)),((.502,0),(.748,0),(.748,1),(.502,1)))
+    for x in (4,12,20):person(alley,x,-1.78,.02,(x//4)%6,1.45)
     # Piers follow the low waterfront while their sheds stay below the market terraces.
     for d in range(7180,10360,360):
         at,h=site(k,d,118);base=1.35-k.road.pos(d)[2]
         art.box(at(0,20,base),(18,68,.67),h,lin(0x907A65));art.box(at(0,12,base+.62),(13.2,42,4.9),h,lin(0xA3A399));art.roof(at(0,12,base+5.52),14.0,43.2,2.0,h,lin(0x777D7F))
     # Glass towers have differentiated crowns; the Space Needle stands clear above the shore.
     for j in range(19):
-        d=9840+j*37;v=-182-23*(j%5);at,h=site(k,d,v);base=3.1;high=18+8*((j*13)%9);w=11+j%5
+        d=10245+j*9;v=145+18*(j%5);at,h=site(k,d,v);base=.68-k.road.pos(d)[2];high=18+8*((j*13)%9);w=11+j%5
         art.box(at(0,0,base),(w,10+j%7,high),h,lin((0x7F98A2,0x899FA8,0x788A96)[j%3]))
-        for level in range(2,int(high),6):art.box(at(0,0,base+level),(w+.25,10.28+j%7,.3),h,lin(0xA9B4B5))
+        art.box(at(0,0,base-1.2),(w+4,16+j%7,1.3),h,lin(0x8F8B81))
+        for level in range(2,int(high),4):art.box(at(0,0,base+level),(w+.25,10.28+j%7,.3),h,lin(0xA9B4B5))
         if j%3==0:art.box(at(0,0,base+high),(w*.7,7,3.75),h,steel)
     at,h=site(k,10220,114);base=2-k.road.pos(10220)[2]
     for j in range(3):
