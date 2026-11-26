@@ -1,0 +1,133 @@
+{
+  "id": "verona",
+  "name": "Verona Arena Finale",
+  "world": "verona",
+  "theme": "verona",
+  "seed": 2245,
+  "layout": 0,
+  "class": {
+    "id": "reverse-hiit-race-winning-intervals",
+    "title": "Reverse HIIT Race Winning Intervals",
+    "channel": "GCN Training",
+    "videoId": "rNGNgLA-PeA",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 24,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 24,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 24,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
