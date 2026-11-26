@@ -100,6 +100,13 @@ def scenery(k):
             if 1090<d<1240 or 2580<d<2800 or 3790<d<3950 or 5040<d<5230 or 7180<d<7420:
                 if abs(v)<26:continue
             for a in (.78,2.35):facade(plants,at,0,0,ground,w,tall,j,3,2,a)
+    # Roadside gravel, drainage scours and sage cast short occlusion under the high Arizona sun.
+    for d in range(-40,8070,2):
+        v=k.rng.choice((-1,1))*k.rng.uniform(4.5,26);x,y,_=k.road.pos(d,v);z=k.height_at(x,y)
+        w=k.rng.uniform(.06,.38);shade=lin(k.rng.choice((0x9D6A4F,0xB48B6C,0xA58065)))
+        art.face(((x-w,y-.66*w,z+.016),(x+w*.52,y-w,z+.016),(x+w,y+.62*w,z+.017),(x-w*.5,y+w,z+.018)),(shade,)*4)
+        if w>.26:
+            art.tube((x,y,z-.05),w,w*.60,w*.52,shade,lin(0xB98A69),5,lin(0xC19572))
     previous=None;wood=lin(0x785C45)
     for d in range(-30,8060,42):
         at,h=site(k,d,9.4);art.tube(at(0,0,-.4),.145,.11,8.8,wood,wood,7)
@@ -118,7 +125,7 @@ def scenery(k):
         tile(signs,[k.road.pos(d+u,v,.14) for u,v in ((0,3.7),(0,-.04),(6.5,-.04),(6.5,3.7))],0,2,4)
     for d in (112,1130,2602,3872,5145,7290):
         at,h=site(k,d,-5.8);art.box(at(0,0,-.3),(.12,.14,3.15),h,lin(0x888677))
-        facade(signs,at,0,0,1.55,1.92,1.25,1,2,4,math.pi/2)
+        facade(signs,at,0,0,1.55,1.92,1.25,1,2,4,-math.pi/2)
     def parked(d,v,tint,yaw=0):
         at,h=site(k,d,v)
         def p(x,y,z):return at(x*math.cos(yaw)-y*math.sin(yaw),x*math.sin(yaw)+y*math.cos(yaw),z)
@@ -148,14 +155,34 @@ def scenery(k):
         art.box(at(0,face-side*1.0,2.64),(w+.65,2.25,.22),h,lin(0xB8A088 if idx else 0xAC5261))
         art.box(at(0,face-side*.9,-.12),(w+.5,2.15,.27),h,lin(0xAD987A))
         for u in (-w*.46,w*.46):art.box(at(u,face-side*1.97,.08),(.15,.15,2.58),h,wood)
+        # Both ends are visible on the approach. Board-and-batten siding, a pair of sash windows
+        # and a returned strip of the chrome diner fascia keep the structure readable from that angle.
+        for end in (-1,1):
+            edge=end*(w/2+.035)
+            for j in range(10):
+                art.box(at(edge,(j-4.5)*deep/10,-.06),(.085,.05,high),h,lin(0x648F89 if idx==0 else 0x775B46))
+            for y0 in (-deep*.24,deep*.17):
+                art.box(at(edge+end*.055,y0,.96),(.09,1.62,1.28),h,lin(0xB5A086))
+                art.box(at(edge+end*.11,y0,1.07),(.085,1.39,1.01),h,lin(0x617173 if idx==0 else 0x645F50))
+                art.box(at(edge+end*.16,y0,1.09),(.065,.065,1.03),h,lin(0xBAA98B))
+                art.box(at(edge+end*.17,y0,1.59),(.065,1.39,.072),h,lin(0xBAA98B))
+            if idx==0:
+                for z,t in ((.65,0xB5BAB5),(3.54,0xE794A0),(3.77,0x9ED2BC)):
+                    art.box(at(edge+end*.10,0,z),(.17,deep+.16,.12),h,lin(t))
         return at,h
     for j,d in enumerate(range(2610,2780,17)):
         for v in (-14,17):store(d+j%3,v,14.7,6.7,4.5+j%3*.45,3 if j%3 else 2)
     for j,d in enumerate(range(7208,7405,16)):
-        for v in (-14,16):store(d,v,14.5,7.2,4.4+j%3*.68,2 if j%4 else 3)
+        for v in (-14,16):store(d,v,14.5,7.2,4.4+j%3*.68,2)
     for j,d in enumerate(range(2430,2570,28)):
-        at,h=site(k,d,-5.85);art.box(at(0,0,0),(.14,.14,1.82),h,wood);facade(signs,at,0,0,.94,2.1,.97,3+j,2,4,math.pi/2)
+        at,h=site(k,d,-5.85);art.box(at(0,0,0),(.14,.14,1.82),h,wood);facade(signs,at,0,0,.94,2.1,.97,3+j,2,4,-math.pi/2)
     at,h=store(3879,-14,19.6,8.4,5.6,1)
+    # Red flying horse above Hackberry's canopy, in profile. It is fixed to the mast.
+    art.box(at(-7.2,6.1,-.2),(.14,.15,6.15),h,wood)
+    horse=[(-1.48,.08),(-1.04,.47),(-.38,.51),(-.89,1.32),(-.23,1.13),(.61,.54),(.84,.88),(1.20,1.05),(1.15,.82),(1.46,.65),(1.34,.46),(.99,.50),(.83,.11),(1.29,-.27),(1.07,-.43),(.46,-.13),(.11,.04),(-.32,-.03),(-.98,-.58),(-1.27,-.51),(-.72,.05),(-1.09,-.05)]
+    red=lin(0xB23C36)
+    art.face(tuple(at(-7.2+u,6.11,5.32+z) for u,z in horse),(red,)*len(horse))
+    art.face(tuple(at(-7.2+u,6.08,5.32+z) for u,z in reversed(horse)),(red,)*len(horse))
     for u in (-5,1.4):
         art.box(at(u,7.4,0),(1.02,.66,1.76),h,lin(0xB76A52))
         facade(plants,at,u,7.75,.04,1.32,2.61,4 if u<0 else 5,3,2,math.pi)
@@ -165,13 +192,13 @@ def scenery(k):
     for u in (-7,-4,-1,2,5,8):
         art.tube(diner(u,5.7,.05),.10,.09,.58,lin(0xBFBDB0),lin(0xD1CABB),8)
         art.tube(diner(u,5.7,.63),.35,.34,.12,lin(0xB5443E),lin(0xCE5950),12)
-    at,h=site(k,5142,-8.5);art.box(at(0,0,-.15),(.31,.27,4.5),h,lin(0xA28B75));facade(signs,at,0,0,3.6,4.4,2.05,2,2,4,1.14)
+    at,h=site(k,5142,-8.5);art.box(at(0,0,-.15),(.31,.27,4.5),h,lin(0xA28B75));facade(signs,at,0,0,3.6,4.4,2.05,2,2,4,1.14+math.pi)
     for d,v,t in ((2654,-7.5,0xCBAC57),(2702,8.3,0x598A85),(3888,-8,0x9E4945),(5161,-8.5,0x66A79D),(7265,7.1,0x9F5045)):
         parked(d,v,t,.21)
     return {'efforts':0}
 
 
 THEME={'lay':route,'land_builder':land,'road_builder':road,'terrain':{'sea':False},'road_half_width':4.3,
-       'land':{'mid':0xBE805F},'sky':[0xEDC693,0xE6D2B0,0xB6D5DE,0x84B6D0,0x578DB5],
+       'land':{'mid':0xBE805F},'sky':[0xF3C891,0xCED9D8,0x9DC8DE,0x73ABCB,0x417DB1],
        'light':[0xFFE1AC,1.65],'haze':0xDBBE9D,'fill':[0xDADDD2,0xB49177],
        'sun_altitude':.31,'sun_azimuth':-.86,'sun_radius':125}

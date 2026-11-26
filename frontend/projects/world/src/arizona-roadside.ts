@@ -27,7 +27,7 @@ const views = [
   [2640, 2660, 13, 3.0],
   [3860, 3879, 13, 3.2],
   [5130, 5149, 15.8, 3.3],
-  [7260, 7282, 10, 2.25],
+  [7260, 7274, 5.1, 1.8],
 ] as const;
 
 export class ArizonaRoadside {
@@ -44,6 +44,7 @@ export class ArizonaRoadside {
   private readonly burro = new Group();
   private readonly body = new PlaneGeometry(2.47, 1.58, 24, 12);
   private readonly rest: Float32Array;
+  private readonly burroHide = surface(true);
   private readonly weed = new Group();
   private readonly twigs = new BufferGeometry();
   private readonly twigPaint = new LineBasicMaterial({ color: 0x89653f });
@@ -59,7 +60,7 @@ export class ArizonaRoadside {
   static async load(course: Course) {
     const loader = new TextureLoader();
     const result = await Promise.allSettled(
-      ['highway', 'frontages', 'scrub', 'signs'].map((k) =>
+      ['highway', 'frontages', 'scrub', 'signs', 'burro'].map((k) =>
         loader.loadAsync('courses/route66-' + k + '.webp'),
       ),
     );
@@ -110,13 +111,12 @@ export class ArizonaRoadside {
     });
     textures[0]!.wrapS = textures[0]!.wrapT = RepeatWrapping;
     textures[0]!.anisotropy = 4;
-    const uv = this.body.getAttribute('uv');
-    // A standalone Three.js plane starts at its top edge; the native atlas uses glTF's top-left UV origin.
-    for (let i = 0; i < uv.count; i++)
-      uv.setXY(i, (0.003 + 0.994 * uv.getX(i)) / 3, (1.003 + 0.994 * (1 - uv.getY(i))) / 2);
+    const hide = textures[4]!;
+    hide.colorSpace = SRGBColorSpace;
+    this.burroHide.map = hide;
     this.body.translate(0, 0.79, 0);
     this.rest = new Float32Array(this.body.getAttribute('position').array);
-    this.burro.add(new Mesh(this.body, this.materials.ArizonaScrub));
+    this.burro.add(new Mesh(this.body, this.burroHide));
     this.root.add(this.burro);
     const lines: number[] = [];
     const add = (x: number, y: number, z: number, a: number, b: number, c: number) =>
@@ -169,8 +169,8 @@ export class ArizonaRoadside {
     if (this.burro.visible) {
       const phase = time * 2.4,
         travel = 3.1 * Math.sin(time * 0.14);
-      this.place(this.burro, 7272 + travel, 5.35 + 0.65 * Math.cos(time * 0.14), 0.12);
-      this.burro.rotation.y += 0.95 + 0.1 * Math.sin(time * 0.3);
+      this.place(this.burro, 7270 + travel, 4.85 + 0.65 * Math.cos(time * 0.14), 0.12);
+      this.burro.rotation.y += 0.33 + 0.1 * Math.sin(time * 0.3);
       const p = this.body.getAttribute('position');
       for (let i = 0; i < p.count; i++) {
         const x = this.rest[i * 3]!,
@@ -233,6 +233,7 @@ export class ArizonaRoadside {
       this.ellipsoid,
       this.twigs,
       this.twigPaint,
+      this.burroHide,
       ...this.colours.values(),
       ...Object.values(this.materials),
       ...this.textures,
