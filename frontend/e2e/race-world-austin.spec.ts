@@ -27,13 +27,20 @@ test('the stage guitarist strums through the festival and holds on pause', async
   await setup.mode('Your best time').click();
   await setup.start.click();
   await expect(race.backend).toBeVisible();
-  const samples: number[] = [];
+  let lowest = Infinity;
+  let highest = -Infinity;
   await expect
-    .poll(async () => {
-      const metres = await worldRide.guitarHand();
-      if (metres !== null) samples.push(metres);
-      return Math.max(...samples) - Math.min(...samples);
-    })
+    .poll(
+      async () => {
+        const metres = await worldRide.guitarHand();
+        if (metres !== null) {
+          lowest = Math.min(lowest, metres);
+          highest = Math.max(highest, metres);
+        }
+        return highest - lowest;
+      },
+      { intervals: [32] },
+    )
     .toBeGreaterThan(0.09);
   await race.pause.click();
   await expect(race.resume).toBeVisible();
