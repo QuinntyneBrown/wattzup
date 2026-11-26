@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import teide as _teide
+
+THEMES['teide'] = _teide.THEME
+SCENERY['teide'] = _teide.scenery
