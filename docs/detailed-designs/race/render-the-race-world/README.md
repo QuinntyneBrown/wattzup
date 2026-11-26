@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Monaco Street Circuit (#2166)
+
+The class scene already has a race-weekend harbour and grade-aligned paint, as captured in Monaco iteration 061. The race catalogue lacks this class-length native course. Bind the maps API and the normal race entry to the original Non-Stop Sprinting intervals. Keep the course’s 30-degree bend rhythm and construct each road stripe and kerb against the road samples.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Port Hercule quay, 0.08 km | Real 01, 07, 09–10. Games 01–03. | Rows of white stern-to superyachts rise behind Armco on the harbour straight. Dark decks, glazing and masts stand out against Mediterranean blue water. |
+| Tabac grandstands, 1.62 km | Real 02, 04 and 08. Games 01–02 and 05. | Steep blue seats step up from the catch fencing, filled with fans. Red and white kerbs round the bend and the grey barriers follow the grade. |
+| Casino Square, 3.22 km | Real 10–11, 14–15. Games 02–03. | The casino’s symmetrical towers, clock and copper-green roofline rise over palms and the fountain garden. Pastel balconies climb the hill behind them. |
+| Fairmont tunnel, 4.86 km | Real 12 and 14. Games 02 and 04. | Strip lighting picks out the curving tunnel roof, panel joints and sponsor boards. A bright exit reveals the sea beyond the dark racing line. |
+| Race-weekend pit lane, 6.54 km | Real 01–06 and 13. Games 01, 02 and 05. | An amber-lit safety car approaches a marshal post beside the pit garages. Road paint and pit markings stay flush to the grade. |
+| Monaco-Ville and the Palace, 9.32 km | Real 07, 09–10 and 15. Games 03–05. | The final waterfront bends open a sightline to the Prince’s Palace on the rock. Stern terraces and palm crowns frame the pastel town across the harbour. |
+
+Keep the rock, the pastel hillside and the casino fixed beyond the close racing line. Give the yachts stepped deckhouses, transoms and masts, and give the tunnel true interior space and a visible exit. Use sectioned Armco, batched seating, baked shadow and bounded ride-clock motion for the waterline, fountain and safety car. Release the course resources when the rider leaves. Use the submitted frames at the opening and the pits for the Caribana performance comparison. Credits are in docs/worlds/monaco/SOURCES.md. The Monaco title search returned #2166.
