@@ -3598,7 +3598,7 @@ export const sevenSistersCourseMap = {
   place: 'East Sussex, England',
   world: 'sevensisters',
   distanceKm: 12.483333333333,
-  climbingM: 458,
+  climbingM: 467,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

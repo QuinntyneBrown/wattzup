@@ -39,6 +39,7 @@ import type { desertViewDrive } from './desert-view-drive';
 import type { blossomFestival } from './blossom-festival';
 import type { ChicagoRailway } from './chicago-railway';
 import type { chichenPlaza } from './chichen-plaza';
+import type { SevenSistersDowns } from './seven-sisters-downs';
 import type { ConeyBoardwalk } from './coney-boardwalk';
 import type { copacabanaPromenade } from './copacabana-promenade';
 import type { CopacabanaBeach } from './copacabana-beach';
@@ -206,6 +207,14 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  ChalkScarps: 4300,
+  ChannelWater: 5500,
+  CuckmereRiver: 1400,
+  DownsTurf: 2700,
+  FlintShingle: 1350,
+  DownlandGorse: 315,
+  CoastguardWhitewash: 1350,
+  BelleToutGlass: 1300,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -345,6 +354,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 }
 
 export class CourseRenderer implements WorldRenderer {
+  private downs: SevenSistersDowns | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -850,6 +860,18 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'sevensisters') {
+        const { SevenSistersDowns } = await import('./seven-sisters-downs');
+        if (this.disposed) return false;
+        const downs = await SevenSistersDowns.load(this.course);
+        if (this.disposed) {
+          downs.dispose();
+          return false;
+        }
+        this.downs = downs;
+        this.scene.add(downs.root);
+        this.disposables.push(downs);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1781,6 +1803,7 @@ export class CourseRenderer implements WorldRenderer {
     this.commuters?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.copacabanaPromenade?.follow(metres);
     this.copacabana?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.downs?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
@@ -1912,6 +1935,7 @@ export class CourseRenderer implements WorldRenderer {
       if (mesh.isMesh) mesh.geometry.dispose();
     });
     this.boardwalk?.group.removeFromParent();
+    this.downs = null;
     this.boardwalk = null;
     this.daytonaBoardwalk = null;
     this.daytonaShore = null;
@@ -2201,6 +2225,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
+    Object.assign(materials, this.downs?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -2774,6 +2799,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.z += (rider.z + 14 * uz - ahead.z) * overlook;
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
+    this.downs?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
@@ -3238,6 +3264,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.torchAngle = this.fringe?.torchAngle ?? null;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    if (this.downs) Object.assign(drawn, this.downs.report());
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
     if (this.boardwalk) {
       Object.assign(drawn, {

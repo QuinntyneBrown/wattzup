@@ -1552,3 +1552,7 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import sevensisters as _sevensisters
+THEMES['sevensisters']=_sevensisters.THEME
+SCENERY['sevensisters']=_sevensisters.scenery
