@@ -1,3 +1,4 @@
+import yosemiteElevation from './yosemite-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const yosemiteValleyCourseMap = {
   place: 'California, United States',
   world: 'yosemite',
   distanceKm: 13.15,
-  climbingM: 0,
+  climbingM: 18,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: yosemiteElevation,
   },
   thumbnailUrl: 'maps/yosemite-valley.jpg',
   photoUrl: 'maps/yosemite-valley-photo.jpg',
