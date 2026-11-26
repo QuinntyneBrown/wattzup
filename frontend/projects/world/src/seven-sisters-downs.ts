@@ -13,7 +13,7 @@ import {
   SphereGeometry,
   SRGBColorSpace,
   TextureLoader,
-  Vector3,
+  type Vector3,
   type Texture,
 } from 'three/webgpu';
 import { attribute, color, mix, positionWorld, sin, texture, uniform, vec2 } from 'three/tsl';
