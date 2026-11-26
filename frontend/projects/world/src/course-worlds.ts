@@ -85,12 +85,12 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   dolomites: 'courses/dolomites',
   granite: 'courses/granite',
   hoover: 'courses/hoover',
-  // Vice City, a map with no world of its own on `main`, is drawn under South Beach's id (map-world.ts).
-  southbeach: 'courses/vicecity',
+  southbeach: 'courses/southbeach',
   sellaronda: 'courses/sellaronda',
 };
 
 /** Where the world's course files are served, or null for a world `main`'s scenes draw. */
-export function coursePath(world: WorldId): string | null {
+export function coursePath(world: WorldId, catalogueWorld?: string): string | null {
+  if (world === 'southbeach' && catalogueWorld === 'vicecity') return 'courses/vicecity';
   return COURSE_WORLDS[world] ?? null;
 }

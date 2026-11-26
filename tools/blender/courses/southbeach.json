@@ -1,0 +1,109 @@
+{
+  "id": "southbeach",
+  "name": "South Beach Sunrise",
+  "world": "southbeach",
+  "theme": "southbeach",
+  "seed": 2213,
+  "layout": 0,
+  "class": {
+    "id": "calorie-burning-workout",
+    "title": "Calorie Burning Workout",
+    "channel": "GCN Training",
+    "videoId": "557ZO8nu08s",
+    "syncOffsetSeconds": 10
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "cool-down",
+        "duration": 120,
+        "level": 15,
+        "cadenceAim": 85
+      }
+    ]
+  }
+}
