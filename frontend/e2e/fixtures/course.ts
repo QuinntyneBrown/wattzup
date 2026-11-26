@@ -3588,3 +3588,38 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const stampedeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'calgary-stampede',
+  name: 'Calgary Stampede',
+  routeName: 'Stampede Parade',
+  place: 'Calgary, Alberta',
+  world: 'stampede',
+  distanceKm: 13.2,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/calgary-stampede.jpg',
+  photoUrl: 'maps/calgary-stampede-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 21, 90),
+      seg('recover', 180, 11, 80),
+      seg('work', 300, 24, 100),
+      seg('work', 60, 10, 80),
+      seg('recover', 180, 14, 80),
+      seg('work', 120, 19, 90),
+      seg('recover', 180, 11, 80),
+      seg('work', 300, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('cool-down', 60, 13, 80),
+    ],
+  },
+};
