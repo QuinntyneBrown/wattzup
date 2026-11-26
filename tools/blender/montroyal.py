@@ -11,7 +11,7 @@ def route(course,theme,bc):
     def height(d):
         d=max(0,min(d,length))
         # Repeated efforts up the same mountain, with a descent between visits to the park plateau.
-        wave=(1-math.cos(2*math.pi*d/5770))*.5
+        wave=(1-math.cos(2*math.pi*(d+2550)/6120))*.5
         stage=sum((s['level']-mean)*max(0,min(d,s['to'])-s['from']) for s in stages)
         return 68+124*wave+40*smooth(22000,24560,d)+stage*.0015
     def heading(d):
@@ -35,17 +35,27 @@ def road(r,st,length,col,bc):
 
 def land(r,col,theme,bc):
     b=bc.Builder('Autumn park','terrain');b.colours=[]
-    def pt(j,u):
-        p=r.s[j];x,y,z=r.at(j,u);blend=smooth(15,70,abs(u));rise=0 if abs(u)<12 else (abs(u)-12)*(.16 if u<0 else -.23)
-        return (x+(p['x']-x)*blend,y+(p['y']+u-y)*blend,z+rise-.16)
-    for i in range(0,len(r.s)-3,3):
-        offsets=(-450,-105,-40,-12,12,40,105,450)
-        for a,e in zip(offsets,offsets[1:]):
-            b.quad(pt(i,a),pt(i+3,a),pt(i+3,e),pt(i,e));b.colours.extend([lin(0x8C8A5F if abs(a)>20 else 0x939060)]*4)
-    b.build(col)
+    lake=r.pos(13077,45);level=r.pos(13030)[2]-2.65;ax=r.s[r.index(13077)]['h'];cs=math.cos(ax);sn=math.sin(ax)
     def sample(x,y):
-        _,i,_=r.tree.find((x,y,0));return r.s[i]['z']-.18
-    return None,sample
+        _,i,dist=r.tree.find((x,y,0));p=r.s[i];u=-(x-p['x'])*math.sin(p['h'])+(y-p['y'])*math.cos(p['h'])
+        # A single continuous park surface cannot fold over the outside of a hairpin.
+        near=r.tree.find_range((x,y,0),26)
+        road_z=min((r.s[j]['z'] for _,j,_ in near),default=p['z'])
+        z=road_z-.65+max(0,dist-12)*(.095 if u<0 else -.085)
+        dx=x-lake[0];dy=y-lake[1];radius=((dx*cs+dy*sn)/74)**2+((-dx*sn+dy*cs)/35)**2
+        if radius<1.8:z=min(z,level-1.3+3.5*smooth(.85,1.8,radius))
+        return z
+    xs=[p['x'] for p in r.s];ys=[p['y'] for p in r.s];seq=range(math.floor(min(ys))-240,math.ceil(max(ys))+248,10);prev=None
+    for x in range(math.floor(min(xs))-240,math.ceil(max(xs))+248,10):
+        row=[(x,y,sample(x,y)) for y in seq]
+        if prev:
+            for j in range(len(row)-1):
+                face=(prev[j],row[j],row[j+1],prev[j+1]);b.quad(*face)
+                for xx,yy,_ in face:
+                    tone=math.sin(xx*.039+math.sin(yy*.063))*4+math.cos(yy*.072)*3
+                    c=[max(0,min(255,int(v+tone))) for v in (132,132,87)];b.colours.append(lin((c[0]<<16)|(c[1]<<8)|c[2]))
+        prev=row
+    b.build(col);return None,sample
 
 
 def scenery(k):
@@ -77,15 +87,19 @@ def scenery(k):
         u=tile%2*.5;v=(1-tile//2)*.5
         picture(signs,(a(0,1.12,1.55),a(0,-1.12,1.55),a(0,-1.12,2.67),a(0,1.12,2.67)),((u,v),(u+.5,v),(u+.5,v+.5),(u,v+.5)))
     # Stone pavilion and the low modern lake house seen across a curved, fixed waterline.
-    a,h=site(k,13077,45);bottom=lin(0x73948A)
+    a,h=site(k,13077,45);offset=k.road.pos(13030)[2]-2.65-k.road.pos(13077,45)[2];bottom=lin(0x73948A)
     for j in range(56):
         angle=j*math.tau/56;nextangle=(j+1)*math.tau/56
-        def shore(t):return a(62*math.cos(t),28*math.sin(t),-.88)
-        water.face((a(0,0,-.88),shore(angle),shore(nextangle)),(bottom,)*3)
-    a,h=site(k,13116,65);art.box(a(0,0,-1),(22,9,3.8),h,lin(0x577679))
+        def shore(t):return a(62*math.cos(t),28*math.sin(t),offset)
+        water.face((a(0,0,offset),shore(angle),shore(nextangle)),(bottom,)*3)
+    a,h=site(k,13116,65);lakebase=k.road.pos(13030)[2]-2.65+1-k.road.pos(13116,65)[2];raw=a;a=lambda u,v,w=0:raw(u,v,w+lakebase);art.box(a(0,0,-1),(22,9,3.8),h,lin(0x577679))
     art.roof(a(0,0,2.8),24,11,1.23,h,lin(0x494F48))
     for j in range(-10,11,2):art.box(a(j,-4.65,-.9),(.18,.21,3.8),h,stone)
-    a,h=site(k,18696,-21)
+    # An offset shore and a band of reflected trees place the lake house on the waterline.
+    for j in range(-6,7):
+        a,h=site(k,13077,45);x=j*10.0;y=22+5*math.cos(j*.49);at=a(x,y,offset+.1);radius=6.3
+        u=(j%3)/3;picture(trees,((at[0]-radius,at[1],at[2]),(at[0]+radius,at[1],at[2]),(at[0]+radius,at[1],at[2]+12),(at[0]-radius,at[1],at[2]+12)),((u,0),(u+1/3,0),(u+1/3,1),(u,1)))
+    a,h=site(k,18696,-21);base=a;a=lambda x,y,z=0:base(x*.46-y*.89,x*.89+y*.46,z)
     for x in (-.84,.84):
         for y in (-.62,.62):beam(art,a(x,y,0),a(x,y,19.6),.16,.16,silver)
     for j in range(10):

@@ -3598,7 +3598,7 @@ export const montroyalCourseMap = {
   place: 'Montréal, Québec',
   world: 'montroyal',
   distanceKm: 25.49,
-  climbingM: 644,
+  climbingM: 571,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
