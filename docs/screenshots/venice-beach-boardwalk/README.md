@@ -1,13 +1,25 @@
-# Venice Beach Boardwalk
+# Venice Beach Boardwalk from the saddle
 
-## Bends and elevation
+GCN Training’s 10 On 20 Off Max Sprints retains its original 41 stages, seventeen minutes and three-second video offset. The separately paved bike path runs 6.95 km beside Ocean Front Walk. The six matched comparisons keep the simulated bike at 90 rpm and the HUD visible.
 
-Fixes to how the road bends and climbs here (L2-101 AC6, L2-110 AC9), from the series that began with Old Town.
+| Viewpoint | Original | Revised | References and details |
+| --- | --- | --- | --- |
+| Muscle Beach, 0.14 km | [Before](before-muscle.jpg) | [After](after-muscle.jpg) | The lifting platforms and steel exercise frames sit inside the open gym fence. Ocean Front Walk runs beside the bike path. Real 01, 04–05 and games 01, 03. |
+| Ocean Front Walk, 1.32 km | [Before](before-arcades.jpg) | [After](after-arcades.jpg) | Painted arcades, souvenir racks and awnings alternate behind a separate pedestrian promenade. Palm trunks frame the sprints. Real 02–03, 05–07, 09 and game 03. |
+| Venice Skatepark, 2.64 km | [Before](before-bowls.jpg) | [After](after-bowls.jpg) | Skaters carve through connected concrete bowls below metal coping. Roller skaters pass on the promenade. Real 10–11 and games 02, 05. |
+| Venice Art Walls, 3.81 km | [Before](before-walls.jpg) | [After](after-walls.jpg) | Original painted concrete walls step down to the sand. Buskers play beside benches and strolling spectators. Real 08–09, 12 and games 01, 04. |
+| Lifeguard tower, 5.11 km | [Before](before-tower.jpg) | [After](after-tower.jpg) | A raised blue lifeguard tower faces breaking Pacific surf beyond broad sand. The mountains recede into summer haze. Real 02, 10, 14–15 and game 02. |
+| Santa Monica Pier, 6.77 km | [Before](before-pier.jpg) | [After](after-pier.jpg) | The Pacific Park wheel turns above the timber pier, with the coaster rails and the wooden piles visible along the waterline. Real 13–15 and games 02, 04. |
 
-| Capture | Fix |
-| --- | --- |
-| [087 · The paint lies on Ocean Front Walk](bend-087-paint-on-ocean-front-walk.jpg) | The words painted on Ocean Front Walk (WATTZUP, DOGTOWN) were laid level, so where the boardwalk rises along the beach the far end of each word sank into the asphalt. They now lie along the slope, and the barriers and props behind the rider stand on the walk there instead of at the height under the rider. |
-| [088 · The riders' heads sit on necks](bend-088-riders-have-necks.jpg) | Every rider's head and helmet hung about 8 cm above the jersey with nothing between them, so from behind the helmet floated over the shoulders. A neck now rises from inside the top of the back, up and forward to the base of the skull, and the head sits on it. |
-| [089 · The riders' heads are shaped as heads](bend-089-riders-heads-shaped.jpg) | Every rider's head was a 9 cm ball, smaller than the helmet's rim and lost inside it, so from behind the helmet looked like a lid over nothing. The head is now a head's size and shape: taller than it is wide and longer front to back than across, its jaw dropping towards the throat, so the nape and the back of the head show under the helmet. |
-| [090 · The helmets fit the heads](bend-090-helmets-fit.jpg) | Every rider's helmet was a 26 cm dome over a 16 cm head, half again as wide as the head under it, so from behind it read as a lid floating over the shoulders. It now hugs the skull, a finger's width proud of it all round and down over the back of the head, and a strap runs from each side of the shell under the jaw. |
-| [091 · The riders' arms grow from their shoulders](bend-091-riders-have-shoulders.jpg) | Every rider's arms hung beside the torso from points 2 cm outside it, two sleeves with a gap at the top where a shoulder should be. The jersey now rounds over each shoulder, from the top of the back out to the arm, so the arms grow out of the body. |
+Original shop facades, murals, palms, skaters and musicians follow the local references. The native gym cage, curved skate bowls, blue towers and pile-supported pier are anchored along the coast. The skaters carve, the guitarist strums and the gondolas turn on the ride clock. [Credited references](../../worlds/venice/SOURCES.md)
+
+## Simulated tablet
+
+Headed Chromium 159.0.8154.6 on Apple M5 Pro, 1024 × 768 at DPR 1, Low/WebGL 2, 4× CPU throttle and fake bike pedalling. Each one-minute moving sample followed nine seconds of warm-up. The submitted rate counts actual draws. The offset in the second sample places the bike at the busiest section.
+
+| Section | Scene offset | HUD distance | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak calls |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |
+| Muscle Beach and market | 0 m | 0.11 km to 0.95 km | 119.68 | 119.50 | 10.4 ms | 99.7 ms | 68 |
+| Skatepark bowls | 2450 m | 0.12 km to 0.96 km | 117.48 | 117.39 | 11.2 ms | 233.4 ms | 73 |
+
+Reproduce from the frontend workspace with `npm run perf -- venice-tablet --headed`.
