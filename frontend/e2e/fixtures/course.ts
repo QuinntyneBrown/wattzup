@@ -1,3 +1,4 @@
+import saguaroElevation from './saguaro-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const saguaroCourseMap = {
   place: 'Tucson, Arizona',
   world: 'saguaro',
   distanceKm: 10.748,
-  climbingM: 0,
+  climbingM: 203,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: saguaroElevation,
   },
   thumbnailUrl: 'maps/saguaro-desert.jpg',
   photoUrl: 'maps/saguaro-desert-photo.jpg',
