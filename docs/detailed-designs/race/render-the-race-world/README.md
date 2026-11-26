@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Dutch Tulip Fields (#2236)
+
+The Race catalogue and native course registry currently lack the Dutch Tulip Fields entry. Restore Easy Cadence Workout for the 10.1 km ride. Build the polder as large rectangular plots with exposed soil between crop rows and only a metre of relief at minor crossings. Preserve long sightlines by drawing mills beyond the local detail window.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Bollenstreek road, 0.14 km | Real 01–04, 11 and games 01–02 | Long red, white and yellow beds cross the view under the open April sky. The narrow lane has grass verges. |
+| The drainage ditch, 2.16 km | Real 04–06, 10, 15 and games 02–03 | A straight water-filled ditch reflects a row of clipped willows between the road and the next bulb plot. |
+| Keukenhof mill, 4.17 km | Real 08, 12–13 and games 01, 04 | Four lattice sails turn around the cap of a tall Dutch smock mill above its timber gallery. |
+| The mixed bulb beds, 5.89 km | Real 05–07, 09, 14 and games 02–04 | Blocks of violet hyacinths and yellow daffodils break the tulip stripes; small groups of tourists stop to photograph them. |
+| The bulb farm, 7.64 km | Real 01, 03, 10–11, 15 and games 03, 05 | Brick farmhouses, low storage sheds and a line of poplars enclose the fields behind an upright Dutch cyclist. |
+| The windmill sprint, 9.92 km | Real 07, 12–15 and games 01, 04–05 | A second mill marks the sprint with a canal and swaying red and white tulips beside the finish. |
+
+Use Caribana’s separation of textured foreground, moving middle-distance subjects and fixed horizon. Model the tapered smock and gallery in depth, share geometry across the four sails, and group nearer bloom heads and distant planted rows separately. Willow trunks, water banks and farm buildings establish parallax. Load artwork with the course and release materials, textures and geometry on exit. Compare the six marked rider views and measure both sixty-second sections on the low tier. See ADRs 0021, 0023, 0030, 0034 and 0035.
