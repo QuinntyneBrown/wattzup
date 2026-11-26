@@ -34,7 +34,7 @@ def land(r,col,theme,bc):
     return m.build(col),lambda x,y:610
 
 def scenery(k):
-    art=Painted(k);casinos=pictured(k,'CasinoFronts');hotels=pictured(k,'HotelWindows');boards=pictured(k,'VegasMarquees');palms=pictured(k,'StripPalms');crowd=pictured(k,'StripVisitors');lake=pictured(k,'BellagioWater');sky=pictured(k,'DesertMidnight');neon=pictured(k,'BoulevardNeon')
+    art=Painted(k);casinos=pictured(k,'CasinoFronts');hotels=pictured(k,'HotelWindows');boards=pictured(k,'VegasMarquees');palms=pictured(k,'StripPalms');crowd=pictured(k,'StripVisitors');lake=pictured(k,'BellagioWater');sky=pictured(k,'DesertMidnight');neon=pictured(k,'BoulevardNeon');signs=pictured(k,'BoulevardSigns')
     amber,brass,dark,red,cream,slate,blue,green,white=map(lin,(0xf2ad47,0xc8a05c,0x292630,0xb85244,0xdfcdb0,0x4b4656,0x536282,0x426a5d,0xe1d8c1))
     def panel(m,pts,idx=0,n=1):
         a=idx/n;b=(idx+1)/n;picture(m,pts,((a+.001,0),(b-.001,0),(b-.001,1),(a+.001,1)))
@@ -55,10 +55,12 @@ def scenery(k):
         if j%3==0:
             for s,v in ((-1,-7.3),(1,26.9)):
                 panel(crowd,[at(x,v,z) for x,z in ((-3.2,.05),(3.2,.05),(3.2,2.2),(-3.2,2.2))],(j//3+s)%4,4)
-        if j%6==0 and not 3700<d<4040:
+        if j%6==0 and all(abs(d-centre)>135 for centre in (1900,3890,4830,6360,8900)):
             for side,v in ((-1,-26),(1,41)):
                 idx=(j//6+(1 if side<0 else 0))%4
-                panel(casinos,[at(x,v,z) for x,z in ((-42,.04),(42,.04),(42,12.3),(-42,12.3))],idx,4)
+                for q in range(4):
+                    u=-33+q*22
+                    panel(casinos,[at(u+x,v,z) for x,z in ((-10.9,.04),(10.9,.04),(10.9,17.5),(-10.9,17.5))],idx,4)
                 tower(at,0,v+side*18,19,64,26+j%7*5)
                 panel(boards,[at(-22,y,z) for y,z in ((v-5,3.2),(v+5,3.2),(v+5,15.7),(v-5,15.7))],idx,4)
         if j%16==0:
@@ -71,6 +73,10 @@ def scenery(k):
                     glow([at(-.23,v2+y,6.12+z) for y,z in ((-.15,0),(.15,0),(.15,.29),(-.15,.29))],green)
             for b in range(10):
                 art.box(at(-8+b*1.1,1,.069),(.42,13.25,.009),h,white)
+    for d,v,idx in ((3885,-19,0),(4818,-21,1),(1910,31,2),(4810,34,3),(6395,-20,4),(8890,-20,5)):
+        at,h=site(k,d,v)
+        art.box(at(0,0,0),(.5,.52,6),h,brass)
+        panel(signs,[at(-.31,y,z) for y,z in ((6.4,5.5),(-6.4,5.5),(-6.4,9.3),(6.4,9.3))],idx,6)
     # Luxor and its vertical light beam on the southwest skyline.
     at,h=site(k,470,-99)
     pts=[at(u,v,0) for u,v in ((-39,-39),(39,-39),(39,39),(-39,39))]
@@ -90,8 +96,8 @@ def scenery(k):
         picture(lake,(shore(a,.001),shore(b,.001),shore(b,1),shore(a,1)),((0,0),(0,.01),(1,1),(1,0)))
     for i in range(7):
         u=(i-3)*19;v=-37+.0026*u*u
-        tower(at,u,v,16,19.4,41)
-        panel(casinos,[at(u+x,v+8.14,z) for x,z in ((-9.7,0),(9.7,0),(9.7,23),(-9.7,23))],3,4)
+        tower(at,u,v,16,19.4,29)
+        panel(casinos,[at(u+x,v+8.14,z) for x,z in ((-9.7,0),(9.7,0),(9.7,29.1),(-9.7,29.1))],3,4)
     # Four tapering lattice legs and three platforms identify the Paris replica.
     at,h=site(k,4853,-45)
     for i in range(10):
