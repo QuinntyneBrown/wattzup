@@ -151,6 +151,7 @@ import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
 import type { ManxMountain } from './manx-mountain';
+import type { LasseterRoadTrain } from './lasseter-road-train';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -354,6 +355,7 @@ export class CourseRenderer implements WorldRenderer {
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
   private mountain: ManxMountain | null = null;
+  private lasseterRoadTrain: LasseterRoadTrain | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -850,6 +852,21 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'outback') {
+        const { LasseterRoadTrain } = await import('./lasseter-road-train');
+        if (this.disposed) return false;
+        const roadTrain = await LasseterRoadTrain.load(this.course);
+        if (this.disposed) {
+          roadTrain.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.lasseterRoadTrain = roadTrain;
+        this.scene.add(roadTrain.root);
+        this.disposables.push(roadTrain);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1725,7 +1742,7 @@ export class CourseRenderer implements WorldRenderer {
     this.gardena?.at(frame.reducedMotion ? 0 : frame.time, metres);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
-    const standing = this.ride(you, metres, 0);
+    const standing = this.ride(you, metres, this.lasseterRoadTrain ? -1.45 : 0);
     // Every wheel on the road turns with the rider's: the riders keep much the same pace.
     this.kit?.roll(metres);
     this.marinaBoats?.follow(metres);
@@ -1784,10 +1801,9 @@ export class CourseRenderer implements WorldRenderer {
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
-      const progress = Math.max(
-        0,
-        Math.min(1, (metres - (bay ? 19_500 : 14_300)) / (bay ? 7900 : 5050)),
-      );
+      const start = this.lasseterRoadTrain ? 5600 : bay ? 19_500 : 14_300;
+      const span = this.lasseterRoadTrain ? 4200 : bay ? 7900 : 5050;
+      const progress = Math.max(0, Math.min(1, (metres - start) / span));
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
       this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
@@ -1802,6 +1818,7 @@ export class CourseRenderer implements WorldRenderer {
       this.camera.position.y,
       this.camera.position.z,
     );
+    this.lasseterRoadTrain?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -1962,6 +1979,7 @@ export class CourseRenderer implements WorldRenderer {
     this.icelandCoast = null;
     this.divide = null;
     this.mountain = null;
+    this.lasseterRoadTrain = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.yard = null;
@@ -2052,7 +2070,8 @@ export class CourseRenderer implements WorldRenderer {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
-    if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
+    if (this.course!.file.id === 'beachroad' || this.lasseterRoadTrain)
+      this.evening = eveningUniform();
     const clearValley = this.course!.file.id === 'engadin';
     const fogRange = this.dam
       ? ([450, 4200] as const)
@@ -2201,6 +2220,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
+    if (this.lasseterRoadTrain) Object.assign(materials, this.lasseterRoadTrain.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -2463,6 +2483,7 @@ export class CourseRenderer implements WorldRenderer {
           detail,
           this.course!.file.id === 'atlanticroad',
           this.evening,
+          Boolean(this.lasseterRoadTrain),
         );
       this.skyClock = sky.at;
       this.sky = new Mesh(dome, sky.material);
@@ -2688,7 +2709,7 @@ export class CourseRenderer implements WorldRenderer {
             ? 2.0
             : eye + (CLOSE_UP - eye) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
-    const back = course.place(metres - behind, sway, this.here);
+    const back = course.place(metres - behind, this.lasseterRoadTrain ? -1.45 : sway, this.here);
     const rim = this.plaza ? Math.max(0, 1 - Math.abs(metres - 3180) / 105) : 0;
     const cypressOverlook = this.cypressLift
       ? Math.max(
@@ -2775,6 +2796,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
     this.mountain?.frameView(metres, this.camera.position, ahead);
+    this.lasseterRoadTrain?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
@@ -3284,6 +3306,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
     if (this.mountain) Object.assign(drawn, this.mountain.report());
+    if (this.lasseterRoadTrain) Object.assign(drawn, this.lasseterRoadTrain.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

@@ -47,6 +47,7 @@ export function skyMaterial(
   detail: DataTexture,
   coastalSquall = false,
   evening?: Node<'float'>,
+  desertTwilight = false,
 ): Sky {
   const colours = look.sky.map((hex) => new Color(hex));
   const stop = (i: number) => vec3(colours[i]!.r, colours[i]!.g, colours[i]!.b);
@@ -64,10 +65,12 @@ export function skyMaterial(
   const drift = vec2(time.mul(DRIFT), time.mul(DRIFT * 0.4));
   const billow = texture(detail, ceiling.mul(0.11).add(drift)).g;
   const wisp = texture(detail, ceiling.mul(0.37).sub(drift.mul(1.7))).g;
-  const cover = smoothstep(0.5, 0.86, billow.mul(0.68).add(wisp.mul(0.42)))
-    // No cloud in the haze on the horizon, and thinner overhead.
-    .mul(smoothstep(0.015, 0.12, height))
-    .mul(float(1).sub(height.mul(0.5)));
+  const cover = desertTwilight
+    ? float(0)
+    : smoothstep(0.5, 0.86, billow.mul(0.68).add(wisp.mul(0.42)))
+        // No cloud in the haze on the horizon, and thinner overhead.
+        .mul(smoothstep(0.015, 0.12, height))
+        .mul(float(1).sub(height.mul(0.5)));
   // A cloud is lit from below by the horizon: its colour, lightened, and darker where the cloud is thick.
   const zenith = colours[colours.length - 1]!;
   const night = Math.max(zenith.r, zenith.g, zenith.b) < NIGHT;
@@ -137,7 +140,9 @@ export function skyMaterial(
 
   const material = new MeshBasicNodeMaterial({ side: BackSide, fog: false, depthWrite: false });
   if (evening) {
-    const sunset = mix(vec3(1.0, 0.43, 0.16), vec3(0.12, 0.19, 0.39), smoothstep(0, 0.48, height));
+    const sunset = desertTwilight
+      ? mix(vec3(0.98, 0.46, 0.35), vec3(0.16, 0.1, 0.31), smoothstep(0, 0.43, height))
+      : mix(vec3(1.0, 0.43, 0.16), vec3(0.12, 0.19, 0.39), smoothstep(0, 0.48, height));
     const lowSun = toward.dot(vec3(0.945, 0.105, 0.31).normalize()).max(0);
     const amber = sunset.add(
       vec3(1, 0.58, 0.18).mul(
