@@ -30,7 +30,7 @@ def rock_height(d,v):
     slope=(.88+.29*math.sin(d/63+side)+.14*math.sin(d/23-side))*e
     z=a*slope/(1+a/103)
     ridge=31*e*math.exp(-((a-62-18*math.sin(d/140+side))/26)**2)
-    z+=ridge+min(a/45,1)*(5*math.sin(d/84+v/37)+7*math.cos(d/139-v/57))
+    z+=ridge*min(a/15,1)+min(a/45,1)*(5*math.sin(d/84+v/37)+7*math.cos(d/139-v/57))
     return elevation(d)-.20+z+(1-e)*max(0,abs(v)-9)*(.085 if v>0 else -.18)
 def road(r,st,length,col,bc):
     mesh=bc.Builder('WinnatsLane','terrain');mesh.colours=[];mesh.uvs=[]
@@ -91,19 +91,32 @@ def scenery(k):
     for j,d in enumerate(range(70,540,29)):
         at,h=site(k,d,-17-j%3*7)
         art.box(at(0,0,-.35),(12,7.4,5.4),h,light);art.roof(at(0,0,5),12.1,7.7,3.1,h,slate)
-        for x in (-4,-1,2,4):art.box(at(x,3.73,2.1),(1.1,.12,1.3),h,iron)
+        for x in (-4,-1,2,4):
+            for z in (.97,3.33):
+                art.box(at(x,3.73,z),(1.1,.12,1.3),h,iron)
+                art.box(at(x,3.81,z+.62),(1.1,.07,.09),h,cream)
+                art.box(at(x,3.84,z),(1.37,.23,.12),h,stone)
+        art.box(at(-2.58,3.76,-.01),(.91,.13,2.04),h,dark)
+        art.box(at(-3.7,-.35,6.4),(1.15,.98,2.35),h,stone)
+        art.box(at(-3.7,-.35,8.73),(1.35,1.18,.19),h,slate)
+        for m in range(-7,8):
+            art.box(at(m*.75,3.78,2.74),(0.51,.05,.135),h,stone)
     for j,d in enumerate((6060,6140,6290,6370,6870,7020,7100,7290,7630,9760,9890)):
         v=-3.45 if j%2 else 3.73;at,h=site(k,d,v);idx=j%4;lift=rock_height(d,v)-elevation(d)
         panel(fans,[at(0,y,z+lift) for y,z in ((1.7,0),(-1.7,0),(-1.7,2.02),(1.7,2.02))],(idx/4,0,(idx+1)/4,1))
     # A landslip scar breaks the broad summit of Mam Tor in exposed horizontal beds.
-    for j,d in enumerate(range(9580,10110,22)):
-        off=232+54*math.sin(j*.11);at,h=site(k,d,off)
-        top=82+53*math.sin(j/24*math.pi)
-        for row in range(4):
-            width=26+7*math.sin(j*.7+row);z=top-row*7
-            pts=[at(x,v,w) for x,v,w in ((-width*.5,0,z-4),(width*.5,1,z-6),(width*.5,4,z+1),(-width*.5,3,z+3))]
-            panel(cliffs,pts)
-        art.face((at(-17,3,top),at(16,3,top+1),at(17,66,top+5),at(-17,66,top+5)),(grass,)*4)
+    prev=None
+    for j,d in enumerate(range(9480,10291,10)):
+        t=j/81
+        off=206+45*math.sin(t*math.pi)
+        at,h=site(k,d,off)
+        peak=21+115*math.sin(t*math.pi)**1.1
+        row=[at(0,v,z) for v,z in ((-100,-16),(-67,peak*.24),(-33,peak*.54),(-17,peak*.66),(-8,peak*.73),(0,peak*.88),(8,peak*.92),(17,peak),(66,peak*.93),(170,peak*.41),(240,-13))]
+        if prev:
+            for n,(a,b,c,e) in enumerate(zip(prev,prev[1:],row[1:],row)):
+                if n in (2,4,6):panel(cliffs,(a,e,c,b),(j/13,0,(j+1)/13,1))
+                else:art.face((a,e,c,b),(grass,)*4)
+        prev=row
     for j in range(72):
         a=j*math.tau/72;b=(j+1)*math.tau/72;u=j%18/18;v=u+1/18
         if j//18%2:u,v=1-u,1-v
