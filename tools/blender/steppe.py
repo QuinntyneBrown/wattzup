@@ -90,6 +90,7 @@ def scenery(k):
         a=math.tau*j/80;b=math.tau*(j+1)/80;u=j%16/16;v=u+1/16
         if j//16%2:u,v=1-u,1-v
         def rim(t,z):return 9000+15400*math.cos(t),15000*math.sin(t),z
+        picture(sky,(rim(a,4600),rim(b,4600),rim(b,22500),rim(a,22500)),((u,1),(v,1),(v,.999),(u,.999)))
         picture(sky,(rim(a,-1300),rim(b,-1300),rim(b,4600),rim(a,4600)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
 THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':2.55,'terrain':{'sea':False},'land':{'mid':0x839657},'sky':[0xCFDFD9,0xB8D2DB,0x9BC5DA,0x78B0D0,0x5C9BC4],'haze':0xBBCDC2,'light':[0xFFF0D2,1.3],'fill':[0xCDDFE4,0xB7AE8A],'sun_altitude':.41,'sun_azimuth':-.94}
