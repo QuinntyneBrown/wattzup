@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import stbernard as _stbernard
+
+THEMES['stbernard'] = _stbernard.THEME
+SCENERY['stbernard'] = _stbernard.scenery
