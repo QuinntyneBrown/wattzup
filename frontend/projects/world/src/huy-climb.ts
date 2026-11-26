@@ -8,7 +8,7 @@ import {
   MeshBasicMaterial,
   MeshLambertMaterial,
   PlaneGeometry,
-  RepeatWrapping,
+  MirroredRepeatWrapping,
   SphereGeometry,
   SRGBColorSpace,
   TextureLoader,
@@ -101,7 +101,7 @@ export class HuyClimb {
       texture.colorSpace = SRGBColorSpace;
     }
     const [road, facades, leaves, letters, fans, valley, flag, finish] = textures;
-    road!.wrapS = road!.wrapT = RepeatWrapping;
+    road!.wrapS = road!.wrapT = MirroredRepeatWrapping;
     this.materials.HuyTarmac.map = road!;
     this.materials.HuyFacades.map = facades!;
     this.materials.HuyLeaves.map = leaves!;

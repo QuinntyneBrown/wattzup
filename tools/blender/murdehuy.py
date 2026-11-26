@@ -111,12 +111,20 @@ def scenery(k):
         v=j%3/3
         picture(paint,tuple(k.road.pos(d+s,l,.075) for s,l in ((0,-1.8),(0,1.8),(2.85,1.8),(2.85,-1.8))),((0,v),(1,v),(1,v+1/3),(0,v+1/3)))
     a,h=site(k,6665,175)
-    picture(valley,(a(-162,42,-96),a(162,-42,-96),a(162,-42,21),a(-162,42,21)),UV)
+    picture(valley,(a(-269,69,-99),a(269,-69,-99),a(269,-69,49),a(-269,69,49)),UV)
     a,h=site(k,10855,-13)
     art.box(a(0,0,-.85),(22,9,8.8),h,stone);art.roof(a(0,0,7.92),22,9,4.2,h,slate)
     art.box(a(-9.1,0,6.7),(4.5,4.6,7.3),h,stone)
     art.tube(a(-9.1,0,14),3.58,.1,7.8,slate,slate,4)
     for j in range(5):art.box(a(-6+j*3.6,4.53,2.5),(1.3,.12,4.41),h,lin(0x475461))
+    for x in (-9.6,-5.4,-1.2,3,7.2,10.3):
+        art.box(a(x,4.79,-.4),(.64,.8,6.2),h,stone)
+        art.roof(a(x,4.79,5.8),.72,.88,.58,h,slate)
+    for side in (-1,1):
+        for n in range(3):
+            art.box(a(-10.2+n*1.05,side*2.32,9.55),(.70,.13,2.5),h,lin(0x484B4C))
+    art.tube(a(-9.1,0,21.1),.09,.055,1.75,slate,slate,8)
+    art.box(a(-9.1,0,22.2),(.8,.08,.08),h,slate)
     a,h=site(k,10855)
     for side in (-1,1):
         for x in (-.38,.38):art.box(a(x,side*3.72,-.25),(.11,.11,5.5),h,steel)
