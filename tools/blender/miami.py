@@ -54,15 +54,33 @@ def panel(mesh,at,u,v,z,w,h,tile,angle=0):
 
 def car(art,a,h,colour):
     chrome=lin(0xB9C1CF);dark=lin(0x211D30)
-    art.box(a(0,0,.38),(4.7,1.87,.66),h,colour)
-    art.box(a(-1.45,0,1.02),(1.5,1.82,.15),h,colour)
-    art.box(a(.78,0,1.04),(1.35,1.53,.38),h,dark)
-    art.box(a(-.38,0,1.03),(.10,1.67,.62),h,lin(0x6685A6))
-    for u in (-1.49,1.39):
-        for v in (-.91,.91):
-            art.box(a(u,v,.2),(.78,.19,.61),h,dark);art.box(a(u,v*1.09,.38),(.4,.05,.27),h,chrome)
-    for v in (-.68,.68):art.box(a(2.36,v,.76),(.05,.34,.16),h,lin(0xE7334D))
-    for u in (-2.39,2.39):art.box(a(u,0,.46),(.09,1.95,.12),h,chrome)
+    old=None
+    for u,width,top in ((-2.53,.65,.84),(-2.32,.89,1.14),(-1.60,.96,1.05),(-.6,.99,1.02),(1.08,.96,1.05),(1.96,.9,.93),(2.43,.69,.82)):
+        loop=[a(u,-width*.83,.43),a(u,-width,.64),a(u,-width,top-.12),a(u,-width*.83,top),a(u,width*.83,top),a(u,width,top-.12),a(u,width,.64),a(u,width*.83,.43)]
+        if old:
+            for j in range(8):
+                q=(j+1)%8;shade=colour if j in (2,3,4) else tuple(x*.74 for x in colour[:3])+(1,)
+                art.face((old[j],loop[j],loop[q],old[q]),(shade,)*4)
+        else:art.face(tuple(reversed(loop)),(colour,)*8)
+        old=loop
+    art.face(tuple(old),(colour,)*8)
+    art.box(a(-.23,0,.98),(1.55,1.55,.11),h,dark)
+    for u in (-.74,.17):art.box(a(u,0,1.07),(.20,1.39,.38),h,lin(0xB6ACAA))
+    glass=lin(0x7296A9)
+    art.face((a(.86,-.82,1.03),a(.86,.82,1.03),a(.60,.76,1.62),a(.60,-.76,1.62)),(glass,)*4)
+    for v in (-.82,.82):beam(art,a(.86,v,1.04),a(.60,v*.92,1.64),.052,.047,chrome)
+    beam(art,a(.60,-.77,1.63),a(.60,.77,1.63),.052,.065,chrome)
+    for side in (-1,1):
+        art.box(a(0,side*.965,.69),(4.35,.04,.073),h,chrome)
+        for u in (-1.46,1.39):
+            for r,v,tint in ((.407,.978,dark),(.314,.986,lin(0xBFB8BD)),(.206,.989,chrome)):
+                for j in range(12):
+                    lo=j*math.tau/12;hi=(j+1)*math.tau/12
+                    art.face((a(u,side*v,.44),a(u+r*math.cos(lo),side*v,.44+r*math.sin(lo)),a(u+r*math.cos(hi),side*v,.44+r*math.sin(hi))),(tint,)*3)
+        art.box(a(-2.46,side*.65,.79),(.07,.28,.16),h,lin(0xFA3862))
+        art.box(a(2.41,side*.62,.78),(.07,.31,.18),h,lin(0xE7CDA6))
+    for u in (-2.49,2.48):art.box(a(u,0,.48),(.12,1.84,.12),h,chrome)
+
 
 
 def lifeguard(art,tubes,k,d):
@@ -77,9 +95,9 @@ def lifeguard(art,tubes,k,d):
 
 
 def scenery(k):
-    art=Painted(k);facades=pictured(k,'DecoFronts');foliage=pictured(k,'LummusPalms')
+    art=Painted(k);facades=pictured(k,'DecoFronts');foliage=pictured(k,'LummusPalms');blades=pictured(k,'DecoBlades')
     for name in ('NeonTubes','WetNeon','BeachGlow'):k.B[name]=type(k.B['terrain'])(name,'terrain')
-    tubes=Painted(k,'NeonTubes');wet=Painted(k,'WetNeon');glow=Painted(k,'BeachGlow')
+    tubes=Painted(k,'NeonTubes');wet=pictured(k,'WetNeon');glow=Painted(k,'BeachGlow')
     neon=[lin(c) for c in (0x3DDBFF,0xF153B1,0xD98AFF,0x5CE5A6)]
     for d in range(-61,8550,26):
         a,h=site(k,d,-12.25);tile=(d//26)%4
@@ -93,6 +111,8 @@ def scenery(k):
             art.box(a(0,.16,z-.14),(w,.93,.24),h,lin(0x7F8299))
             tubes.box(a(0,.66,z),(w,.083,.085),h,c)
         tubes.box(a(-w*.32,.70,high*.53),(.24,.19,high*.55),h,c)
+        blade=a
+        panel(blades,blade,-4.85,1.04,high*.34,2.00,high*.70,tile,math.pi/2)
         if tile in (0,1):
             for j in range(3):
                 span=(6.2 if tile==0 else 9.6)-2*j
@@ -101,10 +121,12 @@ def scenery(k):
         panel(foliage,a,0,3.5,.18,8.5,3.6,2);panel(foliage,a,-8,4.78,.18,3.9,2.25,3,.4)
         if d%3:
             ca,ch=site(k,d+6,-4.53);car(art,ca,ch,lin((0xE87561,0x579BAF,0xB04F85)[d%3]))
-        for j in range(5):
-            p,yaw=site(k,d+j*3.1-6.4,0);x=k.rng.uniform(-.28,.28);v=-5.7+k.rng.random()*2.9;span=2.4+k.rng.random()*3.6
-            tone=tuple(t*.55 for t in c[:3])+(1,)
-            wet.face((p(x-.11,v,.032),p(x+.23,v,.032),p(x+1.48,v+span,.032),p(x+1.25,v+span,.032)),(tone,tone,tuple(t*.18 for t in c[:3])+(1,),tuple(t*.18 for t in c[:3])+(1,)))
+        # A grazing-angle view stretches streaks along the direction of travel. Leave gaps in the surface.
+        for j in range(13):
+            p,yaw=site(k,d,0);u=k.rng.uniform(-11,9);v=k.rng.uniform(-5.75,1.5);span=k.rng.uniform(5.4,15.2);w=k.rng.uniform(.19,1.0)
+            tone=tuple(t*.72 for t in c[:3])+(1,);end=tuple(t*.10 for t in c[:3])+(1,)
+            picture(wet,(p(u,v,.032),p(u+span,v+w*.14,.032),p(u+span,v+w,.032),p(u,v+w*.94,.032)),((0,0),(1,0),(1,1),(0,1)))
+            wet.colours[-4:]=(tone,end,end,tone)
         for side in (-1,1):
             off=(-7.6 if side<0 else 10.8)+k.rng.uniform(-.75,.75);a,h=site(k,d-9.5,off)
             height=k.rng.uniform(8.2,12.3);tile=0 if (side>0)==(d%3==0) else 1
@@ -112,12 +134,15 @@ def scenery(k):
         a,h=site(k,d+10,6.5)
         art.tube(a(0,0,0),.12,.075,6.4,lin(0x484454),lin(0x635E72),7)
         glow.tube(a(0,0,6.34),.22,.19,.27,lin(0xE5B875),lin(0xFFDAA3),8)
-    for d in (4350,4430,7080):lifeguard(art,tubes,k,d)
+    for d in (4402,4495,7080):lifeguard(art,tubes,k,d)
     far=Painted(k,'peaks')
     for i in range(36):
         a,h=site(k,8420,240+i*14);high=k.rng.uniform(20,110);wide=k.rng.uniform(9,22)
         far.box(a(0,0,-5),(wide,wide*.86,high),h,lin(0x333749))
-        for j in range(2,int(high/3),2):far.box(a(-wide*.51,0,j*3),(.15,wide*.68,.29),h,lin(0xD5B483))
+        for j in range(2,int(high/3),2):
+            lit=lin(0xCBAB8F if (j+i)%3 else 0x849AB9)
+            far.box(a(-wide*.51,0,j*3),(.15,wide*.68,.36),h,lit)
+            far.box(a(0,-wide*.435,j*3),(wide*.73,.15,.36),h,lit)
     return {'efforts':0}
 
 
