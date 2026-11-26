@@ -1,0 +1,151 @@
+{
+  "id": "vegas",
+  "name": "Las Vegas Strip",
+  "world": "vegas",
+  "theme": "vegas",
+  "seed": 2240,
+  "layout": 0,
+  "class": {
+    "id": "quick-hiit-sprint-workout",
+    "title": "Quick HIIT Sprint Workout",
+    "channel": "GCN Training",
+    "videoId": "TO1h5fbOLAA",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 18,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 18,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 90
+      }
+    ]
+  }
+}
