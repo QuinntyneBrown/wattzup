@@ -23,7 +23,7 @@ const stops = [
   [2760, 2790, 9.5, 1.85],
   [5470, 5600, -5, 2.5],
   [8910, 8945, -39, 1.1],
-  [11830, 11860, -40, 1.13],
+  [11830, 11872, -71, 1.13],
   [16190, 16245, -48, 1.9],
 ] as const;
 function wash() {
@@ -179,7 +179,7 @@ export class KouriLagoon {
     this.swimmer.visible = Math.abs(metres - 11848) < 160;
     this.shown.swimmerStroke = null;
     if (this.swimmer.visible) {
-      const p = this.course.place(11858 + 1.7 * Math.sin(time * 0.33), -49.6, this.p);
+      const p = this.course.place(11858 + 1.7 * Math.sin(time * 0.33), -104, this.p);
       this.swimmer.position.set(p.x, 0.12 + 0.036 * Math.sin(time * 2.45), p.z);
       this.swimmer.rotation.y = p.heading + 0.67;
       for (const [i, g] of this.arms.entries())
@@ -208,10 +208,15 @@ export class KouriLagoon {
       len = Math.hypot(dx, dz);
     camera.x += (p.x - (5 * dx) / len - camera.x) * blend;
     camera.z += (p.z - (5 * dz) / len - camera.z) * blend;
-    camera.y += (p.y + 2.16 - camera.y) * blend;
+    const overlook = s[0] >= 8910;
+    const cameraHeight = s[0] === 11830 ? 5.4 : overlook ? 3.9 : 2.16;
+    camera.y += (p.y + cameraHeight - camera.y) * blend;
     ahead.x += (p.x + (14 * dx) / len - ahead.x) * blend;
     ahead.z += (p.z + (14 * dz) / len - ahead.z) * blend;
-    ahead.y += (p.y + s[3] + (14 * (t.y - p.y)) / len - ahead.y) * blend;
+    const subjectHeight = overlook ? (s[0] === 16190 ? 7.4 : 2) : t.y + s[3];
+    ahead.y +=
+      (p.y + cameraHeight + (19 * (subjectHeight - p.y - cameraHeight)) / (len + 5) - ahead.y) *
+      blend;
   }
   report() {
     return this.shown;

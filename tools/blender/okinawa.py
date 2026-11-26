@@ -33,7 +33,7 @@ def road(r,st,length,col,bc):
     b.build(col)
 
 
-def coast(d):return 29+7*math.sin(d/143)+4*math.sin(d/317)+17*math.exp(-((d-11855)/170)**2)
+def coast(d):return 29+7*math.sin(d/143)+4*math.sin(d/317)+68*math.exp(-((d-11855)/170)**2)
 
 
 def land(r,col,theme,bc):
@@ -43,7 +43,11 @@ def land(r,col,theme,bc):
         p=r.s[i];x,y,z=r.at(i,off);k=smooth(12,85,abs(off));return x+(p['x']-x)*k,y+(p['y']+off-y)*k,z
     def ground(i,off):
         d=r.s[i]['d'];x,y,z=xy(i,off)
-        if off>4.8:z+=(.13-z)*smooth(5,coast(d),off)
+        if off>4.8:
+            beach=math.exp(-((d-11855)/110)**4)
+            toes=coast(d)*(1-beach)+16*beach
+            z+=(.15+.55*beach-z)*smooth(5,toes,off)
+            z-=.57*beach*smooth(16,coast(d),off)
         if off<-6:z+=smooth(15,260,-off)*(85+31*math.sin(d/215)+18*math.cos(d/573))
         return x,y,z-.15
     def sea(i,off):
@@ -109,18 +113,38 @@ def scenery(k):
         art.tube(a(0,0,z+2.25),r*.43,r,1.35,lin(0x9D8C72),lin(0xB2A48F),9)
         art.tube(a(0,0,z+3.6),r,r*.70,1.45,lin(0xA49781),lin(0x9C9778),9,green)
     for j in range(7):
-        a,h=site(k,11845+j*6,coast(11845+j*6)-4);z=.56-k.road.pos(11845+j*6)[2]
+        d=11850+j*7.5
+        a,h=site(k,d,65+(j%3)*4.1);z=.55-k.road.pos(d)[2]
+        art.box(a(0,1.1,z+.09),(1.9,.79,.08),h,lin(0xBE795A if j%2 else 0x7EACAB))
         art.tube(a(0,0,z),.046,.046,1.91,stone,stone,8)
-        art.tube(a(0,0,z+1.83),1.48,.06,.71,lin(0x6299AC if j%2 else 0xDDC596),lin(0xC2C8B0),10)
+        art.tube(a(0,0,z+1.83),1.82,.08,.78,lin(0x488AB1 if j%2 else 0xE1A258),lin(0xECE3BC),10)
     # Build both walls of the arch around a clear gap; the trunk touches the sea.
     a,h=site(k,16245,coast(16245)+16);base=-k.road.pos(16245)[2]
-    outline=[(-19,0),(-18,14),(-10,15.5),(-2,15.0),(6.0,13.4),(9.3,10.8),(10.0,5.1),(9.2,0),(7.25,0),(7.03,5.7),(5.1,8.6),(1,9.1),(-2,7.3),(-3.9,0)]
-    for i,(u,z) in enumerate(outline):
-        u2,z2=outline[(i+1)%len(outline)]
-        pts=(a(u,-2.9,base+z),a(u2,-2.9,base+z2),a(u2,2.9,base+z2),a(u,2.9,base+z))
-        c=green if i in (1,2,3) else lin(0xA49881);art.face(pts,(c,)*4);art.face(pts[::-1],(c,)*4)
-    for side in (-1,1):
-        pts=[a(u,side*2.9,base+z) for u,z in outline];art.face(pts if side>0 else pts[::-1],(stone,)*len(pts))
+    # Cross sections leave water visible between the cliff and its narrow outer leg.
+    sections=[(-23,0,14),(-16,0,17),(-8,0,16.7),(-4,6.8,16.1),(0,10.1,15.6),(5,11.2,15.1),(10,9.7,14.6),(13,6.9,13.7),(14.8,0,12.4),(18.1,0,9.8)]
+    for (u,low,top),(v,other,crest) in zip(sections,sections[1:]):
+        for side in (-1,1):
+            for lower,upper,colour in ((0,.28,lin(0x827D70)),(.28,.81,stone),(.81,1,lin(0xAEA58D))):
+                def flank(x,b,t,f):
+                    return a(x,side*(3.9+.6*math.sin(x*.34+f)),base+b+(t-b)*f)
+                pts=(flank(u,low,top,lower),flank(v,other,crest,lower),flank(v,other,crest,upper),flank(u,low,top,upper))
+                art.face(pts if side<0 else pts[::-1],(colour,)*4)
+        for f,c in ((0,lin(0x817967)),(1,green)):
+            pts=tuple(a(x,side*(3.9+.6*math.sin(x*.34+f)),base+z) for x,z,side in ((u,top if f else low,-1),(v,crest if f else other,-1),(v,crest if f else other,1),(u,top if f else low,1)))
+            art.face(pts if f else pts[::-1],(c,)*4)
+    for x,b,t in (sections[0],sections[-1]):
+        pts=tuple(a(x,side*(3.9+.6*math.sin(x*.34+f)),base+(t if f else b)) for side,f in ((-1,0),(1,0),(1,1),(-1,1)))
+        art.face(pts if x>0 else pts[::-1],(stone,)*4)
+    # The low wooded tip of Kouri Island breaks the horizon beyond the bridge.
+    for d,off,rx,ry,rz in ((6670,123,320,71,32),(6500,-191,225,82,23)):
+        a,h=site(k,d,off);base=-k.road.pos(d)[2]
+        for j in range(36):
+            t=j*math.tau/36;e=(j+1)*math.tau/36
+            def headland(angle,r,up):
+                return a(rx*r*math.cos(angle),ry*r*math.sin(angle),base+up*(1+.12*math.cos(angle*3)))
+            for lo,hi,low,high,c in ((1,.89,-.1,2,lin(0xC9C8A2)),(.89,.57,2,rz*.73,lin(0x738B66)),(.57,.03,rz*.73,rz,lin(0x678662))):
+                pts=(headland(t,lo,low),headland(e,lo,low),headland(e,hi,high),headland(t,hi,high))
+                art.face(pts,(c,)*4)
     for d in (190,2900,5710,9090,12010,16340):
         for side in (-1,1):
             a,h=site(k,d+380,side*420)
