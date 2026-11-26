@@ -13,7 +13,7 @@ def height(d):
 
 def heading(d):
     bearing=.21+.16*math.sin(d/381)+.08*math.sin(d/137)
-    for centre,radius in ((1850,48),(3810,-42),(4320,44),(5670,-41),(7330,43),(9100,-53),(10960,45),(12200,-48),(14100,52),(14840,-47)):
+    for centre,radius in ((1850,48),(3810,-42),(4153,38),(5670,-41),(7330,43),(9100,-53),(10960,45),(12200,-48),(14100,52),(14840,-47)):
         turn=2.64;t=max(0,min(1,(d-centre)/(abs(radius)*turn)+.5))
         bearing+=math.copysign(turn*t,radius)
     return bearing
@@ -82,6 +82,7 @@ def scenery(k):
     for start,end in ((64,253),(910,1075),(5850,5964)):
         for n,d in enumerate(range(start,end,7)):
             at,h=site(k,d,0);art.box(at(0,0,5.35),(7.18,9.71,.58),h,stone)
+            art.face((at(-3.59,-4.85,5.345),at(-3.59,4.85,5.345),at(3.59,4.85,5.345),at(3.59,-4.85,5.345)),(slate,)*4)
             art.box(at(0,4.44,-.27),(7.17,.64,5.65),h,slate)
             art.box(at(-2.9,-4.13,-.2),(.68,.73,5.64),h,stone)
             art.box(at(0,-4.2,5),(7.1,.82,.51),h,slate)
@@ -133,9 +134,10 @@ def scenery(k):
     # A summit ring remains in world space so nearer road and snow walls cross it with real parallax.
     rows=k.s;cx=sum(p['x'] for p in rows)/len(rows);cy=sum(p['y'] for p in rows)/len(rows)
     for j in range(52):
-        a=j*math.tau/52;b=(j+1)*math.tau/52;u=(j%13)/13;rad=6800
+        a=j*math.tau/52;b=(j+1)*math.tau/52;u=(j%13)/13;v=u+1/13;rad=6800
+        if j//13%2:u,v=1-u,1-v
         def point(angle,z):return cx+rad*math.cos(angle),cy+rad*math.sin(angle),z
-        picture(peaks,(point(a,1180),point(b,1180),point(b,3980),point(a,3980)),((u,0),(u+1/13,0),(u+1/13,1),(u,1)))
+        picture(peaks,(point(a,1180),point(b,1180),point(b,3980),point(a,3980)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
 
 THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':3.45,'terrain':{'sea':False},'land':{'mid':0x8F9479},
