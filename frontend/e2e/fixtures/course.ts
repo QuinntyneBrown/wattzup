@@ -3588,3 +3588,38 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const telAvivCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'tel-aviv-promenade',
+  name: 'Tel Aviv Promenade',
+  routeName: 'The Tayelet',
+  place: 'Tel Aviv, Israel',
+  world: 'telaviv',
+  distanceKm: 10.7,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/tel-aviv-promenade.jpg',
+  photoUrl: 'maps/tel-aviv-promenade-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 90),
+      seg('work', 30, 24, 110),
+      seg('recover', 180, 13, 90),
+      seg('work', 30, 24, 110),
+      seg('recover', 180, 13, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 13, 90),
+      seg('work', 30, 24, 90),
+      seg('recover', 180, 13, 90),
+      seg('work', 30, 24, 80),
+      seg('recover', 180, 13, 90),
+      seg('work', 30, 24, 70),
+      seg('cool-down', 180, 13, 80),
+    ],
+  },
+};
