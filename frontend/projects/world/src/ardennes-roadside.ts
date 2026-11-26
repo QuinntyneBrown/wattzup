@@ -22,8 +22,8 @@ const views = [
   [5430, 5444, 14, 1.1],
   [11640, 11667, 7.2, 2.1],
   [12570, 12600, 0, 1.8],
-  [13390, 13413, 0, 13],
-  [15560, 15577, 5.4, 1.8],
+  [13390, 13438, 1, 9],
+  [15560, 15586, 21.5, 0],
 ] as const;
 
 export class ArdennesRoadside {
@@ -174,15 +174,21 @@ export class ArdennesRoadside {
     const f = Math.min(1, (1 - Math.abs(metres - view[0]) / 55) * 1.65);
     const r = this.course.place(metres, 0, this.p),
       t = this.course.place(view[1], view[2], this.target);
+    const summit = view[0] === 15560;
+    const eye = summit ? 5.3 : 2.2;
+    if (summit) {
+      this.course.place(metres, 2.15, r);
+      t.y = r.y - 9.4;
+    }
     const dx = t.x - r.x,
       dz = t.z - r.z,
       len = Math.max(1, Math.hypot(dx, dz));
     camera.x += (r.x - (5 * dx) / len - camera.x) * f;
     camera.z += (r.z - (5 * dz) / len - camera.z) * f;
-    camera.y += (r.y + 2.2 - camera.y) * f;
+    camera.y += (r.y + eye - camera.y) * f;
     ahead.x += (r.x + (14 * dx) / len - ahead.x) * f;
     ahead.z += (r.z + (14 * dz) / len - ahead.z) * f;
-    ahead.y += (r.y + 2.2 + (19 * (t.y + view[3] - r.y - 2.2)) / (len + 5) - ahead.y) * f;
+    ahead.y += (r.y + eye + (19 * (t.y + view[3] - r.y - eye)) / (len + 5) - ahead.y) * f;
   }
   report() {
     return this.readings;
