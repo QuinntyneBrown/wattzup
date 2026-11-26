@@ -3598,7 +3598,7 @@ export const machupicchuCourseMap = {
   place: 'Cusco Region, Peru',
   world: 'machupicchu',
   distanceKm: 10.944583333333332,
-  climbingM: 390,
+  climbingM: 386,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
