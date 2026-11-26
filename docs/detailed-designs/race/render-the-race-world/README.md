@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Prairie Paceline (#2192)
+
+The starter catalogue entry already loads courses/prairie.glb. Keep the measured elevation and every stage boundary from the existing native course. Replace the winding horizontal alignment with the long, straight Route 9 corridor. Retain its warm farmland palette, barns, round bales and roadside fencing.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Route 9 shoulder, 0.08 km | Real 01, 03–05 and 09. Games 01, 03 and 04. | A dashed yellow centre line converges with the gravel shoulders. Wind-tossed wheat, wooden poles and wire fences slide past in the foreground. |
+| Wind farm service road, 2.48 km | Real 02, 04–07, 11 and 15. Games 01 and 02. | Several rows of three-blade turbines turn above the ridge. A near tower, fenced service track and distant rows show scale and parallax. |
+| Canola quarter section, 5.21 km | Real 05 and 07–10. Games 03 and 04. | Rectangular canola and wheat fields meet along a straight service track. A swath of wind-bent flower stems catches the low sun beside the road. |
+| Farmyard and bales, 8.74 km | Real 01, 03, 09 and 10. Games 01 and 03. | A red barn, corrugated grain bins and straw bales sit beside a shelterbelt. Power wires sag from the double crossarms above the fence. |
+| Railway grain elevator, 12.61 km | Real 12–14. Games 02, 04 and 05. | The square elevator and its headhouse rise above the track, loading annex and hoppers. Weathered timber, a painted place name and the rails show the scale of the town. |
+| Last prairie crest, 17.96 km | Real 04–10 and 15. Games 01, 04 and 05. | A shallow crest reveals turbines behind a second ridge. Cumulus and high cirrus fill the amber sky above fence and field shadows. |
+
+Stage turbine rows at distinct distances along both ridges. Taper each tower and blade. Use one shared rotor geometry, a bounded near-verge cluster and far clouds driven by the ride clock. Bake field rows and the shadow beneath every farm building. Give the roadside elevator a trackside loading wing and grain hoppers. Release geometry, materials and textures on route exit. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/prairie/SOURCES.md.
