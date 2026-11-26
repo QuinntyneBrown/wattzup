@@ -1,0 +1,52 @@
+// L2-2180. Each moving landmark follows the ride clock while it is in view.
+import { newRiderProgress } from './fixtures/api';
+import { maps } from './fixtures/maps';
+import { echelonBike } from './fixtures/echelon';
+import { expect, test } from './fixtures/test';
+import type { Page } from '@playwright/test';
+import type { ApiFixture } from './fixtures/api';
+import type { FakeBluetooth } from './fixtures/fake-bluetooth';
+import type { WorldRideProbe } from './fixtures/world-ride-probe';
+import { MapSelectPage } from './pages/map-select.page';
+import { RaceSetupPage } from './pages/race-setup.page';
+import { RacePage } from './pages/race.page';
+
+const oldTownCourseMap = maps.find((map) => map.id === 'old-town-criterium')!;
+
+async function enterOldTown(
+  metres: number,
+  page: Page,
+  api: ApiFixture,
+  bluetooth: FakeBluetooth,
+  worldRide: WorldRideProbe,
+) {
+  api.answer('GET', '/api/maps', [oldTownCourseMap]);
+  api.answer('GET', '/api/progress', {
+    ...newRiderProgress,
+    openMapIds: [oldTownCourseMap.id],
+  });
+  await worldRide.pin('low', 'webgl2');
+  await bluetooth.remember(echelonBike);
+  const race = new RacePage(page);
+  const maps = new MapSelectPage(page);
+  await maps.open();
+  await worldRide.startAt(metres);
+  const row = maps.row(oldTownCourseMap.name);
+  await row.root.click();
+  const setup = new RaceSetupPage(page);
+  await setup.mode('Your best time').click();
+  await setup.start.click();
+  await expect(race.backend).toBeVisible();
+  return race;
+}
+
+test('the rider sees worn setts and the cathedral west front on the seventh kick', async ({
+  page,
+  api,
+  bluetooth,
+  worldRide,
+}) => {
+  await enterOldTown(10450, page, api, bluetooth, worldRide);
+  await expect.poll(() => worldRide.drawnCourseSections('MarktSetts')).toBeGreaterThan(0);
+  await expect.poll(() => worldRide.drawnCourseSections('WestPortal')).toBeGreaterThan(0);
+});
