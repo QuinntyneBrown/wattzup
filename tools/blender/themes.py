@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import moab as _moab
+
+THEMES['moab'] = _moab.THEME
+SCENERY['moab'] = _moab.scenery

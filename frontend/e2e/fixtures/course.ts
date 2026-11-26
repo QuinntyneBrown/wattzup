@@ -1,3 +1,4 @@
+import moabElevation from './moab-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3585,6 +3586,46 @@ export const itenCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 60, 24, 110),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const moabCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'moab-slickrock',
+  name: 'Moab Slickrock',
+  routeName: 'the slickrock road',
+  place: 'Moab, Utah',
+  world: 'moab',
+  distanceKm: 12.9,
+  climbingM: 261,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: moabElevation,
+  },
+  thumbnailUrl: 'maps/moab-slickrock.jpg',
+  photoUrl: 'maps/moab-slickrock-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 12, 80),
+      seg('work', 60, 18, 80),
+      seg('work', 120, 19, 80),
+      seg('recover', 60, 13, 80),
+      seg('work', 90, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 90, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 90, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 90, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 90, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 90, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('cool-down', 180, 14, 80),
     ],
   },
 };

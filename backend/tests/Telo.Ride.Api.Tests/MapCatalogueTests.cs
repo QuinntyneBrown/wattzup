@@ -2107,7 +2107,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Independence Pass", 15.2, 897, "Brutal", "Highway 82", "The Roaring Fork and the Continental Divide, Colorado"),
                 new Listed("Isle of Man Mountain Course", 8.133, 206, "Hard", "The Mountain Course", "The A18, the Bungalow and Creg-ny-Baa"),
                 new Listed("Iten, Kenya", 17.86, 378, "Hard", "The red-dirt road", "Iten and the Kerio Valley, Kenya"),
-                new Listed("Moab Slickrock", 12.9, 230, "Hard", "the slickrock road", "Moab, Utah"),
+                new Listed("Moab Slickrock", 12.9, 261, "Hard", "the slickrock road", "Moab, Utah"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
