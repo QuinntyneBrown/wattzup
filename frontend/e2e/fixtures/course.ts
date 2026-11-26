@@ -1,3 +1,4 @@
+import vegasElevation from './vegas-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const vegasCourseMap = {
   place: 'Las Vegas, Nevada',
   world: 'vegas',
   distanceKm: 9.0,
-  climbingM: 0,
+  climbingM: 5,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: vegasElevation,
   },
   thumbnailUrl: 'maps/las-vegas-strip.jpg',
   photoUrl: 'maps/las-vegas-strip-photo.jpg',
