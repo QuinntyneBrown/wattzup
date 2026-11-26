@@ -1,3 +1,4 @@
+import nuevedejulioElevation from './nuevedejulio-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const nueveDeJulioCourseMap = {
   place: 'Buenos Aires, Argentina',
   world: 'nuevedejulio',
   distanceKm: 18,
-  climbingM: 0,
+  climbingM: 30,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: nuevedejulioElevation,
   },
   thumbnailUrl: 'maps/avenida-9-de-julio.jpg',
   photoUrl: 'maps/avenida-9-de-julio-photo.jpg',
