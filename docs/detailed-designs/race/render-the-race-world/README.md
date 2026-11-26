@@ -1290,3 +1290,16 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+### Vienna Ringstrasse (#2247)
+
+Lay a single 5.3 km closed ring with cumulative distance for the 14 km class. Share the boulevard mesh across laps. Keep the trams on their own rails with overhead wire, leaving the cycle path open. Use near summer tree crowns and park fences, middle-distance moving trams and fixed monumental facades. Compose the stepped Parliament portico, Athena pedestal, museum domes, Rathaus spire and Votivkirche towers in geometry. Reuse the original Staatsoper and palace elevations as facade material. Animate the tram, fountain and park rider from the ride clock. Release each local resource on leaving.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Wiener Staatsoper, 0.14 km | Real 01, 08, 13, 14 and games 01, 05 | The opera loggia and copper roof rise across the tram rails. A red and ivory tram runs beside the rider. |
+| Maria-Theresien-Platz, 1.19 km | Real 03, 04, 05, 14 and games 02, 04 | The twin museum domes flank the bronze Maria Theresa monument beyond a tree-lined forecourt. |
+| Parliament and Athena, 2.02 km | Real 02, 11, 12, 15 and games 02, 04 | The white Greek portico stands above broad steps. The Athena fountain plays beneath a gilded figure. |
+| Rathaus and Burgtheater, 2.55 km | Real 02, 09, 10 and games 01, 05 | The pointed Rathaus tower and smaller pinnacles face the projecting Burgtheater facade across the Ring. |
+| Votivkirche approach, 3.12 km | Real 03, 05, 09, 10 and games 01, 04 | Two narrow openwork spires rise beyond the trees and overhead tram wires. |
+| Stadtpark boulevard, 4.71 km | Real 03-07 and games 03, 05 | The path follows mature trees and the park fence. A commuter rolls past as trams continue around the Ring. |
