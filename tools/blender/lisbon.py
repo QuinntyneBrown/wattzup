@@ -31,7 +31,7 @@ def paving(r,st,length,col,theme):
     bc=sys.modules[type(r).__module__];b=bc.Builder('Calcada','terrain');b.colours=[]
     steel=bc.Builder('TramRails','paint');steel.colours=[]
     for i,p in enumerate(r.s[:-1]):
-        ribbons=[(-5.3,5.3,0,0xCEC4A4,b),(-5.3,-3.83,.09,0xE6DBC1,b),(3.83,5.3,.09,0xE4D9BE,b)]
+        ribbons=[(-5.3,5.3,0,0x92918B,b),(-5.3,-3.83,.09,0xE6DBC1,b),(3.83,5.3,.09,0xE4D9BE,b)]
         for left in (-1.50,1.50):
             for dx in (-.45,.45):
                 mid=left+dx
@@ -45,7 +45,12 @@ def land(r,col,theme,bc):
     b=bc.Builder('AlfamaHill','terrain');b.colours=[]
     def height(p,off):
         if off<0:return p['z']-.22+smooth(6,218,-off)*21
-        return p['z']-.22-max(0,off-8)*(.27+.09*math.sin(p['d']/811))
+        slope=max(0,off-8)*(.27+.09*math.sin(p['d']/811))
+        z=p['z']-.22-slope
+        if opening(p['d'])>.05:
+            river_z=p['z']-.22-(p['z']-3)*(.38*smooth(6,32,off)+.62*smooth(26,135,off))
+            z+=(river_z-z)*opening(p['d'])
+        return z
     last=None
     for i in range(0,len(r.s),3):
         p=r.s[i];row=[]
@@ -66,19 +71,43 @@ def arch(art,at,across,z,width,height,colour):
     r=width/2;spring=z+height-r
     pts=[at(-.04,across-r,z),at(-.04,across+r,z)]
     pts.extend(at(-.04,across+r*math.cos(j*math.pi/12),spring+r*math.sin(j*math.pi/12)) for j in range(13))
-    art.face(pts,(colour,)*len(pts))
+    art.face(pts[::-1],(colour,)*len(pts))
 
 
-def churches(k,art):
-    for d,off,color,tower_height in ((1076,-17,0xBBAB89,19),(4796,66,0xE2E0CC,28)):
+def front(walls,at,x,centre,width,lo,hi,tile):
+    u,v=tile
+    picture(walls,(at(x,centre+width/2,lo),at(x,centre-width/2,lo),at(x,centre-width/2,hi),at(x,centre+width/2,hi)),((u+.003,v+.003),(u+.497,v+.003),(u+.497,v+.497),(u+.003,v+.497)))
+
+
+def churches(k,art,carved):
+    for d,off,color,tower_height in ((1104,-15,0xBBAB89,18),(4806,73,0xE2E0CC,30)):
         at,h=site(k,d,off);stone=lin(color);roof=lin(0xA16A4B);dark=lin(0x514F49)
         base=-1 if off<0 else -9
+        if off>0:
+            # São Vicente stands on its own Alfama spur above the river.
+            rings=[]
+            for radius,drop in ((1,0),(1.5,3.2),(2.15,12),(3.2,26)):
+                ring=[]
+                for j in range(24):
+                    a=math.tau*j/24
+                    x,y,z=at(8+19*radius*math.cos(a),18*radius*math.sin(a),base-drop)
+                    if radius==3.2:z=min(z,k.height_at(x,y)-2)
+                    ring.append((x,y,z))
+                rings.append(ring)
+            paving=lin(0xC9BCA2);grass=lin(0x919269);rock=lin(0x9D937B)
+            art.face(rings[0],(paving,)*24)
+            for inner,outer,upper,lower in zip(rings,rings[1:],(paving,grass,rock),(grass,rock,grass)):
+                for j in range(24):
+                    n=(j+1)%24
+                    art.face((inner[j],outer[j],outer[n],inner[n]),(upper,lower,lower,upper))
         art.box(at(8,0,base),(16,21,13.8),h,stone);art.roof(at(8,0,base+13.8),16.4,20.2,2.75,h,roof)
+        front(carved,at,-.34,0,12.35,base+.03,base+13.73,(0,.5) if off<0 else (0,0))
         for side in (-8,8):
             art.box(at(2.5,side,base),(6,5.7,tower_height),h,stone)
             art.box(at(2.5,side,base+tower_height-.25),(6.4,6.2,.65),h,lin(0xD9CCB4))
             def face(u,v,z):return at(u-.56,v,z)
             for j in (-.9,.9):arch(art,face,side+j,base+tower_height-4,1.22,2.8,dark)
+            front(carved,at,-.67,side,5.72,base+.03,base+tower_height-.31,(.5,.5))
             if off<0:
                 for u in (-.1,1.18,2.46,3.74,5.02):
                     for v in (-2.52,2.52):art.box(at(u,side+v,base+tower_height+.35),(.70,.7,.93),h,stone)
@@ -98,7 +127,7 @@ def churches(k,art):
             for j in (-4.3,0,4.3):art.box(at(-.08,j,base+6.2),(.15,.45,6.2),h,lin(0xC4C1AD))
 
 
-def castle(k):
+def castle(k,carved):
     # Two towers flank a rising curtain, plus the higher keep, as seen from the final lane.
     bare=type(k.B['terrain'])('CastleStone','terrain');bare.colours=[];k.B['CastleStone']=bare
     art=Painted(k);art.b=bare
@@ -116,23 +145,38 @@ def castle(k):
                 if j in (1,2):art.box(at(u+side*(size/2-.5),v+v0,hi),(1.08,1.16,1.5),h,wall)
     def gate(u,v,z):return at(-29.7+u,-8+v,z)
     arch(art,gate,0,0,3.15,4.85,lin(0x554F44))
+    front(carved,at,-29.73,-8,6.93,-.05,12.90,(.5,0))
+    for u,v,span,hi in ((14,-8,8.3,16),(36,4,10,19)):
+        for j in (-1,1):
+            art.box(at(u+j*span*.22,v-span/2-.04,hi*.57),(.20,.08,1.22),h,lin(0x4C4B42))
 
 
 def scenery(k):
     art=Painted(k);background=Painted(k,'peaks');river=Painted(k,'sea')
-    walls=pictured(k,'Azulejos');tiles=(0xB96547,0xAE6249,0xCA7951,0xAF6952)
-    churches(k,art);castle(k)
+    walls=pictured(k,'Azulejos');carved=pictured(k,'LisbonCarving');vines=pictured(k,'AlfamaVines');tiles=(0xB96547,0xAE6249,0xCA7951,0xAF6952)
+    churches(k,art,carved);castle(k,carved)
     river.face(((-1100,450,0),(9000,450,0),(9000,11000,0),(-1100,11000,0)),tuple(lin(t) for t in (0x5FABB7,0x5FABB7,0x83B6C0,0x86B9C5)))
+    last=None
+    for d in range(-70,6650,27):
+        row=[]
+        for off,tone in ((126,0x71B4C1),(158,0x60AEBD),(390,0x519BB4),(2000,0x5196AF),(6500,0x8ABCC8)):
+            x,y,_=k.road.pos(d,off);row.append(((x,y,5.25),lin(tone)))
+        if last:
+            for a,b,c,e in zip(last,last[1:],row[1:],row):river.face((a[0],e[0],c[0],b[0]),(a[1],e[1],c[1],b[1]))
+        last=row
     for d in range(-60,6660,13):
         yaw=heading(d)
         for side in (-1,1):
-            if ((opening(d)>.15 and side>0) or (abs(d-1076)<28 and side<0) or (abs(d-6096)<60 and side>0) or (d//13+side)%12 in (3,4)):continue
+            if ((opening(d)>.15 and side>0) or (abs(d-1104)<45 and side<0) or (abs(d-6096)<60 and side>0) or (d//13+side)%12 in (3,4)):continue
             width=k.rng.uniform(9.3,13.7);depth=k.rng.uniform(5.7,8.2);high=k.rng.uniform(6.4,13.3)
             at,h=site(k,d,side*(5.7+depth/2));t=k.rng.randrange(4)
             art.box(at(0,0,-2),(width,depth,high+2),h,lin((0xDBC5AD,0xEBCEAE,0xCBC8AE,0xD9BBA8)[t]))
             art.roof(at(0,0,high),width+.18,depth+.32,1.46,h,lin(tiles[t]))
             y=-side*(depth/2+.045);u=(t%2)*.5;v=(t//2)*.5
             picture(walls,(at(-width/2,y,-.23),at(width/2,y,-.23),at(width/2,y,high),at(-width/2,y,high)),((u+.003,v+.003),(u+.497,v+.003),(u+.497,v+.497),(u+.003,v+.497)))
+            if t==3 and d%3==0:
+                y2=y-side*.28
+                picture(vines,(at(-3.5,y2,2.38),at(-.60,y2,2.38),at(-.60,y2,5.23),at(-3.5,y2,5.23)),((0,0),(.5,0),(.5,1),(0,1)))
             if t==1:
                 art.box(at(0,y-side*.32,3.75),(width*.67,.70,.17),h,lin(0xCCC0A5))
                 for j in range(9):art.box(at(-width*.32+j*width*.08,y-side*.65,3.88),(.038,.041,.82),h,lin(0x485354))
@@ -150,10 +194,17 @@ def scenery(k):
         at,h=site(k,d,0)
         if d%153==20:
             for j in range(11):art.box(at(0,-6-j*.43,-.12+j*.175),(2.4,.46,.18),h,lin(0xCEC5AB if j%2 else 0xB9B09C))
-        for off in (36,61,97,153,213,294):
+        for off in (29,46,63,83,105) if opening(d)>.1 else (36,61,97,153,213,294):
             x,y,_=at(0,off);base=k.height_at(x,y);high=k.rng.uniform(5,11);w=k.rng.uniform(10,20);depth=k.rng.uniform(7,12)
             background.box((x,y,base-3),(w,depth,high+3),h,lin(k.rng.choice((0xE4CCA7,0xD9C6B1,0xDDBEAA))))
             background.roof((x,y,base+high),w,depth,k.rng.uniform(1.7,3),h,lin(k.rng.choice(tiles)))
+    for centre in (3360,4700):
+        for d in range(centre-150,centre+194,16):
+            for j,off in enumerate((26,49,72,95)):
+                at,h=site(k,d+j%2*6,off);x,y,_=at(0,0);base=k.height_at(x,y);w=k.rng.uniform(10,15);depth=k.rng.uniform(6,10);high=k.rng.uniform(5,9)
+                background.box((x,y,base-2),(w,depth,high+2),h,lin(k.rng.choice((0xE8C5AC,0xE5D4B4,0xCFB5A5,0xDDD2BD))))
+                background.roof((x,y,base+high),w+.2,depth+.2,2.10,h,lin(k.rng.choice(tiles)))
+                background.box((x+2,y,base+high+1.6),(.7,.62,1.02),h,lin(0xDDD0B2))
     for d in (120,2178,3360,4705):
         at,h=site(k,d,0)
         for j in range(4):
@@ -171,9 +222,10 @@ def scenery(k):
             for v in (-.9,2.1):art.box(at(0,v,.15),(.20,.20,3.16),h,lin(0xDEDBCC))
             art.box(at(0,.6,3.27),(.22,3.83,.16),h,lin(0xA2A189))
             art.box(at(0,1.82,3.43),(8.25,.16,.14),h,lin(0xA2A189))
+            picture(vines,(at(-4,1.72,2.43),at(4,1.72,2.43),at(4,1.72,3.82),at(-4,1.72,3.82)),((.5,0),(1,0),(1,1),(.5,1)))
     return {'efforts':0}
 
 
 THEME={'lay':route,'surface_builder':paving,'land_builder':land,'terrain':{'sea':False},'land':{'mid':0xB4A27C},
        'road_half_width':3.83,'sky':[0xDBEBE9,0xBDDEE9,0x91C8E7,0x67A6DA,0x4588C8],'haze':0xC3DBDE,
-       'light':[0xFFF0D3,1.72],'fill':[0xC9E0F1,0xB5A285],'sun_altitude':.89,'sun_azimuth':.79}
+       'light':[0xFFF0D3,1.72],'fill':[0xC9E0F1,0xB5A285],'sun_radius':14,'sun_altitude':.89,'sun_azimuth':.79}
