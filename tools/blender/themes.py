@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import surfers as _surfers
+
+THEMES['surfers'] = _surfers.THEME
+SCENERY['surfers'] = _surfers.scenery
