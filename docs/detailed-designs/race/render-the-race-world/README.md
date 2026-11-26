@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Times Square New Year's Eve (#2231)
+
+Stretch the Broadway approach and crowd pens to fit Give Me One Minute’s 8.70 km course. Build the physical bow tie where Seventh Avenue crosses Broadway. Keep the One Times Square wedge, rooftop mast and crystal ball fixed in world space. The catalogue resolves the map to the authored course and Race loads the nighttime scenery on entry.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Broadway approach, 0.12 km | Real 02, 04, 11–13 and games 03 and 05 | The dark road and yellow lane stripes run between illuminated shop windows, theatre marquees and deep rows of office windows. |
+| The billboard canyon, 1.74 km | Real 02–05, 11–12 and games 01, 03 and 05 | Wraparound LED panels alternate red, blue and gold artwork on different buildings. Broken bands of colour reflect from the asphalt. |
+| Duffy Square, 3.38 km | Real 03–05, 11, 14 and games 02 and 04 | The TKTS red steps rise across the Broadway and Seventh Avenue bow tie. Crossing stripes frame the narrow end of the wedge. |
+| The crowd pens, 5.19 km | Real 01, 06–08, 13–15 and games 02 and 03 | Blue police barricades, officers and camera crews line the cleared lane. Winter coats, party hats and condensed breath fill the spectator pens. |
+| One Times Square, 7.22 km | Real 02, 06–07, 09–10 and games 01 and 05 | A live countdown ticks beneath the illuminated faceted ball. The ball slides along the rooftop mast as spectators look up. |
+| Midnight on Broadway, 8.52 km | Real 01, 06–10, 14–15 and games 01 and 04 | The 2027 sign shines above the clearing. Coloured paper flutters into the light and gathers on the marked road by the barriers. |
+
+Use the Caribana crowd and skyline depth arrangement to separate shoulder-height barricades, crowd pens and towers. Chunk the street fronts and repeat original LED artwork over distinct planes. Bake reflection colour and lettering into the low-tier surfaces, share crowd cutouts, and bound the number of moving confetti sheets and breath sprites. Derive the countdown, ball drop and moving effects from the race clock so pause holds every element. Compare six rider views and sample sixty seconds at each tablet position. See ADRs 0021, 0023, 0030, 0034 and 0035.
