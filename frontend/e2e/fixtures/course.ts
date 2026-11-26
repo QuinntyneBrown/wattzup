@@ -1,3 +1,4 @@
+import montmartreElevation from './montmartre-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const montmartreCourseMap = {
   place: 'Montmartre, Paris',
   world: 'montmartre',
   distanceKm: 8.4,
-  climbingM: 0,
+  climbingM: 552,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: montmartreElevation,
   },
   thumbnailUrl: 'maps/montmartre.jpg',
   photoUrl: 'maps/montmartre-photo.jpg',
