@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Napa Vineyards (#2174)
+
+Rider feedback in #915 singles out the existing world’s look and feel. Keep the low rolling Silverado Trail, warm afternoon and sightline to the winery tower, and capture the original ride at each position before changing it. Preserve the existing 18-degree bends over 130 metres and the cadence and resistance of Easy Riding.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Silverado Trail, 0.08 km | Real 01–03 and 06. Games 02 and 04. | A broad paved shoulder follows the yellow centre lines between the first trellises. Long oak shadows cross the tarmac. |
+| Mustard between trellises, 1.46 km | Real 04, 05, 09–11. Games 01–03. | Sunlit mustard and orange poppies edge weathered vineyard posts. Parallel vine rows run across the valley floor to the dry hills. |
+| Stone winery terrace, 3.12 km | Real 06, 08, 09 and 14. Games 02 and 03. | A gravel turnoff climbs to the fieldstone cellar. Low walls, shaded tables, wine barrels and parasols line its tasting terrace. |
+| Oak-shaded gate, 4.63 km | Real 02, 07, 13 and 15. Games 03 and 05. | A carved winery sign hangs between masonry piers. Iron gate leaves open under a spreading live oak. |
+| Vaca and Mayacamas ranges, 6.18 km | Real 01, 03, 06, 10 and 12. Games 01 and 04. | A rise reveals both belts of tawny hills behind the vineyards. A convertible follows the bends and another rider pedals along the shoulder. |
+| Mission winery, 7.84 km | Real 07, 08 and 15. Games 02 and 05. | A red-tiled arcade meets the white stucco bell tower. The road rises toward its bell opening and the courtyard beyond. |
+
+Build the arcade, bell opening and stone terrace at rider scale. Vary the vineyard row direction and spacing across fields, retain clear driveway openings and use the distant hills to orient riders. Use repeatable geometry for vines, posts and gates. Share moving actors and release loaded images and meshes on exit. Compare the opening and busy winery approach with Caribana. Credits are in docs/worlds/napa/SOURCES.md.
