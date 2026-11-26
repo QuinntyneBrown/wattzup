@@ -1,3 +1,4 @@
+import ventouxElevation from './ventoux-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const ventouxCourseMap = {
   place: 'Vaucluse, France',
   world: 'ventoux',
   distanceKm: 8.395,
-  climbingM: 0,
+  climbingM: 615,
   rating: 'Brutal',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: ventouxElevation,
   },
   thumbnailUrl: 'maps/mont-ventoux.jpg',
   photoUrl: 'maps/mont-ventoux-photo.jpg',
