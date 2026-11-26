@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import strade as _strade
+
+THEMES['strade'] = _strade.THEME
+SCENERY['strade'] = _strade.scenery
