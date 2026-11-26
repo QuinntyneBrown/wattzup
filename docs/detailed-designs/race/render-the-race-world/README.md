@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Valais Ski Stations (#2238)
+
+Restore the historical Zone 2 class to the Race catalogue and give the world its own lazy native scene. Follow twelve kilometres of station road with a gradual climbing profile. Hold the glacier skyline fixed as the road turns. The resort architecture and empty lift infrastructure belong on the rolling green slopes below the peaks.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The summer meadow, 0.14 km | Real 03–05, 11, 13 and games 01–02, 05 | Alpine daisies edge a smooth tarmac road. The Matterhorn and Weisshorn rise above the sunny green pasture. |
+| Grimentz granaries, 2.35 km | Real 06–08, 10 and games 02–03 | Dark larch chalets carry red window boxes. A stone-roofed mazot stands on mushroom-shaped stone supports. |
+| The idle ski lift, 4.65 km | Real 04–05, 11–12 and games 01–03 | Empty chairs hang over a summer piste between pylons. Larch and pine mark the edge of the meadow. |
+| The Hérens pasture, 6.73 km | Real 03, 09, 11 and games 02, 04–05 | A black cow grazes near her calf. The brass bell beneath her collar swings as she lowers her head. |
+| The PostBus junction, 8.92 km | Real 01–02, 05–06, 12 and games 01, 03–04 | A yellow postal bus rounds the hairpin near a yellow hiking sign. The white village church rises beyond the bus. |
+| Rhône valley overlook, 11.76 km | Real 11–15 and games 02, 04–05 | Beyond the stone parapet, terraced vineyards descend to the wide Rhône valley and snow-covered skyline. |
+
+Adapt Caribana’s fixed horizon, varied middle distance, animated foreground and shared materials. Build peaked roofs, wooden galleries, stilt footings, chairs and cables in depth. Keep summer lift machinery stationary. Animate the cow’s head, bell and bus from the ride clock, gate the bell audio on the rider’s sound setting, and release media and GPU resources on exit. Compare all six positions and measure both 60-second tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
