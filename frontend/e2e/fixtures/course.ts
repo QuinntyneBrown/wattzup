@@ -3588,3 +3588,38 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const okinawaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'okinawa-coast-road',
+  name: 'Okinawa Coast Road',
+  routeName: 'Okinawa Coast Road',
+  place: 'Okinawa, Japan',
+  world: 'okinawa',
+  distanceKm: 16.88,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/okinawa-coast-road.jpg',
+  photoUrl: 'maps/okinawa-coast-road-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 19, 80),
+      seg('work', 60, 21, 80),
+      seg('recover', 120, 14, 80),
+      seg('work', 840, 19, 84),
+      seg('work', 180, 22, 80),
+      seg('work', 60, 24, 110),
+      seg('recover', 300, 13, 80),
+      seg('work', 60, 24, 110),
+      seg('recover', 180, 13, 80),
+      seg('work', 60, 24, 110),
+      seg('recover', 60, 13, 80),
+      seg('work', 60, 24, 110),
+      seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
