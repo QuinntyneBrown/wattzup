@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Toronto Waterfront Trail (#2232)
+
+Keep downtown on the north side of Queens Quay and open Lake Ontario to the south. Set the tower core, observation decks and antenna to Caribana’s 553 m proportions. Build the Rogers Centre roof separately so its pale dome remains distinct against the glass condo frontage. Space the trail landmarks along the 13.075 km historical class profile.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Queens Quay trailhead, 0.14 km | Real 01–03, 10–11 and games 01–02 | A red cycleway, square granite curbs and pale maple-leaf markers lead past summer joggers and bike-share riders. |
+| The Queens Quay streetcar, 2.63 km | Real 01–03, 12 and games 01, 02 and 04 | An articulated red streetcar rolls under overhead wires on its own rails, with glazed condo balconies on the north side. |
+| Simcoe WaveDeck, 4.91 km | Real 01, 03–04, 12, 15 and games 03 and 05 | Long curved timber ribs dip toward the harbour edge. The Rogers Centre dome and CN Tower rise behind the condo roofs. |
+| HTO Park, 7.05 km | Real 04, 08, 11 and 14 and games 03–05 | Canary-yellow parasols and Muskoka chairs stand in pale sand. Breezy water, railings and white sails separate the park from the islands. |
+| Jack Layton Ferry Terminal, 9.88 km | Real 05–06, 09, 12–13 and 15 and games 02–03 | A double-ended white island ferry glides away from the landing with a wake. Lake Ontario extends past the low island shore. |
+| Sugar Beach, 12.81 km | Real 07–08, 12–15 and games 03 and 05 | Pink umbrellas and waterfront boardwalk seating open a final sightline across the harbour. Local pedestrians and cyclists use the red trail. |
+
+Caribana’s skyline, middle-distance street activity and close silhouettes guide the composition. Render the glass balconies and foliage on shared original atlases. Build curving WaveDeck ribs, streetcar rails and umbrella canopies in sectioned geometry. Reuse the Toronto tower dimensions and silhouette. Float the double-ended ferry at lake level, run the streetcar along its own rails and keep joggers on the trail shoulder. Tie motion to ride time, bound actor counts, release all materials, and measure both sections for sixty seconds. See ADRs 0021, 0023, 0030, 0034 and 0035.
