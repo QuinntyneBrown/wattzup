@@ -1,3 +1,4 @@
+import paineElevation from './paine-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const paineCourseMap = {
   place: 'Patagonia, Chile',
   world: 'paine',
   distanceKm: 13.025,
-  climbingM: 0,
+  climbingM: 141,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: paineElevation,
   },
   thumbnailUrl: 'maps/torres-del-paine.jpg',
   photoUrl: 'maps/torres-del-paine-photo.jpg',
