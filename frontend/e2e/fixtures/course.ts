@@ -3588,3 +3588,37 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const sfhillsCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'san-francisco-hills',
+  name: 'San Francisco Hills',
+  routeName: 'Filbert Street',
+  place: 'San Francisco, California',
+  world: 'sfhills',
+  distanceKm: 8.9,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/san-francisco-hills.jpg',
+  photoUrl: 'maps/san-francisco-hills-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 19, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 120, 19, 80),
+      seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
