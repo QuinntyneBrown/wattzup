@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Strasbourg Christmas Market (#2221)
+
+Extend the market itinerary to the original 10.15 km class distance. Keep the cathedral’s single spire fixed above the lanes, open the square around the Christmas tree, and lower the river below the quays. Full-height shop fronts read at rider scale, while rooflines and the distant towers sit behind the chalets.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Garland lane, 0.12 km | Real 01, 02, 07 and 09. Games 01, 03 and 04. | Golden star garlands cross a narrow sandstone lane. The damp cobbles carry short broken highlights between the coloured timber frames. |
+| Cathedral square, 1.83 km | Real 03, 06, 08 and 12. Games 01 and 03. | The asymmetrical pink sandstone west front rises above the market roofs. One tall openwork spire, its rose window and recessed portals stand in warm floodlight against the deep blue sky. |
+| Market chalets, 3.57 km | Real 03, 04, 07, 10 and 11. Games 02 and 05. | Low wooden chalets display gingerbread hearts, bredele and painted ornaments beneath pine garlands. Steam lifts from a hot-drink stall beside winter shoppers. |
+| Rue Mercière, 5.32 km | Real 01, 08, 09 and 15. Games 01 and 02. | Large teddy bears and wrapped gifts cling to projecting half-timbered upper floors. Illuminated blue-and-gold angel motifs cross above the cyclists. |
+| Place Kléber, 7.21 km | Real 05, 10 and 13. Games 03 and 05. | The square opens to the enormous fir. Warm bulbs, baubles and the star brighten the branches; shoppers in hats and scarves gather at its foot. |
+| Ponts Couverts, 9.87 km | Real 09 and 14. Games 04 and 05. | The route follows the Ill to the stone bridge. The defensive towers break the low skyline, and reflections of the towers and amber lamps ripple in the dark water. |
+
+Use baked highlights on wet cobbles and lit facade recesses. Share materials across repeated roof timbers, market roofs and overhead lights. Tie cup steam, tree bulbs and rippling canal highlights to the ride clock. Bound translucent layers and release their textures and geometry on exit. Capture six rider views and measure the opening and Place Kléber on the simulated tablet. See ADRs 0021, 0023, 0030, 0034 and 0035.
