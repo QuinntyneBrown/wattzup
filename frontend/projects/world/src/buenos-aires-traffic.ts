@@ -20,11 +20,11 @@ import type { Course, CoursePlace } from './course';
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 const stops = [
   [80, 154, -3, 2.0],
-  [3210, 3250, -17, 2.0],
+  [3210, 3227, -18, 2.0],
   [6740, 6787, 43, 7.8],
   [9780, 9828, 36, 4.2],
   [13620, 13645, -8, 2.0],
-  [17530, 17626, -10.6, 5.5],
+  [17530, 17720, -13.1, 3.65],
 ] as const;
 export class BuenosAiresTraffic {
   readonly root = new Group();
@@ -202,7 +202,7 @@ export class BuenosAiresTraffic {
       if (i === 0) this.shown.taxiTravel = d;
     }
     for (const [i, bus] of this.buses.entries()) {
-      const d = metres + 24 + 50 * i + 5.7 * Math.sin(time * 0.18 + i);
+      const d = metres + 13 + 50 * i + 5.7 * Math.sin(time * 0.18 + i);
       this.place(bus, d, i === 0 ? -18 : -22, i === 1);
       if (i === 0) this.shown.busTravel = d;
     }

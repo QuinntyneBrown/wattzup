@@ -82,6 +82,13 @@ def scenery(k):
             art.box(a(0,0,3.62),(45,3.44,.28),h,red)
             for u in (-14,-5,4,13):art.box(a(u,-.42,.82),(3.14,.56,.12),h,steel)
             sign(boards,a,-6,-1.73,2.83,10,.81,1,((.5,.5),(1,.5),(1,1),(.5,1)))
+    for d,side in ((3231,1),(13649,1),(17570,-1)):
+        for j in range(8):
+            a,h=site(k,d+j*1.34,side*(14.55+(j%3)*.54) if side==1 else -13.7)
+            skin=lin((0x976C51,0xBF9477,0xAA805E)[j%3])
+            for v in (-.09,.09):art.box(a(0,v,.1),(.15,.14,.79),h,dark)
+            art.tube(a(0,0,.89),.17,.22,.57,lin((0x736379,0x557F82,0xC19357,0xB76C4F)[j%4]),lin((0x736379,0x557F82,0xC19357,0xB76C4F)[j%4]),8)
+            art.tube(a(0,0,1.47),.12,.12,.23,skin,skin,8,skin)
     for d in (105,1155,3189,6720,9790,13638,17552,17710):
         for off in range(-26,66,2):
             a,h=site(k,d,off);art.box(a(0,0,.105),(4.7,1.02,.024),h,lin(0xD4D2C5))
@@ -100,7 +107,16 @@ def scenery(k):
     for u in (-29,-22,22,29):art.box(a(u,12.01,1.23),(.61,.81,12.2),h,trim)
     art.box(a(0,12,13.7),(64,.85,.65),h,trim)
     for n in range(4):art.box(a(0,14.2-n*.55,.04+n*.19),(33,1.65,.20),h,stone)
-    a,h=site(k,17626,10.6)
+    a,h=site(k,17720,13.1)
+    art.box(a(0,0,-.02),(76,22,.30),h,trim)
+    for side in (-1,1):
+        for u in (-24,24):
+            art.box(a(u,side*6.6,.3),(20,6.9,.20),h,lin(0x68935A))
+        for u in range(-32,35,8):
+            art.box(a(u,side*10.35,.30),(.22,.22,.71),h,steel)
+    for i in range(4):
+        for v in (-1,1):
+            art.box(a(-12+i*8,v*8,.32),(1.85,.48,.37),h,stone)
     art.box(a(0,0,.1),(20.8,20.8,.35),h,stone);art.box(a(0,0,.45),(11.7,11.7,.58),h,trim)
     levels=((1.03,3.35),(60.9,2.12),(65.2,1.84),(68.03,.05))
     shades=[lin(c) for c in (0xEEE3CA,0xD9CDB4,0xF4EBD4,0xC2BAAB)]
