@@ -3588,3 +3588,38 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const tulipsCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'dutch-tulip-fields',
+  name: 'Dutch Tulip Fields',
+  routeName: 'The bulb fields',
+  place: 'Bollenstreek, Netherlands',
+  world: 'tulips',
+  distanceKm: 10.1,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/dutch-tulip-fields.jpg',
+  photoUrl: 'maps/dutch-tulip-fields-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 120, 18, 90),
+      seg('work', 60, 19, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 180, 19, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 120, 19, 55),
+      seg('recover', 60, 13, 80),
+      seg('work', 120, 19, 105),
+      seg('recover', 60, 13, 80),
+      seg('work', 120, 19, 60),
+      seg('cool-down', 180, 13, 80),
+    ],
+  },
+};
