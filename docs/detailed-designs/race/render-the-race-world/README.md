@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Outback Highway (#2182)
+
+Condense the Lasseter Highway into the historical Running on Empty stages. Use the driving side of the Australian highway for the rider and keep the road train in the opposite lane. Use separate silhouettes and distances for the long flat table of Mount Conner, rounded Kata Tjuta domes and the grooved west face of Uluru.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Erldunda turnoff, 0.08 km | Real 01, 06–08 and 15. Games 02 and 03. | Green direction boards lead onto straight bitumen. White edge lines separate the riding surface from red wheel ruts and golden spinifex. |
+| Road train, 1.71 km | Real 01, 05 and 15. Games 02, 03 and 05. | A long-bonneted prime mover and three articulated trailers pass in the opposing lane. Dust trails off the outer wheels and the apparent wind shifts as the vehicle passes. |
+| Curtin Springs, 3.62 km | Real 07, 08, 11 and 14. Games 02 and 03. | Fuel bowsers stand on a red-sand apron below the corrugated roadhouse veranda. The next-fuel sign, desert oaks and timber fencing stand apart from its frontage. |
+| Mount Conner lookout, 5.41 km | Real 06, 10, 13 and 14. Games 02 and 05. | The distant mesa has a long level summit and sloping shoulders. A wedge-tailed eagle circles above roadside scrub and the yellow wildlife-warning signs. |
+| Kata Tjuta, 7.88 km | Real 03, 04, 09 and 15. Games 02–04. | A cluster of rounded rock domes rises beyond the desert oaks. Sunset begins to catch the shoulders of the domes. |
+| Uluru at dusk, 10.21 km | Real 02, 09 and 12. Games 01, 03 and 04. | Uluru rises as a broad single monolith, warm orange-red across a dark spinifex plain. Erosion channels mark its face under a pink and purple sky. |
+
+Grade the red verge down from the seal and stretch the wheel ruts along the road. Build the three trailers, couplings and wheels at their own physical lengths. Dust and eagle flight follow the ride clock. Use a bounded set of native scrub clusters and warm the rock faces as the sky cools near the finish. Compare the busiest passing sequence with the Caribana tablet evidence. Credits are in docs/worlds/outback/SOURCES.md.
