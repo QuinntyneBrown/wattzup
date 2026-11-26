@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Marina Bay Night (#2160)
+
+Rider feedback #913 praises the original night world. Its class street module already has a lit skyline, three leaning hotel towers and the SkyPark. Retain that palette and the open view across the water. The race route places its landmarks at fixed positions around the bay. The original seven-stage GCN class is Fast Paced Cadence Variations.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Bayfront promenade, 0.08 km | Real 01, 06, 10 and 14. Games 01 and 02. | Three inclined towers support the cantilevered SkyPark across open water. Lamps and palm trunks pass the rider while the hotel stays fixed on the skyline. |
+| Merlion Park, 1.84 km | Real 06, 07 and 11. Games 02 and 05. | The white lion and scaled tail rise on a wave plinth. Its water jet curves into the bay in front of the reflected CBD towers. |
+| Esplanade shore, 3.62 km | Real 03, 06, 07 and 12. Games 01 and 04. | Twin spiked theatre domes catch gold light behind the promenade. Strollers and joggers pass the rail by the dark water. The spherical Apple pavilion in real 12 is a separate south-bank landmark. |
+| Helix Bridge and lotus, 5.36 km | Real 02, 04, 05 and 14. Games 03–05. | Two illuminated spirals twist over the bridge deck. The ArtScience lotus petals open beyond the structure. |
+| Supertree Grove, 7.58 km | Real 08–09. Games 03–05. | Violet and cyan branches spread above a narrow suspended OCBC Skyway. The crowns change colour on the ride clock. |
+| Flyer and light show, 10.12 km | Real 01, 03, 10, 13 and 15. Games 01–02 and 04. | Upright white capsules follow the illuminated Singapore Flyer rim. Narrow beams cross the bay above the reflections. |
+
+Use Caribana’s fixed skyline and merged window strips for the CBD, and tint their broken reflections on the water plane. Keep the Helix Bridge spirals and lotus geometry separate from the skyline. Batch railings, palm crowns and garden branches along the route. Animate the wheel, tree light and joggers directly from race time. Release course textures and draw buffers when leaving the route. Image credits are in docs/worlds/marinabay/SOURCES.md.
