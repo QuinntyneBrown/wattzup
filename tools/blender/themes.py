@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import okinawa as _okinawa
+
+THEMES['okinawa'] = _okinawa.THEME
+SCENERY['okinawa'] = _okinawa.scenery

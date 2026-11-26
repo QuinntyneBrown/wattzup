@@ -3598,7 +3598,7 @@ export const okinawaCourseMap = {
   place: 'Okinawa, Japan',
   world: 'okinawa',
   distanceKm: 16.88,
-  climbingM: 62,
+  climbingM: 56,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
