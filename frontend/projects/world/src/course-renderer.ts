@@ -151,6 +151,7 @@ import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
 import type { ManxMountain } from './manx-mountain';
+import type { TorontoHarbourfront } from './toronto-harbourfront';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -206,6 +207,8 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  BerlinHorizon: 62000,
+  TerminalBays: 1800,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -353,6 +356,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
+  private toronto: TorontoHarbourfront | null = null;
   private mountain: ManxMountain | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
@@ -850,6 +854,20 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'toronto') {
+        const { TorontoHarbourfront } = await import('./toronto-harbourfront');
+        if (this.disposed) return false;
+        const harbour = await TorontoHarbourfront.load(this.course);
+        if (this.disposed) {
+          harbour.dispose();
+          return false;
+        }
+        this.toronto = harbour;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(harbour.root);
+        this.disposables.push(harbour);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1802,6 +1820,7 @@ export class CourseRenderer implements WorldRenderer {
       this.camera.position.y,
       this.camera.position.z,
     );
+    this.toronto?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -1961,6 +1980,7 @@ export class CourseRenderer implements WorldRenderer {
     this.bigSurCoast = null;
     this.icelandCoast = null;
     this.divide = null;
+    this.toronto = null;
     this.mountain = null;
     this.trainingHighlands = null;
     this.trams = null;
@@ -2053,7 +2073,7 @@ export class CourseRenderer implements WorldRenderer {
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
-    const clearValley = this.course!.file.id === 'engadin';
+    const clearValley = ['engadin', 'toronto'].includes(this.course!.file.id);
     const fogRange = this.dam
       ? ([450, 4200] as const)
       : this.course!.file.id === 'calobra'
@@ -2200,6 +2220,7 @@ export class CourseRenderer implements WorldRenderer {
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
+    if (this.toronto) Object.assign(materials, this.toronto.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
@@ -2278,7 +2299,7 @@ export class CourseRenderer implements WorldRenderer {
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
-      if (this.mountain && group === 'Sun') mesh.visible = false;
+      if ((this.mountain || this.toronto) && group === 'Sun') mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
           ...glow,
@@ -2774,6 +2795,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.z += (rider.z + 14 * uz - ahead.z) * overlook;
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
+    this.toronto?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
@@ -3283,6 +3305,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.strip) Object.assign(drawn, this.strip.report());
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
+    if (this.toronto) Object.assign(drawn, this.toronto.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;

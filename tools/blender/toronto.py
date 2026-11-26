@@ -57,7 +57,7 @@ def land(r,col,theme,bc):
 def scenery(k):
     art=Painted(k);facades=pictured(k,'QuayCondos');trees=pictured(k,'MapleTrees')
     people=pictured(k,'TrailVisitors');sky=pictured(k,'IslandHorizon');planks=pictured(k,'WaveTimber')
-    trail=pictured(k,'TrailMarkings')
+    trail=pictured(k,'TrailMarkings');furniture=pictured(k,'BeachFurniture')
     gray,steel,glass,wood,white,rail,iron,red,buff=map(lin,(0xB9B9B1,0x8A9094,0x7098A7,0x9F8468,0xECE9DC,0x858684,0x51636B,0xB35A49,0xC2AB8C))
     def panel(m,pts,idx=0,cols=1):
         u=idx/cols;v=(idx+1)/cols;picture(m,pts,((u+.002,0),(v-.002,0),(v-.002,1),(u+.002,1)))
@@ -93,12 +93,35 @@ def scenery(k):
         if beach(d)>.16 and j%2==0:
             for i in range(2):
                 at,h=site(k,d+i*5,-8.3-i*6.1-k.rng.uniform(0,5))
-                canopy=lin(0xF4CB46 if d<10000 else 0xF29BB7)
+                canopy=lin(0xFFC21C if d<10000 else 0xFF71AB)
                 art.tube(at(0,0,0),.064,.058,2.95,iron,white,8)
                 art.tube(at(0,0,2.58),2.21,.1,.55,canopy,canopy,12,cap=canopy)
                 for ang in (-.5,.5):
                     art.box(at(.65,ang,.38),(1.09,.5,.13),h,white)
                     beam(art,at(.09,ang,.38),at(-.27,ang,.93),.19,white)
+    for d in (152,2672,4918,7071,7098,9901,12832,12860):
+        at,h=site(k,d,-4.7)
+        art.box(at(0,0,.48),(2.3,.55,.16),h,wood)
+        art.box(at(0,-.34,.82),(2.32,.12,.46),h,wood)
+        for u in (-.81,.81):art.box(at(u,0,.03),(.12,.49,.52),h,iron)
+    for j,d in enumerate((7062,7073,7082,7095,12820,12837,12852)):
+        at,h=site(k,d,-9.4-j%3*2.3)
+        foot=lin(0xEEEBDF)
+        for side in (-.32,.32):
+            beam(art,at(0,side,.12),at(.65,side,.56),.081,foot)
+            beam(art,at(.63,side,.51),at(1.31,side,1.06),.09,foot)
+        art.box(at(.54,0,.45),(.78,.75,.085),h,foot)
+    # Ferry ticket shelter with a blue glazed canopy behind the landing.
+    at,h=site(k,9929,-10)
+    for u in (-6.5,0,6.5):
+        for v in (-2.8,2.8):art.tube(at(u,v,0),.12,.11,3,iron,steel,9)
+    art.box(at(0,0,3),(14.6,6.45,.26),h,glass)
+    for j,d in enumerate((7012,7038,7066,7078,7096,7123,12789,12807,12831,12852,12871,12897)):
+        at,h=site(k,d,-8.4-2*(j%3))
+        card(furniture,at,5.3,3.2,0 if d<10000 else 1)
+    for j,d in enumerate((155,183,2616,2669,4932,4952,9868,9902,12841)):
+        at,h=site(k,d,4.5 if j%2 else -4.9)
+        card(furniture,at,3.4 if j%2 else 2.4,1.42 if j%2 else 1.12,3 if j%2 else 2)
     for j in range(540):
         d=4810+j*.42;at,h=site(k,d)
         s=(d-4810)/226;side=shore(d)
