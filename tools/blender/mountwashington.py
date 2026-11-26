@@ -68,7 +68,12 @@ def scenery(k):
                 foot=max(0,abs(off)-4.7)*(.18 if off<0 else -.55)
                 for angle in (.28,1.85):
                     dx=r*math.cos(angle);dy=r*math.sin(angle);u=which/3
-                    picture(woods,(a(-dx,-dy,foot-.36),a(dx,dy,foot-.36),a(dx,dy,foot+high),a(-dx,-dy,foot+high)),((u+.002,0),(u+1/3-.002,0),(u+1/3-.002,1),(u+.002,1)))
+                    picture(woods,(a(-dx,-dy,foot-.84),a(dx,dy,foot-.84),a(dx,dy,foot+high),a(-dx,-dy,foot+high)),((u+.002,0),(u+1/3-.002,0),(u+1/3-.002,1),(u+.002,1)))
+    for d in range(3450,3900,2):
+        for side in (-1,1):
+            off=side*k.rng.uniform(2.6,5.2);a,h=site(k,d,off)
+            for n in range(3):
+                r=k.rng.uniform(.055,.17);art.tube(a(n*.34,0,.033),r,r*.72,r*.23,stone,lichen,6,stone)
     for d in range(4400,12820,9):
         for side in (-1,1):
             off=side*k.rng.uniform(5,20);a,h=site(k,d,off);r=k.rng.uniform(.25,1.45);foot=max(0,abs(off)-4.7)*(.18 if off<0 else -.58)
@@ -86,12 +91,24 @@ def scenery(k):
             beam(art,a(u,v,z),a(u+3,v,z+3*pitch),.105,.11,silver)
         art.box(a(u,0,z-.12),(.36,2,.13),h,brown);beam(art,a(u,0,z+.02),a(u+3,0,z+3*pitch+.02),.13,.13,dark)
         beam(art,a(u,-.72,z-1),a(u+3,-.72,z+3*pitch),.14,.14,brown)
-    for d in (6400,10295):
-        a,h=site(k,d+74,130)
-        picture(gulf,(a(-160,72,-55),a(160,-72,-55),a(160,-72,30),a(-160,72,30)),UV)
+    # Continue the Great Gulf past the photograph at each side with layered White Mountain ridges.
+    for d in range(5900,10800,48):
+        at,h=site(k,d,0)
+        for row in range(2):
+            depth=245+row*148;z=-82+row*13+15*math.sin(d/190+row)+9*math.cos(d/81)
+            a=at(0,depth,z);b=at(49,depth,z+3*math.sin(d/72))
+            c=lin(0x728883 if row==0 else 0x8D9C9C)
+            art.face((a,b,(b[0],b[1],b[2]-100),(a[0],a[1],a[2]-100)),(c,)*4)
+    for d in (6350,8475,10265):
+        a,h=site(k,d+96,236)
+        picture(gulf,(a(-204,96,-96),a(204,-96,-96),a(204,-96,27),a(-204,96,27)),UV)
     a,h=site(k,12365,-18)
     art.box(a(0,0,0),(26,12,5.4),h,stone);art.roof(a(0,0,5.38),27,13,1.18,h,dark)
     picture(walls,(a(-13,6.13,.05),a(13,6.13,.05),a(13,6.13,5.36),a(-13,6.13,5.36)),UV)
+    for side in (-1,1):
+        picture(walls,(a(13.1*side,6,.03),a(13.1*side,-6,.03),a(13.1*side,-6,5.36),a(13.1*side,6,5.36)),UV)
+    for y in (-4,-1.5,1,3.5):
+        art.box(a(-13.15,y,1.65),(.16,1.20,1.28),h,dark)
     art.tube(a(-9,4.2,3.4),2.33,2.33,7.3,stone,stone,18,stone);art.tube(a(-9,4.2,10.65),2.5,2.5,1.26,dark,dark,18,silver)
     for j in range(7):
         x=-9+1.75*math.cos(j*.90);y=4.2+1.75*math.sin(j*.90)
