@@ -1,3 +1,4 @@
+import stpatricksElevation from './stpatricks-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const stpatricksCourseMap = {
   place: 'Dublin, Ireland',
   world: 'stpatricks',
   distanceKm: 12.01,
-  climbingM: 0,
+  climbingM: 11,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: stpatricksElevation,
   },
   thumbnailUrl: 'maps/st-patricks-day-dublin.jpg',
   photoUrl: 'maps/st-patricks-day-dublin-photo.jpg',
