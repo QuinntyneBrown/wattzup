@@ -1,3 +1,4 @@
+import winnatsElevation from './winnats-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const winnatsPassCourseMap = {
   place: 'Derbyshire, England',
   world: 'winnats',
   distanceKm: 13.5,
-  climbingM: 0,
+  climbingM: 317,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: winnatsElevation,
   },
   thumbnailUrl: 'maps/winnats-pass.jpg',
   photoUrl: 'maps/winnats-pass-photo.jpg',
