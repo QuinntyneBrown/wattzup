@@ -3588,3 +3588,36 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const playgroundCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'playground-park-loop',
+  name: 'Playground Park Loop',
+  routeName: 'The park loop',
+  place: 'City park',
+  world: 'playground',
+  distanceKm: 13.225,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/playground-park-loop.jpg',
+  photoUrl: 'maps/playground-park-loop-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 13, 80),
+      seg('work', 180, 16, 85),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 19, 90),
+      seg('cool-down', 120, 10, 80),
+    ],
+  },
+};

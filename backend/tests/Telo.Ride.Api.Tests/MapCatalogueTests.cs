@@ -12,6 +12,27 @@ namespace Telo.Ride.Api.Tests;
 public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<TeloRideApiFactory>
 {
     [Fact]
+    public async Task Playground_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "playground-park-loop");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 13, 80),
+                new Segment("work", 180, 16, 85),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 300, 19, 90),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task Iceland_preserves_every_original_stage()
     {
         var map = Assert.Single(await ReadMaps(), m => m.Id == "iceland-ring-road");
@@ -2080,6 +2101,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Independence Pass", 15.2, 897, "Brutal", "Highway 82", "The Roaring Fork and the Continental Divide, Colorado"),
                 new Listed("Isle of Man Mountain Course", 8.133, 206, "Hard", "The Mountain Course", "The A18, the Bungalow and Creg-ny-Baa"),
                 new Listed("Iten, Kenya", 17.86, 378, "Hard", "The red-dirt road", "Iten and the Kerio Valley, Kenya"),
+                new Listed("Playground Park Loop", 13.225, 55, "Easy", "The park loop", "City park"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -2176,6 +2198,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("independence-pass", null),
                 ("isle-of-man-mountain-course", null),
                 ("iten-kenya", null),
+                ("playground-park-loop", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -2272,6 +2295,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("independence-pass", null),
                 ("isle-of-man-mountain-course", null),
                 ("iten-kenya", null),
+                ("playground-park-loop", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -2314,7 +2338,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten", "playground"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
