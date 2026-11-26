@@ -1552,3 +1552,7 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import serpentine as _serpentine
+THEMES['serpentine'] = _serpentine.THEME
+SCENERY['serpentine'] = _serpentine.scenery

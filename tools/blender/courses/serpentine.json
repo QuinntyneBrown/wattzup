@@ -1,0 +1,85 @@
+{
+  "id": "serpentine",
+  "name": "Serpentine, Hyde Park",
+  "world": "serpentine",
+  "theme": "serpentine",
+  "seed": 2206,
+  "layout": 0,
+  "class": {
+    "id": "15-minute-hiit-cardio",
+    "title": "15 Minute HIIT Cardio",
+    "channel": "GCN Training",
+    "videoId": "Pln_nGVk7Js",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "cool-down",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
