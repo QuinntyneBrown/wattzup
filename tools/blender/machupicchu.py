@@ -31,11 +31,15 @@ def surface(road,st,length,col,bc):
     b.build(col)
 
 
+def water_level(d):
+    return 2028+.018*min(max(0,d),2150)
+
+
 def bank(p,v):
     bridge=smooth(34,60,p['d'])*(1-smooth(110,134,p['d']))
     near=32+13*math.sin(p['d']/176)
     depth=p['z']-.27+max(0,-v-4)*.75
-    bottom=2026+.0006*p['d']
+    bottom=water_level(p['d'])-2.5
     gorge=smooth(4,near+4,v)
     channel=gorge+(1-gorge)*bridge
     return depth+(bottom-depth)*channel
@@ -82,12 +86,31 @@ def peak(art,x,y,z,width,depth,rise,seed):
 
 def ruins(k,art,d,side):
     at,h=site(k,d,side);grass=lin(0x8A9B5C);stone=lin(0xABAC96)
-    for j in range(10):
-        v=6+j*4.6;z=-1-j*1.48;wide=44+3*j
-        art.box(at(4,v,z-1.55),(wide,4.67,1.56),h,stone)
-        art.box(at(4,v,z),(wide,4.67,.13),h,grass)
+    # Terraces face downhill toward the rider; buildings occupy the crown.
+    ground=Painted(k)
+    slope=lin(0x738475);lichen=lin(0x949B79)
+    def flank(u,v1,v2,z,direction):
+        a,b=at(u,v1,z),at(u,v2,z)
+        edge=u+direction*(8+.2*(v1+20))
+        c,e=at(edge,v2,z-6.5),at(edge,v1,z-6.2)
+        ground.face((a,b,c,e),(grass,grass,lichen,slope))
+        low1,low2=at(edge+direction*36,v1+13,-85),at(edge+direction*36,v2+13,-85)
+        ground.face((e,c,low2,low1),(slope,lichen,slope,slope))
+    terrace_height=1.02
+    for j in range(9):
+        v=-20+j*3.12;z=-7.6+j*terrace_height;wide=51-j*1.4
+        for sign in (-1,1):flank(4+sign*wide/2,v-1.56,v+1.56,z,sign)
+        if j==0:
+            ground.face((at(4-wide/2,v-1.56,z-1),at(4+wide/2,v-1.56,z-1),at(4+wide/2+5,v-3.2,-12),at(4-wide/2-5,v-3.2,-12)),(slope,slope,lichen,lichen))
+        art.box(at(4,v-1.51,z-terrace_height), (wide,.21,terrace_height),h,stone)
+        ground.box(at(4,v,z),(wide,3.12,.10),h,grass)
         for n in range(5):
-            art.box(at(-10,v-2.23+n*.91,z+.06-.27*n),(1.6,.94,.28),h,stone)
+            ground.box(at(-10+.17*j,v-1.55+n*.59,z-.83+n*.21),(1.33,.63,.23),h,stone)
+    ground.box(at(4,13,1.38),(48,13,.23),h,grass)
+    for sign in (-1,1):flank(4+sign*24,6.50,19.5,1.61,sign)
+    ground.face((at(-20,19.5,1.61),at(28,19.5,1.61),at(54,68,-82),at(-50,68,-82)),(grass,grass,slope,slope))
+    original=at
+    def at(u,v,w=0):return original(u,v+12,w+1.67)
     for u,v,w,l in ((-19,1,6,9),(-8,0,5,7),(5,1,7,10),(18,2,6,8),(25,8,4,5)):
         for side in (-1,1):
             art.box(at(u,v+side*w/2,-.58),(l,.58,3.02),h,stone)
@@ -102,14 +125,22 @@ def scenery(k):
     for d in range(-70,10890,610):
         x,y,z=k.road.pos(d)
         for side in (-1,1):
-            peak(far,x,y+side*(800+95*math.cos(d/287)),z-310,790,520,610+160*math.cos(d/514+side),d%17)
+            peak(far,x,y+side*(1220+95*math.cos(d/287)),z-380,790,490,610+160*math.cos(d/514+side),d%17)
     x,y,z=k.road.pos(10500)
-    peak(far,x+590,y+170,z-100,340,280,560,11)
+    # Fix the mountain behind the citadel, perpendicular to its real rider sightline.
+    sx,sy,sz=k.road.pos(10370);tx,ty,_=k.road.pos(10428,30)
+    norm=math.hypot(tx-sx,ty-sy);fx,fy=(tx-sx)/norm,(ty-sy)/norm
+    cx,cy=sx+fx*550,sy+fy*550
+    summit=pictured(k,'HuaynaPicchu')
+    outline=[]
+    for w,up in ((-290,-95),(290,-95),(290,225),(-290,225)):
+        outline.append((cx+fy*w,cy-fx*w,sz+up))
+    picture(summit,outline,((0,0),(1,0),(1,1),(0,1)))
     last=None
     for d in range(-75,11070,12):
         x,y,_=k.road.pos(d);margin=34+13*math.sin(d/176)-96*smooth(34,60,d)*(1-smooth(110,134,d));row=[]
         for offset,t in ((0,0x98816A),(3,0xA48B70),(12,0x8F745E),(30,0x947A63),(45,0xA58C70)):
-            row.append(((x,y+margin+offset,2028+.0006*d),lin(t)))
+            row.append(((x,y+margin+offset,water_level(d)),lin(t)))
         if last:
             for a,b,c,e in zip(last,last[1:],row[1:],row):water.face((a[0],e[0],c[0],b[0]),(a[1],e[1],c[1],b[1]))
         last=row
@@ -127,16 +158,16 @@ def scenery(k):
             beam(art,at(0,0,4.7),k.road.pos(d+6,side,4.7),.22,.21,steel)
             beam(art,at(0,0,.26),k.road.pos(d+6,side,4.70),.17,.17,steel)
     stone=Painted(k);stone.b=type(k.B['terrain'])('IncaAshlar','terrain');stone.b.colours=[];k.B['IncaAshlar']=stone.b
-    for d in (8425,8550,10396,10530):ruins(k,stone,d,15)
+    for d in (8440,8550,10428,10530):ruins(k,stone,d,28)
     plants=pictured(k,'YungasPlants')
-    for d in range(118,10935,7):
+    for d in range(118,10935,5):
         for j in range(3):
-            if 8150<d<8730 or d>10170:
+            if (8150<d<8730 or d>10170) and (d+j)%2:
                 if j or d%5:continue
-            side=1 if (d+j)%3 else -1
-            off=side*k.rng.uniform(4.1+j*3,9+j*8)
-            x,y,_=k.road.pos(d+k.rng.uniform(-2,2),off);z=k.height_at(x,y)-.20
-            variety=k.rng.choice((0,0,1,1,2,3)) if j else k.rng.choice((2,3,3))
+            side=(-1,1)[(d+j)%2]
+            off=side*k.rng.uniform(4.1+j*2,8+j*5)
+            x,y,_=k.road.pos(d+k.rng.uniform(-2,2),off);z=k.height_at(x,y)-.12
+            variety=k.rng.choice((0,0,1,1,2,3)) if j else k.rng.choice((1,2,3,3))
             high=k.rng.uniform(6,13) if variety==0 else k.rng.uniform(3.6,6.9) if variety==1 else k.rng.uniform(.7,1.65)
             width=high*(.78 if variety<2 else 1.12)
             u=(variety%2)*.5;v=(1-variety//2)*.5;yaw=k.rng.random()*math.pi
