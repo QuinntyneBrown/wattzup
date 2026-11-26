@@ -3588,3 +3588,40 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const torontoCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'toronto-waterfront-trail',
+  name: 'Toronto Waterfront Trail',
+  routeName: 'Queens Quay',
+  place: 'Toronto, Canada',
+  world: 'toronto',
+  distanceKm: 13.075,
+  climbingM: 0,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/toronto-waterfront-trail.jpg',
+  photoUrl: 'maps/toronto-waterfront-trail-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 13, 80),
+      seg('work', 30, 24, 75),
+      seg('recover', 30, 11, 100),
+      seg('work', 60, 21, 75),
+      seg('recover', 60, 11, 100),
+      seg('work', 30, 24, 75),
+      seg('recover', 30, 11, 100),
+      seg('work', 420, 21, 90),
+      seg('recover', 120, 11, 100),
+      seg('work', 30, 24, 75),
+      seg('recover', 30, 11, 100),
+      seg('work', 420, 21, 90),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 24, 75),
+      seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
