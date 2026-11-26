@@ -47,7 +47,7 @@ def ground(d,side):
     return z-.25
 
 def land(r,col,theme,bc):
-    b=bc.Builder('Moors','terrain');b.colours=[]
+    b=bc.Builder('SkyeMoor','terrain');b.colours=[];b.uvs=[]
     offsets=(-1600,-670,-250,-96,-52,-29,-14,-6,-3,0,3,6,14,29,52,96,250,670,1600)
     last=None
     for i in range(0,len(r.s),3):
@@ -60,7 +60,7 @@ def land(r,col,theme,bc):
             line.append(((x,y,z),colr))
         if last:
             for a,b0,c,e in zip(last,last[1:],line[1:],line):
-                b.quad(a[0],e[0],c[0],b0[0]);b.colours.extend((a[1],e[1],c[1],b0[1]))
+                b.quad(a[0],e[0],c[0],b0[0]);b.colours.extend((a[1],e[1],c[1],b0[1]));b.uvs.extend(((0,0),(1,0),(1,1),(0,1)))
         last=line
     def height_at(x,y):
         _,i,_=r.tree.find((x,y,0));p=r.s[i];v=(y-p['y'])*math.cos(p['h'])-(x-p['x'])*math.sin(p['h']);return ground(p['d'],v)
@@ -77,13 +77,17 @@ def scenery(k):
             return ((x-dx,y-dy,z),(x,y,z-.52),(x+dx,y+dy,z),(x,y,z+.52))
         uv(signs,face(h))
     # Fixed, folded original reliefs. Their photographed surface carries real depth at the shoulders.
-    for name,distance,offset,width,relief,top in (('BlackCuillin',9030,550,2400,160,585),('RedCuillin',4610,-560,1780,111,435)):
-        m=pictured(k,name);at,h=site(k,distance,offset)
-        # Face the approaching rider along the glen. The changing distance to each fold gives parallax.
+    for name,distance,offset,width,relief,top,observer in (
+            ('BlackCuillin',9940,650,2300,95,470,8840),('RedCuillin',5070,-405,1690,70,365,3980),
+            ('HarportRelief',1980,-260,830,21,119,1780)):
+        m=pictured(k,name);cx,cy,cz=k.road.pos(distance,offset);rx,ry,_=k.road.pos(observer)
+        depth=math.hypot(cx-rx,cy-ry);fx,fy=(cx-rx)/depth,(cy-ry)/depth
         for i in range(32):
             def pt(t,v):
-                depth=relief*(math.sin(t*math.pi*3.2)*.46+.3*math.sin(t*math.pi*7.4))
-                return at(depth+(1-v)*109,(t-.5)*width,-78+v*top)
+                fold=relief*(math.sin(t*math.pi*3.2)*.46+.3*math.sin(t*math.pi*7.4))+(1-v)*39
+                across=(t-.5)*width
+                taper=smooth(0,.16,t)*smooth(0,.16,1-t)
+                return cx+fx*fold-fy*across,cy+fy*fold+fx*across,cz-(45 if name=='HarportRelief' else 82)+v*top*taper
             a=i/32;b=(i+1)/32;picture(m,(pt(a,0),pt(b,0),pt(b,1),pt(a,1)),((a,0),(b,0),(b,1),(a,1)))
     for d,reach in ((820,1050),(12180,1130)):
         at,h=site(k,d,-325)
