@@ -46,7 +46,9 @@ def painted(k,name):
 
 
 def hotel(k,walls,lights):
-    at,h=site(k,489,300)
+    x,y,z=k.road.pos(750,655);sx,sy,_=k.road.pos(80)
+    yaw=math.atan2(y-sy,x-sx)+math.pi/2;cs,sn=math.cos(yaw),math.sin(yaw)
+    def at(u,v,up):return (x+cs*u-sn*v,y+sn*u+cs*v,z+up)
     # Each pair of curved legs converges into a single upper slab beneath the long cantilever.
     for u in (-64,0,64):
         for sign in (-1,1):
@@ -81,14 +83,23 @@ def shells(k,lights):
                 tip=tuple(sum(p[t] for p in pts)/4+off for t,off in enumerate((1.2*math.cos(a+h),1.2*math.sin(a+h),1.4)))
                 for w,tint in enumerate((0x817F74,0xAC9A79,0xE7C98D,0x6B706D)):
                     lights.face((pts[w],pts[(w+1)%4],tip),(lin(tint),)*3)
-    at,h=site(k,5480,42)
+    at,h=site(k,5474,34)
+    lights.tube(at(0,0,-5),8.0,5.0,7.3,lin(0x687794),lin(0xABB7D4),24)
     for j in range(10):
-        a=j*math.tau/10;up=14+8*(1+math.cos(a))*.5
-        def petal(r,side,z):return at(r*math.cos(a)-side*math.sin(a),r*math.sin(a)+side*math.cos(a),z)
-        root=petal(2,0,0);left=petal(12,-4.2,up*.55);right=petal(12,4.2,up*.55);tip=petal(18,0,up);mid=petal(13,0,up*.39)
-        for tri,t in (((root,left,mid),0xBBC4F2),((root,mid,right),0xA8B4DE),((left,tip,mid),0xD5DCFC),((mid,tip,right),0xD1C8F1)):
-            lights.face(tri,(lin(t),)*3)
-
+        ang=j*math.tau/10;high=13+8*(1+math.cos(ang))*.5
+        def petal(r,w,z):return at(r*math.cos(ang)-w*math.sin(ang),r*math.sin(ang)+w*math.cos(ang),z)
+        rows=[]
+        for n in range(9):
+            t=n/8;radius=2+17*t
+            width=1.5+3.3*math.sin(t*math.pi*.83)
+            rows.append([petal(radius,width*v,2.2+high*t**1.6+abs(v)**1.7*1.8*t) for v in (-1,-.5,0,.5,1)])
+        for n,(lo,hi) in enumerate(zip(rows,rows[1:])):
+            for q in range(4):
+                c=lin((0xA8B5DB,0xBAC9F0,0xCFD9F3,0xDEE1F7)[q])
+                lights.face((lo[q],hi[q],hi[q+1],lo[q+1]),(c,)*4)
+        for q in range(4):
+            c=lin(0xA1AAD9);top=rows[-1]
+            lights.face((top[q],top[q+1],(top[q+1][0],top[q+1][1],top[q+1][2]-.75),(top[q][0],top[q][1],top[q][2]-.75)),(c,)*4)
 
 def scenery(k):
     art=Painted(k);lights=painted(k,'BayLandmarks');hotelwalls=painted(k,'SkyParkTowers');offices=painted(k,'RafflesWindows')
@@ -96,7 +107,7 @@ def scenery(k):
     level=min(row['z'] for row in k.s)-1.6;sea=Painted(k,'sea')
     hotel(k,hotelwalls,lights);shells(k,lights)
     crowns=painted(k,'SupertreeCrowns')
-    for d,off,high in ((7566,-28,29),(7619,-17,34),(7645,-42,39),(7680,-28,31),(7725,-54,42),(7792,-19,27)):
+    for d,off,high in ((7595,-45,29),(7635,-53,34),(7655,-68,39),(7680,-36,31),(7725,-54,42),(7792,-29,27)):
         at,h=site(k,d,off);bark=lin(0x45584A);pink=lin(0xBB6BC8)
         art.tube(at(0,0,-.05),high*.086,high*.047,high*.66,bark,lin(0x696775),14)
         for n in range(24):
@@ -107,6 +118,9 @@ def scenery(k):
             for sign in (-1,1):
                 end=at(high*.31*math.cos(angle+sign*.13),high*.31*math.sin(angle+sign*.13),high*(.96+.03*math.cos(n)))
                 beam(crowns,fork,end,.12,.11,pink)
+                for twig in (-1,1):
+                    tip=at(high*.39*math.cos(angle+sign*.13+twig*.06),high*.39*math.sin(angle+sign*.13+twig*.06),high*(1.035+.025*math.cos(n)))
+                    beam(crowns,end,tip,.082,.084,pink)
             nxt=(n+1)*math.tau/24
             beam(crowns,at(high*.27*math.cos(angle),high*.27*math.sin(angle),high*.928),at(high*.27*math.cos(nxt),high*.27*math.sin(nxt),high*.928),.09,.09,pink)
     for d in range(7600,7695,3):
@@ -126,6 +140,29 @@ def scenery(k):
         x,y,_=k.road.pos(d,9.17);circle.append((x,y,level))
     cx=sum(p[0] for p in circle)/len(circle);cy=sum(p[1] for p in circle)/len(circle)
     for p,q in zip(circle,circle[1:]+circle[:1]):sea.face((p,q,(cx,cy,level)),(lin(0x1E2F49),lin(0x1E2F49),lin(0x101A2F)))
+    # Warm room lights break into horizontal streaks projected towards the viewer.
+    hx,hy,_=k.road.pos(750,655);sx,sy,_=k.road.pos(80)
+    delta=math.hypot(hx-sx,hy-sy);dx,dy=(sx-hx)/delta,(sy-hy)/delta
+    for j in range(920):
+        col=j%3-1;dist=k.rng.uniform(6,875);width=k.rng.uniform(1.8,6.2)
+        across=col*64+k.rng.uniform(-20,20);a=hx+dx*dist+dy*across;b=hy+dy*dist-dx*across
+        quad=[(a+dy*u+dx*v,b-dx*u+dy*v,level+.053) for u,v in ((-width,-1.3),(width,-1.3),(width,1.3),(-width,1.3))]
+        tint=lin(k.rng.choice((0xDAC18A,0x848CB3,0xA5ADC6,0xBC995B)));mirrors.face(quad,(tint,)*4)
+    # Raffles Place is a tight island skyline across the water, with bright crowns and stepped tops.
+    for j in range(32):
+        lateral=-830+j*18+k.rng.uniform(-7,7);distance=1040+k.rng.uniform(-100,95)
+        x=sx-dx*distance+dy*lateral;y=sy-dy*distance-dx*lateral
+        w=k.rng.uniform(15,31);depth=k.rng.uniform(15,29);high=52+75*math.sin(math.pi*j/31)+k.rng.uniform(-21,30)
+        yaw=math.atan2(-dx,dy)+k.rng.uniform(-.16,.16)
+        offices.box((x,y,level),(w,depth,high),yaw,lin(0xB1B3C4))
+        offices.box((x,y,level+high),(w*.77,depth*.76,k.rng.uniform(3,9)),yaw,lin(0xB5B6BE))
+        lights.box((x,y,level+high-.50),(w+.4,depth+.4,.85),yaw,lin(k.rng.choice((0x7BD5BF,0x97C0E1,0xDEB78D))))
+        if j%5==3:lights.tube((x,y,level+high+5),.4,.12,8,lin(0x93AEC4),lin(0xCBD9E4),7)
+        for q in range(15):
+            dist=k.rng.uniform(3,high*1.5);width=k.rng.uniform(.8,4)
+            xx=x+dx*dist+dy*k.rng.uniform(-w/2,w/2);yy=y+dy*dist-dx*k.rng.uniform(-w/2,w/2)
+            quad=[(xx+dy*u+dx*v,yy-dx*u+dy*v,level+.052) for u,v in ((-width,-1),(width,-1),(width,1),(-width,1))]
+            tint=lin(k.rng.choice((0xB8B494,0x8798B9,0x98ADC6)));mirrors.face(quad,(tint,)*4)
     for j in range(45):
         d=200+j*208;off=-k.rng.uniform(88,246);at,h=site(k,d,off)
         w=k.rng.uniform(16,43);depth=k.rng.uniform(15,34);tall=k.rng.uniform(38,155)
@@ -158,7 +195,13 @@ def scenery(k):
             if prev:beam(art,prev,p,.13,.13,lin(0x8B9FE8 if sign<0 else 0xD5D9E8))
             if n%8==0:beam(art,p,k.road.pos(d,3.89*math.cos(a+.72),3.83+3.53*math.sin(a+.72)),.047,.047,lin(0x8D889F))
             prev=p
-    at,h=site(k,1867,10.9)
+    for d in range(5330,5436,4):
+        for sign in (-1,1):
+            beam(art,k.road.pos(d,sign*3.64,1.15),k.road.pos(d+4,sign*3.64,1.15),.14,.13,lin(0x888EEB))
+            beam(art,k.road.pos(d,sign*2.1,6.75),k.road.pos(d+4,sign*2.1,6.75),.12,.13,lin(0xB8B2E0))
+    x,y,z=k.road.pos(1867,10.9);sx,sy,_=k.road.pos(1840)
+    yaw=math.atan2(y-sy,x-sx)-math.pi/2;cs,sn=math.cos(yaw),math.sin(yaw)
+    def at(u,v,up):return (x+cs*u-sn*v,y+sn*u+cs*v,z+up)
     art.tube(at(0,0,-1.4),3.2,2.65,1.72,lin(0x566C77),lin(0x90B6B4),20,lin(0x9EBBBA))
     picture(lion,(at(-2.35,0,.28),at(2.35,0,.28),at(2.35,0,8.74),at(-2.35,0,8.74)),((0,0),(1,0),(1,1),(0,1)))
     last=at(1.49,0,7.1)

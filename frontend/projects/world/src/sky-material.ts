@@ -47,6 +47,7 @@ export function skyMaterial(
   detail: DataTexture,
   coastalSquall = false,
   evening?: Node<'float'>,
+  cloudOpacity = 1,
 ): Sky {
   const colours = look.sky.map((hex) => new Color(hex));
   const stop = (i: number) => vec3(colours[i]!.r, colours[i]!.g, colours[i]!.b);
@@ -100,7 +101,7 @@ export function skyMaterial(
       );
     sky = sky.add(vec3(0.85, 0.9, 1).mul(star.mul(smoothstep(0.03, 0.3, height)).mul(1.3)));
   }
-  sky = mix(sky, lit, cover.mul(night ? 0.55 : 0.85));
+  sky = mix(sky, lit, cover.mul((night ? 0.55 : 0.85) * cloudOpacity));
   sky = sky.add(vec3(light.r, light.g, light.b).mul(glow.mul(cover.mul(0.6).oneMinus())));
   // The haze along the horizon: the lights of the land, or the day's dust.
   const haze = new Color(look.haze);
