@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Old Town Criterium (#2180)
+
+Retain the existing Blender road samples, stage distances, advertised climb and starter unlock. Model the visible faces of the spire, portal and gables in silhouette, match the size of the setts to the bicycle tyres and keep the street furniture outside the riding line. The bannered rails and the three crowd rows overlap at different depths. Keep objects anchored to the local grade.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Steenstraat, 0.08 km | Real 06–09, 11 and 15. Games 01 and 03. | Shuttered townhouses crowd the narrow street. The changing sun picks out the rounded blue-grey setts and their dark joints. |
+| Cathedral kick, 2.53 km | Real 01–05 and 13. Games 01–03. | Bannered steel crowd barriers narrow the uphill sprint. Fans three deep cheer beneath the west tower on the skyline. |
+| Townhouse turn, 4.31 km | Real 06–09, 11 and 12. Games 01 and 04. | Bollards draw a line around the kerb of the right-angle corner. Closely spaced shutters, gables and overhead pennants turn with the bunch. |
+| Café terraces, 6.98 km | Real 01, 02, 10, 12 and 13. Games 02 and 04. | Striped parasols shade café tables, chairs and shopfronts behind the barriers. Warm plaster faces the hard midday shadows. |
+| Cathedral square, 10.45 km | Real 01–05, 13 and 14. Games 01 and 05. | Buttresses, pointed windows and a layered west portal resolve below the distant spire as the rider climbs into the square. |
+| Finish straight, 14.05 km | Real 01, 03, 05 and 13. Games 02 and 05. | The truss gantry spans the setts beside the lap board. The bell and waving flags stand against sunlight on the cathedral stone. |
+
+Bake the cathedral stone, window tracery, contact shadows and shop fronts. Share the spectator atlas and street furniture. Give each bounded group of moving supporters a deterministic phase. Use the existing race clock for the bell and pennants. Compare both tablet captures against the submitted-frame and draw-call evidence for Caribana. Original references and licences are in docs/worlds/oldtown/SOURCES.md.
