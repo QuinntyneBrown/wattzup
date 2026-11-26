@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Notting Hill Carnival (#2176)
+
+Place the London streetscape around the original ten-degree bends over 150 metres. The avenue’s street trees, stucco bays, railings and concrete flyover establish London before the carnival artists and floats enter view. Preserve the complete GCN Quick HIIT Workout.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Ladbroke Grove, 0.08 km | Real 01, 04, 13 and 15. Games 01, 03 and 04. | Plane trees frame a broad curve between London terraces. Kerbside crowds leave an open riding line through the August street party. |
+| Feathered mas band, 1.04 km | Real 02, 05–09. Games 02 and 04. | Red and gold plumes turn beside turquoise and magenta wings. Riders pass between the edge of the band and the crowd barriers. |
+| Corner sound system, 2.13 km | Real 01–04, 09 and 10. Games 02 and 05. | A stack of bass bins and horns faces Ladbroke Grove from the corner. Caribbean flags hang from the balconies and spectators film from the kerb. |
+| Steel pan float, 3.09 km | Real 03, 09–11. Games 02 and 03. | A flatbed carries polished steel pans on racks, players and overhead bunting through pastel terraces. Confetti and powder mark the road below. |
+| Westway flyover, 4.37 km | Real 01, 04, 13 and 15. Games 01 and 05. | The broad concrete deck crosses above the road on paired supports. The riders move from August sun into its shade and back out to the procession. |
+| Jerk grills and food stalls, 5.61 km | Real 04, 10–12 and 14. Games 01 and 03. | Thin smoke curls up from a split drum grill. Caribbean flags brighten the stall awnings and whistle-blowing spectators stand beside the serving tables. |
+
+Model the open speaker mouths, band headdresses, steel pan bowls and the underside of the flyover. Reuse crowd geometry and animate the nearest performers, float and grill smoke from elapsed race time. Release scene-owned assets on exit. Compare the opening and pan float with Caribana. The reference credits are in docs/worlds/nottinghill/SOURCES.md.
