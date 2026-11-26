@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Overseas Highway (#2183)
+
+Fit the Florida Keys crossing to the original Time to Spin Out stages. Keep both bridge decks above open water with the old railway on the Gulf side. Deck joints, piers and the Pigeon Key ramp follow the same physical alignment. The single navigation hump rises above an otherwise low time-trial course.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Marathon approach, 0.08 km | Real 01, 02 and 15. Games 02–03. | A green US 1 sign and mile marker stand beside white edge stripes. Mangroves and wind-bent palms part around the entrance to the bridge. |
+| Old railway viaduct, 1.51 km | Real 03, 08, 10 and 11. Games 01 and 04. | Repeated masonry arches carry the historic bridge alongside the modern concrete deck. Their openings frame strips of shallow blue-green water. |
+| Pigeon Key, 2.87 km | Real 05–07, 09 and 13. Games 02–04. | Yellow-and-white cottages, palm crowns, the old access ramp and a small timber dock distinguish Pigeon Key from the distant mangrove islands. |
+| Navigation channel, 4.42 km | Real 01–06 and 08. Games 01 and 04. | The only sustained climb lifts the rider above the flats. A fishing boat crosses the deep-water channel below the crest. |
+| Missing railway span, 6.31 km | Real 04, 08, 10–12 and 14. Games 01, 04 and 05. | Open water separates the ends of the abandoned span. Pelicans and gulls skim the chop beside the surviving piers. |
+| Lower Keys landfall, 8.02 km | Real 02, 05, 09, 13–15. Games 02, 03 and 05. | A low key and leaning palms rise ahead of the rails. Sunlit cumulus, dark seagrass patches and white wind chop extend to the horizon. |
+
+Distinguish the old concrete arches from the modern girder deck, and leave the missing span physically open. Use the water depth bands, near rails, island porches and fixed cloud towers for parallax. Animate the fishing launch and birds on the ride clock. Compare opening and Pigeon Key tablet frame submissions with Caribana. Credits are in docs/worlds/overseas/SOURCES.md.
