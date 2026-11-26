@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import steppe as _steppe
+
+THEMES['steppe'] = _steppe.THEME
+SCENERY['steppe'] = _steppe.scenery
