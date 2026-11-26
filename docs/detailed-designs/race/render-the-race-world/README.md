@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## La Redoute (#2197)
+
+Restore the historical GCN class through Map Select. Preserve the existing World Ride scene’s painted names, campervans, forest, frites stall and concrete viaduct in the native race. The full timed itinerary traverses the valley before the short, steep climb above Remouchamps. Sample the same road for the rider, camera and HUD profile.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Remouchamps church, 0.08 km | Real 06, 07 and 13–15. Games 02 and 04. | Slate roofs and pale stone houses cluster below the church spire. The old rail arches frame the exit from the village beside the Amblève. |
+| Amblève pastures, 5.43 km | Real 08, 10–12, 14 and 15. Games 01 and 03. | Wire fences, cattle and spring hedges follow the wet road. The river turns beneath wooded valley slopes beyond the pasture. |
+| Campervan approach, 11.64 km | Real 01–05 and 11. Games 02 and 05. | The first motorhomes and a frites stall frame the narrowing lane. Belgian flags rise above spectators behind the barriers. |
+| Painted wall, 12.57 km | Real 01–05, 08 and 09. Games 01–03. | Large hand-painted PHIL names and tricolours run across damp asphalt. The straightest part pitches into double digits between a dense crowd and the hedgerow. |
+| E25 crossing, 13.39 km | Real 01, 06, 08, 11 and 13. Games 01, 04 and 05. | The concrete motorway deck crosses the rider’s road on tall piers near the upper slope. Beech and spruce crowd the verges and a team car passes above. |
+| Redoute summit stone, 15.56 km | Real 08–10, 12, 14 and 15. Games 03–05. | A La Redoute stone stands at the summit turnout. Beyond the wire fence, the wooded Amblève valley and the river are visible beneath an overcast spring sky. |
+
+Use pale local stone and slate for the village and an overcast sky above fresh beech and spruce. The old masonry rail arches belong in the valley; the later motorway deck is concrete on tall piers. Bake wet grit beneath hand-painted lettering, retain an open view down the valley from the crest, and merge the crowd into bounded groups. Drive the flags, grazing cattle and moving car from ride time. Release all owned buffers, materials and textures on exit. See ADRs 0021, 0023, 0030, 0034 and 0035, the performance-budget design and docs/worlds/redoute/SOURCES.md.
