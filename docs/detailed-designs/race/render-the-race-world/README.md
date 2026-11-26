@@ -1290,3 +1290,16 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+### Victoria Harbour (#2246)
+
+The originals and credits were restored in commit a3b75bcdf. Use all fifteen photos and five game views in docs/worlds/victoria. Keep the promenade on the Kowloon side and the skyline and light sources fixed on Hong Kong Island. Differentiate the pier, Clock Tower and bronze statue in geometry. Vary the rail posts, promenade tiling, lamps and photographers at the near distance. The original boat artwork, surface reflections and narrow beams share the ride clock and release their drawing resources on leaving. Benchmark both the opening pier and the waterfront during the light show.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Kowloon Clock Tower, 0.14 km | Real 01, 08, 15 and game 03 | The railway clock tower rises between the old pier and the tiled promenade under warm lights. |
+| Star Ferry crossing, 1.72 km | Real 08, 11, 12, 15 and games 02, 04 | A green-and-white double-ended ferry moves past the landing, lighting the water beneath its windows. |
+| Avenue of Stars, 3.38 km | Real 02, 03, 04, 09 and games 01, 03 | The bronze Bruce Lee figure faces the harbour above star and handprint plaques along the rails. |
+| Red-sailed junk, 5.16 km | Real 08, 10, 13 and game 04 | A timber junk crosses below its three red battened sails, with a tug and freighter farther out. |
+| Central skyline, 7.18 km | Real 06, 07, 13, 14 and games 01, 04 | The IFC crown, Bank of China diagonals and Central Plaza light stand ahead of Victoria Peak. The lights reflect across the water. |
+| Symphony of Lights, 9.18 km | Real 01, 04, 05, 06, 07, 14 and games 02, 05 | Coloured laser fans sweep from the island towers as photographers gather on the Kowloon railing. |
