@@ -1,3 +1,4 @@
+import tamalpaisElevation from './tamalpais-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const tamalpaisCourseMap = {
   place: 'Marin County, California',
   world: 'tamalpais',
   distanceKm: 12.149,
-  climbingM: 0,
+  climbingM: 634,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: tamalpaisElevation,
   },
   thumbnailUrl: 'maps/mount-tamalpais.jpg',
   photoUrl: 'maps/mount-tamalpais-photo.jpg',
