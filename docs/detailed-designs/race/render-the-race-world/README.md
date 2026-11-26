@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Calgary Stampede (#2214)
+
+Keep the thirteen-stage GCN class and use its resistance changes for the grade. Calgary Tower and the Rockies are fixed distant landmarks. Split the street, oval and park scenery into distance-culled sections. The game references guide the view over the cyclist and the photos guide the proportions, colours and spacing.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Downtown parade, 0.12 km | Real 01–05 and 15. Games 01 and 03. | The red observation deck of Calgary Tower rises above sandstone façades and a kerb packed with white cowboy hats. Brass players march past bunting and a mounted parade rider. |
+| Western parade float, 2.23 km | Real 01–05 and 10. Games 01 and 02. | A decorated flatbed rolls past the crowd. Straw bales and split rails separate the riders from plaid shirts, boots and Smithbilt hats. |
+| Chuckwagon track, 4.54 km | Real 06, 07 and 13. Games 02 and 05. | Four horses in two pairs pull a canvas-topped wagon around a packed ochre oval. A low timber rail keeps the team outside the race lane. |
+| Grandstand and chutes, 6.91 km | Real 08, 09, 13 and 14. Games 01 and 04. | The long canopy shades two tiers of spectators; white numbered bucking chutes face the dusty infield. The tower and pale Rockies remain on the horizon. |
+| Elbow River Camp, 9.12 km | Real 02, 04 and 12. Games 03 and 05. | Tipis stand in a grassy clearing by the river. Participants and visitors gather along the footpath; the downtown towers remain visible beyond the trees. |
+| Stampede Park midway, 12.65 km | Real 10–13 and 15. Games 01 and 04. | A Ferris wheel turns over striped food booths and flags. The high prairie sun casts short shadows across the closing straight. |
+
+Batch distant hats, railings and canopy supports; keep the four articulated horses and their wagon near the rider. Advance their legs, the float axle and the wheel on ride time. Bake dirt ruts, storefront wear and recessed shadows into the low-tier surfaces. Release section buffers, atlas textures and moving assemblies on exit. Compare six matching rider captures and measure one minute at each tablet station. See ADRs 0021, 0023, 0030, 0034 and 0035.
