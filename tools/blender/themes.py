@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import oregon as _oregon
+
+THEMES['oregon'] = _oregon.THEME
+SCENERY['oregon'] = _oregon.scenery
