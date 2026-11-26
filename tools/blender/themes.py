@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import yosemite as _yosemite
+
+THEMES['yosemite'] = _yosemite.THEME
+SCENERY['yosemite'] = _yosemite.scenery
