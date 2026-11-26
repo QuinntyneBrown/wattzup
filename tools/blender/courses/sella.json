@@ -1,0 +1,79 @@
+{
+  "id": "sella",
+  "name": "Passo Sella",
+  "world": "sella",
+  "theme": "sella",
+  "seed": 2204,
+  "layout": 0,
+  "class": {
+    "id": "fat-burning-climb-passo-sella",
+    "title": "Fat Burning Climb: Passo Sella",
+    "channel": "GCN",
+    "videoId": "cfIaZsOZ_us",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 210,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 17,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 18,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 20,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 23,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 24,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 150,
+        "level": 11,
+        "cadenceAim": 85
+      }
+    ]
+  }
+}

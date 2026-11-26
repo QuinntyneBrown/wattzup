@@ -1552,3 +1552,7 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import sella as _sella
+THEMES['sella']=_sella.THEME
+SCENERY['sella']=_sella.scenery
