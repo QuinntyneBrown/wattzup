@@ -46,7 +46,7 @@ def scenery(k):
         u=i/count;picture(mesh,vertices,((u+.001,0),(u+1/count-.001,0),(u+1/count-.001,1),(u+.001,1)))
     for side in (-1,1):
         for n,d in enumerate(range(-70,6070,8)):
-            if 4373<d<4430 or abs((d%580)-420)<13:continue
+            if 4373<d<4430 or abs((d%580)-420)<13 and not 2090<d<2200:continue
             a,h=site(k,d,side*16.5);height=10.8+(n//7%3)*.65;face=-side*3.57
             art.box(a(0,0,-.52),(8.05,7.1,height+.53),h,lin((0xE0DCCC,0xDABDA7,0xD9C6BF,0xC5C4B1)[n//4%4]))
             strip(homes,(a(-4.01,face,-.06),a(4.01,face,-.06),a(4.01,face,height),a(-4.01,face,height)),int(n//4%3==1),2)
@@ -63,11 +63,18 @@ def scenery(k):
                     x=w*math.cos(angle);y=w*math.sin(angle)
                     picture(trees,(p(-x,-y,0),p(x,y,0),p(x,y,ht),p(-x,-y,ht)),UV)
         for d in range(-55,6050,4):
-            if abs((d%580)-420)<12:continue
+            if abs((d%580)-420)<12 and not 2090<d<2200:continue
             a,h=site(k,d,side*7.26);e,_=site(k,d+4,side*7.26)
             for z in (.25,1.12):beam(art,a(0,0,z),e(0,0,z),.048,.065,steel)
             for j in range(5):art.box(a(j*.78,0,.13),(.045,.053,.97),h,steel)
             strip(spectators,(a(-2.06,side*.6,.09),a(2.06,side*.6,.09),a(2.06,side*.6,2.08),a(-2.06,side*.6,2.08)),k.rng.randrange(4),4)
+    # Streetside flags hang across the band, with the lowest point over the middle lanes.
+    for n,d in enumerate((112,1069,2160,3143,5634)):
+        a,h=site(k,d)
+        for j in range(12):
+            v=(j-6)*1.58;z=6.1+.018*v*v
+            beam(art,a(0,v,z),a(0,v+1.58,6.1+.018*(v+1.58)**2),.025,.025,dark)
+            strip(flags,(a(0,v+.12,z-.78),a(0,v+1.48,z-.78),a(0,v+1.48,z),a(0,v+.12,z)),(j+n)%3,3)
     for d,off in ((1064,2.1),(1073,-2.1),(1086,3.0),(1100,-3),(2139,4.3),(2172,-3.7),(3125,4.5),(3160,-3.9)):
         a,h=site(k,d,off);j=k.rng.randrange(3)
         strip(mas,(a(-.03,1.24,.08),a(-.03,-1.24,.08),a(-.03,-1.24,3.07),a(-.03,1.24,3.07)),j,3)
@@ -79,20 +86,27 @@ def scenery(k):
                 art.box(a(u,0,.12+j*1.36),(1.21,1.18,1.38),h,black)
                 y=-side*.61
                 picture(amps,(a(u-.59,y,.16+j*1.36),a(u+.59,y,.16+j*1.36),a(u+.59,y,1.44+j*1.36),a(u-.59,y,1.44+j*1.36)),UV)
+                stripFront=(a(u-.614,side*.56,.16+j*1.36),a(u-.614,-side*.56,.16+j*1.36),a(u-.614,-side*.56,1.44+j*1.36),a(u-.614,side*.56,1.44+j*1.36))
+                picture(amps,stripFront,UV)
     a,h=site(k,4402)
     art.box(a(0,0,6.08),(22,103,1.57),h,lin(0x928D84))
+    soffit=(a(-11,-51.5,6.075),a(-11,51.5,6.075),a(11,51.5,6.075),a(11,-51.5,6.075))
+    art.face(soffit,(lin(0x66665D),)*4);art.face(soffit[::-1],(lin(0x66665D),)*4)
     for u in (-10.1,10.1):art.box(a(u,0,7.64),(.51,104,1.02),h,lin(0xB9B4A6))
     for v in (-18,-9.8,10.2,18):
         for u in (-7.6,7.6):art.box(a(u,v,-.4),(1.85,1.04,6.52),h,stone)
         art.box(a(0,v,5.63),(20,2.16,.76),h,stone)
     for u in range(-9,11,3):art.box(a(u,0,5.9),(.62,99,.45),h,lin(0x77776D))
-    for d,side in ((5650,-1),(5590,1),(5680,1)):
+    for d,side in ((5650,-1),(5626,1),(5680,1)):
         a,h=site(k,d,side*9.1)
         for x in (-2.4,2.4):
             for y in (-1.5,1.5):art.box(a(x,y,0),(.09,.09,2.55),h,steel)
         art.roof(a(0,0,2.58),5,3.3,.85,h,lin(0x3A6881))
         art.box(a(0,-side*1.12,.84),(4.48,.95,.13),h,cream)
         a,h=site(k,d+4,side*6.4);art.tube(a(0,0,.32),.58,.59,.74,dark,dark,12,dark)
+        for n in range(8):
+            x=-.36+(n%4)*.23;y=-.16+n//4*.32
+            art.box(a(x,y,1.095),(.18,.18,.08),h+.2*n,lin(0x975530 if n%3 else 0x764024))
         for u in (-.32,0,.32):art.box(a(u,0,1.07),(.036,.92,.036),h,steel)
     return {'efforts':0}
 

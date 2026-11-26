@@ -23,7 +23,7 @@ const stops = [
   [2130, 2159, -6.3, 2.4],
   [3090, 3114, 1.4, 2.35],
   [4370, 4402, 0, 2.5],
-  [5610, 5594, -6.4, 2.0],
+  [5610, 5630, -6.4, 1.8],
 ] as const;
 export class LondonCarnival {
   readonly root = new Group();
@@ -192,7 +192,7 @@ export class LondonCarnival {
         );
     }
     for (let i = 0; i < 6; i++) this.smoke.add(new Mesh(this.sphere, this.vapour));
-    this.stand(this.smoke, 5594, -6.4);
+    this.stand(this.smoke, 5630, -6.4);
   }
   update(metres: number, time: number) {
     this.dancers.visible = Math.abs(metres - 1040) < 130 || Math.abs(metres - 3110) < 120;
@@ -218,13 +218,13 @@ export class LondonCarnival {
     this.float.visible = Math.abs(metres - 3090) < 190;
     this.shown.panTravel = null;
     if (this.float.visible) {
-      const d = metres + 18 + 2.8 * Math.sin(time * 0.22);
+      const d = metres + 11 + 2.8 * Math.sin(time * 0.22);
       this.stand(this.float, d, 1.5);
       this.shown.panTravel = d;
       for (const [i, arm] of this.arms.entries())
         arm.rotation.x = 0.24 * Math.sin(time * 5.9 + i * 1.7);
     }
-    this.smoke.visible = Math.abs(metres - 5594) < 145;
+    this.smoke.visible = Math.abs(metres - 5630) < 145;
     this.shown.smokeRise = null;
     if (this.smoke.visible) {
       for (const [i, puff] of this.smoke.children.entries()) {
