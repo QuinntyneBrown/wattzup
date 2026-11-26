@@ -1290,3 +1290,16 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+### Westminster Rush Hour (#2248)
+
+Keep the rider on the left. Place the bus lane, approach zigzags and parapet lamps on the deck profile and drop the Thames below the pier foundations. Anchor Elizabeth Tower and Parliament to the west bank and the Eye and County Hall to the opposite bank. Use fixed geometry for the clock and its layered crowns, the bridge arches, statues and wheel supports. Give each vehicle a three-dimensional body, wheels, lights and original painted flanks. Sample the road independently under each vehicle. Rotate the Eye on its fixed axle, keeping the capsules upright. Share meshes and materials and release all owned GPU resources when the race ends.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Bridge lamps, 0.14 km | Real 04–06, 15 and games 01, 04 | Triple lanterns and green pierced parapets frame the wet bridge deck. Elizabeth Tower rises at the west landing. |
+| Elizabeth Tower, 0.43 km | Real 01–04, 09, 10, 14 and games 01, 05 | The illuminated four-faced clock and gilded details rise above the red buses. |
+| Parliament Square, 1.22 km | Real 09, 10, 13 and games 02, 03 | The route bends beside statues and the square lawn. A taxi crosses the junction beyond the signal. |
+| Whitehall, 2.38 km | Real 02, 09, 10, 13 and games 02, 03 | Black cabs and red buses pass lit stone buildings, phone boxes and a zebra crossing. |
+| County Hall and London Eye, 4.62 km | Real 07, 08, 11, 12 and game 04 | The Eye rotates above the South Bank and County Hall reflects its blue-hour light in the Thames. |
+| Westminster riverside, 6.12 km | Real 03–06, 10, 15 and games 01, 05 | The Houses of Parliament extend along the river. The green bridge arches stand out against the lit stone. |
