@@ -242,7 +242,11 @@ export class EstafetaFestival {
     if (!s) return;
     const f = Math.min(1, (1 - Math.abs(metres - s[0]) / 72) * 1.4),
       r = this.course.place(metres, 0, this.p),
-      t = this.course.place(s[1], s[2], this.q);
+      t = this.course.place(s[0] === 3160 ? 3160 : s[1], s[0] === 3160 ? 0.5 : s[2], this.q);
+    if (s[0] === 3160) {
+      t.x -= 29.1 * Math.sin(t.heading);
+      t.z -= 29.1 * Math.cos(t.heading);
+    }
     const dx = t.x - r.x,
       dz = t.z - r.z,
       len = Math.max(1, Math.hypot(dx, dz));
