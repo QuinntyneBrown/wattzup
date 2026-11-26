@@ -3588,3 +3588,41 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const sambadromeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'rio-sambadrome',
+  name: 'Rio Sambadrome',
+  routeName: 'the Sambadrome runway',
+  place: 'Rio de Janeiro, Brazil',
+  world: 'sambadrome',
+  distanceKm: 6.3,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/rio-sambadrome.jpg',
+  photoUrl: 'maps/rio-sambadrome-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 90),
+      seg('work', 60, 21, 70),
+      seg('recover', 60, 18, 90),
+      seg('work', 30, 21, 70),
+      seg('work', 30, 18, 90),
+      seg('recover', 60, 11, 90),
+      seg('work', 60, 21, 70),
+      seg('recover', 60, 18, 90),
+      seg('work', 30, 21, 70),
+      seg('work', 30, 18, 90),
+      seg('recover', 60, 11, 90),
+      seg('work', 60, 21, 70),
+      seg('recover', 60, 18, 90),
+      seg('work', 30, 21, 70),
+      seg('recover', 30, 18, 90),
+      seg('cool-down', 120, 11, 90),
+    ],
+  },
+};
