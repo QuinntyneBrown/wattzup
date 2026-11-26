@@ -12,7 +12,7 @@ def elevation(d):
     return PROFILE[-1][1]
 
 def heading(d):
-    return 1.08*math.tanh(3.4*math.sin((d-5450)/540))+.23*math.sin(d/310)+.13
+    return 1.21*math.tanh(4.2*math.sin((d-5485)/520))+.18*math.sin(d/310)+.13
 
 def route(course,theme,bc):
     stages=bc.stages(course['plan']);length=stages[-1]['to'];rows=[];x=y=0
@@ -25,7 +25,7 @@ def route(course,theme,bc):
 def ground(d,v):
     bench=26 if d<720 or abs(d-15270)<160 else 5
     e=max(0,abs(v)-bench)
-    fall=-.52 if v<0 else .48
+    fall=-.31 if v<0 else .23
     return elevation(d)-.24+e*fall+min(1,e/15)*(1+e*.035)*math.sin(d/39+v/14)*math.cos(d/73-v/16)
 
 def road(r,st,length,col,bc):
@@ -41,7 +41,7 @@ def land(r,col,theme,bc):
     m=bc.Builder('NevadaSlate','terrain');m.colours=[];m.uvs=[];last=None
     for i in range(0,len(r.s),3):
         d=r.s[i]['d'];row=[]
-        for v in (-270,-100,-47,-20,-6,-3,0,3,6,20,47,100,260):
+        for v in (-115,-60,-35,-20,-6,-3,0,3,6,20,35,60,115):
             n=max(-32,min(v,32));x,y,_=r.at(i,n);y+=v-n;row.append((x,y,ground(d,v)))
         if last:
             for a,b,c,e in zip(last,last[1:],row[1:],row):
@@ -56,13 +56,16 @@ def scenery(k):
     def panel(mesh,pts,lo,hi):
         picture(mesh,pts,((lo,0),(hi,0),(hi,1),(lo,1)))
     def card(mesh,at,w,h,lo,hi):
-        panel(mesh,[at(0,v,z) for v,z in ((-w/2,0),(w/2,0),(w/2,h),(-w/2,h))],lo,hi)
+        panel(mesh,[at(0,v,z) for v,z in ((w/2,0),(-w/2,0),(-w/2,h),(w/2,h))],lo,hi)
     for j,d in enumerate(range(-40,620,39)):
         for side in (-1,1):
             at,h=site(k,d,side*(15+j%4));idx=(j+int(side==1))%3
             width=(11,15,12)[idx];high=(15,8,9)[idx]
             art.box(at(0,side*3.1,-1),(width,6,high*.78+1),h,roof)
             panel(village,[at(x,0,z) for x,z in ((-width/2,0),(width/2,0),(width/2,high),(-width/2,high))],(0,.25,.51)[idx],(.25,.51,.78)[idx])
+            # Texture each gable as it comes into the uphill rider's sightline.
+            panel(village,[at(-width/2-.02,v,z) for v,z in ((side*6,0),(0,0),(0,high*.80),(side*6,high*.80))],(0,.25,.51)[idx],(.25,.51,.78)[idx])
+            art.roof(at(0,side*3.1,high*.78-.1),width,6,1.2,h,roof)
     for d in range(110,740,72):
         at,h=site(k,d,-9)
         art.tube(at(0,0,-.4),.45,.23,10,steel,white,10)
@@ -100,6 +103,43 @@ def scenery(k):
         for j in range(6):
             a=j*math.pi/12;b=(j+1)*math.pi/12
             art.tube(at(0,0,3+4.5*math.sin(a)),4.5*math.cos(a),4.5*math.cos(b),4.5*(math.sin(b)-math.sin(a)),white,white,18)
+    hillside=pictured(k,'NevadaSlateBanks')
+    # Old service ramps climb the opposite shoulder in three connected traverses.
+    # Interpolate the turn ends so each upper ramp is joined by a rounded hairpin.
+    at,h=site(k,5512,0)
+    def ramp(u,v):
+        x,y,_=at(u,v);return (x,y,elevation(5512)+9+(v-38)*.52+u*.018)
+    path=[]
+    for n in range(3):
+        side=1 if n%2==0 else -1
+        path.extend([(-63*side+side*j*3,38+n*14) for j in range(43)])
+        if n<2:
+            path.extend([(63*side+side*7*math.sin(j*math.pi/12),38+n*14+7*(1-math.cos(j*math.pi/12))) for j in range(1,13)])
+    for (u,v),(x,y) in zip(path,path[1:]):
+        length=math.hypot(x-u,y-v)
+        if length<.1:continue
+        dv,du=(x-u)/length*2.2,-(y-v)/length*2.2
+        corners=[ramp(a+du*b,c+dv*b) for a,c,b in ((u,v,-1),(x,y,-1),(x,y,1),(u,v,1))]
+        art.face(corners,(lin(0x686460),)*4)
+        for j in (0,2):
+            A,B=corners[j],corners[j+1]
+            bank=(A,B,(B[0]+3,B[1]-3,B[2]-25),(A[0]+3,A[1]-3,A[2]-25))
+            picture(hillside,bank,[(x/8+z/5,y/8) for x,y,z in bank])
+    # Laguna de la Caldera occupies a rock basin beneath the final crest.
+    at,h=site(k,25028,-45)
+    centre=elevation(25028)-12.3
+    water=lin(0x27617A);shore=lin(0x969391)
+    rings=[]
+    for radius in (0,.54,.91,1.12):
+        row=[]
+        for j in range(38):
+            t=math.tau*j/38;rag=1+.08*math.sin(3*t)+.055*math.cos(7*t)
+            x,y,_=at(25*radius*rag*math.cos(t),10*radius*rag*math.sin(t))
+            row.append((x,y,centre+max(0,radius-.91)*6))
+        rings.append(row)
+    for i,(lo,hi) in enumerate(zip(rings,rings[1:])):
+        for j in range(38):
+            n=(j+1)%38;art.face((lo[j],hi[j],hi[n],lo[n]),(water if i<2 else shore,)*4)
     for j in range(80):
         a=j*math.tau/80;b=(j+1)*math.tau/80;u=(j%20)/20;v=u+.05
         if j//20%2:u,v=1-u,1-v
