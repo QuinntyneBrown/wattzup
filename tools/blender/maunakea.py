@@ -48,7 +48,8 @@ def land(r,col,theme,bc):
     b=bc.Builder('CinderSlope','terrain');b.colours=[]
     def height(p,off):
         relief=smooth(4.4,40,abs(off));mount=smooth(4000,11000,p['d'])
-        return p['z']-.18+relief*(-off*(.10+.35*mount)+min(11,abs(off)*.055)*math.sin(p['d']/103+off/28)+math.sin(off/9+p['d']/33)*.46)
+        pad=max((1-smooth(95,280,abs(p['d']-d)) for d in (9010,22046,25315)),default=0)*(1-smooth(100,175,abs(off)))
+        return p['z']-.18+relief*(1-pad)*(-off*(.10+.35*mount)+min(11,abs(off)*.055)*math.sin(p['d']/103+off/28)+math.sin(off/9+p['d']/33)*.46)
     last=None
     for i in range(0,len(r.s),3):
         p=r.s[i];row=[]
@@ -79,13 +80,14 @@ def cone(art,x,y,z,width,height,phase):
     tints=(0x9C7561,0x9D705E,0xAC7963,0x8C6459,0xA8816B,0x795A50)
     for j,(lo,hi) in enumerate(zip(layers,layers[1:])):
         for n in range(40):
-            m=(n+1)%40;c=lin(tints[(j+(n//8)%2)%6])
+            m=(n+1)%40;c=lin(tints[(n//13)%3]); shade=.84+.13*math.sin(n*math.tau/40+phase)+j*.012; c=tuple(v*shade for v in c[:3])+(1,)
             art.face((lo[n],lo[m],hi[m],hi[n]),(c,c,c,c))
 
 
-def dome(art,at,u,v,r,z,base):
+def dome(art,metal,at,u,v,r,z,base):
     stone=lin(0xB9B6AD)
     art.tube(at(u,v,z),r*.94,r*.94,base,lin(0x8D8986),stone,24,stone)
+    art=metal
     rings=[]
     for j in range(12):
         theta=j*math.pi/22
@@ -101,13 +103,30 @@ def dome(art,at,u,v,r,z,base):
 
 def scenery(k):
     art=Painted(k);far=Painted(k,'peaks');plants=pictured(k,'MamaneTrees');signs=pictured(k,'MaunaSigns')
+    station=pictured(k,'VisitorMasonry');gables=pictured(k,'VisitorGable')
+    for name in ('DomePanels','ObservatoryBase'):
+        k.B[name]=type(k.B['terrain'])(name,'terrain')
+    metal=Painted(k,'DomePanels');basework=Painted(k,'ObservatoryBase')
+    # A continuous distant land surface supports the cones when the high-detail road sectors unload.
+    previous=None
+    for d in range(-80,26120,96):
+        x,y,z=k.road.pos(d);row=[]
+        for off in (-6000,-2800,-1400,-610,-240,-90,0,90,240,610,1400,2800,6000):
+            relief=min(1,abs(off)/630)
+            ground=z-32-min(270,abs(off)*.20)+relief*(23*math.sin(d/578+off/255)+11*math.cos(d/231-off/108))
+            color=lin(0x76685B if d<9600 else 0x906D59)
+            row.append(((x,y+off,ground),color))
+        if previous:
+            for a,b,c,e in zip(previous,previous[1:],row[1:],row):
+                far.face((a[0],e[0],c[0],b[0]),(a[1],e[1],c[1],b[1]))
+        previous=row
     for d in range(-75,26120,643):
         for side in (-1,1):
-            dist=k.rng.uniform(420,870);x,y,z=k.road.pos(d);summit=d>9400
+            dist=k.rng.uniform(880,1480);x,y,z=k.road.pos(d);summit=d>9400
             if not summit and side>0:continue
-            cone(far,x,y+side*dist,z-120,k.rng.uniform(270,560),k.rng.uniform(220,360),d*.013+side)
+            cone(far,x,y+side*dist,z-120,k.rng.uniform(320,690),k.rng.uniform(145,280) if summit else k.rng.uniform(80,165),d*.013+side)
     # Mauna Loa's broad shield rises above a soft, lower cloud bank.
-    x,y,z=k.road.pos(17900);cone(far,x+450,y+3680,2750,3850,1120,4)
+    x,y,z=k.road.pos(17900);cone(far,x+450,y+4550,2750,3850,1120,4)
     for d in range(-48,10990,9):
         n=2 if 2400<d<8350 else 1
         for j in range(n):
@@ -119,34 +138,44 @@ def scenery(k):
             for yaw in (a,a+math.pi/2):
                 dx=width*.5*math.cos(yaw);dy=width*.5*math.sin(yaw);u=kind%2*.5;v=(1-kind//2)*.5
                 picture(plants,((x-dx,y-dy,z),(x+dx,y+dy,z),(x+dx,y+dy,z+high),(x-dx,y-dy,z+high)),((u+.006,v+.006),(u+.494,v+.006),(u+.494,v+.494),(u+.006,v+.494)))
-    at,h=site(k,VISITOR+43,-15)
+    at,h=site(k,VISITOR+34,-16)
     art.box(at(0,0,-1),(21,8,4.8),h,lin(0x958576));art.roof(at(0,0,3.8),22,9,2.05,h,lin(0x6E6557))
     art.box(at(-7,5,0),(9.6,4.9,3.10),h,lin(0xAA9984));art.roof(at(-7,5,3.1),10,5.1,1.24,h,lin(0x70685A))
     for j in range(6):art.box(at(-8.6+j*3.1,4.025,1.3),(1.65,.085,1.43),h,lin(0x576469))
+    uv=((0,0),(1,0),(1,1),(0,1))
+    picture(station,(at(-10.46,4.08,.08),at(10.46,4.08,.08),at(10.46,4.08,3.74),at(-10.46,4.08,3.74)),uv)
+    for side in (-1,1):
+        picture(gables,(at(side*10.61,-3.96,.02),at(side*10.61,3.96,.02),at(side*10.61,3.96,3.79),at(side*10.61,-3.96,3.79)),uv)
+    for u in (-9,-6,-3,0,3,6,9):
+        art.box(at(u,4.5,.02),(.20,.20,3.7),h,lin(0x594737))
+    for side in (-1,1):
+        for v in (-2.5,0,2.5):
+            art.box(at(side*10.52,v,1.05),(.12,1.45,1.68),h,lin(0x4F6163))
+    art.box(at(0,4.1,3.65),(21,2.5,.20),h,lin(0x665447))
     for d in range(8850,9050,4):
         a,yaw=site(k,d,4.5);art.tube(a(0,0,0),.20,.055,.68,lin(0xDB7834),lin(0xDC8C4C),8);art.tube(a(0,0,.32),.13,.115,.10,lin(0xEEE4D4),lin(0xE4DDCF),8)
-    for d,tile in ((8960,0),(9055,1),(14810,2),(25272,3)):
+    for d,tile in ((8998,0),(9040,1),(14810,2),(25272,3)):
         a,yaw=site(k,d,-4.33);art.box(a(0,0,-.20),(.11,.13,2.5),yaw,lin(0x9B9481))
         u=tile%2*.5;v=(1-tile//2)*.5
         picture(signs,(a(0,.72,1.23),a(0,-.72,1.23),a(0,-.72,2.36),a(0,.72,2.36)),((u+.004,v+.004),(u+.496,v+.004),(u+.496,v+.496),(u+.004,v+.496)))
     for d in range(-50,26060,19):
         side=k.rng.choice((-1,1));off=side*k.rng.uniform(5,26);x,y,_=k.road.pos(d,off);z=k.height_at(x,y);r=k.rng.uniform(.24,1.46)
         art.tube((x,y,z-.13),r,r*.62,r*.75,lin(0x625C56),lin(0x786E63),7,lin(0x7F756A))
-    d = 22052
+    d = 22014
     # Twin white Keck domes and the angular, cylindrical Subaru enclosure.
-    a,yaw=site(k,d,-48)
+    a,yaw=site(k,d,-32)
     _,_,z=a(0,0)
     base=k.height_at(*a(0,0)[:2])-z
-    for u in (-15,15):dome(art,a,u,-6,8.3,base-.3,6.9)
-    a,yaw=site(k,d+55,-33)
-    art.tube(a(0,0,-.50),8.6,8.6,15.8,lin(0x7E8790),lin(0xC1C5C6),20,lin(0xBFC3C3))
+    for u,v in ((-12,-11),(16,3)):dome(basework,metal,a,u,v,8.3,base-.3,6.9)
+    a,yaw=site(k,d+54,-56)
+    basework.tube(a(0,0,-.50),8.6,8.6,15.8,lin(0x7E8790),lin(0xC1C5C6),20,lin(0xBFC3C3))
     for j in range(9):
         angle=j*math.tau/9
         art.tube(a(8.64*math.cos(angle),8.64*math.sin(angle),1.1),.11,.11,13.76,lin(0x819198),lin(0xAAB4B4),7)
     a,yaw=site(k,25315,-39)
     x,y,z=a(0,0)
-    grounding=k.height_at(x,y)-z
-    art.tube(a(0,0,grounding-1),8.4,8.4,7.8,lin(0x9DA2A2),lin(0xD1D3C9),32,lin(0xC2C6C5))
+    grounding=-.18
+    basework.tube(a(0,0,grounding-1),8.4,8.4,7.8,lin(0x9DA2A2),lin(0xD1D3C9),32,lin(0xC2C6C5))
     return {'efforts':0}
 
 
