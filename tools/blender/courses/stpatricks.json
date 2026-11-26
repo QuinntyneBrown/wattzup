@@ -1,0 +1,121 @@
+{
+  "id": "stpatricks",
+  "name": "St. Patrick's Day, Dublin",
+  "world": "stpatricks",
+  "theme": "stpatricks",
+  "seed": 2219,
+  "layout": 0,
+  "class": {
+    "id": "30-second-sprints",
+    "title": "30 Second Sprints",
+    "channel": "GCN Training",
+    "videoId": "vIq0l_nvYKc",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 10,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 10,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 10,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 10,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 10,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 361,
+        "level": 10,
+        "cadenceAim": 75
+      }
+    ]
+  }
+}
