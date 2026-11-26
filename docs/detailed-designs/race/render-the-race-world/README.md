@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Mulholland Drive (#2172)
+
+The original class supplies the resistance and cadence intervals and its rolling 35-degree bends over 70 metres. Its shared street scene does not distinguish the basin from the Valley. Build a physical ridge with houses anchored on its slopes, a fixed skyline on the Los Angeles side and a separate low grid backed by mountains on the Valley side.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Ridge road and chaparral, 0.08 km | Real 01–04 and 10. Games 01, 03 and 05. | Double yellow lines turn around a dry chaparral bank, past chevrons, a timber power pole and the first open view of the ridge. |
+| Los Angeles basin, 2.63 km | Real 03, 05, 07 and 13. Games 02–04. | A pull-out opens over the folded Hollywood Hills to the distant downtown towers. Sage and a galvanized rail frame the near edge. |
+| Modernist hillside houses, 5.19 km | Real 08–10 and 14. Games 02–04. | White modernist volumes, shaded glass and decks on stilts step down the hillside above gated driveways. Eucalyptus and palms stand on the bends. |
+| Hollywood Sign on Mount Lee, 8.27 km | Real 01, 06, 12 and 15. Games 01, 03 and 05. | Separate white letters read HOLLYWOOD across the brush-covered flank of Mount Lee. A slender broadcast mast rises above the sign. |
+| San Fernando Valley, 12.06 km | Real 03–05, 07 and 11. Games 02–05. | The northern shoulder opens onto the valley’s straight street grid below the foothills. Golden grass gives way to distant blue-grey mountains. |
+| Scenic overlook, 16.42 km | Real 05–07, 10 and 12–14. Games 01–04. | Visitors use a viewing scope beside curved rails on a paved turnout. Palms and poles silhouette against sunset haze over Los Angeles. |
+
+Align the yellow lines, driveways, guardrails and viewing platforms with the changing grade. The Hollywood letters stand separately on Mount Lee below the mast. Use low sun, pale haze and distinct oak, palm and eucalyptus silhouettes. Give a passing roadster, an overlook visitor and a small group of wind-blown plants bounded motion on race time. Share roadside meshes, section the terrain and release loaded art on exit. Compare the ridge opening and the scenic overlook to Caribana. Credits are in docs/worlds/mulholland/SOURCES.md. The title search returned #2172.
