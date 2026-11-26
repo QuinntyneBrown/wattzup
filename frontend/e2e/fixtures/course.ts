@@ -1,3 +1,4 @@
+import playgroundElevation from './playground-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const playgroundCourseMap = {
   place: 'City park',
   world: 'playground',
   distanceKm: 13.225,
-  climbingM: 0,
+  climbingM: 55,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: playgroundElevation,
   },
   thumbnailUrl: 'maps/playground-park-loop.jpg',
   photoUrl: 'maps/playground-park-loop-photo.jpg',
