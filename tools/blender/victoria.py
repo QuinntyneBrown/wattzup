@@ -85,7 +85,7 @@ def scenery(k):
         for v in (-1.6,1.6):art.box(at(dx,v,26.75),(.56,.56,2.5),h,cream)
     art.roof(at(0,0,29.1),4.7,4.7,1.57,h,green);beam(art,at(0,0,30.6),at(0,0,34.3),.074,bronze)
     # Two-storey ferry pier and the lit covered boarding galleries.
-    at,h=site(k,1764,19)
+    at,h=site(k,1689,19)
     art.box(at(0,0,-1.95),(57,15,2.32),h,grey)
     for z in (.33,3.4,6.3):art.box(at(0,0,z),(57.6,16.5,.34),h,cream)
     for x in range(-27,28,4):
