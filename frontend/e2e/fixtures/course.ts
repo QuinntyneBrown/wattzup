@@ -3588,3 +3588,35 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const viennaRingCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'vienna-ringstrasse',
+  name: 'Vienna Ringstrasse',
+  routeName: 'The Ringstrasse',
+  place: 'Vienna, Austria',
+  world: 'vienna',
+  distanceKm: 14,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/vienna-ringstrasse.jpg',
+  photoUrl: 'maps/vienna-ringstrasse-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 180, 16, 80),
+      seg('work', 300, 19, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 19, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 19, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 19, 80),
+      seg('cool-down', 180, 11, 80),
+    ],
+  },
+};
