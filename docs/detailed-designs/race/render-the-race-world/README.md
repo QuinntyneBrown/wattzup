@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Mount Tamalpais (#2226)
+
+The existing world supplies wet asphalt and a fog palette. Race needs a selectable map and a continuous climb. Resolve mount-tamalpais to the tamalpais course and load its GLB, centre line and Marin scenery with the lazy world renderer. Rise from 150 m to the 784 m summit over 12.149 km, weighting slope by each original stage’s target resistance.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Muir Woods approach, 0.12 km | Real 03, 08 and 09. Games 01 and 02. | Furrowed redwood trunks rise beside the striped two-lane road, with cool shade, fern banks, a timber rail and pools of sunlight. |
+| Panoramic Highway, 2.31 km | Real 01, 08 and 09. Games 01, 03 and 05. | A club group pedals through the uphill bend. Its jerseys stand out against the red bark and the dark cut bank. |
+| Marine inversion, 4.77 km | Real 02, 05, 06 and 15. Games 03 and 04. | Fog curls around the shoulder below the road. The crest, oak and red-barked manzanita stay clear against the golden grass. |
+| Golden Gate turnout, 6.95 km | Real 01, 02, 06 and 13. Games 03 and 04. | A timber rail overlooks the two vermilion towers above the fog, with the San Francisco skyline and bay beyond. |
+| Ridgecrest Boulevard, 9.42 km | Real 07, 10–12 and 15. Games 03 and 05. | The land drops away through chaparral to the arc of Stinson Beach. Thin lines of surf move onto the sand below the ridge. |
+| East Peak, 11.92 km | Real 04, 12–14. Games 02 and 03. | A glass-walled fire lookout and its railed walkway stand on the East Peak rocks above a gravel turnout and trailhead sign. |
+
+Caribana keeps its landmark skyline fixed and its near participants dimensional. Here the far Pacific and bay stay fixed while the trees, gravel turnouts, bridge towers and fire lookout have separate geometry. Local rider joints share the ride clock with the fog and surf. Merge the static trunks and rail sections, bound the club group, and release every course allocation on exit. Compare six rider views on low detail and count frames submitted during sixty seconds of moving tablet footage in both benchmark sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
