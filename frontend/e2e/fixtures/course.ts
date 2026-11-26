@@ -3588,3 +3588,32 @@ export const itenCourseMap = {
     ],
   },
 };
+
+export const marinabayCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'marina-bay-night',
+  name: 'Marina Bay Night',
+  routeName: 'the bayfront',
+  place: 'Marina Bay, Singapore',
+  world: 'marinabay',
+  distanceKm: 10.665,
+  climbingM: 0,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/marina-bay-night.jpg',
+  photoUrl: 'maps/marina-bay-night-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 14, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 14, 80),
+      seg('work', 480, 18, 88),
+      seg('recover', 120, 11, 80),
+      seg('work', 480, 18, 88),
+      seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
