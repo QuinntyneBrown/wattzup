@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [japan](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/01/japan.jpg) (g0619) | © MyWhoosh |
 | game-04.jpg | Zwift: [“Going Coastal” Route Details (Watopia)](https://zwiftinsider.com/route/going-coastal/) (g0056) | © Zwift |
 | game-05.jpg | Zwift: [“Watts of the Wild” Route Details (Watopia)](https://zwiftinsider.com/route/watts-of-the-wild/) (g0186) | © Zwift |
+
+The physical runway, tapered arch and tiered stands follow real 02 and 13–15. The original macaw floats, glowing bands and mounted performers use the scale and layering in real 01–06 and 12. Original dancer, bateria, escort and flag-bearer cutouts follow the formations and costumes in real 07–11. The spectator bands and school banner are original. Game 01–05 informed the rider-height sightlines, stadium lighting, road flecks and contrast between the runway and the Rio hills.

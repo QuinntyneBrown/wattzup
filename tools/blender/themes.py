@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import sambadrome as _sambadrome
+
+THEMES['sambadrome'] = _sambadrome.THEME
+SCENERY['sambadrome'] = _sambadrome.scenery
