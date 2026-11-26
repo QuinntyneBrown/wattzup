@@ -67,6 +67,7 @@ def scenery(k):
     def panel(at,mesh,x,y,z,w,h,angle,j=0,n=1):
         u=j/n;dx=.5*w*math.cos(angle);dy=.5*w*math.sin(angle)
         picture(mesh,(at(x-dx,y-dy,z),at(x+dx,y+dy,z),at(x+dx,y+dy,z+h),at(x-dx,y-dy,z+h)),((u+.001,0),(u+1/n-.001,0),(u+1/n-.001,1),(u+.001,1)))
+    belfry,tracery,chapel,roofs=[pictured(k,n) for n in ('GothicBelfry','GothicTracery','OldTownHall','HradcanyRoofs')]
     def masonry(pts,u,v):picture(stone,pts,((0,0),(u,0),(u,v),(0,v)))
     def spire(at,x,y,z,r,h,c,n=8):
         for j in range(n):
@@ -125,6 +126,14 @@ def scenery(k):
                 for j in range(4):
                     a=math.pi/4+j*math.pi/2;r=3.93 if stage==0 else 2.1;x=r*math.cos(a);off=r*math.sin(a)
                     spire(at,x,y+off,high+stage*5.1,1.23-stage*.35,5.95-stage*.82,slate)
+        # Dress the belfry on all four faces; the rider approaches at an oblique angle.
+        for y in (-8.4,8.4):
+            for side in (-1,1):
+                panel(at,belfry,side*3.52,y,.06,6.91,high-.18,math.pi/2)
+                panel(at,belfry,0,y+side*3.52,.06,6.91,high-.18,0)
+        for side in (-1,1):
+            for j in range(4):panel(at,tracery,3.7+j*8.15,side*8.06,.25,8.25,15.57,0)
+        panel(at,tracery,-1.04,0,.06,9.92,15.78,math.pi/2)
         if cathedral:
             art.box(at(21,10,-1),(7,7,49),h,tone);spire(at,21,10,48,4.6,13,copper)
             for x in range(4,33,4):
@@ -136,9 +145,22 @@ def scenery(k):
     at,h=site(k,6146,9)
     art.box(at(1.5,2.3,-.60),(7.86,6.86,20.05),h,sand);art.roof(at(1.5,2.3,19.45),8.3,7.46,7.74,h,copper)
     for z in (7.9,13.64,19.54):art.box(at(1.5,2.3,z),(8.2,7.17,.36),h,cream)
-    panel(at,orloj,-2.47,2.0,1.0,4.42,7.63,-math.pi/2)
+    for side in (-1,1):
+        panel(at,chapel,1.50+side*3.97,2.3,.025,6.84,19.26,math.pi/2)
+        panel(at,chapel,1.50,2.3+side*3.48,.025,7.86,19.27,0)
+    panel(at,orloj,-2.53,2.0,1.0,4.42,7.63,-math.pi/2)
     art.box(at(1.34,-1.25,9.0),(2.63,.22,3.87),h,glass)
     for n in (-1,0,1):art.box(at(1.34+n*.78,-1.37,9.03),(.13,.14,3.85),h,cream)
+    # The tower adjoins a working town square. Its frontage steps back at the clock.
+    for d in range(6058,6251,12):
+        house(d,18.3 if 6128<d<6174 else 13.6,(d//12)%4,arcades)
+    for d in range(6105,6181,4):
+        at,h=site(k,d,5.65+1.3*math.sin(d*.24));panel(at,visitors,0,0,.04,1.91,1.72,1.34,(d//4)%4,4)
+    # Continue the fan paving across Old Town Square, including the clock forecourt.
+    paving=pictured(k,'PragueSetts')
+    for station,plaza_width,depth in ((3670,78,130),(6145,45,103)):
+        at,h=site(k,station)
+        picture(paving,(at(-depth/2,-plaza_width/2,-.015),at(depth/2,-plaza_width/2,-.015),at(depth/2,plaza_width/2,-.015),at(-depth/2,plaza_width/2,-.015)),((0,0),(depth/2.25,0),(depth/2.25,plaza_width/2.25),(0,plaza_width/2.25)))
     # Each 30 m span leaves open water below its arch. The parapets and statues follow the deck grade.
     for d in range(10566,11106,30):
         at,h=site(k,d);base=WATER-k.road.pos(d)[2]
@@ -181,6 +203,13 @@ def scenery(k):
                 angle=math.pi*k/14
                 return at(8.65*math.cos(angle)*math.cos(t),8.65*math.cos(angle)*math.sin(t),10.3*math.sin(angle))
             art.face((dome(a,i),dome(b,i),dome(b,i+1),dome(a,i+1)),(copper,)*4)
+    # The view continues past the palace into red roofs, domes and distant riverbanks.
+    ax,ay,az=k.road.pos(21180);tx,ty,_=k.road.pos(21258,55);dx=tx-ax;dy=ty-ay;l=math.hypot(dx,dy);dx/=l;dy/=l
+    for j in range(34):
+        u=j/34;v=(j+1)/34
+        def skyline(t,q):
+            side=(t-.5)*1050;return (ax+dx*490-dy*side,ay+dy*490+dx*side,az-90+q*151)
+        picture(roofs,(skyline(u,0),skyline(v,0),skyline(v,1),skyline(u,1)),((u,0),(v,0),(v,1),(u,1)))
     return {'efforts':0}
 
 THEME={'lay':route,'land_builder':land,'road_builder':road,'terrain':{'sea':False},'road_half_width':3.68,'land':{'mid':0xB3A48C},'sky':[0xE5E7DF,0xD2E0E5,0xB1CEE1,0x8BB4D3,0x7099C2],'haze':0xCED1C6,'light':[0xFFEDD1,2.18],'fill':[0xD3DFE7,0xA99F8A],'sun_radius':7,'sun_altitude':.68,'sun_azimuth':-.87}
