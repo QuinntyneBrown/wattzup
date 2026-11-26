@@ -857,6 +857,20 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
       }
+      if (this.course.file.id === 'santamonica') {
+        const { PacificPark } = await import('./pacific-park');
+        if (this.disposed) return false;
+        const detail = await PacificPark.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.camera.far = 21000;
+        this.camera.updateProjectionMatrix();
+        this.pacificPark = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -1272,18 +1286,6 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(streets.root);
         this.crews = new ComunaCrews(this.course, this.scene);
         this.disposables.push(streets, this.crews);
-      }
-      if (this.course.file.id === 'santamonica') {
-        const { PacificPark } = await import('./pacific-park');
-        if (this.disposed) return false;
-        const detail = await PacificPark.load(this.course);
-        if (this.disposed) {
-          detail.dispose();
-          return false;
-        }
-        this.pacificPark = detail;
-        this.scene.add(detail.root);
-        this.disposables.push(detail);
       }
       if (this.course.file.id === 'coney') {
         const { ConeyBoardwalk } = await import('./coney-boardwalk');
@@ -2797,6 +2799,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
+    this.pacificPark?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
       ahead.y +

@@ -10,9 +10,11 @@ import {
   Object3D,
   PlaneGeometry,
   SRGBColorSpace,
+  RepeatWrapping,
   TextureLoader,
   TorusGeometry,
   type Texture,
+  type Vector3,
 } from 'three/webgpu';
 import { mix, sin, smoothstep, uniform, uv, vec3 } from 'three/tsl';
 import type { Course, CoursePlace } from './course';
@@ -26,9 +28,22 @@ const ASSETS = [
   'skater',
   'cruiser',
   'surfer',
+  'sand',
+  'paving',
+  'apartments',
+  'hut',
 ] as const;
 const printed = () => new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.4 });
 const station = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
+
+const VIEWS = [
+  [80, 117, -4, 3],
+  [1860, 1882, -12, 3.3],
+  [3210, 3245, -39, 0.2],
+  [5060, 5090, 9, 6],
+  [8490, 8790, -81, 20],
+  [8800, 8830, 0, 16],
+];
 
 export class PacificPark {
   readonly root = new Group();
@@ -37,6 +52,10 @@ export class PacificPark {
     LeaningPalm: printed(),
     PairedPalms: printed(),
     HarborSign: printed(),
+    BeachApartments: printed(),
+    TowerBoards: printed(),
+    BeachSand: new MeshBasicMaterial({ side: DoubleSide, vertexColors: true }),
+    BraudeConcrete: new MeshBasicMaterial({ side: DoubleSide }),
     TrailShield: printed(),
     PacificWater: new MeshBasicNodeMaterial({ side: DoubleSide }),
   };
@@ -88,22 +107,31 @@ export class PacificPark {
       this.materials.HarborSign,
       this.materials.TrailShield,
       ...this.people,
+      this.materials.BeachSand,
+      this.materials.BraudeConcrete,
+      this.materials.BeachApartments,
+      this.materials.TowerBoards,
     ];
     for (const [i, material] of faces.entries()) {
       const texture = textures[i]!;
       texture.colorSpace = SRGBColorSpace;
-      texture.flipY = i >= 5;
+      texture.flipY = i >= 5 && i <= 7;
+      if (i === 8 || i === 9) {
+        texture.wrapS = texture.wrapT = RepeatWrapping;
+        texture.anisotropy = 4;
+      }
       material.map = texture;
     }
+    const offshore = uv().y.oneMinus();
     const swell = sin(
-      uv()
-        .y.mul(0.74)
+      offshore
+        .mul(0.74)
         .add(sin(uv().x.mul(0.16)))
         .sub(this.clock.mul(1.25)),
     );
-    const foam = smoothstep(0.79, 0.99, swell).mul(smoothstep(32, 1, uv().y));
+    const foam = smoothstep(0.79, 0.99, swell).mul(smoothstep(1, 32, offshore).oneMinus());
     this.materials.PacificWater.colorNode = mix(
-      mix(vec3(0.19, 0.45, 0.48), vec3(0.08, 0.29, 0.38), smoothstep(0, 52, uv().y)),
+      mix(vec3(0.19, 0.45, 0.48), vec3(0.08, 0.29, 0.38), smoothstep(0, 52, offshore)),
       vec3(0.83, 0.88, 0.8),
       foam,
     );
@@ -220,6 +248,23 @@ export class PacificPark {
       m.scale.set(kind === 1 ? 2.1 : kind === 2 ? 2.25 : 1.16, height, 1);
       if (!i) this.reads.skaterStride = m.rotation.z;
     }
+  }
+  sightline(metres: number, camera: Vector3, ahead: CoursePlace) {
+    const view = VIEWS.find((v) => Math.abs(metres - v[0]!) < 55);
+    if (!view) return;
+    const [anchor, target, lane, lift] = view as [number, number, number, number];
+    const w = Math.min(1, (1 - Math.abs(metres - anchor) / 55) * 1.65);
+    const r = this.course.place(metres, 0, this.rider),
+      t = this.course.place(target, lane, this.sampled);
+    const dx = t.x - r.x,
+      dz = t.z - r.z,
+      len = Math.max(1, Math.hypot(dx, dz));
+    camera.x += (r.x - (5.1 * dx) / len - camera.x) * w;
+    camera.z += (r.z - (5.1 * dz) / len - camera.z) * w;
+    camera.y += (r.y + 2.4 - camera.y) * w;
+    ahead.x += (r.x + (14 * dx) / len - ahead.x) * w;
+    ahead.z += (r.z + (14 * dz) / len - ahead.z) * w;
+    ahead.y += (r.y + 2.4 + (19 * (t.y + lift - r.y - 2.4)) / (len + 5.1) - ahead.y) * w;
   }
   report() {
     return this.reads;

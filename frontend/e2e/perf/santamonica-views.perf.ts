@@ -41,7 +41,11 @@ test('Ride the Marvin Braude beach path past the lifeguard towers to Santa Monic
     ['park', 8.49],
     ['harbor', 8.8],
   ] as const) {
-    while (parseFloat((await race.distance.textContent())!) < km) {
+    const station = async () =>
+      version === 'after'
+        ? ((await worldRide.coursePose('santamonicaStation')) ?? 0) / 1000
+        : parseFloat((await race.distance.textContent())!);
+    while ((await station()) < km - (version === 'after' ? 0.002 : 0)) {
       await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(18));
       await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(90));
       // The baseline integrates distance on animation frames and caps each step at
@@ -50,12 +54,14 @@ test('Ride the Marvin Braude beach path past the lifeguard towers to Santa Monic
         for (let frame = 0; frame < 4; frame++) await page.clock.fastForward(250);
       } else {
         // The authored course reads the same physical race distance as the HUD.
-        await page.clock.fastForward(1000);
+        if (km - (await station()) > 0.045) await page.clock.fastForward(750);
+        await page.clock.runFor(64);
       }
     }
     // Capture the submitted frame with the ride clock held at this chainage. Resuming
     // for a screenshot lets a loaded browser travel metres beyond the reference position.
     await page.clock.runFor(34);
+    if (version === 'after') expect(Math.abs((await station()) - km)).toBeLessThan(0.018);
     const capture = async (path: string): Promise<void> => {
       const frame = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 91, clip });
       await writeFile(path, Buffer.from(frame.data, 'base64'));
