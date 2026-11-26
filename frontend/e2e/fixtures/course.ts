@@ -1,3 +1,4 @@
+import prospectElevation from './prospect-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const prospectCourseMap = {
   place: 'Brooklyn, New York',
   world: 'prospect',
   distanceKm: 12.4,
-  climbingM: 0,
+  climbingM: 72,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: prospectElevation,
   },
   thumbnailUrl: 'maps/prospect-park.jpg',
   photoUrl: 'maps/prospect-park-photo.jpg',
