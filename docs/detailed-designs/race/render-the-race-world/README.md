@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Tempelhof Field (#2229)
+
+The legacy Tempelhof street already depicts the broad runway, kites and radar tower. Carry those into the 12.909 km Race course, with distinct apron, community garden and taxiway sections. The catalogue resolves tempelhof-field to tempelhof; Race loads its Blender geometry and matching centre line, then the low-tier scenery on entry.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Runway threshold, 0.12 km | Real 01–05, 14 and 15. Games 01 and 03. | Worn threshold bars, slab joints, tyre marks and inset centreline lights lead across the broad runway under a moving Berlin sky. |
+| The terminal apron, 2.48 km | Real 06–09, 14 and 15. Games 02 and 03. | The curved limestone terminal, glazed hangar doors and projecting apron canopy stretch along the field. The old radar tower rises above the roof. |
+| The kite runway, 4.91 km | Real 01–04, 11 and 14. Games 01 and 04. | A kite-skater follows the wind under a swept canopy and taut lines. More colourful kites move beyond the mown runway edge. |
+| Allmende-Kontor gardens, 7.16 km | Real 10–13. Games 01 and 05. | The ring road passes raised timber beds, garden sheds, picnic tables, a red information container and people tending or using the park. |
+| Skylark meadow, 9.52 km | Real 05–07 and 11–15. Games 01, 02 and 04. | Tall meadow grass behind a wire fence gives way to Neukölln apartments and church spires, with the Fernsehturm sphere on its slender mast. |
+| The windsock taxiway, 12.64 km | Real 01–05, 09 and 14. Games 03 and 05. | Taxiway arrows and yellow signs guide the return to concrete. A striped windsock turns beside the old airfield lights while skaters cross the apron. |
+
+Use Caribana’s fixed skyline, occupied middle distance and moving foreground to set the scale of the open field. Keep the concrete slab pattern continuous through the threshold, use real geometry for the canopy and terminal arc, and merge fence posts, beds and hangar details by course section. Share a bounded set of actors, kite lines and park furniture, animate on ride time and release all resources on exit. Compare six rider views and collect sixty seconds of submitted-frame timings for each tablet section. See ADRs 0021, 0023, 0030, 0034 and 0035.
