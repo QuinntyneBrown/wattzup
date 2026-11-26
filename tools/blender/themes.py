@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import trollstigen as _trollstigen
+
+THEMES['trollstigen'] = _trollstigen.THEME
+SCENERY['trollstigen'] = _trollstigen.scenery
