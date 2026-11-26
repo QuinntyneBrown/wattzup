@@ -1,3 +1,4 @@
+import machupicchuElevation from './machupicchu-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const machupicchuCourseMap = {
   place: 'Cusco Region, Peru',
   world: 'machupicchu',
   distanceKm: 10.944583333333332,
-  climbingM: 0,
+  climbingM: 390,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: machupicchuElevation,
   },
   thumbnailUrl: 'maps/machu-picchu-road.jpg',
   photoUrl: 'maps/machu-picchu-road-photo.jpg',
