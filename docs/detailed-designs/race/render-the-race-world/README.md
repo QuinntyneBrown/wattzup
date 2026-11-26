@@ -1290,3 +1290,16 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+### Winnats Pass (#2250)
+
+Follow the existing race catalogue into a Blender-built course and its own lazily loaded scene. The 13.5 km class includes the approach and high moor around the short climb. Rise 88 m in 440 m across the upper ramp. Share sampled elevation between the camera, bikes, cattle grids and road. Model limestone faces and grass shelves at distinct depths. Scatter small scree and tuft clumps around the bases. Frame Mam Tor from the upper road and the Castleton patchwork from the overlook. Use original grass, rock, walkers and distant valley art. Keep moving limbs near the rider and release textures, geometry and rider resources on exit.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Castleton approach, 0.14 km | Real 09, 13–15 and game 05 | A farm wall, stone cottages and Castleton’s ridge give way to the moorland approach. |
+| Lower cattle grid, 4.82 km | Real 01, 05, 06 and games 01, 05 | A steel cattle grid spans the unmarked lane between dry-stone wall ends at the gorge entrance. |
+| Crag narrows, 6.38 km | Real 02, 03, 06–10 and games 01, 02 | Grey limestone teeth and loose scree interrupt steep green walls on either side of the kink. |
+| Twenty-percent ramp, 7.06 km | Real 01, 04, 07, 10 and games 03, 04 | The road tilts sharply between walkers and climbing cyclists, with sheep on the grassy bank. |
+| Mam Tor shoulder, 9.86 km | Real 07, 11, 12, 14 and game 04 | The broken face of Mam Tor stands above a long, exposed green ridge under shifting cloud. |
+| Hope Valley overlook, 12.98 km | Real 02, 09, 13–15 and games 02, 05 | Past a low stone wall, the view opens back over Castleton and the small fields of Hope Valley. |
