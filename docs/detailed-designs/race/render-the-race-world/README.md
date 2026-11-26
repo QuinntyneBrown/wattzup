@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Rome Colosseum Loop (#2198)
+
+Lay the avenue and Palatine return as one closed course under three circuits of the historical class. The start faces the marble monument before turning onto Via dei Fori Imperiali. Place the amphitheatre in fixed world space at the far end, so approaching, passing and looking back reveal different faces of the same structure.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Piazza Venezia, 0.08 km | Real 01, 02 and 13. Games 01 and 04. | The avenue opens beside the Vittoriano. Wide marble steps ascend to its deep colonnade and the two bronze quadrigas on its roof. |
+| Trajan’s Market, 0.52 km | Real 01, 02, 11 and 12. Games 01 and 02. | A low parapet opens onto the excavated brick hemicycle, ranks of columns and the rectangular tower above the market. Tour groups move along the pavement. |
+| Via dei Fori Imperiali, 0.91 km | Real 01–05 and 08. Games 02 and 03. | The worn basalt fans of the wide straight lead towards the elliptical Colosseum. Deep arcades, broken upper walls and warm arch bays stand clear of the pines. |
+| Arch of Constantine, 1.37 km | Real 08–11 and 15. Games 03 and 04. | Beside the amphitheatre stands the marble arch with a high central opening, two lower passages, relief panels and a projecting attic. A guide raises an umbrella. |
+| Via di San Gregorio, 2.21 km | Real 04–07 and 14. Games 02 and 05. | Flat pine crowns rise above the Palatine brick ruins. A red Vespa and white taxi drive along the roadside with a clear lane for the rider. |
+| Piazza del Colosseo, 11.15 km | Real 03, 08–10 and 15. Games 01, 03 and 05. | On the third circuit the rider passes the same travertine piers, stacked arches and irregular rim at close range. Tourists and street sellers give the building scale. |
+
+Model the amphitheatre openings through the masonry and vary the surviving outer rim by sector. Bake travertine shadow, brick runoff and fan-pattern basalt at physical scale. The fixed skyline and middle-distance Forum terrace stay visible through turns. Batch pines, architectural repeats and pedestrians by local visibility. Advance the guide, Vespa and taxi on ride time and release their owned resources on exit. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.
