@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import ventoux as _ventoux
+
+THEMES['ventoux'] = _ventoux.THEME
+SCENERY['ventoux'] = _ventoux.scenery

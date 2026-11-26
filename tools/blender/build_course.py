@@ -675,9 +675,9 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             group = "Tarmac"
         elif part.name == "VelodromeTimber":
             group, chunked = "VelodromeTimber", False
-        elif part.name == 'KerioRim':
+        elif part.name in ('KerioRim', 'Vaucluse', 'VentouxStation'):
             group, chunked = part.name, False
-        elif part.name in ('Murram', 'ItenFlora'):
+        elif part.name in ('Murram', 'ItenFlora', 'D974Tarmac', 'VentouxLimestone', 'VentouxCedars', 'ReynardFacade', 'VentouxMarkers', 'VentouxChalk', 'VentouxFans'):
             group, chunked = part.name, True
         elif part.name == 'LandmarkLights':
             group, chunked = 'Glow', False
@@ -771,7 +771,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos", "DamClocks", "Terrazzo", "DamFace", "BoulderBasin", "MaleconStone", "Portales","OriginalElevations", "WallSpray", "SaltPuddles", "PassWarning", "PassPlate", "CaravanPlate", "HerdwickHead", "FellMist", "HerdwickCross", "EskdaleVale", "ScafellPikes", "HkCrowns", "HkRanchHead", "Clifftop", "SaltSpray", "OtwayPlants", "SouthernOcean", "PortLimestone", "LondonArch", "Apostle", "CoastSigns", "ColConifers", "FellGround", "NorthFace", "ColSigns", "SummitSign", "SixthBorne", "CanyonStrata", "GrandviewTemple", "FarRim", "ParkCrowns", "FestivalPrint", "Tenements", "RaceBoards", "Relief", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple", "StripDancers", "StripFestoons", "StripBeams", "StripFleet", "CoveFoam", "StripCloth", "IceCap", "AspenGrove", "DivideSign", "SawatchSkyline", "ItenFlora", "KerioRim") or (group == "Ground" and part.uvs is not None):
+                if group in ("Windows", "Fences", "Halos", "DamClocks", "Terrazzo", "DamFace", "BoulderBasin", "MaleconStone", "Portales","OriginalElevations", "WallSpray", "SaltPuddles", "PassWarning", "PassPlate", "CaravanPlate", "HerdwickHead", "FellMist", "HerdwickCross", "EskdaleVale", "ScafellPikes", "HkCrowns", "HkRanchHead", "Clifftop", "SaltSpray", "OtwayPlants", "SouthernOcean", "PortLimestone", "LondonArch", "Apostle", "CoastSigns", "ColConifers", "FellGround", "NorthFace", "ColSigns", "SummitSign", "SixthBorne", "CanyonStrata", "GrandviewTemple", "FarRim", "ParkCrowns", "FestivalPrint", "Tenements", "RaceBoards", "Relief", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple", "StripDancers", "StripFestoons", "StripBeams", "StripFleet", "CoveFoam", "StripCloth", "IceCap", "AspenGrove", "DivideSign", "SawatchSkyline", "ItenFlora", "KerioRim", 'D974Tarmac', 'VentouxLimestone', 'VentouxCedars', 'ReynardFacade', 'VentouxMarkers', 'VentouxChalk', 'VentouxFans', 'Vaucluse', 'VentouxStation') or (group == "Ground" and part.uvs is not None):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -782,7 +782,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences", "Halos", "DamClocks", "Terrazzo", "DamFace", "BoulderBasin", "MaleconStone", "Portales","OriginalElevations", "WallSpray", "SaltPuddles", "PassWarning", "PassPlate", "CaravanPlate", "HerdwickHead", "FellMist", "HerdwickCross", "EskdaleVale", "ScafellPikes", "HkCrowns", "HkRanchHead", "Clifftop", "SaltSpray", "OtwayPlants", "SouthernOcean", "PortLimestone", "LondonArch", "Apostle", "CoastSigns", "ColConifers", "FellGround", "NorthFace", "ColSigns", "SummitSign", "SixthBorne", "CanyonStrata", "GrandviewTemple", "FarRim", "ParkCrowns", "FestivalPrint", "Tenements", "RaceBoards", "Relief", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple", "StripDancers", "StripFestoons", "StripBeams", "StripFleet", "CoveFoam", "StripCloth", "IceCap", "AspenGrove", "DivideSign", "SawatchSkyline", "ItenFlora", "KerioRim"):
+                    if group in ("Windows", "Fences", "Halos", "DamClocks", "Terrazzo", "DamFace", "BoulderBasin", "MaleconStone", "Portales","OriginalElevations", "WallSpray", "SaltPuddles", "PassWarning", "PassPlate", "CaravanPlate", "HerdwickHead", "FellMist", "HerdwickCross", "EskdaleVale", "ScafellPikes", "HkCrowns", "HkRanchHead", "Clifftop", "SaltSpray", "OtwayPlants", "SouthernOcean", "PortLimestone", "LondonArch", "Apostle", "CoastSigns", "ColConifers", "FellGround", "NorthFace", "ColSigns", "SummitSign", "SixthBorne", "CanyonStrata", "GrandviewTemple", "FarRim", "ParkCrowns", "FestivalPrint", "Tenements", "RaceBoards", "Relief", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple", "StripDancers", "StripFestoons", "StripBeams", "StripFleet", "CoveFoam", "StripCloth", "IceCap", "AspenGrove", "DivideSign", "SawatchSkyline", "ItenFlora", "KerioRim", 'D974Tarmac', 'VentouxLimestone', 'VentouxCedars', 'ReynardFacade', 'VentouxMarkers', 'VentouxChalk', 'VentouxFans', 'Vaucluse', 'VentouxStation'):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
