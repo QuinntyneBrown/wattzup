@@ -5,9 +5,9 @@ from iten_landmarks import picture, pictured, site
 from worldkit import Painted, lin, smooth
 
 PROFILE=((0,492),(1200,506),(2480,537),(3420,574),(4750,539),(6210,493),(7880,525),
-         (9320,597),(10660,654),(11980,613),(13600,585),(15280,629),(15520,632),
+         (9320,597),(10660,654),(11980,613),(13600,585),(15280,588),(15470,597),(15664,631),
          (15800,632),(17000,593),(18300,611),(19700,644),(20910,685),(21377,683))
-BRIDGE=15565
+BRIDGE=15710
 LAKE=472
 
 
@@ -19,8 +19,8 @@ def height(d):
 
 def heading(d):
     normal=.37*math.sin(d/190)+.22*math.sin(d/76)+.40*math.sin(d/513)
-    approach=1.54*(1-smooth(15502,15530,d))
-    return normal*(1-smooth(15225,15345,d)+smooth(15622,15770,d))+approach*smooth(15225,15345,d)
+    approach=1.43*(1-smooth(15565,15665,d))
+    return normal*(1-smooth(15225,15345,d)+smooth(15792,15920,d))+approach*smooth(15225,15345,d)
 
 
 def route(course,theme,bc):
@@ -67,9 +67,21 @@ def land(r,col,theme,bc):
     layers=[]
     for name in ('OliveEarth','TajoCliff','SierraCrag','ZaharaWater'):
         b=bc.Builder(name,'terrain');b.colours=[];b.uvs=[];layers.append(b)
+    bx,by,_=r.pos(BRIDGE)
+    vx,vy,_=r.pos(15470)
+    span=(bx-vx)**2+(by-vy)**2
+    def ravine(x,y,z,d,v):
+        if not 14900<d<16250:return z
+        t=max(0,min(1,((x-vx)*(bx-vx)+(y-vy)*(by-vy))/span))
+        distance=math.hypot(x-vx-t*(bx-vx),y-vy-t*(by-vy))
+        cut=smooth(.023,.14,t)*(1-smooth(25,84,distance))
+        # Drop the surfaces in the sightline to the river; keep the approach road on its rim.
+        rim=smooth(3.7,6.4,abs(v)) if abs(d-BRIDGE)>50 else 1
+        return min(z,z+(548-z)*cut*rim)
     def pt(i,v):
         p=r.s[i];x,y,_=r.at(i,v);f=smooth(51,166,abs(v))
-        return (x+(p['x']-x)*f,y+(p['y']+v-y)*f,ground(p['d'],v))
+        x+=(p['x']-x)*f;y+=(p['y']+v-y)*f
+        return (x,y,ravine(x,y,ground(p['d'],v),p['d'],v))
     widths=(-540,-255,-132,-78,-49,-28,-12,-4,4,12,28,49,78,132,205,310,540)
     i=0
     while i<len(r.s)-1:
@@ -134,8 +146,12 @@ def scenery(k):
         for j in range(38):
             d=centre+(j%9-4)*10.1+3*(j//9)
             v=24+(j//9)*15+(j%2)*2
+            if centre==3458:
+                v+=24
+                d+=45 if j%9>3 else -58
+            if centre==10709:v+=31+(j//9)*6
             house(d,v,7.7+j%4,7.3+j%3,5.5+j%4,j%3)
-        if centre!=10709:keep(centre+15,94,17)
+        if centre!=10709:keep(centre+15,94,23 if centre==3458 else 17)
     # The white town sits below a castle on its own exposed limestone crag.
     at,h,z=place(3473,94)
     crag=pictured(k,'ZaharaRock')
@@ -143,12 +159,20 @@ def scenery(k):
         a=i*math.tau/20;b=(i+1)*math.tau/20
         def rock(t,r,zz):return at(r*math.cos(t),r*.74*math.sin(t),z+zz)
         picture(crag,(rock(a,41,-35),rock(b,41,-35),rock(b,9,.2),rock(a,9,.2)),((i/3,0),((i+1)/3,0),((i+1)/3,3.25),(i/3,3.25)))
+    # A pale limestone escarpment behind Grazalema, with tilted beds and distinct peaks.
+    for j in range(36):
+        d=10510+j*12
+        for band in range(3):
+            at,h,z=place(d,135+band*31)
+            high=28+11*math.sin(j*.82)+7*math.sin(j*1.57)+band*18
+            p=(at(-8,-12,z-5),at(8,-11,z-4),at(12,13,z+high-2),at(-5,17,z+high+4))
+            picture(crag,p,((j/3,0),((j+1)/3,0),((j+1)/3,high/11),(j/3,high/11)))
     for d in range(9950,11080,15):
         for side in (-1,1):
             if 10560<d<10810 and side==1:continue
             tree(d,side*(19+d%45),2 if d%3==0 else 3,9+d%7)
     # Low, jointed parapet along the outside of winding mountain bends.
-    for a,b,side in ((70,320,-1),(3350,3520,-1),(6110,6380,1),(10480,10800,-1),(15402,15670,-1)):
+    for a,b,side in ((70,320,-1),(3350,3520,-1),(6110,6380,1),(10480,10800,-1),(BRIDGE-55,BRIDGE+58,-1)):
         last=None
         for d in range(a,b,4):
             pt=k.road.pos(d,side*4.08,.34)
@@ -158,34 +182,64 @@ def scenery(k):
             last=pt
     # Puente Nuevo deck and its deep masonry spandrels. The upper gallery is supported by
     # two smaller arches; the central arch rises above a narrow river between tall piers.
-    at,h=site(k,BRIDGE);floor=height(BRIDGE)
-    def face(pts):
-        picture(ashlar,pts,tuple((p[0]/6,(p[2]+.13*p[1])/6) for p in pts))
+    at,h=site(k,BRIDGE)
+    # Extrude the silhouette of the original side elevation. The arch soffits,
+    # recessed upper windows and battered piers then align on both elevations.
+    import bpy
+    from array import array
+    from pathlib import Path
+    elevation=pictured(k,'PuenteElevation')
+    source=Path(__file__).resolve().parents[2]/'frontend/projects/ride/public/courses/pueblos-puente.webp'
+    image=bpy.data.images.load(str(source),check_existing=False)
+    w,hpx=image.size[:];pix=array('f',[0])*(w*hpx*4)
+    image.pixels.foreach_get(pix)
+    nx,ny=185,145
+    def filled(i,j):
+        if not(0<=i<nx and 0<=j<ny):return False
+        return pix[(int((j+.5)*hpx/ny)*w+int((i+.5)*w/nx))*4+3]>.59
+    def pt(i,j,v):return at((i/nx-.5)*99,v,-74+j/ny*78)
     for side in (-1,1):
-        v=side*6.1
-        for x in (-44,-22,22,44):
-            art.box(at(x,0,-78),(7.4,12.1,75.4),h,ochre)
-            face((at(x-3.7,v,-78),at(x+3.7,v,-78),at(x+3.7,v,-2.2),at(x-3.7,v,-2.2)))
-        for center,r,base in ((-33,7.7,-18),(0,18.4,-52),(33,7.7,-18)):
-            for j in range(23):
-                a=j*math.pi/23;b=(j+1)*math.pi/23
-                xa=center+r*math.cos(a);xb=center+r*math.cos(b)
-                za=base+r*math.sin(a);zb=base+r*math.sin(b)
-                top=-9.7 if center==0 else -2.1
-                face((at(xa,v,za),at(xb,v,zb),at(xb,v,top),at(xa,v,top)))
-                if side<0:face((at(xa,-6.1,za),at(xb,-6.1,zb),at(xb,6.1,zb),at(xa,6.1,za)))
-        for x in range(-15,16,5):art.box(at(x,side*5.7,-10),(2.3,.89,7.92),h,ochre)
-        art.box(at(0,side*5.62,-2.4),(98,1.04,3.63),h,ochre)
-        art.box(at(0,side*5.62,1.23),(98.5,1.13,.24),h,pale)
-    art.box(at(0,0,-2.38),(98,11.4,2.38),h,ochre)
+        v=side*6.14
+        picture(elevation,(pt(0,0,v),pt(nx,0,v),pt(nx,ny,v),pt(0,ny,v)),((0,0),(1,0),(1,1),(0,1)))
+    for j in range(ny):
+        for i in range(nx):
+            if not filled(i,j):continue
+            for di,dj,ia,ja,ib,jb in ((0,-1,i,j,i+1,j),(0,1,i,j+1,i+1,j+1),(-1,0,i,j,i,j+1),(1,0,i+1,j,i+1,j+1)):
+                if filled(i+di,j+dj):continue
+                pts=(pt(ia,ja,-6.1),pt(ib,jb,-6.1),pt(ib,jb,6.1),pt(ia,ja,6.1))
+                picture(ashlar,pts,((0,j/10),(1/nx*14,j/10),(1/nx*14,j/10+1.6),(0,j/10+1.6)))
+    bpy.data.images.remove(image)
+    art.box(at(0,0,-.85),(98.6,11.95,.84),h,ochre)
+    # Visible ledges and the Guadalévin below the light sandstone piers.
+    river=pictured(k,'ZaharaWater') if 'ZaharaWater' not in k.B else k.B['ZaharaWater']
+    for n in range(-132,131,4):
+        drift=2.8*math.sin(n/17)
+        a=at(drift-2.1,n,-79.1);b=at(drift+2.1,n,-79.1)
+        c=at(drift+2.4,n+4,-79.1);e=at(drift-1.8,n+4,-79.1)
+        picture(river,(a,b,c,e),((0,0),(1,0),(1,1),(0,1)))
+        river.colours[-4:]=[lin(0x599394)]*4
     for j in range(22):
-        d=15618+(j%9)*9+(j//9)*4;v=15+j//9*15
+        d=BRIDGE+58+(j%9)*9+(j//9)*4;v=15+j//9*15
         house(d,v,7.8,7.4,6.2+j%4,j%3)
+    # Pinch the reservoir shore into coves, with small islands of hillside scrub at water level.
+    for d in range(5980,6530,14):
+        tree(d,289+d%59,3,7.5+d%7)
+    for j in range(7):
+        d=6210+25*j;v=128+9*math.sin(j*.92);at,h=site(k,d,v);zz=LAKE-height(d)
+        for n in range(18):
+            a=n*math.tau/18;b=(n+1)*math.tau/18
+            art.face((at(29*math.cos(a),12*math.sin(a),zz-.1),at(29*math.cos(b),12*math.sin(b),zz-.1),at(0,0,zz+2.5)),(lin(0x829154),lin(0x819057),lin(0x8C955C)))
+        panel(at,trees,0,0,zz+2.3,7.3,6.7,1.24,j%2,3,2)
+    for d in range(3340,3510,13):
+        tree(d,-13-d%19,0,4.8)
+    for j in range(9):
+        d=3390+j*8;v=33+j%3*5
+        house(d,v,7.1,6.35,5.03,j%3)
     for d in range(20700,21140,13):
         for side in (-1,1):
             if 20897<d<20980 and side>0:continue
             house(d,side*(9.3+d%3),10.4,6.5,6.2+d%4,d%3)
-            if d%3:tree(d+4,side*5.6,4,1.8)
+            if d%3:tree(d+4,side*5.6,4,2.2)
     at,h,z=place(20944,13.3)
     art.box(at(0,0,z),(7.6,7.3,14.6),h,pale)
     for x in (-2.8,2.8):

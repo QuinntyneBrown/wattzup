@@ -20,10 +20,10 @@ import type { Course, CoursePlace } from './course';
 
 const views = [
   [80, 119, -9, 2.3],
-  [3420, 3473, -94, 53],
-  [6210, 6255, -62, -14.4],
-  [10660, 10708, -32, 7.3],
-  [15470, 15565, 0, -13.5],
+  [3420, 3473, -94, 62],
+  [6210, 6270, -74, -15],
+  [10660, 10725, -90, 31],
+  [15470, 15710, 0, -17],
   [20910, 20944, -13.3, 13.4],
 ] as const;
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
@@ -34,6 +34,7 @@ export class AndalusianRoad {
     IberianTrees: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.46 }),
     PuebloFacades: surface(),
     RondaMasonry: surface(),
+    PuenteElevation: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.45 }),
     TajoCliff: surface(),
     SierraCrag: surface(),
     ZaharaRock: surface(),
@@ -65,7 +66,7 @@ export class AndalusianRoad {
   static async load(course: Course) {
     const loader = new TextureLoader(),
       results = await Promise.allSettled(
-        ['trees', 'walls', 'masonry', 'gorge', 'sierra', 'soil', 'cobbles'].map((key) =>
+        ['trees', 'walls', 'masonry', 'gorge', 'sierra', 'soil', 'cobbles', 'puente'].map((key) =>
           loader.loadAsync('courses/pueblos-' + key + '.webp'),
         ),
       );
@@ -109,7 +110,7 @@ export class AndalusianRoad {
     for (const [i, t] of textures.entries()) {
       t.flipY = false;
       t.colorSpace = SRGBColorSpace;
-      if (i >= 2) {
+      if (i >= 2 && i <= 6) {
         t.wrapS = t.wrapT = RepeatWrapping;
         t.anisotropy = 4;
       }
@@ -118,6 +119,7 @@ export class AndalusianRoad {
     m.IberianTrees.map = textures[0]!;
     m.PuebloFacades.map = textures[1]!;
     m.RondaMasonry.map = textures[2]!;
+    m.PuenteElevation.map = textures[7]!;
     m.TajoCliff.map = textures[3]!;
     m.SierraCrag.map = m.ZaharaRock.map = textures[4]!;
     m.OliveEarth.map = textures[5]!;
@@ -167,7 +169,7 @@ export class AndalusianRoad {
     this.boat.visible = Math.abs(metres - 6245) < 230;
     if (this.boat.visible) {
       const angle = time * 0.072;
-      const p = this.course.place(6251 + 12 * Math.sin(angle), -63 - 5 * Math.cos(angle), this.p);
+      const p = this.course.place(6264 + 12 * Math.sin(angle), -69 - 5 * Math.cos(angle), this.p);
       this.boat.position.set(p.x, 472.25 + 0.046 * Math.sin(time * 1.3), p.z);
       this.boat.rotation.y = p.heading + angle;
       this.readings.boatTravel = this.boat.position.x;
