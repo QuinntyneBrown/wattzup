@@ -1,3 +1,4 @@
+import strasbourgElevation from './strasbourg-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const strasbourgCourseMap = {
   place: 'Strasbourg, France',
   world: 'strasbourg',
   distanceKm: 10.15,
-  climbingM: 0,
+  climbingM: 10,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: strasbourgElevation,
   },
   thumbnailUrl: 'maps/strasbourg-christmas-market.jpg',
   photoUrl: 'maps/strasbourg-christmas-market-photo.jpg',
