@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import valais as _valais
+
+THEMES['valais'] = _valais.THEME
+SCENERY['valais'] = _valais.scenery
