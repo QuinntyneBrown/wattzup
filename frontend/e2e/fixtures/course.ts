@@ -3598,7 +3598,7 @@ export const nottingHillCourseMap = {
   place: 'London, England',
   world: 'nottinghill',
   distanceKm: 5.933,
-  climbingM: 42,
+  climbingM: 87,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
