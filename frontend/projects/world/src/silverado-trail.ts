@@ -23,10 +23,10 @@ import type { RiderBody } from './rider-body';
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 const stops = [
   [80, 135, -2, 1.6],
-  [1460, 1499, -6.7, 1.45],
+  [1460, 1518, -31, 1.72],
   [3120, 3152, 19, 2.1],
   [4630, 4656, -9, 1.85],
-  [6180, 6245, -4.5, 2.1],
+  [6180, 6285, 57, 2.5],
   [7840, 7887, 23, 3.2],
 ] as const;
 function roadsterBody() {
@@ -71,6 +71,7 @@ export class SilveradoTrail {
     ValleyOaks: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.43 }),
     NapaFlowers: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.39 }),
     WineryStone: new MeshBasicMaterial({ side: DoubleSide }),
+    NapaRange: new MeshBasicMaterial({ side: DoubleSide, transparent: true, depthWrite: false }),
     WinerySigns: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.42 }),
   };
   private readonly p = point();
@@ -94,7 +95,7 @@ export class SilveradoTrail {
   };
   static async load(course: Course, body: RiderBody) {
     const res = await Promise.allSettled(
-      ['tarmac', 'vines', 'oaks', 'flowers', 'stone', 'signs'].map((n) =>
+      ['tarmac', 'vines', 'oaks', 'flowers', 'stone', 'signs', 'range'].map((n) =>
         new TextureLoader().loadAsync('courses/napa-' + n + '.webp'),
       ),
     );
@@ -140,12 +141,13 @@ export class SilveradoTrail {
       img.colorSpace = SRGBColorSpace;
       img.flipY = false;
     }
-    const [road, vines, oaks, flowers, stone, signs] = images;
+    const [road, vines, oaks, flowers, stone, signs, range] = images;
     road!.wrapS = road!.wrapT = MirroredRepeatWrapping;
     this.materials.SilveradoTarmac.map = road!;
     this.materials.TrellisedVines.map = vines!;
     this.materials.ValleyOaks.map = oaks!;
     this.materials.NapaFlowers.map = flowers!;
+    this.materials.NapaRange.map = range!;
     this.materials.WineryStone.map = stone!;
     this.materials.WinerySigns.map = signs!;
     this.kit = new CourseCyclistKit(this.plain, body, false, true);

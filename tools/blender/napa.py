@@ -60,7 +60,7 @@ def land(r,col,theme,bc):
 
 def scenery(k):
     art=Painted(k);vines=pictured(k,'TrellisedVines');oak=pictured(k,'ValleyOaks');flowers=pictured(k,'NapaFlowers')
-    facades=pictured(k,'WineryStone');boards=pictured(k,'WinerySigns')
+    facades=pictured(k,'WineryStone');boards=pictured(k,'WinerySigns');ranges=pictured(k,'NapaRange')
     stone=lin(0xAB9980);stucco=lin(0xE2D5AD);tile=lin(0xAA5B3D);wood=lin(0x786449);iron=lin(0x464744)
     def driveway(d,side):
         return any(abs(d-p)<29 and side==s for p,s in ((3149,-1),(4661,1),(7878,-1)))
@@ -82,6 +82,15 @@ def scenery(k):
                 a,_=site(k,d,side*7.5);crossed(flowers,a,4.1,.72)
             if d%90==20:
                 a,_=site(k,d+8,side*(8.4+k.rng.random()*8));crossed(oak,a,k.rng.uniform(10,18),k.rng.uniform(9,13))
+    for centre,side in ((1499,1),(6248,-1)):
+        a,h=site(k,centre+120,side*225)
+        picture(ranges,(a(-300,side*90,-52),a(300,-side*90,-52),a(300,-side*90,88),a(-300,side*90,88)),UV)
+    for d,side in ((94,-1),(1517,1),(3149,-1),(4678,1),(7890,-1)):
+        a,h=site(k,d,side*11.7);crossed(oak,a,19,13.8)
+    for d in range(1450,1550,4):
+        for j in range(4):
+            a,h=site(k,d+j*1.3,6.7+j*4.4)
+            crossed(flowers,a,3.9,.78+.1*math.sin(d))
     def house(a,h,l,w,height,wall,roof):
         art.box(a(0,0,-.18),(l,w,height+.18),h,wall);art.roof(a(0,0,height),l,w,height*.47,h,roof)
     a,h=site(k,3151,-19);house(a,h,22,10,6.1,stone,lin(0x705A4C))
@@ -100,12 +109,25 @@ def scenery(k):
             for j in range(7):
                 art.box(a(u+(1 if u<0 else -1)*j*.44,side*j*.30,.08),(.055,.055,1.4+.20*math.cos(j*.4)),h,iron)
         sign,h=site(k,d+9,side*7.5)
-        art.box(sign(0,0,0),(.17,.17,2.86),h,wood)
+        for v in (-1.45,1.45):
+            art.box(sign(.12,v,-.14),(.17,.17,2.75),h,wood)
+        art.box(sign(.10,0,2.59),(.19,3.12,.15),h,wood)
+        for start in (-4.6,4.6):
+            step=1 if start<0 else -1
+            for z in (.42,1.26):
+                beam(art,a(start,0,z),a(start+step*2.64,side*1.8,z+.08),.059,.064,iron)
         picture(boards,(sign(0,1.32,1.0),sign(0,-1.32,1.0),sign(0,-1.32,2.6),sign(0,1.32,2.6)),UV)
     a,h=site(k,7887,-23)
     house(a,h,27,10,5.0,stucco,tile)
     for u in range(-12,14,4):
         art.box(a(u,7.0,-.2),(.62,.72,4.04),h,stucco)
+    for u in (-12,-8,-4,0,4,8):
+        for j in range(12):
+            left=math.pi*j/12;right=math.pi*(j+1)/12
+            x0=u+2+1.76*math.cos(left);x1=u+2+1.76*math.cos(right)
+            points=(a(x0,7.02,2.12+1.52*math.sin(left)),a(x1,7.02,2.12+1.52*math.sin(right)),a(x1,7.02,3.84),a(x0,7.02,3.84))
+            art.face(points,(stucco,)*4);art.face(points[::-1],(stucco,)*4)
+        art.box(a(u+2,5.04,1.08),(1.95,.13,1.44),h,lin(0x5B6863))
     art.roof(a(0,6,3.8),28,4.5,.93,h,tile)
     # Four corner piers leave the actual bell opening clear against the light.
     for x in (-1.94,1.94):
