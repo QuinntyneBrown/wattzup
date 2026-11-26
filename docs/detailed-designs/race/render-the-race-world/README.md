@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Mardi Gras, New Orleans (#2159)
+
+The original class assignment at commit a881e993d pairs this world with GCN Training’s Ride to the Beat. A later change (480826a71) moved that class to Miami Neon Nights. Restore its original 25-stage plan for the separate New Orleans race and preserve the existing Miami assignment. Carry the World Ride dusk palette and gentle avenue turns into the Garden District and Canal Street. The costume and vehicle designs are original.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| St. Charles streetcar, 0.08 km | Real 05, 09 and 12. Games 03 and 05. | An olive-green Perley Thomas car runs along the grassy neutral ground under overhead wire and arching live oaks. |
+| Garden District mansions, 1.56 km | Real 05, 09 and 12. Games 03 and 04. | Painted porch columns, iron fencing and purple, green and gold bunting line the avenue. Bead strings hang from oak branches. |
+| School brass band, 3.18 km | Real 03, 08 and 14. Games 01 and 05. | White plumes and bright sousaphone bells rise behind paired snare drummers. The crowd follows the band from ladders behind barricades. |
+| Masked krewe float, 4.74 km | Real 01, 02, 06, 07 and 11. Games 01 and 02. | An original painted jester float with a raised deck rolls between spectators. Masked riders reach out and bright throws fall from the deck. |
+| Flambeaux procession, 6.24 km | Real 03, 10, 13 and 14. Games 02 and 05. | Torchlight catches the dancers, metallic costume trim and cups and beads on the asphalt as dusk deepens. |
+| Canal Street finish, 7.96 km | Real 01, 04, 13 and 15. Games 01, 03 and 04. | Families fill the iron-lace galleries and the street behind the final float. Warm shop windows and street lamps frame the finish. |
+
+Use Caribana’s bounded parade animation and repeated crowd geometry. Place the St. Charles streetcar on a separate grassy track, with a trolley pole and a shared overhead wire. Keep the band’s instrument silhouettes and float deck moving independently, linked to race time. Bake iron gallery shadows and small throws along the kerb. Release course-owned textures, geometry and materials on exit. Reference credits are in docs/worlds/mardigras/SOURCES.md.
