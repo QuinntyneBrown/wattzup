@@ -1,10 +1,12 @@
-import { positionLocal, positionWorld, sin, uniform, uv, vec3, vertexColor } from 'three/tsl';
+import { positionWorld, sin, uniform, vec3, vertexColor } from 'three/tsl';
 import {
   CylinderGeometry,
   DoubleSide,
   Group,
   InstancedMesh,
   Matrix4,
+  Mesh,
+  PlaneGeometry,
   MeshBasicMaterial,
   MeshBasicNodeMaterial,
   MeshLambertMaterial,
@@ -27,14 +29,17 @@ export class MontrealFestival {
   readonly root = new Group();
   private p = point();
   private t = point();
-  private readonly tick = uniform(0);
+  private readonly bandPanel = new PlaneGeometry(11.6, 3.05);
+  private readonly frontRow = new PlaneGeometry(8.5, 2.16);
+  private readonly bandRoot = new Group();
+  private readonly crowdRoot = new Group();
   private readonly late = uniform(0);
   readonly materials = {
     RoyalRidge: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.36, fog: false }),
     MontrealFront: new MeshBasicNodeMaterial({ side: DoubleSide }),
     JazzPrint: new MeshBasicMaterial({ side: DoubleSide }),
-    FestAudience: new MeshBasicNodeMaterial({ side: DoubleSide, alphaTest: 0.44 }),
-    JazzBand: new MeshBasicNodeMaterial({ side: DoubleSide, alphaTest: 0.41 }),
+    FestAudience: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.44 }),
+    JazzBand: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.41 }),
     SummerTrees: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.44 }),
     FestivalAsphalt: new MeshBasicNodeMaterial({ side: DoubleSide }),
   };
@@ -83,16 +88,18 @@ export class MontrealFestival {
     this.materials.FestAudience.map = crowd;
     this.materials.JazzBand.map = band;
     this.materials.SummerTrees.map = tree;
-    // Feet stay planted on the paving or stage. The top of each row follows the music.
-    const body = uv().y.oneMinus(),
-      drift = sin(this.tick.mul(2.1).add(positionLocal.x.mul(0.12)));
-    this.materials.FestAudience.positionNode = positionLocal.add(
-      vec3(drift.mul(body).mul(0.1), drift.mul(body).mul(0.049), 0),
-    );
-    const beat = sin(this.tick.mul(3.0));
-    this.materials.JazzBand.positionNode = positionLocal.add(
-      vec3(beat.mul(body).mul(0.09), beat.mul(body).mul(0.08), 0),
-    );
+    const performers = new Mesh(this.bandPanel, this.materials.JazzBand);
+    performers.position.y = 1.51;
+    this.bandRoot.add(performers);
+    const audience = new Mesh(this.frontRow, this.materials.FestAudience);
+    audience.position.y = 1.07;
+    this.crowdRoot.add(audience);
+    // Blender's UVs use a different vertical origin from the runtime planes.
+    for (const plane of [this.bandPanel, this.frontRow]) {
+      const uv = plane.attributes['uv']!;
+      for (let i = 0; i < uv.count; i++) uv.setY(i, 1 - uv.getY(i));
+    }
+    this.root.add(this.crowdRoot, this.bandRoot);
     const grain = sin(positionWorld.x.mul(71).add(positionWorld.z.mul(86)))
       .mul(0.037)
       .add(0.96);
@@ -106,11 +113,26 @@ export class MontrealFestival {
     this.root.add(this.jets);
   }
   update(metres: number, time: number) {
-    this.tick.value = time;
     this.late.value = metres / 9695;
     const onStage = Math.abs(metres - 1809) < 200 || Math.abs(metres - 6832) < 200;
-    this.shown.bandBeat = onStage ? Math.sin(time * 3) : null;
-    this.shown.crowdBeat = onStage ? Math.sin(time * 2.1) : null;
+    this.bandRoot.visible = this.crowdRoot.visible = onStage;
+    this.shown.bandBeat = this.shown.crowdBeat = null;
+    if (onStage) {
+      const station = metres < 4000 ? 1809 : 6832;
+      let p = this.course.place(station, 20, this.p);
+      this.bandRoot.position.set(p.x, p.y + 1.45, p.z);
+      this.bandRoot.rotation.set(0, p.heading + Math.PI * 0.68, 0.016 * Math.sin(time * 3), 'YXZ');
+      this.shown.bandBeat = this.bandRoot.rotation.z;
+      p = this.course.place(station - 6, 8.05, this.p);
+      this.crowdRoot.position.set(p.x, p.y + 0.02, p.z);
+      this.crowdRoot.rotation.set(
+        0,
+        p.heading + Math.PI * 0.65,
+        0.018 * Math.sin(time * 2.1),
+        'YXZ',
+      );
+      this.shown.crowdBeat = this.crowdRoot.rotation.z;
+    }
     this.jets.visible = Math.abs(metres - 3341) < 210;
     this.shown.jetHeight = null;
     if (this.jets.visible) {
@@ -147,6 +169,8 @@ export class MontrealFestival {
   dispose() {
     this.root.clear();
     for (const item of [
+      this.bandPanel,
+      this.frontRow,
       this.jetShape,
       this.water,
       this.jets,

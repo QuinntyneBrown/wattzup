@@ -39,9 +39,9 @@ def scenery(k):
     def building(d,off,w,high,index):
         a,h=site(k,d,off);s=1 if off>0 else -1;deep=9 if high<23 else 17
         art.box(a(0,s*deep/2,0),(w,deep,high),h,lin(0x626577))
-        tile(front,(a(-s*w/2,0,0),a(s*w/2,0,0),a(s*w/2,0,high),a(-s*w/2,0,high)),index)
+        tile(front,(a(s*w/2,-s*.16,0),a(-s*w/2,-s*.16,0),a(-s*w/2,-s*.16,high),a(s*w/2,-s*.16,high)),index)
         for ss in (-1,1):
-            end=ss*(w/2+.025)
+            end=ss*(w/2+.16)
             tile(front,(a(end,s*.02,0),a(end,s*deep,0),a(end,s*deep,high),a(end,s*.02,high)),index)
         art.box(a(0,s*deep/2,high),(w+.32,deep+.34,.29),h,steel)
     def crowdrow(d,side,n):
@@ -77,12 +77,19 @@ def scenery(k):
         art.box(a(0,-9,1.4),(22.9,.5,8.5),h,lin(0x393045))
         for x in (-11.2,11.2):
             truss(a,x,0,10.75);truss(a,x,-8.9,10.75)
+            for i in range(8):
+                lamp=lin((0xF87796,0x88B5ED,0xFFC582)[i%3])
+                art.tube(a(x+.71,-.26,3.55+i*.82),.19,.20,.27,lamp,lamp,10,lamp)
             for i in range(5):art.box(a(x,-.2,5.2+i*.81),(1.6,1.06,.75),h,char)
+        for side in (-1,1):
+            tile(printwork,(a(6.5*side,-8.68,3.2),a(10.3*side,-8.68,3.2),a(10.3*side,-8.68,8.5),a(6.5*side,-8.68,8.5)),3)
         for j in range(-5,6):
             beam(art,a(j*2,0,10.3),a(j*2+2,0,9.63),.09,.09,steel)
             art.tube(a(j*2.0,-.1,9.46),.22,.19,.36,red if j%2 else blue,warm,8,warm)
-        picture(band,(a(-6.5,-1.4,1.45),a(6.5,-1.4,1.45),a(6.5,-1.4,4.48),a(-6.5,-1.4,4.48)),UV)
+
         for row in range(3):crowdrow(d-43+row*1.5,-8.4-row*2.32,9)
+    a,h=site(k,3341,-16)
+    art.box(a(0,0,.06),(18,10,.14),h,lin(0x85979B))
     building(3355,-34,57,17,3)
     for d in range(3190,3430,32):
         a,h=site(k,d,-20)
@@ -94,8 +101,8 @@ def scenery(k):
             v=j*1.65;up=5.1+1.6*(abs(j)/6)**2
             if j<6:beam(art,a(0,v,up),a(0,v+1.65,5.1+1.6*(abs(j+1)/6)**2),.018,.018,char)
             art.tube(a(0,v,up-.21),.14,.18,.26,pink if j%3 else red,pink,9,pink)
-    for d in (110,148,6740,6788,6823):
-        building(d,9.4,6.4,3.7,2);a,h=site(k,d,-8)
+    for d in (110,148,6740,6794,6823):
+        building(d,8.3,7.8,3.9,2);a,h=site(k,d,-8)
         for j in (-2,0,2):
             art.tube(a(j,0,0),.08,.09,.82,char,char,8,char);art.tube(a(j,0,.82),.52,.52,.08,cream,cream,14,cream)
     for d in (4913,6791):
