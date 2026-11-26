@@ -16,7 +16,7 @@ import {
   type Texture,
   type Vector3,
 } from 'three/webgpu';
-import { positionWorld, sin, vertexColor } from 'three/tsl';
+import { cameraPosition, mix, positionWorld, sin, uniform, vec3, vertexColor } from 'three/tsl';
 import type { Course, CoursePlace } from './course';
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 const views = [
@@ -56,6 +56,9 @@ export class LasseterRoadTrain {
     eagleTrack: null as number | null,
   };
   private gust = 0;
+  private readonly mirageTime = uniform(0);
+  private readonly daylight = uniform(1);
+  private encounter: { time: number; distance: number } | undefined;
   static async load(course: Course) {
     const result = await Promise.allSettled(
       ['scrub', 'station', 'signs', 'rock', 'sand', 'bonnet', 'prime', 'eagle'].map((k) =>
@@ -150,11 +153,39 @@ export class LasseterRoadTrain {
     for (const t of [rock!, sand!]) t.wrapS = t.wrapT = MirroredRepeatWrapping;
     this.materials.RedCentreRock.map = rock!;
     this.materials.RedSand.map = sand!;
-    this.materials.LasseterSeal.colorNode = vertexColor().rgb.mul(
+    const asphalt = vertexColor().rgb.mul(
       sin(positionWorld.x.mul(83).add(positionWorld.z.mul(57)))
         .mul(0.04)
         .add(0.965),
     );
+    const distance = positionWorld.distance(cameraPosition);
+    const ripple = sin(
+      distance.mul(0.32).add(this.mirageTime.mul(2.8)).add(positionWorld.x.mul(0.42)),
+    );
+    const reflection = distance
+      .smoothstep(65, 210)
+      .mul(ripple.mul(0.5).add(0.5))
+      .mul(this.daylight)
+      .mul(0.17);
+    this.materials.LasseterSeal.colorNode = mix(asphalt, vec3(0.55, 0.65, 0.72), reflection);
+    // A fallen kangaroo lies on the gravel beneath the circling eagle.
+    const animal = new Group();
+    const fur = this.pigment(0x796556);
+    for (const [x, y, z, w, h, l, angle] of [
+      [0, 0.18, 0, 0.31, 0.19, 0.59, 0],
+      [0.13, 0.21, 0.52, 0.14, 0.12, 0.23, -0.2],
+      [-0.12, 0.09, -0.7, 0.1, 0.08, 0.49, 0.29],
+      [0.24, 0.09, -0.17, 0.11, 0.08, 0.39, -0.53],
+      [0.17, 0.28, 0.71, 0.052, 0.052, 0.16, -0.27],
+    ]) {
+      const piece = new Mesh(this.puff, fur);
+      piece.position.set(x, y, z);
+      piece.scale.set(w, h, l);
+      piece.rotation.y = angle;
+      animal.add(piece);
+    }
+    this.place(animal, 5452, 6.3);
+    this.root.add(animal);
     this.geo.add(this.cube);
     this.geo.add(this.tyre);
     this.geo.add(this.puff);
@@ -196,7 +227,15 @@ export class LasseterRoadTrain {
     // Each train travels west to east. Recycle it beyond the ends of its visibility window.
     const spacing = 545,
       axis = 1740 - time * 12.3;
-    const d = axis + Math.round((metres - axis) / spacing) * spacing;
+    let d = axis + Math.round((metres - axis) / spacing) * spacing;
+    if (metres >= 1480 && metres < 2020) {
+      // Stage the encounter beyond the sight distance on entry. Once on the road the
+      // train moves at a fixed speed, including if the rider slows or stops.
+      this.encounter ??= { time, distance: 1732 + (Math.max(0, 1710 - metres) * 12.3) / 13.7 };
+      d = this.encounter.distance - (time - this.encounter.time) * 12.3;
+    } else {
+      this.encounter = undefined;
+    }
     this.truck.visible = d > 0 && d + 52 < this.course.length && Math.abs(d - metres) < 204;
     for (const t of this.trailers) t.visible = this.truck.visible;
     this.dust.visible = this.truck.visible;
@@ -232,6 +271,8 @@ export class LasseterRoadTrain {
       this.readings.eagleTrack = this.bird.position.x;
     }
     const dusk = Math.min(1, Math.max(0, (metres - 5790) / 4200));
+    this.mirageTime.value = time;
+    this.daylight.value = 1 - dusk;
     this.materials.RedCentreRock.color.setRGB(1 + 0.28 * dusk, 1 - 0.19 * dusk, 1 - 0.32 * dusk);
   }
   sightline(metres: number, camera: Vector3, ahead: CoursePlace) {
