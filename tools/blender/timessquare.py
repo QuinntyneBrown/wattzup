@@ -69,7 +69,7 @@ def scenery(k):
             for u in (-4.1,4.1):
                 beam(art,at(u,-.4,.12),at(u,.15,.97),.075,steel);beam(art,at(u,.5,.12),at(u,-.15,.97),.075,steel)
             if j%3==0:
-                front(signs,at,-sign*.1,-1.22,1.22,.67,.97,0,2)
+                front(signs,at,-sign*.1,-1.22,1.22,.67,.97,0,3)
             if j%24==0 or 4730<d<5750 and j%3==0:
                 at,h=site(k,d+3,sign*8.1);cutout(cops,at,2.4,1.87,j%4)
             for i in range(3 if d>4700 else 2):
@@ -83,21 +83,32 @@ def scenery(k):
             for v in range(-8,9,2):art.box(at(5,v,.072),(3.65,.79,.023),h,paint)
         else:
             for v in (-3.05,3.05):art.box(at(0,v,.073),(4.7,.15,.019),h,paint)
+    # The NYE pens are full in successive blocks. Face the front row into the cleared lane.
+    for i,d in enumerate(range(-42,8740,4)):
+        for side in (-1,1):
+            if d%124<12:continue
+            offset=side*(9.9+k.rng.uniform(0,.75))
+            at,h=site(k,d,offset)
+            def spectator(u,v,z):return at(v*.88,u+v*.43*side,z)
+            cutout(crowds,spectator,k.rng.uniform(3.1,4.6),k.rng.uniform(1.65,2.04),(i+side)%4)
+            if 4830<d<5340 and i%9==0:
+                at,h=site(k,d+1.8,side*7.9);cutout(cops,at,2.6,1.91,(i//9)%2)
     # The red amphitheatre faces the pedestrian plaza at Duffy Square.
     at,h=site(k,3425,-23)
     for j in range(23):
         art.box(at(j*.59,0,.11),(.62,13.3,.21*(j+1)),h,red)
+        panel(signs,[at(j*.59-.325,v,z) for v,z in ((-6.64,.19+j*.21),(6.64,.19+j*.21),(6.64,.28+j*.21),(-6.64,.28+j*.21))],2,3)
     for v in (-6.8,6.8):
         beam(art,at(0,v,1.04),at(13.2,v,5.73),.09,steel)
     # One Times Square's narrow front faces the race, with setbacks and a rooftop mast.
-    at,h=site(k,8710,3)
+    at,h=site(k,8652,3)
     for z,w,dep,height in ((.1,17,29,26),(26.1,16,25,24),(50.1,14.5,22,14)):
         art.box(at(0,0,z),(dep,w,height),h,night)
-        panel(ads,[at(-dep/2-.12,v,a) for v,a in ((-w/2,z+.5),(w/2,z+.5),(w/2,z+height-.5),(-w/2,z+height-.5))],int(z)%8,4,2)
+        panel(ads,[at(-dep/2-.12,v,a) for v,a in ((w/2,z+.5),(-w/2,z+.5),(-w/2,z+height-.5),(w/2,z+height-.5))],int(z)%8,4,2)
     art.tube(at(0,0,64),.25,.15,14,steel,steel,10)
     for v in (-6.6,6.6):
         art.box(at(0,v,64),(.25,.25,3.5),h,grey)
-    panel(signs,[at(-1,v,z) for v,z in ((-7,64),(7,64),(7,68.3),(-7,68.3))],1,2)
+    panel(signs,[at(-13.2,v,z) for v,z in ((9.5,62.8),(-9.5,62.8),(-9.5,69.8),(9.5,69.8)) ],1,3)
     return {'efforts':0}
 
-THEME={'lay':route,'road_builder':road,'land_builder':land,'road_half_width':9.5,'terrain':{'sea':False},'land':{'mid':0x363844},'sky':[0x302C40,0x201F35,0x151727,0x10111F,0x080A16],'haze':0x40374B,'light':[0xCEDFFF,.58],'fill':[0x9D9CBF,0x514052],'sun_altitude':.76,'sun_azimuth':-.94}
+THEME={'night':True,'lay':route,'road_builder':road,'land_builder':land,'road_half_width':9.5,'terrain':{'sea':False},'land':{'mid':0x363844},'sky':[0x302C40,0x201F35,0x151727,0x10111F,0x080A16],'haze':0x40374B,'light':[0xCEDFFF,.58],'fill':[0x9D9CBF,0x514052],'sun_altitude':.76,'sun_azimuth':-.94}
