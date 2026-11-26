@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import winterlude as _winterlude
+
+THEMES['winterlude'] = _winterlude.THEME
+SCENERY['winterlude'] = _winterlude.scenery
