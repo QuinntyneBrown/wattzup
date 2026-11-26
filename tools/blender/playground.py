@@ -42,7 +42,7 @@ def road(r,st,length,col,bc):
 
 
 def land(r,col,theme,bc):
-    b=bc.Builder('Park lawns','terrain');b.colours=[]
+    b=bc.Builder('ParkLawn','terrain');b.colours=[]
     def surface(d,v):
         if v<0:return height(d)+max(0,min(1,(-v-25)/120))*(4+2*math.sin(d/115))
         return height(d)+(23-height(d))*smooth(25,130,v)
@@ -93,6 +93,20 @@ def scenery(k):
             high=k.rng.uniform(8,17);j=k.rng.randrange(6);angle=k.rng.uniform(.9,1.8)
             quad(at,trees,0,0,floor,high*.97,high,angle,j,3,2)
             quad(at,trees,0,0,floor,high*.91,high,angle+math.pi*.50,j,3,2)
+    # The open sightlines have a second treeline across the lawns behind the landmarks.
+    for station,side in ((80,1),(430,1),(890,1),(1320,-1),(1850,1),(2300,1)):
+        for n in range(20):
+            d=station-30+5*n;v=side*(74+6*math.sin(n*2.1)) if station==1850 else side*(31+3*math.sin(n*2.1))
+            at,_=site(k,d,v);x,y,z=at(0,0);floor=k.height_at(x,y)-z
+            high=10.4+(n%5)*1.7
+            for angle in (.30,1.87):quad(at,trees,0,0,floor,high*.95,high,angle,n%6,3,2)
+    # Park entrance sign between timber posts and a low planted border.
+    at,h=site(k,117,5.6)
+    for y in (-1.08,1.08):slab(at,0,y,0,.14,.14,2.55,h,wood)
+    slab(at,0,0,.86,.19,2.48,1.5,h,green)
+    gate=pictured(k,'ParkSign')
+    picture(gate,(at(-.10,1.20,.9),at(-.10,-1.20,.9),at(-.10,-1.20,2.31),at(-.10,1.20,2.31)),((0,0),(1,0),(1,1),(0,1)))
+    for station,v in ((1288,-6.45),(1328,-7.5),(1859,8),(2297,8),(2321,8)):bench(station,v)
     # Two connected play decks, a curved slide and a suspended rope bridge.
     at,h=site(k,451,12)
     art.tube(at(0,0,-.12),16,16,.14,wood,wood,54,lin(0xBA9873))
@@ -141,6 +155,12 @@ def scenery(k):
         art.face((at(0,0,.04),pt(j,1,.04),pt(j+1,1,.04)),(lin(0x719DA1),lin(0x81AAA4),lin(0x739B99)))
         art.face((pt(j,1,.04),pt(j+1,1,.04),pt(j+1,1.035,.29),pt(j,1.035,.29)),(lin(0xB4AE95),)*4)
     art.tube(at(0,0,.04),2,1.8,.44,metal,metal,26,metal)
+    art.tube(at(-10,-15,.45),1.35,.57,1.39,metal,wood,24,wood)
+    art.tube(at(-10,-15,1.84),.58,2.30,.58,metal,lin(0xA8AB93),32,lin(0xA9BCC2))
+    for j in range(90):
+        a=j*2.39996;r=1.08+.035*(j%6);x=66*r*math.cos(a);y=35*r*math.sin(a)
+        for dx in (-.19,.18):
+            beam(art,at(x,y,.04),at(x+dx,y+.23,.83+.15*(j%4)),.045,.07,green)
     for j in range(7):
         at,h=site(k,2288+j*9,10+5*(j%3))
         slab(at,0,0,.03,3.4,2.25,.055,h,(red,blue,yellow)[j%3])

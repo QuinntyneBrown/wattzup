@@ -56,6 +56,16 @@ test('Ride the playgrounds, splash terrace and fountain pond on the park loop', 
     // Capture the submitted frame with the ride clock held at this chainage. Resuming
     // for a screenshot lets a loaded browser travel metres beyond the reference position.
     await page.clock.runFor(34);
+    if (version === 'after') {
+      await expect
+        .poll(async () => {
+          await page.clock.runFor(64);
+          return Math.abs(((await worldRide.coursePose('parkStation')) ?? -1000) - km * 1000);
+        })
+        .toBeLessThan(28);
+      // Allow the submitted WebGL frame to reach the headed compositor.
+      await page.clock.runFor(128);
+    }
     const capture = async (path: string): Promise<void> => {
       const frame = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 91, clip });
       await writeFile(path, Buffer.from(frame.data, 'base64'));
