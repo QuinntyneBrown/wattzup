@@ -39,7 +39,7 @@ def land(r,col,theme,bc):
     return m.build(col),lambda x,y:elevation(r.s[r.tree.find((x,y,0))[1]]['d'])-.08
 
 def scenery(k):
-    art=Painted(k);facades=pictured(k,'DublinShops')
+    art=Painted(k);facades=pictured(k,'DublinShops');crowd=pictured(k,'LiffeySpectators');post=pictured(k,'PostOffice');statue=pictured(k,'ConnellBronze')
     pale,granite,iron,bronze,chrome,curb,dark,green,white,orange=map(lin,(0xC8BFAE,0x989B99,0x44494A,0x415349,0xB7C1C2,0xADAAA3,0x41464A,0x237549,0xE2DED0,0xDF873D))
     for i,p in enumerate(k.s[:-1]):
         d=p['d'];bridge=11802<d<11966
@@ -72,6 +72,11 @@ def scenery(k):
                     a=n*1.57+j;t=at(6+math.cos(a)*2.5,side*12.1+math.sin(a)*2.4,6.15)
                     beam(art,at(6,side*12.1,2.9),t,.14,granite)
                     art.tube(t,1.1,1.8,1.55,lin(0x788165),lin(0x96A17A),6,cap=lin(0xA8AF89))
+            if any(abs(d-x)<175 for x in (120,2180,4290,6580,8710,11790)) or j%3==0:
+                for n in (0,1):
+                    w=8.7+.4*((j+n)%3);u=-8+n*9.1;v=side*(9.1+.33*(j%2))
+                    tile=(1,0) if (n+j)%2 else (0,1)
+                    picture(crowd,[at(a,v,z) for a,z in ((u,.20),(u+w,.20),(u+w,2.13),(u,2.13))],((tile[0],0),(tile[1],0),(tile[1],1),(tile[0],1)))
             if j%2==0 and any(abs(d-x)<145 for x in (120,2180,4290,6580,8710,11790)):
                 for u in range(0,18,3):
                     for z in (.36,1.19):beam(art,at(u,side*8.25,z),at(u+2.89,side*8.25,z),.048,chrome)
@@ -86,16 +91,14 @@ def scenery(k):
                 v=t-9;z=8.33+.004*v*v
                 art.face((at(0,v-.43,z),at(0,v+.43,z),at(.05,v,z-.71)),((green,white,orange)[t%3],)*3)
         if j%9==0:beam(art,at(0,-5.47,6.6),at(171,-5.47,6.6),.022,iron)
-    at,h=site(k,2234,4.1)
+    at,h=site(k,2328,4.1)
     art.tube(at(0,0,.12),4.1,3.8,.24,granite,pale,28,cap=pale)
     for z,r0,r1,l in ((.36,1.5,1.39,13),(13.36,1.39,.98,38),(51.36,.98,.51,40),(91.36,.51,.075,28.7)):
         art.tube(at(0,0,z),r0,r1,l,lin(0x919CA0),lin(0xD2D8D8),24,cap=chrome)
     at,h=site(k,4321,22)
     art.box(at(0,3,0),(84,13,14),h,pale)
-    for x in range(-39,40,4):
-        for z in (2.4,6.1,10.3):
-            art.box(at(x,-3.56,z),(1.67,.15,2.38),h,dark)
-            art.box(at(x,-3.7,z-.11),(2.03,.40,.21),h,granite)
+    for u in (-21,21):
+        picture(post,[at(x,-3.59,z) for x,z in ((u-21,.13),(u+21,.13),(u+21,14),(u-21,14))],((0,0),(1,0),(1,1),(0,1)))
     for v,z,dep in ((-9,.16,3.8),(-8.6,.43,3.5),(-8.2,.69,3.1)):
         art.box(at(0,v,z),(33,dep,.27),h,pale)
     for i in range(6):
@@ -112,9 +115,13 @@ def scenery(k):
     at,h=site(k,11813,4.6)
     for z,rad,ht,tint in ((.14,2.65,.38,granite),(.52,2.24,.86,pale),(1.38,1.59,3.12,granite),(4.5,1.83,.43,pale)):
         art.tube(at(0,0,z),rad,rad*.91,ht,tint,tint,12,cap=tint)
-    art.tube(at(0,0,4.92),.66,.43,2.14,bronze,bronze,10)
-    art.tube(at(0,0,7.0),.24,.22,.42,bronze,bronze,10,cap=bronze)
-    beam(art,at(0,.38,6.68),at(.51,.68,6.26),.14,bronze)
+    for dx,dy in ((.52,.87),(.97,-.24)):
+        picture(statue,[at(dx*w,dy*w,z) for w,z in ((-1.07,4.94),(1.07,4.94),(1.07,8.88),(-1.07,8.88))],((0,0),(1,0),(1,1),(0,1)))
+    # Winged figures around the lower drum break up the monument’s broad base.
+    for j in range(4):
+        a=math.tau*j/4+.5;x=1.61*math.cos(a);y=1.61*math.sin(a)
+        art.tube(at(x,y,1.15),.38,.24,1.24,bronze,bronze,8)
+        art.tube(at(x,y,2.36),.16,.15,.29,bronze,bronze,9,cap=bronze)
     for d in (6525,8731):
         at,h=site(k,d,-13.2)
         for j in range(4):art.box(at(0,-j*.89,.2),(22,.9,(j+1)*.52),h,lin(0x627879))
