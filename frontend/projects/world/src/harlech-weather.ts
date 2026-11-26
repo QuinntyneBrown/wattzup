@@ -20,7 +20,7 @@ import { positionWorld, sin, vertexColor } from 'three/tsl';
 import type { Course, CoursePlace } from './course';
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 const views = [
-  [80, 139, 0, 3],
+  [80, 186, -48, 3],
   [3420, 3454, 2, 3.6],
   [10860, 10890, 1.2, 2.36],
   [11120, 11148, 0.32, 1.06],
@@ -35,7 +35,12 @@ export class HarlechWeather {
     WelshStone: new MeshBasicMaterial({ side: DoubleSide }),
     HarlechLocals: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.42 }),
     GwyneddSigns: new MeshBasicMaterial({ side: DoubleSide }),
-    TremadogBay: new MeshBasicMaterial({ side: DoubleSide, alphaTest: 0.43, fog: false }),
+    TremadogBay: new MeshBasicMaterial({
+      side: DoubleSide,
+      transparent: true,
+      depthWrite: false,
+      fog: false,
+    }),
   };
   private readonly geo = new Set<BufferGeometry>();
   private readonly paint = new Map<number, MeshBasicMaterial>();
@@ -197,7 +202,7 @@ export class HarlechWeather {
       dz = t.z - r.z,
       len = Math.max(1, Math.hypot(dx, dz));
     const back = this.course.place(metres - 4.8, 0, this.q),
-      height = back.y + 2.28;
+      height = Math.max(back.y + 2.4, r.y + 1.54);
     camera.x += (r.x - (4.8 * dx) / len - camera.x) * f;
     camera.z += (r.z - (4.8 * dz) / len - camera.z) * f;
     camera.y += (height - camera.y) * f;

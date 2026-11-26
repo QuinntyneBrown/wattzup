@@ -46,13 +46,36 @@ def land(r,col,theme,bc):
     def pt(i,v):
         d=r.s[i]['d'];x,y,z=r.at(i,v);h=r.s[i]['h'];edge=smooth(5,102,abs(v))
         # The adjoining bank drops toward the dunes after the upper switchback.
-        drop=(v<0 and d>11210) or (v>0 and d<11198)
+        drop=(v<0 and 11210<d<13100) or (v>0 and (d<11198 or d>13100))
         z+=(max(3,z-5)*-.79 if drop else 26+14*math.sin(d/241))*edge
         z+=5.1*math.sin(d/109+v/55)*edge
         return x,y,z-.14
     for i in range(0,len(r.s)-2,2):
-        for l,e,c in ((-190,-65,0x859263),(-65,-22,0x879465),(-22,-6,0x76895F),(-6,6,0x86906E),(6,22,0x78845E),(22,65,0x8F9B70),(65,190,0x8C9A73)):
+        narrow=10340<r.s[i]['d']<11780
+        strips=((-4.3,-2.05,0x7E885F),(-2.05,2.05,0x87916E),(2.05,4.3,0x76845E)) if narrow else ((-190,-65,0x859263),(-65,-22,0x879465),(-22,-6,0x76895F),(-6,6,0x86906E),(6,22,0x78845E),(22,65,0x8F9B70),(65,190,0x8C9A73))
+        if narrow:
+            # Carry the verge down to the hillside on the outside of each terrace.
+            for v in (-4.3,4.3):
+                a=pt(i,v);e=pt(i+2,v)
+                b.quad(a,e,(e[0],e[1],e[2]-18),(a[0],a[1],a[2]-18));b.colours.extend([lin(0x757A65)]*4)
+        for l,e,c in strips:
             pts=(pt(i,l),pt(i+2,l),pt(i+2,e),pt(i,e));b.quad(*pts);b.colours.extend([lin(c)]*4)
+    # Use a shared height field across both sides of the hairpin. Wide offset
+    # ribbons self-intersect over the lower street where the direction reverses.
+    local=[s for s in r.s if 10320<s['d']<11800]
+    xmin=math.floor((min(s['x'] for s in local)-60)/5)*5;xmax=math.ceil((max(s['x'] for s in local)+60)/5)*5
+    ymin=math.floor((min(s['y'] for s in local)-45)/5)*5;ymax=math.ceil((max(s['y'] for s in local)+45)/5)*5
+    pts={}
+    for x in range(xmin,xmax+5,5):
+        for y in range(ymin,ymax+5,5):
+            _,i,dist=r.tree.find((x,y,0));q=r.s[i]
+            # The ramp rises quickly. A small clearance under the verge keeps
+            # the continuous terrain beneath the road between the grid samples.
+            z=q['z']-3.4-.22*min(65,dist)
+            pts[x,y]=(x,y,z)
+    for x in range(xmin,xmax,5):
+        for y in range(ymin,ymax,5):
+            b.quad(pts[x,y],pts[x+5,y],pts[x+5,y+5],pts[x,y+5]);c=lin(0x78825E+int(3*math.sin(x/26+y/38))*0x010101);b.colours.extend([c]*4)
     b.build(col)
     def sample(x,y):
         _,i,_=r.tree.find((x,y,0));p=r.s[i];v=-(x-p['x'])*math.sin(p['h'])+(y-p['y'])*math.cos(p['h']);return pt(i,v)[2]
@@ -76,7 +99,10 @@ def scenery(k):
     def cottage(d,v,j):
         at,h=site(k,d,v);side=1 if v>0 else -1
         length=7.1+j*.79;high=4.0+(j%3)*.44
-        z=-.15;art.box(at(0,side*2.65,z),(length,5.15,high),h,stone)
+        z=-.15
+        # Level floors have deep masonry footings on the steeply graded lane.
+        foot=20 if 10500<d<11590 else 3
+        art.box(at(0,side*2.65,z-foot),(length,5.15,high+foot),h,stone)
         art.roof(at(0,side*2.65,z+high),length+.53,5.63,2.20,h,slate)
         art.box(at(length*.32,side*2.74,high+.98),(.67,.75,2.36),h,lin(0x827E72))
         u=j/4
@@ -84,7 +110,7 @@ def scenery(k):
     for d in range(-42,14385,11):
         for side in (-1,1):
             village=2980<d<3910 or 10780<d<11336 or 13190<d<13880
-            if 11190<d<11235 or (not village and (d+side)%143):continue
+            if (side>0 and 13400<d<13910) or 11180<d<11245 or (not village and (d+side)%143):continue
             if village and side<0 and d%5==0:continue
             cottage(d,side*(width(d)+(1.3 if village else 5.4)),k.rng.randrange(4))
     for j,d in enumerate((98,3480,10889,11091,11127,11232,13740)):
@@ -92,8 +118,8 @@ def scenery(k):
         art.box(at(0,0,.03),(.12,.12,2.45),h,wood);u=j%3/3
         pts=(at(-.08,.65,1.47),at(-.08,-.65,1.47),at(-.08,-.65,2.56),at(-.08,.65,2.56))
         picture(signs,pts,((u+.001,0),(u+1/3-.001,0),(u+1/3-.001,1),(u+.001,1)))
-    for j in range(19):
-        d=11083+j*6.76;side=1 if j%3 else -1;at,h=site(k,d,side*(width(d)+.80));z=.8 if j%3==0 else .01;u=(j%3)/3
+    for j in range(8):
+        d=11083+j*14.6;side=1 if j%3 else -1;at,h=site(k,d,side*(width(d)+.80));z=.01;u=(j%3)/3
         picture(fans,(at(-.51,0,z),at(.51,0,z),at(.51,0,z+1.72),at(-.51,0,z+1.72)),((u+.001,0),(u+.332,0),(u+.332,1),(u+.001,1)))
     # Castle on its rock, standing above the dunes. Twin gate towers flank an actual gateway.
     at,h=site(k,13776,77)
@@ -117,7 +143,7 @@ def scenery(k):
             x=-17+2*j;pts=(at(x,side*11,0),at(x+2,side*11,0),at(x+2,side*11,10.9),at(x,side*11,10.9));picture(walls,pts,((0,0),(1,0),(1,6.3),(0,6.3)))
             art.box(at(x+.46,side*11,10.9),(.97,1.1,1.08),h,stone)
     art.box(at(-19,0,7.44),(4.5,7.95,6.84),h,stone)
-    for d,v,span,relief in ((360,624,1400,192),(13750,-540,1570,236)):
+    for d,v,span,relief in ((360,624,1400,192),(13850,590,1730,265)):
         at,h=site(k,d,v);base=2-k.road.pos(d)[2]
         def pt(u,q):return at((u-.5)*span,50*math.cos(u*math.tau)+41*q,base+relief*q)
         for j in range(32):
