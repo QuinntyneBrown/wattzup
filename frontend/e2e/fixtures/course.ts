@@ -1,3 +1,4 @@
+import northshoreElevation from './northshore-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const northShoreCourseMap = {
   place: 'Oahu, Hawaii',
   world: 'northshore',
   distanceKm: 8.914,
-  climbingM: 0,
+  climbingM: 76,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: northshoreElevation,
   },
   thumbnailUrl: 'maps/north-shore-oahu.jpg',
   photoUrl: 'maps/north-shore-oahu-photo.jpg',
