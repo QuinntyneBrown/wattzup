@@ -69,3 +69,35 @@ for (const [actor, metres, part] of [
     await expect.poll(() => worldRide.coursePose(part)).not.toBe(held);
   });
 }
+
+test('four 700 metre parade passes share the Apoteose finish', async ({
+  page,
+  api,
+  bluetooth,
+  worldRide,
+}) => {
+  const geometry = page.waitForResponse(
+    (r) => r.url().endsWith('/courses/sambadrome.course.json') && r.ok(),
+  );
+  await enterSambadrome(6250, page, api, bluetooth, worldRide);
+  const road = (await (await geometry).json()) as {
+    lengthMetres: number;
+    startIndex: number;
+    step: number;
+    points: number[];
+  };
+  const position = (d: number, axis: number) => {
+    const at = road.startIndex + d / road.step,
+      i = Math.floor(at) * 3 + axis;
+    return road.points[i]! + (road.points[i + 3]! - road.points[i]!) * (at % 1);
+  };
+  expect(road.lengthMetres).toBe(6300);
+  for (const pass of [1, 2, 3]) {
+    for (const station of [0, 210, 340, 570, 700]) {
+      const delta = [0, 1, 2].map(
+        (axis) => position((pass * 5600) / 3 + station, axis) - position(station, axis),
+      );
+      expect(Math.hypot(...delta)).toBeLessThan(0.15);
+    }
+  }
+});
