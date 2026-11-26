@@ -29,12 +29,15 @@ const ASSETS = [
   'swimmer',
   'tablecloth',
   'spume',
+  'lion',
+  'table',
+  'signal',
 ] as const;
 const VIEWS = [
   [80, 122, -15, 3],
-  [690, 723, -38, -2],
-  [1130, 1160, -35, -0.6],
-  [1940, 1947, -14, 13],
+  [690, 700, -18, -2.5],
+  [1130, 1140, -18.8, -0.1],
+  [1940, 1988, -22, 8],
 ] as const;
 const point = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 const painted = (cutout = false) =>
@@ -42,6 +45,9 @@ const painted = (cutout = false) =>
 export class SeaPointPromenade {
   readonly root = new Group();
   readonly materials = {
+    LionsHead: painted(true),
+    TableMountain: painted(true),
+    SignalHill: painted(true),
     BeachRoad: painted(),
     SeaPointFlats: painted(),
     TidalRock: painted(),
@@ -108,17 +114,22 @@ export class SeaPointPromenade {
       this.swimPaint,
       this.mistPaint,
       this.foamPaint,
+      this.materials.LionsHead,
+      this.materials.TableMountain,
+      this.materials.SignalHill,
     ];
     for (const [i, material] of faces.entries()) {
       const texture = textures[i]!;
       texture.colorSpace = SRGBColorSpace;
-      texture.flipY = i >= 6;
+      texture.flipY = i >= 6 && i < 11;
+      if (i >= 11) material.fog = false;
       if (i === 0) {
         texture.wrapS = texture.wrapT = RepeatWrapping;
         texture.anisotropy = 4;
       }
       material.map = texture;
     }
+    this.materials.TidalRock.color.setRGB(0.46, 0.5, 0.53);
     const offshore = uv().y.oneMinus();
     const phase = offshore
       .mul(0.45)
@@ -153,7 +164,11 @@ export class SeaPointPromenade {
     this.reads.seapointStation = metres;
     for (let i = 0; i < this.breakers.count; i++) {
       const x = 705 + (i - 30) * 24;
-      const shore = 33 + 4.8 * Math.sin(x / 138) + 3.1 * Math.sin(x / 61);
+      const shore =
+        33 +
+        4.8 * Math.sin(x / 138) +
+        3.1 * Math.sin(x / 61) -
+        13 * Math.exp(-(((x - 713) / 103) ** 2));
       const phase = time * 0.79 + i * 1.74;
       const crest = 0.24 + 0.34 * Math.sin(phase);
       this.matrix.position.set(x, crest, -(shore + 4.8 + 2.8 * Math.cos(phase) + (i % 3) * 3.1));
@@ -177,9 +192,9 @@ export class SeaPointPromenade {
     }
     for (const [i, m] of this.swim.entries()) {
       const stroke = time * 3.1 + i * 1.21,
-        x = 1160 + 21 * Math.sin(time * 0.084 + i),
-        z = -(29 + i * 3);
-      m.position.set(x, 3.91 + 0.095 * Math.sin(stroke), z);
+        x = 1140 + 21 * Math.sin(time * 0.084 + i),
+        z = -(12.8 + i * 3);
+      m.position.set(x, 5.47 + 0.095 * Math.sin(stroke), z);
       m.scale.set(1.72, 0.76, 1);
       m.rotation.set(0, Math.atan2(r.x - x, r.z - z), 0.12 * Math.cos(stroke));
       m.visible = Math.abs(r.x - 1160) < 280;
@@ -187,9 +202,9 @@ export class SeaPointPromenade {
     }
     for (let i = 0; i < this.cloth.count; i++) {
       this.matrix.position.set(
-        -15 + 99 * i + 16 * Math.sin(time * 0.023 + i * 0.4),
-        569 + 15 * Math.sin(i * 0.9 + time * 0.04),
-        2080 - (i % 3) * 17,
+        -1640 + 99 * i + 16 * Math.sin(time * 0.023 + i * 0.4),
+        663 + 15 * Math.sin(i * 0.9 + time * 0.04),
+        1715 - (i % 3) * 17,
       );
       this.matrix.scale.set(260 + (i % 4) * 24, 57 + (i % 3) * 15, 1);
       this.matrix.rotation.set(0, 0, 0.09 * Math.sin(i));
@@ -204,17 +219,17 @@ export class SeaPointPromenade {
     let x, y, z, w;
     if (view) {
       const p = this.course.place(view[1], view[2], this.target);
-      x = p.x;
+      x = view[0] === 1940 ? 1988 : p.x;
       y = p.y + view[3];
-      z = p.z;
+      z = view[0] === 1940 ? -22 : p.z;
       w = Math.min(1, (1 - Math.abs(d - view[0]) / 45) * 1.62);
     } else {
       const lion = Math.abs(d - 3020),
         table = Math.abs(d - 3645);
       if (Math.min(lion, table) >= 120) return;
-      x = lion < table ? 550 : 500;
-      y = lion < table ? 325 : 410;
-      z = lion < table ? 1080 : 2130;
+      x = lion < table ? 550 : -920;
+      y = lion < table ? 282 : 439;
+      z = lion < table ? 1080 : 1750;
       w = Math.min(1, (1 - Math.min(lion, table) / 120) * 1.4);
     }
     const r = this.course.place(metres, 0, this.station),
@@ -223,10 +238,11 @@ export class SeaPointPromenade {
       len = Math.max(1, Math.hypot(dx, dz));
     camera.x += (r.x - (5.1 * dx) / len - camera.x) * w;
     camera.z += (r.z - (5.1 * dz) / len - camera.z) * w;
-    camera.y += (r.y + 2.38 - camera.y) * w;
+    const eye = view && (view[0] === 690 || view[0] === 1130) ? 3.5 : 2.38;
+    camera.y += (r.y + eye - camera.y) * w;
     ahead.x += (r.x + (14 * dx) / len - ahead.x) * w;
     ahead.z += (r.z + (14 * dz) / len - ahead.z) * w;
-    ahead.y += (r.y + 2.38 + (19 * (y - r.y - 2.38)) / (len + 5.1) - ahead.y) * w;
+    ahead.y += (r.y + eye + (19 * (y - r.y - eye)) / (len + 5.1) - 1.35 - ahead.y) * w;
   }
   report() {
     return this.reads;
