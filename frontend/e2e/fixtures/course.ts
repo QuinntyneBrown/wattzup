@@ -1,3 +1,4 @@
+import merceElevation from './merce-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3585,6 +3586,53 @@ export const itenCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 60, 24, 110),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const merceCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'la-merce-barcelona',
+  name: 'La Mercè, Barcelona',
+  routeName: 'Via Laietana',
+  place: 'Barcelona, Catalonia',
+  world: 'merce',
+  distanceKm: 12.816666666666666,
+  climbingM: 21,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: merceElevation,
+  },
+  thumbnailUrl: 'maps/la-merce-barcelona.jpg',
+  photoUrl: 'maps/la-merce-barcelona-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 14, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 13, 80),
+      seg('work', 90, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 90, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 90, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 90, 21, 90),
+      seg('recover', 150, 11, 80),
+      seg('work', 120, 16, 85),
+      seg('work', 90, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 90, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 90, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 90, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 18, 85),
+      seg('work', 60, 19, 90),
+      seg('work', 120, 21, 90),
+      seg('cool-down', 115, 11, 80),
     ],
   },
 };
