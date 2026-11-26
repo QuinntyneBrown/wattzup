@@ -1552,3 +1552,7 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import santamonica as _santamonica
+THEMES['santamonica']=_santamonica.THEME
+SCENERY['santamonica']=_santamonica.scenery

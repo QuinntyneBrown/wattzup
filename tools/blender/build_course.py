@@ -1999,6 +1999,8 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         data["class"] = course["class"]
     if facts.get("cableways"):
         data["cableways"] = facts["cableways"]
+    if facts.get("pacificPark"):
+        data["pacificPark"] = facts["pacificPark"]
     if facts.get("headland"):
         data["headland"] = facts["headland"]
     if facts.get("ligurianCoast"):
@@ -2447,7 +2449,7 @@ def main(argv: list[str] | None = None) -> dict:
         "climbingMetres": data["climbingMetres"],
         "triangles": tris,
         **film,
-        **{k: v for k, v in facts.items() if k not in ("sunAzimuth", "lights", "cableways", "gliders", "headland", "ligurianCoast")},
+        **{k: v for k, v in facts.items() if k not in ("sunAzimuth", "lights", "cableways", "gliders", "pacificPark", "headland", "ligurianCoast")},
     }
 
 
