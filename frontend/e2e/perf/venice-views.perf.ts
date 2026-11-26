@@ -62,7 +62,8 @@ test('Sprint Ocean Front Walk past Venice Skatepark to the Pacific Park wheel', 
     };
     await capture('../docs/screenshots/venice-beach-boardwalk/' + version + '-' + name + '.jpg');
     if (version === 'after' && (name === 'pier' || name === 'muscle')) {
-      const asset = name === 'pier' ? 'venice-beach-boardwalk-photo.jpg' : 'venice-beach-boardwalk.jpg';
+      const asset =
+        name === 'pier' ? 'venice-beach-boardwalk-photo.jpg' : 'venice-beach-boardwalk.jpg';
       const hidden = await page.addStyleTag({
         content: '.race > :not(.race-scene) { visibility: hidden !important; }',
       });
