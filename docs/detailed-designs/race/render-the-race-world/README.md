@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Montreal Jazz Fest (#2168)
+
+Preserve the festival look praised in #909 and recorded in iteration 001. The class scene already has summer dusk, saxophone banners, festoons and live stages. Its opening capture records a dark street, uniform lit windows and thin rows of people. Keep the street legible, break up lit windows by floor and build pockets of varied spectators around the stage. Expose the original class through the race catalogue.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Rue Sainte-Catherine, 0.08 km | Real 01, 08 and 13. Games 01 and 03. | Historic stone shops and glass offices line a closed street. Terrace tables, food stalls and saxophone banners mark the approach to the festival. |
+| Place des Festivals main stage, 1.76 km | Real 03–07 and 10. Games 02–03. | A broad black stage roof, truss legs, stacked speakers and coloured spots frame the live band. Spectators fill the front rail in staggered rows. |
+| Place des Arts and fountain court, 3.31 km | Real 01, 04, 09 and 15. Games 02 and 04. | Fountain jets rise from the plaza paving. The sloping theatre roof, tall bent white light masts and red lighting dots identify the Quartier des spectacles. |
+| Village pink-ball canopy, 4.89 km | Real 02, 08 and 13. Games 03–04. | Pink strands sag across the narrow street. Shop awnings, warm windows and a bike-share dock give the overhead canopy scale. |
+| Food kiosks and summer terrasses, 6.77 km | Real 05–06, 11–12 and 14. Games 02–03. | Festivalgoers move between illuminated food stands, café terraces and a blue Métro entrance. A second set plays beyond the crowd. |
+| Mount Royal cross street, 9.12 km | Real 01, 04, 08, 12 and 15. Games 01 and 05. | A cross street opens onto wooded Mount Royal and its cross. Glass towers frame the hill as dusk deepens and the festival lights brighten. |
+
+Use the class’s four-degree bends over 300 m, broad plaza openings and restrained gradients. Separate the fixed Mount Royal silhouette from near shop façades, stage steelwork and overhead strings. Animate band gestures, crowd poses and fountain jets on the ride clock. Batch rows of spectators and pink balls, cull street sections and release textures and instances when the rider leaves. Compare the opening and main-stage sections to Caribana’s tablet measurements. Street geometry and light are based on the credited material in docs/worlds/montreal/SOURCES.md.
