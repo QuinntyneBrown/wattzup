@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import tulips as _tulips
+
+THEMES['tulips'] = _tulips.THEME
+SCENERY['tulips'] = _tulips.scenery
