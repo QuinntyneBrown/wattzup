@@ -1,3 +1,4 @@
+import mulhollandElevation from './mulholland-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3597,11 +3598,12 @@ export const mulhollandCourseMap = {
   place: 'Los Angeles, California',
   world: 'mulholland',
   distanceKm: 17.1,
-  climbingM: 0,
+  climbingM: 347,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: mulhollandElevation,
   },
   thumbnailUrl: 'maps/mulholland-drive.jpg',
   photoUrl: 'maps/mulholland-drive-photo.jpg',
