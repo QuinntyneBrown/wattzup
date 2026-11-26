@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Surfers Paradise (#2223)
+
+Extend the beachfront itinerary and its inland tram section to the 13.2 km class distance. Keep Q1 fixed behind the moving foreground and leave the wide ocean visible between palms. The photos establish building profiles, reflective beach width and tram livery. The game views establish the clearance around the cyclist and the legibility of the next landmark.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The Esplanade, 0.12 km | Real 01, 04, 09 and 12. Games 01 and 03. | The rider follows a two-lane road between apartment balconies and the foreshore path. Parked cars, pandanus and tall palms break up the near edge of the sand. |
+| Q1 above the foreshore, 2.23 km | Real 03, 05, 06 and 07. Games 01 and 03. | Q1 rises above its neighbouring towers, with a sloping glass crown and a single long gold-tipped mast. White balcony slabs and turquoise glass separate the surrounding high-rises. |
+| Breakers and surfers, 4.42 km | Real 07 and 09–12. Games 02 and 04. | Long Pacific breakers advance across bands of wet sand. A board and surfer lift over a swell, with swimmers and cumulus beyond. |
+| Cavill Avenue arch, 6.63 km | Real 01, 02 and 04. Games 01 and 05. | The curved steel Surfers Paradise arch spans the pedestrian entrance at Cavill Avenue. Its lettering reads above the path and the ocean shows through the opening. |
+| Patrolled beach, 9.05 km | Real 05, 07, 09 and 13. Games 04 and 05. | Paired red-and-yellow flags mark the swimming area beside a raised lookout and warning signs. The cloth bends in the sea breeze above the reflective shore. |
+| Cavill Avenue station, 12.88 km | Real 08, 14 and 15. Games 01 and 03. | A yellow and blue G:link tram passes the station platform. Glazed doors, articulations, paved track and overhead wire distinguish the tram corridor from the beachfront road. |
+
+Merge repeated tower floors and palms, with taller skyline forms visible beyond the street. Model Q1’s wedge crown and mast, the entrance arch and the tram articulations. Move bounded surf bands, cloth and tram doors or carriage bodies on ride time. Keep water and flags readable in low detail and dispose of course textures and geometry on exit. Capture the six viewpoints and measure both tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
