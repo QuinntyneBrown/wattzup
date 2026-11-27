@@ -1940,3 +1940,8 @@ import sydneyharbour as _sydneyharbour
 
 THEMES['sydneyharbour'] = _sydneyharbour.THEME
 SCENERY['sydneyharbour'] = _sydneyharbour.scenery
+
+import teide as _teide
+
+THEMES['teide'] = _teide.THEME
+SCENERY['teide'] = _teide.scenery

@@ -2526,3 +2526,18 @@ The class fixes the itinerary at 12.45 km. Keep the paired steel arches and pylo
 | Milsons Point, 12.13 km | Real 03, 06, 08 and 15. Games 02 and 04. | The route descends toward Luna Park’s illuminated entrance face and towers. Moored boats and the skyline remain visible across the harbour. |
 
 Model the bridge from paired curved trusses, intermediate hangers, cross-bracing and four pylons. Render bounded batches of sparks and falling lights on ride time. Smoke and harbour highlights take their colour from the same display. Keep the Opera House shells distinct behind the foreshore, and provide an open sightline to the Luna Park entrance. Release all geometry, textures and instance buffers with the course. Capture six fixed rider views and measure both tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Mount Teide (#2227)
+
+The existing Teide street supplies the summit, Roques, cable and sea of clouds. Place these on a continuous 13.50 km centre line with the TF-24 cut, Roque Cinchado and observatory at distinct distances. The Race catalogue resolves mount-teide to teide. The world library loads the course GLB, centre line, textures and moving models when Race enters the course.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Canary pine approach, 0.12 km | Real 03, 05, 06 and 11. Games 01 and 03. | TF-21 climbs between Canary pines rooted in black scoria. White edge paint leads toward the snow-streaked brown summit. |
+| Above the cloud sea, 2.78 km | Real 06, 11, 12 and 15. Games 01 and 05. | A low stone wall gives way to a white inversion below the road. The western ridge and distant island break through the cloud. |
+| La Tarta, 5.31 km | Real 02, 03 and 07. Games 02 and 04. | Cream pumice separates dark basalt and red ash in the exposed cut. Three pro riders climb the bend past flowering tajinaste. |
+| Roques de García, 7.93 km | Real 01, 08–10, 13 and 14. Games 03 and 04. | Roque Cinchado balances an ochre cap on a narrow darker waist. Companion pinnacles and the Parador sit on the caldera floor. |
+| Llano de Ucanca, 10.48 km | Real 01, 08, 12–15. Games 02 and 05. | Frozen black lava tongues cross pale pumice beds beneath Pico del Teide. A cable car glides up the flank beyond retama and red flowers. |
+| Izaña observatory, 13.19 km | Real 03, 04, 06 and 15. Games 01 and 04. | White telescope domes, shutter seams, service buildings and the taller solar tower stand above the ridge against a deep blue sky. |
+
+Use Caribana’s fixed skyline and moving near group as the reference for the volcano silhouette and training pack. Model the towers, domes, lava tongues and tajinaste at their roadside scale. Give the cloud deck bounded motion below the road, with the cable car on its own wire. Merge static details by section, keep the summit visible on low, and dispose of the actors, textures and materials on exit. Capture all six rider views. Advance distance while measuring submitted frames through both sixty-second benchmarks. See ADRs 0021, 0023, 0030, 0034 and 0035.
