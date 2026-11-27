@@ -4,6 +4,7 @@ import joshuatreeElevation from './joshuatree-elevation.json';
 import junkanooElevation from './junkanoo-elevation.json';
 import kilaueaElevation from './kilauea-elevation.json';
 import knicksElevation from './knicks-elevation.json';
+import konaElevation from './kona-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3830,6 +3831,36 @@ export const knicksCourseMap = {
       seg('recover', 50, 11, 80),
       seg('work', 30, 22, 110),
       seg('cool-down', 90, 11, 80),
+    ],
+  },
+};
+
+export const konaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'kona-ironman',
+  name: 'Kona Ironman',
+  routeName: 'the Queen K',
+  place: 'Kailua-Kona and the Kohala Coast, Hawaiʻi',
+  world: 'kona',
+  distanceKm: 9.868,
+  climbingM: 97,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: konaElevation,
+  },
+  thumbnailUrl: 'maps/kona-ironman.jpg',
+  photoUrl: 'maps/kona-ironman-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 14, 87),
+      seg('work', 300, 21, 75),
+      seg('work', 495, 22, 72),
+      seg('recover', 15, 13, 80),
+      seg('work', 300, 22, 80),
+      seg('work', 60, 24, 110),
+      seg('cool-down', 95, 11, 80),
     ],
   },
 };

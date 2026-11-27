@@ -1580,3 +1580,8 @@ import knicks
 
 THEMES['knicks'] = knicks.THEME
 SCENERY['knicks'] = knicks.scenery
+
+import kona
+
+THEMES['kona'] = kona.THEME
+SCENERY['kona'] = kona.scenery

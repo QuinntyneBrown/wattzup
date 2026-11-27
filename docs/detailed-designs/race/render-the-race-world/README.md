@@ -1380,3 +1380,18 @@ Keep the existing championship parade, New York morning light, street banners, m
 | City Hall, 6.69 km | Real 05, 11–12 and 15 and games 01 and 05 | Terra-cotta setbacks and the green copper crown stay at the far end of Broadway and approach the rider. |
 
 Real 01–04 show the US women’s national soccer team parade and supply proportions of floats, fan barriers and viewing distance. Real 06 shows a transit bus and supplies vehicle scale. All Knicks colours and designs come from original game assets. Feedback #900 requires continuous float, crowd and ticker motion. Keep wrapped objects outside the visible interval, fade a paper fragment at each end and use the ride clock for pause and reduced motion. Use bounded buffers and release all native course textures and batches.
+
+## Kona Ironman (#2149)
+
+Use the course renderer from normal Map Select and Race Setup. The distance-weighted resistance sets each stage’s physical grade; the map panel reads the same sampled elevation. GCN’s High Intensity Race Day Effort has seven stages lasting 25:05, with a three-second offset. Keep the existing world soundtrack. No other Kona issue appeared in the rider-feedback title search.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Queen K, 0.08 km | Real 01–02, 05–08, 11 and 13–14; games 01 and 05 | Double yellow and white markings follow straight, rolling tarmac with a wide paved shoulder. Angular ʻaʻā and smooth pāhoehoe flank the road. Hualālai and the higher Mauna Kea silhouette stay fixed inland. |
+| Coral, 1.53 km | Real 02, 05–08 and 13 for the dark verges; games 01 and 03 | Names on the verge are made from separate irregular pale stones. Dry fountain grass bends in the same crosswind across adjacent patches. |
+| Aero riders, 3.24 km | Real 03, 04 and 10; games 02 and 05 | Triathletes ride apart on the shoulder, with forearms on the extensions, aero helmets, numbers and dark disc wheels. |
+| Aid station, 4.92 km | Real 03–06 and 09–10; games 02 and 04 | Volunteers reach from behind cones and fold-out tables stacked with bottles. Tents and race bunting are visible before the rider reaches the station. Real 09 supplies crowd and banner scale at a Kona event. |
+| Coast, 7.30 km | Real 07, 08, 12, 13 and 15; games 03–05 | Pacific blue and wind-driven surf meet black shore shelves. The near road remains sharp and the low heat shimmer stays in the distance. |
+| Aliʻi Drive, 9.51 km | Real 09, 12 and 15; games 02–04 | The shoulder becomes a palm-lined seafront street with spectators, race banners and the finish arch. |
+
+Adapt Caribana’s three depths to the foreground cyclists, the mid-distance station or finish and the fixed inland shields and ocean. Batch bike frames, wheel rims, bottles and grass. Wind, distant optical shimmer and the pedalling motion use the race clock. The course owns and releases its instance buffers, original textures and materials. Preserve the full sourced reference folder.
