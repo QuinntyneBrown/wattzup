@@ -1995,3 +1995,8 @@ import trollstigen as _trollstigen
 
 THEMES['trollstigen'] = _trollstigen.THEME
 SCENERY['trollstigen'] = _trollstigen.scenery
+
+import tulips as _tulips
+
+THEMES['tulips'] = _tulips.THEME
+SCENERY['tulips'] = _tulips.scenery

@@ -2691,3 +2691,18 @@ The map catalogue and course renderer currently have no Trollstigen entry. Resto
 | The summit overlook, 11.78 km | Real 05, 07, 12–15 and games 04–05 | Visitors stand on a rusted steel cantilever over Isterdalen. The low visitor centre follows the line of the upper stream. |
 
 Use Caribana’s fixed skyline and merged static detail for the named peaks, retaining walls and platform. Map original granite and heath textures across terrain in world coordinates. Keep water and cloud motion tied to elapsed ride time and share geometry across the three traffic vehicles. A tier change or route exit releases the meshes, materials and textures. Capture the six positions through Race on low and measure sixty seconds each on the approach and traffic bend. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Dutch Tulip Fields (#2236)
+
+The Race catalogue and native course registry currently lack the Dutch Tulip Fields entry. Restore Easy Cadence Workout for the 10.1 km ride. Build the polder as large rectangular plots with exposed soil between crop rows and only a metre of relief at minor crossings. Preserve long sightlines by drawing mills beyond the local detail window.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Bollenstreek road, 0.14 km | Real 01–04, 11 and games 01–02 | Long red, white and yellow beds cross the view under the open April sky. The narrow lane has grass verges. |
+| The drainage ditch, 2.16 km | Real 04–06, 10, 15 and games 02–03 | A straight water-filled ditch reflects a row of clipped willows between the road and the next bulb plot. |
+| Keukenhof mill, 4.17 km | Real 08, 12–13 and games 01, 04 | Four lattice sails turn around the cap of a tall Dutch smock mill above its timber gallery. |
+| The mixed bulb beds, 5.89 km | Real 05–07, 09, 14 and games 02–04 | Blocks of violet hyacinths and yellow daffodils break the tulip stripes; small groups of tourists stop to photograph them. |
+| The bulb farm, 7.64 km | Real 01, 03, 10–11, 15 and games 03, 05 | Brick farmhouses, low storage sheds and a line of poplars enclose the fields behind an upright Dutch cyclist. |
+| The windmill sprint, 9.92 km | Real 07, 12–15 and games 01, 04–05 | A second mill marks the sprint with a canal and swaying red and white tulips beside the finish. |
+
+Use Caribana’s separation of textured foreground, moving middle-distance subjects and fixed horizon. Model the tapered smock and gallery in depth, share geometry across the four sails, and group nearer bloom heads and distant planted rows separately. Willow trunks, water banks and farm buildings establish parallax. Load artwork with the course and release materials, textures and geometry on exit. Compare the six marked rider views and measure both sixty-second sections on the low tier. See ADRs 0021, 0023, 0030, 0034 and 0035.

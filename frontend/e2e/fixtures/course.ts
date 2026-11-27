@@ -89,6 +89,7 @@ import torontoElevation from './toronto-elevation.json';
 import tremolaElevation from './tremola-elevation.json';
 import tourmaletElevation from './tourmalet-elevation.json';
 import trollstigenElevation from './trollstigen-elevation.json';
+import tulipsElevation from './tulips-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7380,6 +7381,42 @@ export const trollstigenCourseMap = {
       seg('work', 180, 18, 80),
       seg('work', 120, 21, 80),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const tulipsCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'dutch-tulip-fields',
+  name: 'Dutch Tulip Fields',
+  routeName: 'The bulb fields',
+  place: 'Bollenstreek, Netherlands',
+  world: 'tulips',
+  distanceKm: 10.1,
+  climbingM: 3,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: tulipsElevation,
+  },
+  thumbnailUrl: 'maps/dutch-tulip-fields.jpg',
+  photoUrl: 'maps/dutch-tulip-fields-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 120, 18, 90),
+      seg('work', 60, 19, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 180, 19, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 120, 19, 55),
+      seg('recover', 60, 13, 80),
+      seg('work', 120, 19, 105),
+      seg('recover', 60, 13, 80),
+      seg('work', 120, 19, 60),
+      seg('cool-down', 180, 13, 80),
     ],
   },
 };
