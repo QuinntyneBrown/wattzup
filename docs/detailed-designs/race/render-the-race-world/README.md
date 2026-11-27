@@ -2833,3 +2833,16 @@ The 24 km race starts on the Torricelle, reaches 273 m, then descends to the Adi
 | Piazza delle Erbe, 16.72 km | Real 01, 10, 14 and games 03, 04 | The brick Lamberti tower and octagonal belfry rise above market parasols and pink paving. |
 | Portoni della Bra, 21.85 km | Real 01, 06, 11, 15 and games 02, 04 | The twin arches and clock lead to the cafes of the Liston behind pink crowd barriers. |
 | Arena finish, 23.97 km | Real 02-05, 12, 13 and games 01, 02 | Enter the pink limestone arcade and finish inside the seating bowl under waving pink scarves. |
+
+### Victoria Harbour (#2246)
+
+The originals and credits were restored in commit a3b75bcdf. Use all fifteen photos and five game views in docs/worlds/victoria. Keep the promenade on the Kowloon side and the skyline and light sources fixed on Hong Kong Island. Differentiate the pier, Clock Tower and bronze statue in geometry. Vary the rail posts, promenade tiling, lamps and photographers at the near distance. The original boat artwork, surface reflections and narrow beams share the ride clock and release their drawing resources on leaving. Benchmark both the opening pier and the waterfront during the light show.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Kowloon Clock Tower, 0.14 km | Real 01, 08, 15 and game 03 | The railway clock tower rises between the old pier and the tiled promenade under warm lights. |
+| Star Ferry crossing, 1.72 km | Real 08, 11, 12, 15 and games 02, 04 | A green-and-white double-ended ferry moves past the landing, lighting the water beneath its windows. |
+| Avenue of Stars, 3.38 km | Real 02, 03, 04, 09 and games 01, 03 | The bronze Bruce Lee figure faces the harbour above star and handprint plaques along the rails. |
+| Red-sailed junk, 5.16 km | Real 08, 10, 13 and game 04 | A timber junk crosses below its three red battened sails, with a tug and freighter farther out. |
+| Central skyline, 7.18 km | Real 06, 07, 13, 14 and games 01, 04 | The IFC crown, Bank of China diagonals and Central Plaza light stand ahead of Victoria Peak. The lights reflect across the water. |
+| Symphony of Lights, 9.18 km | Real 01, 04, 05, 06, 07, 14 and games 02, 05 | Coloured laser fans sweep from the island towers as photographers gather on the Kowloon railing. |
