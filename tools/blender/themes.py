@@ -1885,3 +1885,8 @@ import southbeach as _southbeach
 
 THEMES['southbeach'] = _southbeach.THEME
 SCENERY['southbeach'] = _southbeach.scenery
+
+import stampede as _stampede
+
+THEMES['stampede'] = _stampede.THEME
+SCENERY['stampede'] = _stampede.scenery

@@ -153,6 +153,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Isle of Skye Fog (`skye`) | Into the Unknown (GCN Training, 30:00) | 12.725 km | 172 m | `public/courses/skye.glb` ([ride views](screenshots/isle-of-skye-fog/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Songkran, Bangkok (`songkran`) | 30 Second Sprints HIIT Sandwich (GCN Training, 27:30) | 11.750 km | 12 m | `public/courses/songkran.glb` ([ride views](screenshots/songkran-bangkok/README.md)) | Built and ridden; open from the start on the map catalogue |
 | South Beach Sunrise (`southbeach`) | Calorie Burning Workout (GCN Training, 16:00) | 7.025 km | 67 m | `public/courses/southbeach.glb` ([ride views](screenshots/south-beach-sunrise/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Calgary Stampede (`stampede`) | Start Hard, Finish Hard (GCN Training, 30:00) | 13.200 km | 145 m | `public/courses/stampede.glb` ([ride views](screenshots/calgary-stampede/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

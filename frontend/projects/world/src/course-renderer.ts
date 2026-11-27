@@ -159,6 +159,7 @@ import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
 import type { MarktSquare } from './markt-square';
 import type { SouthBeachDrive } from './south-beach-drive';
+import type { StampedeGrounds } from './stampede-grounds';
 import type { ManxMountain } from './manx-mountain';
 import type { JunkanooRush } from './junkanoo-rush';
 import type { KilaueaVents } from './kilauea-vents';
@@ -344,6 +345,12 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   LifeguardTowers: 400,
   SprintPaint: 180,
   AtlanticDawn: 12000,
+  WesternShops: 340,
+  WhiteHats: 135,
+  CalgarySkyline: 2100,
+  RiverCamp: 180,
+  RodeoStand: 540,
+  ParadeRoad: 320,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -504,6 +511,7 @@ export class CourseRenderer implements WorldRenderer {
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
   private marktSquare: MarktSquare | null = null;
   private southBeachDrive: SouthBeachDrive | null = null;
+  private stampede: StampedeGrounds | null = null;
   private mountain: ManxMountain | null = null;
   private rush: JunkanooRush | null = null;
   private vents: KilaueaVents | null = null;
@@ -2127,6 +2135,18 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(ocean.root);
         this.disposables.push(ocean);
       }
+      if (this.course.file.id === 'stampede') {
+        const { StampedeGrounds } = await import('./stampede-grounds');
+        if (this.disposed) return false;
+        const park = await StampedeGrounds.load(this.course);
+        if (this.disposed) {
+          park.dispose();
+          return false;
+        }
+        this.stampede = park;
+        this.scene.add(park.root);
+        this.disposables.push(park);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -3118,6 +3138,7 @@ export class CourseRenderer implements WorldRenderer {
     this.khaoSan?.update(metres, frame.reducedMotion ? 0 : frame.time, this.evening?.value ?? 0);
     this.aim(metres, frame.reducedMotion);
     this.southBeachDrive?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.stampede?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mountain?.update(
       metres,
       frame.reducedMotion ? 0 : frame.time,
@@ -3355,6 +3376,7 @@ export class CourseRenderer implements WorldRenderer {
     this.icelandCoast = null;
     this.divide = null;
     this.southBeachDrive = null;
+    this.stampede = null;
     this.mountain = null;
     this.rush = null;
     this.vents = null;
@@ -3667,6 +3689,7 @@ export class CourseRenderer implements WorldRenderer {
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.marktSquare) Object.assign(materials, this.marktSquare.materials);
     Object.assign(materials, this.southBeachDrive?.materials);
+    Object.assign(materials, this.stampede?.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.rush) Object.assign(materials, this.rush.materials);
     if (this.caldera) Object.assign(materials, this.caldera.materials);
@@ -4324,6 +4347,7 @@ export class CourseRenderer implements WorldRenderer {
     this.downs?.frameView(metres, this.camera.position, ahead);
     this.sanFrancisco?.frameView(metres, this.camera.position, ahead);
     this.southBeachDrive?.frameView(metres, this.camera.position, ahead);
+    this.stampede?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -4929,6 +4953,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
     if (this.marktSquare) Object.assign(drawn, this.marktSquare.furniture.report());
     if (this.southBeachDrive) Object.assign(drawn, this.southBeachDrive.report());
+    if (this.stampede) Object.assign(drawn, this.stampede.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.rush) Object.assign(drawn, this.rush.report());
     if (this.vents) Object.assign(drawn, this.vents.report());
