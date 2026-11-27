@@ -63,6 +63,7 @@ import serpentineElevation from './serpentine-elevation.json';
 import sevensistersElevation from './sevensisters-elevation.json';
 import sfhillsElevation from './sfhills-elevation.json';
 import shibuyaElevation from './shibuya-elevation.json';
+import silverstoneElevation from './silverstone-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6292,6 +6293,50 @@ export const shibuyaCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 120, 22, 80),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const silverstoneCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'silverstone-track-day',
+  name: 'Silverstone Track Day',
+  routeName: 'The Hangar Straight',
+  place: 'Northamptonshire, England',
+  world: 'silverstone',
+  distanceKm: 11.0875,
+  climbingM: 26,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: silverstoneElevation,
+  },
+  thumbnailUrl: 'maps/silverstone-track-day.jpg',
+  photoUrl: 'maps/silverstone-track-day-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 330, 16, 85),
+      seg('work', 30, 14, 80),
+      seg('recover', 30, 22, 100),
+      seg('work', 120, 19, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 19, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 19, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 19, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 14, 80),
+      seg('work', 120, 19, 90),
+      seg('cool-down', 180, 11, 80),
     ],
   },
 };

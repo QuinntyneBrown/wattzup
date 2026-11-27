@@ -2301,3 +2301,18 @@ The race catalogue selects an 8.15 km course comprising two 4.075 km laps. Use o
 | Station return, 4.79 km | Real 04, 06, 07, 11 and 14. Games 03 and 04. | A second pass brings the screen, waiting pedestrians and elevated train into a single street-level view. The tower lights remain visible above the train. |
 
 Bake window and shop lighting into shared facade atlases. Draw the near wet-asphalt reflection in the same colours as the screen above it. One pedestrian cycle holds the umbrella groups on both corners and starts the diagonal and straight crossings together. Keep the rider lane clear. The train follows the viaduct, and the taxi follows the road. Batch repeated street and window geometry by block and retain the distinctive silhouettes on Low. Dispose the scene and its materials on exit. Use the performance design and ADRs 0021, 0023, 0030, 0034 and 0035 for the submitted-frame checks.
+
+## Silverstone Track Day (#2210)
+
+The existing silverstone world palette supplies soft cloud and damp pavement. The race catalogue loads a fixed native course through the course registry. Compress the circuit to two equal 5.544 km laps to retain the 11.0875 km class progression. Orient the projecting roof, garage apron and stands beside the racing surface, with painted kerbs following the actual apex and gravel outside each turn. The original photographs and game references are present with their credits in docs/worlds/silverstone on the default branch.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Hamilton Straight and the Wing, 0.10 km | Real 01–03 and 09. Games 02 and 04. | The silver folded roof kicks up over the pit exit. Level garage doors, the fenced pit wall and an empty grandstand frame the timing line. |
+| BRDC clubhouse, 1.42 km | Real 04, 06 and 07. Games 01 and 03. | White canopy peaks and a glass front stand beyond the catch fence. A pit crew member rolls a trolley along the service apron. |
+| Maggotts and Becketts, 3.18 km | Real 05, 07, 08 and 13. Games 03 and 05. | Red-and-white inner kerbs alternate through the esses. The racing line switches sides below the long empty roof of the Becketts stand. |
+| Hangar Straight, 4.15 km | Real 08, 11 and 13. Games 01 and 02. | The uninterrupted straight rises gently toward Stowe. Paired distance boards and a sparse line of hedges recede into a grey horizon. |
+| Stowe gravel trap, 4.85 km | Real 10–15. Games 03 and 05. | A track-day sports car steers around the right apex. The grey gravel fan, alternating tyre stacks and orange marshal post follow the outside of the bend. |
+| Club and the pit entrance, 5.48 km | Real 01, 04, 07 and 09. Games 02 and 04. | The white pit-entry divider leads back to the Wing. A marshal waves beside the orange shelter while the second lap begins beneath the start gantry. |
+
+The asphalt carries the worn rubber line and edge paint. Batch fence posts, seat rows and garage doors into local native sections. Draw the Wing’s folded roof and long grandstand silhouettes from further away than the gravel and wire mesh. Sample track-day car, trolley and marshal poses on ride time and release the geometry and materials on route exit. Verify Low/WebGL 2 from map selection, followed by separate 60-second performance samples through Hamilton Straight and the esses (ADRs 0021, 0023, 0030, 0034 and 0035).

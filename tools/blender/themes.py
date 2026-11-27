@@ -1865,3 +1865,8 @@ import shibuya as _shibuya
 
 THEMES['shibuya'] = _shibuya.THEME
 SCENERY['shibuya'] = _shibuya.scenery
+
+import silverstone as _silverstone
+
+THEMES['silverstone'] = _silverstone.THEME
+SCENERY['silverstone'] = _silverstone.scenery
