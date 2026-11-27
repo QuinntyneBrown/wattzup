@@ -57,6 +57,7 @@ import saguaroElevation from './saguaro-elevation.json';
 import sambadromeElevation from './sambadrome-elevation.json';
 import santamonicaElevation from './santamonica-elevation.json';
 import seapointElevation from './seapoint-elevation.json';
+import sellaElevation from './sella-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6085,6 +6086,39 @@ export const seaPointCourseMap = {
       seg('recover', 40, 10, 80),
       seg('work', 20, 24, 100),
       seg('cool-down', 160, 10, 80),
+    ],
+  },
+};
+
+export const sellaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'passo-sella',
+  name: 'Passo Sella',
+  routeName: 'The Passo Sella road',
+  place: 'The Dolomites, Italy',
+  world: 'sella',
+  distanceKm: 11.6375,
+  climbingM: 619,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: sellaElevation,
+  },
+  thumbnailUrl: 'maps/passo-sella.jpg',
+  photoUrl: 'maps/passo-sella-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 210, 13, 90),
+      seg('work', 120, 17, 90),
+      seg('work', 240, 18, 90),
+      seg('work', 120, 19, 90),
+      seg('work', 120, 20, 90),
+      seg('work', 120, 21, 90),
+      seg('work', 240, 22, 90),
+      seg('work', 120, 23, 90),
+      seg('work', 120, 24, 90),
+      seg('cool-down', 150, 11, 85),
     ],
   },
 };

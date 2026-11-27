@@ -1844,3 +1844,7 @@ SCENERY['santamonica']=_santamonica.scenery
 import seapoint as _seapoint
 THEMES['seapoint']=_seapoint.THEME
 SCENERY['seapoint']=_seapoint.scenery
+
+import sella as _sella
+THEMES['sella']=_sella.THEME
+SCENERY['sella']=_sella.scenery

@@ -41,6 +41,7 @@ import type { ChicagoRailway } from './chicago-railway';
 import type { chichenPlaza } from './chichen-plaza';
 import type { PacificPark } from './pacific-park';
 import type { SeaPointPromenade } from './sea-point-promenade';
+import type { SellaClimb } from './sella-climb';
 import type { ConeyBoardwalk } from './coney-boardwalk';
 import type { copacabanaPromenade } from './copacabana-promenade';
 import type { CopacabanaBeach } from './copacabana-beach';
@@ -279,6 +280,10 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   CapePalms: 750,
   SeaPointFamilies: 260,
   PavilionWater: 680,
+  SellaBlocks: 680,
+  SellaForest: 970,
+  SellaRifugi: 1050,
+  PassSigns: 440,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -420,6 +425,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   private pacificPark: PacificPark | null = null;
   private seaPoint: SeaPointPromenade | null = null;
+  private sellaClimb: SellaClimb | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -1930,6 +1936,20 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(detail.root);
         this.disposables.push(detail);
       }
+      if (this.course.file.id === 'sella') {
+        const { SellaClimb } = await import('./sella-climb');
+        if (this.disposed) return false;
+        const detail = await SellaClimb.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.sellaClimb = detail;
+        this.camera.far = 21500;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2877,6 +2897,7 @@ export class CourseRenderer implements WorldRenderer {
     this.copacabana?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.pacificPark?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.seaPoint?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.sellaClimb?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
@@ -3085,6 +3106,7 @@ export class CourseRenderer implements WorldRenderer {
     this.boardwalk = null;
     this.pacificPark = null;
     this.seaPoint = null;
+    this.sellaClimb = null;
     this.daytonaBoardwalk = null;
     this.daytonaShore = null;
     this.copacabanaPromenade?.root.removeFromParent();
@@ -3502,6 +3524,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.rioParade) Object.assign(materials, this.rioParade.materials);
     Object.assign(materials, this.pacificPark?.materials);
     Object.assign(materials, this.seaPoint?.materials);
+    Object.assign(materials, this.sellaClimb?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -4161,6 +4184,7 @@ export class CourseRenderer implements WorldRenderer {
     this.climbers?.aim(metres, this.camera.position, ahead);
     this.pacificPark?.sightline(metres, this.camera.position, ahead);
     this.seaPoint?.sightline(metres, this.camera.position, ahead);
+    this.sellaClimb?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
       ahead.y +
@@ -4635,6 +4659,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
     if (this.pacificPark) Object.assign(drawn, this.pacificPark.report());
     if (this.seaPoint) Object.assign(drawn, this.seaPoint.report());
+    if (this.sellaClimb) Object.assign(drawn, this.sellaClimb.report());
     if (this.boardwalk) {
       Object.assign(drawn, {
         carRadius: this.boardwalk.street.carRadius,

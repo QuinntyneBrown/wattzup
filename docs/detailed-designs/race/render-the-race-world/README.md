@@ -2211,3 +2211,18 @@ Issue #908 praised the previous scene. Preserve its breaking Atlantic surf, Lion
 | Table Mountain, 7.87 km | Real 01, 08 and 15. Games 02, 03 and 05. | The flat summit and near-vertical sandstone faces of Table Mountain show past a gap in the apartment rows. A low tablecloth cloud spills over the ledge. |
 
 Build the fixed peaks as layered, faceted terrain with a broad Atlantic horizon. Model the lighthouse balcony and lantern, individual rock ledges, pool coping and balcony recesses. Use instancing and shared meshes for the moving surf, runners and swimmers. Advance secondary movement on the ride clock and dispose all allocated meshes and textures on exit. Reference real-13 is from Hawaii and informs only the shape of a low breaker. Benchmark the loaded opening and busiest stretch as described in meet-performance-budgets. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Passo Sella (#2204)
+
+The catalogue selects the single Passo Sella climb, 11.6375 km, independently of the four-pass Sella Ronda course. The previous generic scene supplied alpine colours and roadside posts. Use the architectural proportions and cliff layering of the repository’s Sellaronda models. Build both fixed massifs around this particular climbing road and set their scree feet into its terrain.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Larch wood, 0.08 km | Real 02, 12 and 15. Game 03. | Warm larches and darker spruce enclose the lower SS242. A white edge line and delineator posts follow the road into a sunlit opening. |
+| Numbered tornante, 2.46 km | Real 01, 02 and 04. Games 02 and 04. | Look across the inside of a numbered hairpin toward the next stretch of smooth road. A motorbike leans on the far arm and climbs away. |
+| Hay barn and pasture, 4.92 km | Real 04, 12, 14 and 15. Games 01 and 03. | A dark larch hay barn sits on a stone foot in a sloping meadow. Cattle lower their heads among patches of alpine flowers. |
+| Sassolungo walls, 7.29 km | Real 01, 07–09 and 11. Games 01, 02 and 05. | Three distinct pale towers stand over a continuous scree apron. Their deep clefts and sunlit facets clear the treeline above the cyclist group. |
+| Città dei Sassi, 9.74 km | Real 10–13. Games 04 and 05. | Angular limestone blocks rise alongside the road between dwarf pines. Across the saddle the Sella group has a tiered table-like rim. |
+| Passo Sella summit, 11.58 km | Real 05–07 and 14. Games 01 and 02. | A summit sign reads Passo Sella / Sellajoch 2244 m beside the rifugio. Timber balconies, the gravel forecourt and white road edge remain visible against the mountains. |
+
+Reference signs show 2240 m and several historical names. Use the issue’s required bilingual 2244 m label with the proportions and painted finish of real-05 and real-06. Real-03 and real-09 inform regional road and stone character. Sample the same centre-line elevation in the HUD. Merge fixed scenery by distance, keep distant cliffs visible on Low and advance nearby road traffic and grazing poses on the ride clock. Release scene assets on exit. Measure opening and upper samples as specified in meet-performance-budgets. See ADRs 0021, 0023, 0030, 0034 and 0035.
