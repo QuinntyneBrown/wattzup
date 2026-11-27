@@ -150,7 +150,7 @@ import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
-import type { OceanDrive } from './ocean-drive';
+import type { SouthBeachDrive } from './south-beach-drive';
 import type { ManxMountain } from './manx-mountain';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
@@ -360,7 +360,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
-  private oceanDrive: OceanDrive | null = null;
+  private southBeachDrive: SouthBeachDrive | null = null;
   private mountain: ManxMountain | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
@@ -860,14 +860,14 @@ export class CourseRenderer implements WorldRenderer {
         this.disposables.push(mountain);
       }
       if (this.course.file.id === 'southbeach') {
-        const { OceanDrive } = await import('./ocean-drive');
+        const { SouthBeachDrive } = await import('./south-beach-drive');
         if (this.disposed) return false;
-        const ocean = await OceanDrive.load(this.course);
+        const ocean = await SouthBeachDrive.load(this.course);
         if (this.disposed) {
           ocean.dispose();
           return false;
         }
-        this.oceanDrive = ocean;
+        this.southBeachDrive = ocean;
         this.scene.add(ocean.root);
         this.disposables.push(ocean);
       }
@@ -1815,7 +1815,7 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.fog.color.setRGB(0.402 + 0.43 * t, 0.604 - 0.27 * t, 0.658 - 0.43 * t);
     }
     this.aim(metres, frame.reducedMotion);
-    this.oceanDrive?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.southBeachDrive?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mountain?.update(
       metres,
       frame.reducedMotion ? 0 : frame.time,
@@ -1982,7 +1982,7 @@ export class CourseRenderer implements WorldRenderer {
     this.bigSurCoast = null;
     this.icelandCoast = null;
     this.divide = null;
-    this.oceanDrive = null;
+    this.southBeachDrive = null;
     this.mountain = null;
     this.trainingHighlands = null;
     this.trams = null;
@@ -2222,7 +2222,7 @@ export class CourseRenderer implements WorldRenderer {
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
-    Object.assign(materials, this.oceanDrive?.materials);
+    Object.assign(materials, this.southBeachDrive?.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
@@ -2301,7 +2301,7 @@ export class CourseRenderer implements WorldRenderer {
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
-      if ((this.mountain || this.oceanDrive) && group === 'Sun') mesh.visible = false;
+      if ((this.mountain || this.southBeachDrive) && group === 'Sun') mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
           ...glow,
@@ -2797,7 +2797,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.z += (rider.z + 14 * uz - ahead.z) * overlook;
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
-    this.oceanDrive?.frameView(metres, this.camera.position, ahead);
+    this.southBeachDrive?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
@@ -3307,7 +3307,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.strip) Object.assign(drawn, this.strip.report());
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
-    if (this.oceanDrive) Object.assign(drawn, this.oceanDrive.report());
+    if (this.southBeachDrive) Object.assign(drawn, this.southBeachDrive.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;

@@ -27,7 +27,7 @@ const views = [
 ] as const;
 const place = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
 
-export class OceanDrive {
+export class SouthBeachDrive {
   readonly root = new Group();
   readonly materials = {
     OceanDrive: new MeshBasicNodeMaterial({ side: DoubleSide }),
@@ -83,7 +83,7 @@ export class OceanDrive {
       for (const m of maps) m.dispose();
       throw error.reason;
     }
-    return new OceanDrive(course, maps);
+    return new SouthBeachDrive(course, maps);
   }
   private constructor(
     private readonly course: Course,
