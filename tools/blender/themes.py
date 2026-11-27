@@ -1570,3 +1570,8 @@ import junkanoo
 
 THEMES['junkanoo'] = junkanoo.THEME
 SCENERY['junkanoo'] = junkanoo.scenery
+
+import kilauea
+
+THEMES['kilauea'] = kilauea.THEME
+SCENERY['kilauea'] = kilauea.scenery

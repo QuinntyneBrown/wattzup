@@ -1350,3 +1350,18 @@ Preserve the 22-stage GCN class and the existing world soundtrack. Give the race
 | Prince George Wharf, 12.12 km | Real 01, 13 and 15 and games 02 and 04 | Bands leave paper on the tarmac. A break in the shopfronts reveals water, the cruise-ship decks and a pink sky behind the wharf. |
 
 Real 10 depicts the Harbour Island band and informs drum scale and carriage. Use the Nassau street photographs for local buildings. Compare the distant harbour and moving parade foreground with Caribana’s skyline and bands. Batch the paper, barriers and musicians, animate from race time and release geometry, materials and textures when the rider exits. Match six HUD-visible viewpoints and record submitted FPS, p95, longest interval, peak calls and distance through the two one-minute tablet rides.
+
+## Kīlauea Lava Road (#2147)
+
+The route compresses Crater Rim Drive, the vent fields and Nāhuku into the original class distance. Preserve the six GCN stages and existing soundtrack. A same-origin GLB and arc-length course load through the normal Map Select and Race Setup flow. Keep the existing violet sky, cool moonlight, volcanic haze and sun below the horizon as requested in rider feedback #936. Recoveries can descend while efforts climb. The map preview samples the same physical grade as the race.
+
+| Rider view | Local and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Lava fields, 0.08 km | Real 01, 05, 07, 11 and 13 and games 01 and 04 | Double yellow markings break where a black flow has cut the old surface. Rounded ropes and crumpled skin contrast with angular clinker. Mauna Loa forms a fixed, gently rising shield behind the flows. |
+| Wahinekapu, 1.54 km | Real 06, 08–09 and 14 and games 01 and 04 | Low rails border scrub and open vents. Unequal columns form at the cracks, expand, drift and fade with the race clock. |
+| Sulphur Banks, 2.62 km | Real 06, 08–09 and 14 and game 04 | Mineral aprons put pale yellow and ochre edge deposits around the steaming openings. |
+| Nāhuku, 3.94 km | Real 02, 12 and 14 and game 05 | Tree fern fronds and red lehua flowers gather above a dark tube mouth recessed into the bank beside the road. |
+| Halemaʻumaʻu, 5.68 km | Real 03–04, 10 and 15 and games 01–03 | A near rim drops through broken benches around a broad recessed basin. A glowing, crusted lake sits on the floor and a drifting plume catches light beneath. |
+| Dusk, 7.24 km | Real 03–05, 11 and 15 and games 01–03 | The low orange reflection concentrates under the crater cloud. The shield and violet dusk remain visible around it. |
+
+Keep near rock, ferns and fissures anchored to the grade; draw the distant shield once. Adapt Caribana’s bounded foreground batches to steam, tree ferns and clinker. Across the street references, Real 01, 02, 07 and 11 show neighbouring Chain of Craters Road and inform surface and vegetation. Real 12 supplies Crater Rim Drive itself. Use the game images for light contrast and approaching silhouettes. Keep the source photographs in their credited reference directory. Release all textures and instance buffers on exit.

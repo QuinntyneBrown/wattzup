@@ -1,0 +1,55 @@
+{
+  "id": "kilauea",
+  "name": "Kīlauea Lava Road",
+  "world": "kilauea",
+  "theme": "kilauea",
+  "seed": 2147,
+  "layout": 0,
+  "class": {
+    "id": "instant-inferno",
+    "title": "Instant Inferno",
+    "channel": "GCN Training",
+    "videoId": "1xuWyHnnPko",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 272,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 183,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 67,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 356,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 150,
+        "level": 20,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 74,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
