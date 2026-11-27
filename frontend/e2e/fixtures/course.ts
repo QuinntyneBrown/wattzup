@@ -17,6 +17,7 @@ import machupicchuElevation from './machupicchu-elevation.json';
 import marinabayElevation from './marinabay-elevation.json';
 import marrakechElevation from './marrakech-elevation.json';
 import mardigrasElevation from './mardigras-elevation.json';
+import maunakeaElevation from './maunakea-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4344,6 +4345,44 @@ export const mardigrasCourseMap = {
       seg('recover', 30, 11, 90),
       seg('work', 45, 24, 63),
       seg('cool-down', 150, 11, 82),
+    ],
+  },
+};
+
+export const maunakeaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mauna-kea',
+  name: 'Mauna Kea',
+  routeName: 'the summit road',
+  place: 'Hawaiʻi Island, Hawaiʻi',
+  world: 'maunakea',
+  distanceKm: 25.825,
+  climbingM: 2037,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: maunakeaElevation,
+  },
+  thumbnailUrl: 'maps/mauna-kea.jpg',
+  photoUrl: 'maps/mauna-kea-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 600, 15, 85),
+      seg('work', 240, 14, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 240, 11, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 240, 11, 80),
+      seg('work', 300, 23, 100),
+      seg('recover', 240, 11, 80),
+      seg('work', 720, 22, 90),
+      seg('recover', 270, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 330, 10, 80),
     ],
   },
 };

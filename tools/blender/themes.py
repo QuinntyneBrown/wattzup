@@ -1645,3 +1645,8 @@ import mardigras as _mardigras
 
 THEMES['mardigras'] = _mardigras.THEME
 SCENERY['mardigras'] = _mardigras.scenery
+
+import maunakea as _maunakea
+
+THEMES['maunakea'] = _maunakea.THEME
+SCENERY['maunakea'] = _maunakea.scenery

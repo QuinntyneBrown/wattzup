@@ -1579,3 +1579,18 @@ The original class assignment at commit a881e993d pairs this world with GCN Trai
 | Canal Street finish, 7.96 km | Real 01, 04, 13 and 15. Games 01, 03 and 04. | Families fill the iron-lace galleries and the street behind the final float. Warm shop windows and street lamps frame the finish. |
 
 Use Caribana’s bounded parade animation and repeated crowd geometry. Place the St. Charles streetcar on a separate grassy track, with a trolley pole and a shared overhead wire. Keep the band’s instrument silhouettes and float deck moving independently, linked to race time. Bake iron gallery shadows and small throws along the kerb. Release course-owned textures, geometry and materials on exit. Reference credits are in docs/worlds/mardigras/SOURCES.md.
+
+## Mauna Kea (#2162)
+
+The original 60 Minutes of Brutal Power intervals set the distance of each stage. Place the Onizuka visitor stop at 2,800 m and the summit at 4,207 m. Use a distance-dependent background grade plus the resistance deviation within each section, preserving both landmarks' elevations. Preserve the 4WD gravel transition and the return to black tarmac near the observatories.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Saddle Road lava fields, 0.08 km | Real 06–07 and 11. Games 01 and 04. | Black lava hummocks and pale grass border the yellow-lined tarmac. Mauna Loa forms a broad, low shoulder behind the saddle. |
+| Māmane woodland, 4.42 km | Real 04–07. Games 04–05. | Twisted māmane trunks and sparse grey-green crowns give way to an increasingly open hillside. Cloud drifts across the lower switchbacks. |
+| Onizuka visitor station, 8.98 km | Real 04–05. Games 01 and 03. | A stone visitor building, silversword rosettes, cones and a four-wheel-drive sign mark the transition to the unpaved climbing road at 2,800 m. |
+| Cinder switchbacks, 14.74 km | Real 03, 09, 13–14. Games 02–03 and 05. | The gravel road cuts into bare red and ochre cones. A service vehicle climbs the next bend, with the low cloud deck visible beyond it. |
+| Observatory ridge, 21.96 km | Real 01–02, 08–11. Games 01–03. | Two Keck domes, Subaru’s cylindrical enclosure and Gemini’s silver segmented dome stand on the ridge. Dark access shutters and platforms interrupt the pale metal shells. |
+| Summit at sunset, 25.24 km | Real 09–15. Games 01 and 03. | The high paved road passes a summit altitude marker. Orange light crosses the domes and catches the cloud tops below the ridge. |
+
+Keep the observatories at fixed ridge positions like Caribana’s CN Tower. Use stepped volcanic material bands, baked underside shade and a layered cloud horizon. Separate moving enclosures from their fixed telescope buildings. The vehicle, enclosure and cloud drift use race time, and their geometry and materials belong to the course renderer. The photographic and game credits are in docs/worlds/maunakea/SOURCES.md. The issue-title search returned #2162.

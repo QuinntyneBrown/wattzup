@@ -168,6 +168,7 @@ import type { UrubambaGorge } from './urubamba-gorge';
 import type { BayfrontNight } from './bayfront-night';
 import type { JemaaSquare } from './jemaa-square';
 import type { StCharlesParade } from './st-charles-parade';
+import type { MaunaKeaSummit } from './mauna-kea-summit';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -391,6 +392,7 @@ export class CourseRenderer implements WorldRenderer {
   private bayfrontNight: BayfrontNight | null = null;
   private jemaaSquare: JemaaSquare | null = null;
   private stCharlesParade: StCharlesParade | null = null;
+  private maunaKeaSummit: MaunaKeaSummit | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1209,6 +1211,21 @@ export class CourseRenderer implements WorldRenderer {
         this.stCharlesParade = river;
         this.scene.add(river.root);
         this.disposables.push(river);
+      }
+      if (this.course.file.id === 'maunakea') {
+        const { MaunaKeaSummit } = await import('./mauna-kea-summit');
+        if (this.disposed) return false;
+        const summit = await MaunaKeaSummit.load(this.course);
+        if (this.disposed) {
+          summit.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.maunaKeaSummit = summit;
+        this.scene.add(summit.root);
+        this.disposables.push(summit);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -2158,10 +2175,10 @@ export class CourseRenderer implements WorldRenderer {
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
-      const progress = Math.max(
-        0,
-        Math.min(1, (metres - (bay ? 19_500 : 14_300)) / (bay ? 7900 : 5050)),
-      );
+      const summit = this.course?.file.id === 'maunakea';
+      const sunsetStart = summit ? 20_000 : bay ? 19_500 : 14_300;
+      const sunsetLength = summit ? 5_300 : bay ? 7900 : 5050;
+      const progress = Math.max(0, Math.min(1, (metres - sunsetStart) / sunsetLength));
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
       this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
@@ -2192,6 +2209,7 @@ export class CourseRenderer implements WorldRenderer {
     this.bayfrontNight?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.jemaaSquare?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.stCharlesParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.maunaKeaSummit?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2372,6 +2390,7 @@ export class CourseRenderer implements WorldRenderer {
     this.bayfrontNight = null;
     this.jemaaSquare = null;
     this.stCharlesParade = null;
+    this.maunaKeaSummit = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2468,7 +2487,8 @@ export class CourseRenderer implements WorldRenderer {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
-    if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
+    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea')
+      this.evening = eveningUniform();
     const clearValley = this.course!.file.id === 'engadin';
     const fogRange = this.dam
       ? ([450, 4200] as const)
@@ -2640,6 +2660,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.bayfrontNight) Object.assign(materials, this.bayfrontNight.materials);
     if (this.jemaaSquare) Object.assign(materials, this.jemaaSquare.materials);
     if (this.stCharlesParade) Object.assign(materials, this.stCharlesParade.materials);
+    if (this.maunaKeaSummit) Object.assign(materials, this.maunaKeaSummit.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3234,6 +3255,7 @@ export class CourseRenderer implements WorldRenderer {
     this.urubambaGorge?.sightline(metres, this.camera.position, ahead);
     this.bayfrontNight?.sightline(metres, this.camera.position, ahead);
     this.jemaaSquare?.sightline(metres, this.camera.position, ahead);
+    this.maunaKeaSummit?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -3785,6 +3807,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.bayfrontNight) Object.assign(drawn, this.bayfrontNight.report());
     if (this.jemaaSquare) Object.assign(drawn, this.jemaaSquare.report());
     if (this.stCharlesParade) Object.assign(drawn, this.stCharlesParade.report());
+    if (this.maunaKeaSummit) Object.assign(drawn, this.maunaKeaSummit.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

@@ -53,6 +53,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   grandcanyon: 'courses/grandcanyon',
   ibiza: 'courses/ibiza',
   isleofman: 'courses/isleofman',
+  maunakea: 'courses/maunakea',
   iten: 'courses/iten',
   jaipur: 'courses/jaipur',
   joshuatree: 'courses/joshuatree',
