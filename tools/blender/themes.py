@@ -1848,3 +1848,7 @@ SCENERY['seapoint']=_seapoint.scenery
 import sella as _sella
 THEMES['sella']=_sella.THEME
 SCENERY['sella']=_sella.scenery
+
+import serpentine as _serpentine
+THEMES['serpentine'] = _serpentine.THEME
+SCENERY['serpentine'] = _serpentine.scenery

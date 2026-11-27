@@ -145,6 +145,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Santa Monica Pier (`santamonica`) | 20 Minute Cardio: Lose Weight Fast (GCN Training, 20:00) | 8.850 km | 4 m | `public/courses/santamonica.glb` ([ride views](screenshots/santa-monica-pier/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Sea Point, Cape Town (`seapoint`) | 20/40 Interval Session (GCN Training, 20:00) | 8.450 km | 10 m | `public/courses/seapoint.glb` ([ride views](screenshots/sea-point-cape-town/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Passo Sella (`sella`) | Fat Burning Climb: Passo Sella (GCN, 26:00) | 11.637 km | 619 m | `public/courses/sella.glb` ([ride views](screenshots/passo-sella/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Serpentine, Hyde Park (`serpentine`) | 15 Minute HIIT Cardio (GCN Training, 15:00) | 6.638 km | 10 m | `public/courses/serpentine.glb` ([ride views](screenshots/serpentine-hyde-park/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

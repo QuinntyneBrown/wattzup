@@ -59,6 +59,7 @@ import santamonicaElevation from './santamonica-elevation.json';
 import seapointElevation from './seapoint-elevation.json';
 import sellaElevation from './sella-elevation.json';
 import sellaRondaElevation from './sellaronda-elevation.json';
+import serpentineElevation from './serpentine-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6121,6 +6122,40 @@ export const sellaCourseMap = {
       seg('work', 120, 23, 90),
       seg('work', 120, 24, 90),
       seg('cool-down', 150, 11, 85),
+    ],
+  },
+};
+
+export const serpentineCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'serpentine-hyde-park',
+  name: 'Serpentine, Hyde Park',
+  routeName: 'Serpentine Road',
+  place: 'Hyde Park, London',
+  world: 'serpentine',
+  distanceKm: 6.6375,
+  climbingM: 10,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: serpentineElevation,
+  },
+  thumbnailUrl: 'maps/serpentine-hyde-park.jpg',
+  photoUrl: 'maps/serpentine-hyde-park-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 180, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 16, 85),
+      seg('work', 180, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 16, 85),
+      seg('work', 180, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 16, 85),
+      seg('cool-down', 60, 10, 80),
     ],
   },
 };

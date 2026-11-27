@@ -2241,3 +2241,18 @@ The existing native Sella Ronda is the baseline. Retain its class, sampled centr
 | Passo Gardena, 10.10 km | Real 05–09 and 14. Games 03 and 05. | The last refuge and signed col lie among summer meadows above Selva. A banner moves in the wind beside the chapel and a chairlift traverses the slope. |
 
 Preserve the geometry in sellaronda_kit, including the fixed central rock faces. Add local road wear and stone detail, readable pass faces, articulated cyclists and a banking motorcycle moving along the sampled road. Run the cloth and riders on the same clock as the lifts, with bounded batches and owned geometry disposal. Use real-02 only for hairpin sightlines because its source identifies Mallorca. Maintain the existing best-time ghost, class timing, controls and finish. Measure foreground bunch and high-pass traffic independently on the simulated tablet. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Serpentine, Hyde Park (#2206)
+
+The existing SerpentineStreet repeats a 500 m section. Preserve its lakeside railing, jetty, lamps, swans and bridge. The catalogue entry for GCN Training’s 15 Minute HIIT Cardio selects a measured two-lap native scene with one bridge, one Lido and a physical shore. Long views across the water reveal the far bank and establish where the rider is on the second lap.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Boathouse jetty, 0.08 km | Real 05, 06 and 13. Games 01 and 03. | The timber boating pavilion and stacked blue-and-white pedalos sit beside the north-bank road. The first band of trees leaves a clear view across open water. |
+| Deckchair lawn, 0.62 km | Real 03, 07, 11, 12 and 15. Games 02 and 03. | Mottled plane trunks and dappled tarmac frame striped folding chairs. A jogger moves along the separate lawn path between strolling families. |
+| Bridge approach, 1.29 km | Real 01, 02, 04 and 10. Games 02 and 04. | Five pale stone arches meet the water on tapered piers. The near abutment grows beside the approaching rider while a far tower stays steady above the trees. |
+| South-bank Lido, 2.13 km | Real 05, 09 and 13. Games 03 and 05. | A low lakeside café, west-facing terrace and marked bathing water distinguish the Lido. London plane crowns frame the boathouse on the opposite shore. |
+| Reed-edge birds, 3.04 km | Real 01, 06, 08 and 14. Games 01 and 03. | Curved mute-swan necks, darker geese and small ducks stand out along the near waterline. V-shaped wakes trail the swimming birds. |
+| Long Water vista, 4.51 km | Real 02, 04, 09 and 10. Games 04 and 05. | A moving rowboat crosses a gap in the nearer tree cover. The five-arch bridge and slim Knightsbridge tower overlap at different distances. |
+
+Build the bridge from arch rings, spandrels, a parapet and cutwaters. Use a dark underside and a baked reflection at water level. Near the shore, articulated oars and swimming birds expose their actual pose to the simulated ride. Merge static deckchair frames and benches by section, instance original plane crowns, and keep the most distant skyline in one fixed mesh. Original artwork uses the reference folder for scale and light. Load course data on selection, dispose textures and geometry on exit and measure actual submitted frames for the opening and second bridge approach. ADRs 0021, 0023, 0030, 0034 and 0035 and the performance design govern those checks.
