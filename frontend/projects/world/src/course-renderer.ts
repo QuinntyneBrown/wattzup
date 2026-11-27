@@ -193,6 +193,7 @@ import type { SevenMileChannel } from './seven-mile-channel';
 import type { PehoeWind } from './pehoe-wind';
 import type { PalouseHarvest } from './palouse-harvest';
 import type { EstafetaFestival } from './estafeta-festival';
+import type { HarlechWeather } from './harlech-weather';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -441,6 +442,7 @@ export class CourseRenderer implements WorldRenderer {
   private pehoeWind: PehoeWind | null = null;
   private palouseHarvest: PalouseHarvest | null = null;
   private estafetaFestival: EstafetaFestival | null = null;
+  private harlechWeather: HarlechWeather | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1632,6 +1634,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(festival.root);
         this.disposables.push(festival);
       }
+      if (this.course.file.id === 'penllech') {
+        const { HarlechWeather } = await import('./harlech-weather');
+        if (this.disposed) return false;
+        const weather = await HarlechWeather.load(this.course);
+        if (this.disposed) {
+          weather.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.harlechWeather = weather;
+        this.scene.add(weather.root);
+        this.disposables.push(weather);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2654,6 +2671,7 @@ export class CourseRenderer implements WorldRenderer {
     this.pehoeWind?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.palouseHarvest?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.estafetaFestival?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.harlechWeather?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2859,6 +2877,7 @@ export class CourseRenderer implements WorldRenderer {
     this.pehoeWind = null;
     this.palouseHarvest = null;
     this.estafetaFestival = null;
+    this.harlechWeather = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -3153,6 +3172,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.pehoeWind) Object.assign(materials, this.pehoeWind.materials);
     if (this.palouseHarvest) Object.assign(materials, this.palouseHarvest.materials);
     if (this.estafetaFestival) Object.assign(materials, this.estafetaFestival.materials);
+    if (this.harlechWeather) Object.assign(materials, this.harlechWeather.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3775,6 +3795,7 @@ export class CourseRenderer implements WorldRenderer {
     this.pehoeWind?.sightline(metres, this.camera.position, ahead);
     this.palouseHarvest?.sightline(metres, this.camera.position, ahead);
     this.estafetaFestival?.sightline(metres, this.camera.position, ahead);
+    this.harlechWeather?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4351,6 +4372,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.pehoeWind) Object.assign(drawn, this.pehoeWind.report());
     if (this.palouseHarvest) Object.assign(drawn, this.palouseHarvest.report());
     if (this.estafetaFestival) Object.assign(drawn, this.estafetaFestival.report());
+    if (this.harlechWeather) Object.assign(drawn, this.harlechWeather.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

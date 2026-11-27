@@ -1761,3 +1761,8 @@ import pamplona as _pamplona
 
 THEMES['pamplona'] = _pamplona.THEME
 SCENERY['pamplona'] = _pamplona.scenery
+
+import penllech as _penllech
+
+THEMES['penllech'] = _penllech.THEME
+SCENERY['penllech'] = _penllech.scenery

@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [MYWHOOSH POLICE](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/03/MYWHOOSH-POLICE.jpg) (g0743) | © MyWhoosh |
 | game-04.jpg | Zwift: [“Hell of the North” Route Details (France)](https://zwiftinsider.com/route/hell-of-the-north/) (g0062) | © Zwift |
 | game-05.jpg | Zwift: [“InnsbruckConti” Route Details (Innsbruck)](https://zwiftinsider.com/route/innsbruckconti/) (g0068) | © Zwift |
+
+The Harlech terraced house elevations, mossy slate wall, doorway spectators and coastal panorama are original generated artwork. Real 01–10 inform the cottages and lane. Real 11–15 guide the castle proportions, coastal plain and mountain sightline. The Welsh and English sign lettering and the castle, rock and ramp geometry are original.

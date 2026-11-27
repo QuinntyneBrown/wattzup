@@ -1954,3 +1954,18 @@ Map Select and Race Setup bind the original class to the local authored-course r
 | Callejón entrance, 8.92 km | Real 10–11 and 14. Games 02 and 05. | The open entrance tunnel disappears beneath the brick and stone bullring. A glimpse of the ochre arena and the rings of red-and-white spectators draws the rider forward. |
 
 Model the urban canyon, cross-street openings, balconies, town hall and the bullring portal in three dimensions. Bake the contrast between blue street shade and sunlit cornices into the building materials. Render the repeated crowds and timber sections in bounded sections. Update runner, hanging scarf and light confetti from ride time, and dispose of their textures, geometries and materials with the route. Compare the opening and packed street with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/pamplona/SOURCES.md.
+
+## Ffordd Pen Llech (#2187)
+
+Keep the famous street short within the longer historical class. Approach across Morfa Harlech and the town, put the measured steep metres and tight hairpin inside the sustained work stage, then finish above the bay. Share the centreline between rider pitch, road, grade and HUD. Keep houses vertical and step their foundations so their sills make the slope legible.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Morfa Harlech approach, 0.08 km | Real 11–15. Games 01 and 04. | The coastal plain leads toward the castle on its rock. A break in the rain lights the dunes while cloud stays on the mountain ridge. |
+| Stryd Fawr terraces, 3.42 km | Real 04–10. Games 02 and 05. | Slate-roofed stone terraces, narrow shopfronts, chimneys and bilingual street furniture mark the transition from the plain into Harlech. |
+| Ffordd Pen Llech foot, 10.86 km | Real 01–03 and 05–06. Games 02–03. | A Welsh street-name plate and steep-gradient warning guard a narrow wet lane. Mossy walls leave only a single track with no pavement. |
+| The steepest metres, 11.12 km | Real 01–04. Games 02–03 and 05. | The 37.45% section pitches the rider upward between level cottage sills and stepped walls. Locals wave from doorways and the wall top. |
+| Upper left hairpin, 11.20 km | Real 01–04, 07 and 15. Games 02–03. | A tight left-hand bend interrupts the wall. The blockwork and standing spectators stay vertical while the road changes direction on the grade. |
+| Castle and bay overlook, 13.68 km | Real 11–15. Games 01, 04 and 05. | Round towers and curtain walls rise out of the castle rock. Beyond them the coastal fields, Morfa dunes, Tremadog Bay and the mountains recede under broken grey cloud. |
+
+Model the castle gatehouse and towers on a fixed rock and shade the far mountains independently of rain over the lane. Use damp asphalt, mossy drystone and slate throughout the upper streets. Limit drizzle particles and animate the near spectator and flag on ride time. Dispose of those assets on exit. Compare the opening and the sustained climb with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/penllech/SOURCES.md.

@@ -41,6 +41,7 @@ import overseasElevation from './overseas-elevation.json';
 import paineElevation from './paine-elevation.json';
 import palouseElevation from './palouse-elevation.json';
 import pamplonaElevation from './pamplona-elevation.json';
+import penllechElevation from './penllech-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5380,6 +5381,32 @@ export const pamplonaCourseMap = {
       seg('recover', 10, 13, 80),
       seg('work', 10, 24, 100),
       seg('cool-down', 90, 13, 80),
+    ],
+  },
+};
+
+export const penllechCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'ffordd-pen-llech',
+  name: 'Ffordd Pen Llech',
+  routeName: 'Ffordd Pen Llech',
+  place: 'Harlech, Wales',
+  world: 'penllech',
+  distanceKm: 14.266666666666666,
+  climbingM: 180,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: penllechElevation,
+  },
+  thumbnailUrl: 'maps/ffordd-pen-llech.jpg',
+  photoUrl: 'maps/ffordd-pen-llech-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 13, 80),
+      seg('work', 2400, 19, 60),
+      seg('cool-down', 100, 11, 80),
     ],
   },
 };
