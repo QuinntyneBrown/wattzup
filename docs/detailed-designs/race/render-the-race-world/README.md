@@ -2541,3 +2541,18 @@ The existing Teide street supplies the summit, Roques, cable and sea of clouds. 
 | Izaña observatory, 13.19 km | Real 03, 04, 06 and 15. Games 01 and 04. | White telescope domes, shutter seams, service buildings and the taller solar tower stand above the ridge against a deep blue sky. |
 
 Use Caribana’s fixed skyline and moving near group as the reference for the volcano silhouette and training pack. Model the towers, domes, lava tongues and tajinaste at their roadside scale. Give the cloud deck bounded motion below the road, with the cable car on its own wire. Merge static details by section, keep the summit visible on low, and dispose of the actors, textures and materials on exit. Capture all six rider views. Advance distance while measuring submitted frames through both sixty-second benchmarks. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Mount Tamalpais (#2226)
+
+The existing world supplies wet asphalt and a fog palette. Race needs a selectable map and a continuous climb. Resolve mount-tamalpais to the tamalpais course and load its GLB, centre line and Marin scenery with the lazy world renderer. Rise from 150 m to the 784 m summit over 12.149 km, weighting slope by each original stage’s target resistance.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Muir Woods approach, 0.12 km | Real 03, 08 and 09. Games 01 and 02. | Furrowed redwood trunks rise beside the striped two-lane road, with cool shade, fern banks, a timber rail and pools of sunlight. |
+| Panoramic Highway, 2.31 km | Real 01, 08 and 09. Games 01, 03 and 05. | A club group pedals through the uphill bend. Its jerseys stand out against the red bark and the dark cut bank. |
+| Marine inversion, 4.77 km | Real 02, 05, 06 and 15. Games 03 and 04. | Fog curls around the shoulder below the road. The crest, oak and red-barked manzanita stay clear against the golden grass. |
+| Golden Gate turnout, 6.95 km | Real 01, 02, 06 and 13. Games 03 and 04. | A timber rail overlooks the two vermilion towers above the fog, with the San Francisco skyline and bay beyond. |
+| Ridgecrest Boulevard, 9.42 km | Real 07, 10–12 and 15. Games 03 and 05. | The land drops away through chaparral to the arc of Stinson Beach. Thin lines of surf move onto the sand below the ridge. |
+| East Peak, 11.92 km | Real 04, 12–14. Games 02 and 03. | A glass-walled fire lookout and its railed walkway stand on the East Peak rocks above a gravel turnout and trailhead sign. |
+
+Caribana keeps its landmark skyline fixed and its near participants dimensional. Here the far Pacific and bay stay fixed while the trees, gravel turnouts, bridge towers and fire lookout have separate geometry. Local rider joints share the ride clock with the fog and surf. Merge the static trunks and rail sections, bound the club group, and release every course allocation on exit. Compare six rider views on low detail and count frames submitted during sixty seconds of moving tablet footage in both benchmark sections. See ADRs 0021, 0023, 0030, 0034 and 0035.

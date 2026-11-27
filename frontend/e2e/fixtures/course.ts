@@ -79,6 +79,7 @@ import suburbiaElevation from './suburbia-elevation.json';
 import surfersElevation from './surfers-elevation.json';
 import sydneyharbourElevation from './sydneyharbour-elevation.json';
 import teideElevation from './teide-elevation.json';
+import tamalpaisElevation from './tamalpais-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6958,6 +6959,43 @@ export const teideCourseMap = {
       seg('recover', 180, 13, 90),
       seg('work', 300, 21, 90),
       seg('cool-down', 180, 13, 90),
+    ],
+  },
+};
+
+export const tamalpaisCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mount-tamalpais',
+  name: 'Mount Tamalpais',
+  routeName: 'The Panoramic Highway',
+  place: 'Marin County, California',
+  world: 'tamalpais',
+  distanceKm: 12.149,
+  climbingM: 634,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: tamalpaisElevation,
+  },
+  thumbnailUrl: 'maps/mount-tamalpais.jpg',
+  photoUrl: 'maps/mount-tamalpais-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 13, 85),
+      seg('work', 225, 19, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 225, 19, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 225, 21, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 285, 21, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 225, 22, 75),
+      seg('work', 15, 24, 100),
+      seg('recover', 225, 22, 75),
+      seg('work', 15, 24, 100),
+      seg('cool-down', 73, 11, 80),
     ],
   },
 };

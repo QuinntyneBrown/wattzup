@@ -1,0 +1,103 @@
+{
+  "id": "tamalpais",
+  "name": "Mount Tamalpais",
+  "world": "tamalpais",
+  "theme": "tamalpais",
+  "seed": 2226,
+  "layout": 0,
+  "class": {
+    "id": "30-minute-hill-climb-training",
+    "title": "30 Minute Hill Climb Training",
+    "channel": "GCN",
+    "videoId": "lQxo1lZ8H1Q",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 225,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 225,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 225,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 285,
+        "level": 21,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 225,
+        "level": 22,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 225,
+        "level": 22,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 73,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

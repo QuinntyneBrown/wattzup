@@ -115,6 +115,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   surfers: 'courses/surfers',
   sydneyharbour: 'courses/sydneyharbour',
   teide: 'courses/teide',
+  tamalpais: 'courses/tamalpais',
   alpe: 'courses/alpe',
   dubai: 'courses/dubai',
   edinburgh: 'courses/edinburgh',

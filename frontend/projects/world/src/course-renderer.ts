@@ -232,6 +232,7 @@ import type { MapleMorning } from './maple-morning';
 import type { GoldCoast } from './gold-coast';
 import type { PortJackson } from './port-jackson';
 import type { LasCanadas } from './las-canadas';
+import type { MarinHeadlands } from './marin-headlands';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -394,6 +395,10 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   PicoTeide: 62000,
   TradeHorizon: 3500,
   CanaryPlants: 1800,
+  BayHorizon: 62000,
+  StinsonShore: 3200,
+  Inversion: 1900,
+  MuirRedwoods: 1800,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -566,6 +571,7 @@ export class CourseRenderer implements WorldRenderer {
   private surfers: GoldCoast | null = null;
   private sydneyharbour: PortJackson | null = null;
   private teide: LasCanadas | null = null;
+  private tamalpais: MarinHeadlands | null = null;
   private mountain: ManxMountain | null = null;
   private rush: JunkanooRush | null = null;
   private vents: KilaueaVents | null = null;
@@ -2345,6 +2351,20 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(coast.root);
         this.disposables.push(coast);
       }
+      if (this.course.file.id === 'tamalpais') {
+        const { MarinHeadlands } = await import('./marin-headlands');
+        if (this.disposed) return false;
+        const coast = await MarinHeadlands.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          coast.dispose();
+          return false;
+        }
+        this.tamalpais = coast;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(coast.root);
+        this.disposables.push(coast);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -3414,6 +3434,7 @@ export class CourseRenderer implements WorldRenderer {
     this.surfers?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.sydneyharbour?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.teide?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.tamalpais?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -3600,6 +3621,7 @@ export class CourseRenderer implements WorldRenderer {
     this.surfers = null;
     this.sydneyharbour = null;
     this.teide = null;
+    this.tamalpais = null;
     this.mountain = null;
     this.rush = null;
     this.vents = null;
@@ -3756,7 +3778,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal' || this.northShoreSurf || this.buenosAiresTraffic || this.wiesnParade || this.lasseterRoadTrain || this.course!.file.id === 'songkran')
       this.evening = eveningUniform();
-    const clearValley = this.course!.file.id === 'engadin' || this.course!.file.id === 'teide';
+    const clearValley = this.course!.file.id === 'engadin' || this.course!.file.id === 'teide' || this.course!.file.id === 'tamalpais';
     const fogRange = this.dam
       ? ([450, 4200] as const)
       : this.course!.file.id === 'calobra'
@@ -3924,6 +3946,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.surfers) Object.assign(materials, this.surfers.materials);
     if (this.sydneyharbour) Object.assign(materials, this.sydneyharbour.materials);
     if (this.teide) Object.assign(materials, this.teide.materials);
+    if (this.tamalpais) Object.assign(materials, this.tamalpais.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.rush) Object.assign(materials, this.rush.materials);
     if (this.caldera) Object.assign(materials, this.caldera.materials);
@@ -4068,7 +4091,7 @@ export class CourseRenderer implements WorldRenderer {
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
-      if (((((((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) || this.surfers) || this.sydneyharbour) || this.teide) && group === 'Sun') mesh.visible = false;
+      if ((((((((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) || this.surfers) || this.sydneyharbour) || this.teide) || this.tamalpais) && group === 'Sun') mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
           ...glow,
@@ -4593,6 +4616,7 @@ export class CourseRenderer implements WorldRenderer {
     this.surfers?.frameView(metres, this.camera.position, ahead);
     this.sydneyharbour?.frameView(metres, this.camera.position, ahead);
     this.teide?.frameView(metres, this.camera.position, ahead);
+    this.tamalpais?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -5210,6 +5234,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.surfers) Object.assign(drawn, this.surfers.report());
     if (this.sydneyharbour) Object.assign(drawn, this.sydneyharbour.report());
     if (this.teide) Object.assign(drawn, this.teide.report());
+    if (this.tamalpais) Object.assign(drawn, this.tamalpais.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.rush) Object.assign(drawn, this.rush.report());
     if (this.vents) Object.assign(drawn, this.vents.report());
