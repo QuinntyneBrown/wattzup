@@ -207,7 +207,6 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
-  OceanDrive: 330,
   DecoHotels: 460,
   RoyalPalms: 350,
   LifeguardTowers: 400,
@@ -2385,7 +2384,8 @@ export class CourseRenderer implements WorldRenderer {
             y: middle.y,
             z: middle.z,
             reach:
-              (DRAW_DISTANCE[group] ?? 700) + sphere.radius * mesh.matrixWorld.getMaxScaleOnAxis(),
+              ((group === 'OceanDrive' && this.southBeachDrive ? 330 : DRAW_DISTANCE[group]) ?? 700) +
+              sphere.radius * mesh.matrixWorld.getMaxScaleOnAxis(),
           });
         }
       }
