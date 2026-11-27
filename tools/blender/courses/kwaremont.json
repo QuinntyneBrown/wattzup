@@ -1,0 +1,85 @@
+{
+  "id": "kwaremont",
+  "name": "Oude Kwaremont",
+  "world": "kwaremont",
+  "theme": "kwaremont",
+  "seed": 2151,
+  "layout": 0,
+  "class": {
+    "id": "cobbled-mayhem",
+    "title": "Cobbled Mayhem",
+    "channel": "GCN Training",
+    "videoId": "2WYWuEUSWns",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 19,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 19,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 21,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

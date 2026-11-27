@@ -1410,3 +1410,18 @@ Load the native course from Map Select and Race Setup. Preserve the ten original
 | Melden overlook, 5.32 km | Real 05, 07, 11–14 and games 04–05 | Beyond a row of poplars, Sint-Martinus has a dark rectangular tower, pointed spire and pitched nave above the Scheldt fields. |
 
 Real 01–03 are Koppenberg race views. Real 04–10 show the neighbouring Paterberg and inform barrier scale, cobble patterns and temporary race infrastructure. Real 12–13 establish Melden’s church and the surrounding sightline. Adapt Caribana’s fixed landmark and depth layers to the church, trees and foreground banks. Keep flag deformation, spectator gestures and drifting mist on race time. Batch the crowd and flags, bake stone wear and release all course resources on exit.
+
+## Oude Kwaremont (#2151)
+
+Map Select opens the class-backed solo race. GCN Training’s Cobbled Mayhem has eleven stages over 40:00 with a three-second video offset. The final series of hard intervals carries the 2.2 km cobbled drag from 12.80 to 15.00 km. The village is the steepest part. Use the same physical centre line for the race, camera, gutter stones, crowd rails and elevation profile.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Kluisbergen approach, 0.08 km | Real 09, 14–15 and games 03–05 | Furrows and clipped hedges mark gently sloping fields around a brick farm gateway. Bare trees line the next bend. |
+| Foot of the Kwaremont, 12.84 km | Real 03–05, 11–12, 15 and games 01 and 05 | The lane changes from tarmac to crowned, damp setts. The smooth strips narrow beside the muddy verges. |
+| Village square, 13.56 km | Real 01–02, 10, 14 and games 01 and 03 | Two-storey brick and rendered cafés face the narrow riding line. Rider names cross the cobbles below a kilometre banner. |
+| Beer tents, 14.12 km | Real 06–08, 13 and games 01–02 | White VIP marquees rise in tiers above temporary boardwalks, with speaker stacks, serving counters and spectators several rows deep. |
+| Upper drag, 14.65 km | Real 03–06, 11–13 and games 02, 04–05 | Yellow lion flags mix with club banners above the metal rails. Fans lean over the edge of the wet cobbles. |
+| Melden and Kluisbergen fields, 15.28 km | Real 07–09, 14–15 and games 03–05 | The crowds thin at the end of the cobbles, revealing muddy field edges, clipped hedges and the village roofs under low April cloud. |
+
+The reference photographs distinguish the deep temporary VIP structures in real 07–08 from the permanent village façades in real 02 and 10. The gate in real 14 belongs to a Kluisbergen farm. Use original lettering and race banners. Adapt Caribana’s close animated participants, middle-distance structures and stable far skyline to the fans, village and fields. Instance animated figures and flags, batch buildings and barriers, and release course-owned textures and geometry at race exit. Rider feedback search found only #2151.

@@ -6,6 +6,7 @@ import kilaueaElevation from './kilauea-elevation.json';
 import knicksElevation from './knicks-elevation.json';
 import konaElevation from './kona-elevation.json';
 import koppenbergElevation from './koppenberg-elevation.json';
+import kwaremontElevation from './kwaremont-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3895,6 +3896,40 @@ export const koppenbergCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 180, 19, 62),
       seg('cool-down', 60, 11, 80),
+    ],
+  },
+};
+
+export const kwaremontCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'oude-kwaremont',
+  name: 'Oude Kwaremont',
+  routeName: 'the Kwaremont cobbles',
+  place: 'Kwaremont, Kluisbergen, Belgium',
+  world: 'kwaremont',
+  distanceKm: 16.2,
+  climbingM: 231,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: kwaremontElevation,
+  },
+  thumbnailUrl: 'maps/oude-kwaremont.jpg',
+  photoUrl: 'maps/oude-kwaremont-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 13, 80),
+      seg('work', 120, 16, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 19, 88),
+      seg('recover', 240, 13, 80),
+      seg('work', 300, 19, 88),
+      seg('recover', 240, 13, 80),
+      seg('work', 240, 19, 90),
+      seg('work', 240, 21, 70),
+      seg('work', 120, 22, 60),
+      seg('cool-down', 180, 13, 80),
     ],
   },
 };

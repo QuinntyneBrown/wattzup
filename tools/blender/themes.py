@@ -1590,3 +1590,8 @@ import koppenberg
 
 THEMES['koppenberg'] = koppenberg.THEME
 SCENERY['koppenberg'] = koppenberg.scenery
+
+import kwaremont
+
+THEMES['kwaremont'] = kwaremont.THEME
+SCENERY['kwaremont'] = kwaremont.scenery
