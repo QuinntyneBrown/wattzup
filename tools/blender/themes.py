@@ -1620,3 +1620,8 @@ import lisbon
 
 THEMES['lisbon'] = lisbon.THEME
 SCENERY['lisbon'] = lisbon.scenery
+
+import loire
+
+THEMES['loire'] = loire.THEME
+SCENERY['loire'] = loire.scenery

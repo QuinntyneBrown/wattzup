@@ -99,6 +99,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Lake Louise (`lakelouise`) | 20 Min Cardio Spin Bike Workout (GCN Training, 20:00) | 8.000 km | 52 m | `public/courses/lakelouise.glb` ([ride views](screenshots/lake-louise/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Alto de Letras (`letras`) | Hank's Hardest Training Session (GCN Training, 48:30) | 22.150 km | 1156 m | `public/courses/letras.glb` ([ride views](screenshots/alto-de-letras/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Lisbon Tram Hills (`lisbon`) | 15 Minute Strength Workout (GCN Training, 15:00) | 6.338 km | 193 m | `public/courses/lisbon.glb` ([ride views](screenshots/lisbon-tram-hills/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Loire Châteaux (`loire`) | Sweet Spot Endurance Training (GCN Training, 30:00) | 12.200 km | 19 m | `public/courses/loire.glb` ([ride views](screenshots/loire-chateaux/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

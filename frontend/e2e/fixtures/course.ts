@@ -12,6 +12,7 @@ import lakefrontElevation from './lakefront-elevation.json';
 import lakelouiseElevation from './lakelouise-elevation.json';
 import letrasElevation from './letras-elevation.json';
 import lisbonElevation from './lisbon-elevation.json';
+import loireElevation from './loire-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4133,6 +4134,48 @@ export const lisbonCourseMap = {
       seg('work', 30, 21, 90),
       seg('recover', 30, 18, 85),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const loireCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'loire-chateaux',
+  name: 'Loire Châteaux',
+  routeName: 'the Loire river lanes',
+  place: 'Loire Valley, France',
+  world: 'loire',
+  distanceKm: 12.2,
+  climbingM: 19,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: loireElevation,
+  },
+  thumbnailUrl: 'maps/loire-chateaux.jpg',
+  photoUrl: 'maps/loire-chateaux-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 60, 13, 80),
+      seg('work', 60, 19, 80),
+      seg('recover', 60, 16, 80),
+      seg('work', 120, 19, 80),
+      seg('recover', 120, 16, 80),
+      seg('work', 180, 19, 80),
+      seg('recover', 180, 16, 80),
+      seg('work', 120, 19, 80),
+      seg('recover', 120, 16, 80),
+      seg('work', 60, 21, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 21, 100),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 11, 80),
+      seg('work', 120, 18, 80),
+      seg('cool-down', 120, 13, 80),
     ],
   },
 };

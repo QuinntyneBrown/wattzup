@@ -1502,3 +1502,20 @@ GCN Training’s 15 Minute Strength Workout supplies sixteen stages and a three-
 | Castelo de São Jorge, 6.02 km | Real 13–15 and games 01–02 | Crenellated stone walls climb to a square keep beyond the final bend. A shaded arch opens beneath the battlements. |
 
 Use the real streets and municipal tram photographs for proportions and materials. The reference folder has no direct cathedral portrait. The Sé’s twin fortress towers and rose window and São Vicente’s paired white towers follow the issue brief. Keep these silhouettes fixed above the roofs as in Caribana’s skyline. Batch repeated balconies and roof tiles into the street sections, animate tram travel, laundry and pedestrians on race time, and release course-owned resources on exit.
+
+## Loire Châteaux (#2157)
+
+Use the nineteen stages of GCN Training’s Sweet Spot Endurance Training on a 12.200 km circuit linking compressed interpretations of the Loire and its tributary the Cher. Build four different château silhouettes. Chenonceau’s gallery must cross actual water, leaving sky or the opposite bank visible through all five arches. Chambord has a central lantern and a dense roofline. Chaumont and Amboise occupy separate high terraces.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Loire à Vélo levee, 0.08 km | Real 01–04, 12–13 and games 01 and 03 | Green cycle signs mark the embankment above sandbars and willow islands. Passing touring cyclists and the narrow ground shadows of poplars give scale to the wide Loire. |
+| Chambord gardens, 2.12 km | Real 04–05 and games 02 and 04 | Round corner towers and a crowded slate roofline of chimneys, lanterns and turrets rise beyond symmetrical hedges and a still moat. |
+| Vouvray vineyards, 4.32 km | Real 03–04, 11–12 and games 01 and 05 | Vine rows converge up the slope. Chalk cave doors punctuate a tuffeau ledge above the lane. |
+| Chenonceau on the Cher, 6.58 km | Real 06, 13 and 15 and games 02 and 04 | The château’s long pale gallery lies across five open arches, with a separate tower at the bank. Moving water breaks the reflected arch rhythm. |
+| Amboise river town, 8.92 km | Real 02, 08–10 and 14 and games 03–05 | The high terrace and round riding tower overlook a town of slate-roofed limestone houses. A flat-bottomed riverboat passes the quay. |
+| Chaumont overlook, 11.60 km | Real 07, 08, 10 and 13–14 and games 02 and 05 | Pointed grey roofs crown the round towers of Chaumont above the slope. The final levee passes willows and low sandbanks in hazy summer light. |
+
+The Saumur photographs (08–10) guide the relationship between cliff, town and river. For Amboise, use the royal château’s documented riding towers and terraced promontory. [Château royal d’Amboise, Les tours cavalières](https://www.chateau-amboise.com/les-tours-cavalieres-du-chateau-royal-damboise/).
+
+Use Caribana’s fixed skyline and bounded moving foreground for the towers, the cyclists and the riverboat. Draw the repeating vine rows and avenues in sections along the lane, with softer detail at the opposite bank. Release course-owned materials, textures and buffers on exit. The Loire issue-title search returned #2157.
