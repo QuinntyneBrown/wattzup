@@ -103,6 +103,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Machu Picchu Road (`machupicchu`) | Step It Up (GCN Training, 25:07) | 10.945 km | 386 m | `public/courses/machupicchu.glb` ([ride views](screenshots/machu-picchu-road/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Marina Bay Night (`marinabay`) | Fast Paced Cadence Variations (GCN Training, 25:00) | 10.665 km | 14 m | `public/courses/marinabay.glb` ([ride views](screenshots/marina-bay-night/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Marrakech Medina (`marrakech`) | Fast Fitness: High Cadence 30 (GCN, 29:50) | 12.808 km | 24 m | `public/courses/marrakech.glb` ([ride views](screenshots/marrakech-medina/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Mardi Gras, New Orleans (`mardigras`) | Ride to the Beat (GCN Training, 20:00) | 8.398 km | 13 m | `public/courses/mardigras.glb` ([ride views](screenshots/mardi-gras-new-orleans/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

@@ -2,6 +2,7 @@ import { coursePath } from './course-worlds';
 
 describe('coursePath (L2-166 AC1)', () => {
   it.each([
+    ['mardigras', 'courses/mardigras'],
     ['amsterdam', 'courses/amsterdam'],
     ['ibiza', 'courses/ibiza'],
     ['cinqueterre', 'courses/cinqueterre'],
@@ -20,6 +21,6 @@ describe('coursePath (L2-166 AC1)', () => {
   });
 
   it("leaves a world no map rides to main's scenes", () => {
-    expect(coursePath('mardigras')).toBeNull();
+    expect(coursePath('pamplona')).toBeNull();
   });
 });

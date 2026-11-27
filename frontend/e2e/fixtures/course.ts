@@ -16,6 +16,7 @@ import loireElevation from './loire-elevation.json';
 import machupicchuElevation from './machupicchu-elevation.json';
 import marinabayElevation from './marinabay-elevation.json';
 import marrakechElevation from './marrakech-elevation.json';
+import mardigrasElevation from './mardigras-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4295,6 +4296,54 @@ export const marrakechCourseMap = {
       seg('work', 30, 18, 64),
       seg('work', 240, 22, 64),
       seg('cool-down', 110, 11, 80),
+    ],
+  },
+};
+
+export const mardigrasCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mardi-gras-new-orleans',
+  name: 'Mardi Gras, New Orleans',
+  routeName: 'St. Charles Avenue',
+  place: 'New Orleans, Louisiana',
+  world: 'mardigras',
+  distanceKm: 8.3975,
+  climbingM: 13,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: mardigrasElevation,
+  },
+  thumbnailUrl: 'maps/mardi-gras-new-orleans.jpg',
+  photoUrl: 'maps/mardi-gras-new-orleans-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 14, 90),
+      seg('work', 30, 18, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 30, 18, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 30, 18, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 50, 21, 90),
+      seg('recover', 40, 13, 90),
+      seg('work', 50, 21, 90),
+      seg('recover', 40, 13, 90),
+      seg('work', 50, 21, 90),
+      seg('recover', 40, 13, 90),
+      seg('work', 45, 22, 60),
+      seg('recover', 45, 14, 90),
+      seg('work', 45, 22, 60),
+      seg('recover', 45, 14, 90),
+      seg('work', 45, 22, 60),
+      seg('recover', 45, 14, 90),
+      seg('work', 45, 22, 60),
+      seg('recover', 45, 14, 90),
+      seg('work', 45, 24, 63),
+      seg('recover', 30, 11, 90),
+      seg('work', 45, 24, 63),
+      seg('cool-down', 150, 11, 82),
     ],
   },
 };

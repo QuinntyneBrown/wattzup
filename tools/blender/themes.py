@@ -1640,3 +1640,8 @@ import marrakech as _marrakech
 
 THEMES['marrakech'] = _marrakech.THEME
 SCENERY['marrakech'] = _marrakech.scenery
+
+import mardigras as _mardigras
+
+THEMES['mardigras'] = _mardigras.THEME
+SCENERY['mardigras'] = _mardigras.scenery

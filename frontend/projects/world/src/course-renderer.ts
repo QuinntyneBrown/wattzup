@@ -167,6 +167,7 @@ import type { LoireRiver } from './loire-river';
 import type { UrubambaGorge } from './urubamba-gorge';
 import type { BayfrontNight } from './bayfront-night';
 import type { JemaaSquare } from './jemaa-square';
+import type { StCharlesParade } from './st-charles-parade';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -389,6 +390,7 @@ export class CourseRenderer implements WorldRenderer {
   private urubambaGorge: UrubambaGorge | null = null;
   private bayfrontNight: BayfrontNight | null = null;
   private jemaaSquare: JemaaSquare | null = null;
+  private stCharlesParade: StCharlesParade | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1190,6 +1192,21 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
         this.camera.updateProjectionMatrix();
         this.jemaaSquare = river;
+        this.scene.add(river.root);
+        this.disposables.push(river);
+      }
+      if (this.course.file.id === 'mardigras') {
+        const { StCharlesParade } = await import('./st-charles-parade');
+        if (this.disposed) return false;
+        const river = await StCharlesParade.load(this.course);
+        if (this.disposed) {
+          river.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.stCharlesParade = river;
         this.scene.add(river.root);
         this.disposables.push(river);
       }
@@ -2174,6 +2191,7 @@ export class CourseRenderer implements WorldRenderer {
     this.urubambaGorge?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.bayfrontNight?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.jemaaSquare?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.stCharlesParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2353,6 +2371,7 @@ export class CourseRenderer implements WorldRenderer {
     this.urubambaGorge = null;
     this.bayfrontNight = null;
     this.jemaaSquare = null;
+    this.stCharlesParade = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2620,6 +2639,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.urubambaGorge) Object.assign(materials, this.urubambaGorge.materials);
     if (this.bayfrontNight) Object.assign(materials, this.bayfrontNight.materials);
     if (this.jemaaSquare) Object.assign(materials, this.jemaaSquare.materials);
+    if (this.stCharlesParade) Object.assign(materials, this.stCharlesParade.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3197,6 +3217,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.z += (rider.z + 14 * uz - ahead.z) * overlook;
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
+    this.stCharlesParade?.sightline(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -3763,6 +3784,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.urubambaGorge) Object.assign(drawn, this.urubambaGorge.report());
     if (this.bayfrontNight) Object.assign(drawn, this.bayfrontNight.report());
     if (this.jemaaSquare) Object.assign(drawn, this.jemaaSquare.report());
+    if (this.stCharlesParade) Object.assign(drawn, this.stCharlesParade.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }
