@@ -1684,3 +1684,18 @@ Preserve the festival look praised in #909 and recorded in iteration 001. The cl
 | Mount Royal cross street, 9.12 km | Real 01, 04, 08, 12 and 15. Games 01 and 05. | A cross street opens onto wooded Mount Royal and its cross. Glass towers frame the hill as dusk deepens and the festival lights brighten. |
 
 Use the class’s four-degree bends over 300 m, broad plaza openings and restrained gradients. Separate the fixed Mount Royal silhouette from near shop façades, stage steelwork and overhead strings. Animate band gestures, crowd poses and fountain jets on the ride clock. Batch rows of spectators and pink balls, cull street sections and release textures and instances when the rider leaves. Compare the opening and main-stage sections to Caribana’s tablet measurements. Street geometry and light are based on the credited material in docs/worlds/montreal/SOURCES.md.
+
+## Mont Royal (#2169)
+
+The existing class supplies the workout and forty-degree bends, while the shared street scene provides its surroundings. The race needs an autumn park, identifiable lake and summit, and depth between the terrace and downtown. Fit the existing work and recovery stages to repeated efforts on the mountain rather than stretching a single summit to the full workout length.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Voie Camillien-Houde, 0.08 km | Real 01–05 and 07. Games 02–03. | Club cyclists climb in pairs inside the painted bike lane. Québec park markers and maple crowns frame the road. |
+| Camillien-Houde hairpin, 4.42 km | Real 01–04, 06 and 09. Games 01–03. | The sweeping turn cuts through exposed grey stone. Guardrail sections wrap around the outside of the turn and the bike lane holds its width. |
+| Olmsted Road, 8.19 km | Real 04, 06, 08–09 and 14. Games 01 and 04. | Runners use a gravel carriage path beside golden birches and deep red maples. Trunks and overhanging branches cast broken patches of shade. |
+| Lac aux Castors, 13.03 km | Real 06, 09, 13–14. Games 01 and 05. | The trees open onto Beaver Lake, its curved lawn and a low glass pavilion. Reflections shift on the water while the shore stays fixed. |
+| Croix du mont Royal, 18.64 km | Real 06, 09, 12 and 14. Games 01 and 04. | The illuminated lattice cross rises through an opening in the upper forest. Steel bracing and horizontal arms remain legible from the saddle. |
+| Belvédère Kondiaronk, 24.56 km | Real 10–11 and 15. Games 02 and 05. | Stone balustrades frame the chalet terrace, the towers of downtown Montréal and the distant St. Lawrence and bridges. |
+
+Construct the hairpin, bike-lane edges, rail posts and rock cuts against the road samples. Use distinct maple, oak and birch silhouettes. Leave openings through the trees at the lake, the steel cross and the lookout. Fix the skyline, river and bridge behind the stone terrace. Club riders, park runners and water movement share the ride clock. Section and reuse foliage and rail geometry, keep the distant skyline inexpensive and dispose of all resources on exit. Compare the club climb and the lookout approach to Caribana. Credits are in docs/worlds/montroyal/SOURCES.md. The Mont Royal title search returned #2169.

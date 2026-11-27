@@ -1,0 +1,151 @@
+{
+  "id": "montroyal",
+  "name": "Mont Royal",
+  "world": "montroyal",
+  "theme": "montroyal",
+  "seed": 2169,
+  "layout": 0,
+  "class": {
+    "id": "progressive-intervals-steps-to-glory",
+    "title": "Progressive Intervals: Steps to Glory",
+    "channel": "GCN Training",
+    "videoId": "BvStoiM0z48",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 93
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 15,
+        "cadenceAim": 82
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 20,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 15,
+        "cadenceAim": 83
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 18,
+        "cadenceAim": 86
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 240,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

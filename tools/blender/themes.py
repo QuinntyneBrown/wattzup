@@ -1680,3 +1680,8 @@ import montreal as _montreal
 
 THEMES['montreal'] = _montreal.THEME
 SCENERY['montreal'] = _montreal.scenery
+
+import montroyal as _montroyal
+
+THEMES['montroyal'] = _montroyal.THEME
+SCENERY['montroyal'] = _montroyal.scenery

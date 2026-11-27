@@ -111,6 +111,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Monaco Street Circuit (`monaco`) | Non-Stop Sprinting (GCN Training, 22:15) | 9.845 km | 43 m | `public/courses/monaco.glb` ([ride views](screenshots/monaco-street-circuit/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Montmartre (`montmartre`) | Short, Sharp & Hard Efforts (GCN Training, 20:00) | 8.400 km | 552 m | `public/courses/montmartre.glb` ([ride views](screenshots/montmartre/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Montreal Jazz Fest (`montreal`) | High Intensity, Short Rest (GCN Training, 22:03) | 9.695 km | 17 m | `public/courses/montreal.glb` ([ride views](screenshots/montreal-jazz-fest/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Mont Royal (`montroyal`) | Progressive Intervals: Steps to Glory (GCN Training, 60:00) | 25.490 km | 571 m | `public/courses/montroyal.glb` ([ride views](screenshots/mont-royal/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
