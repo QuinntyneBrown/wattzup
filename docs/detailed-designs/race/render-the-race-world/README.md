@@ -2256,3 +2256,18 @@ The existing SerpentineStreet repeats a 500 m section. Preserve its lakeside rai
 | Long Water vista, 4.51 km | Real 02, 04, 09 and 10. Games 04 and 05. | A moving rowboat crosses a gap in the nearer tree cover. The five-arch bridge and slim Knightsbridge tower overlap at different distances. |
 
 Build the bridge from arch rings, spandrels, a parapet and cutwaters. Use a dark underside and a baked reflection at water level. Near the shore, articulated oars and swimming birds expose their actual pose to the simulated ride. Merge static deckchair frames and benches by section, instance original plane crowns, and keep the most distant skyline in one fixed mesh. Original artwork uses the reference folder for scale and light. Load course data on selection, dispose textures and geometry on exit and measure actual submitted frames for the opening and second bridge approach. ADRs 0021, 0023, 0030, 0034 and 0035 and the performance design govern those checks.
+
+## Seven Sisters Cliffs (#2207)
+
+The previous world used rolling road defaults. Restore the historical GCN class to the catalogue. Two sets of seven efforts ride east along the chalk and return on a parallel downland lane after Belle Tout. Both look out on one fixed coast. Each summit opens a different view of the next chalk face.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Coastguard Cottages, 0.10 km | Real 03, 08, 13 and 15. Games 02 and 04. | White cottages with dark pitched roofs and paired chimneys overlook the haven. Their foreground roofs sit below a receding sequence of chalk headlands. |
+| Cuckmere valley, 0.93 km | Real 05, 07 and 10. Games 01 and 03. | The road looks down across a looping tidal river, grazing sheep and a timber field gate. Flint walls flank the chalk lane. |
+| Chalk brows, 2.55 km | Real 03, 09, 12, 13 and 15. Games 02 and 04. | Deep green-swarded saddles separate the white cliff brows. A gull banks above a cliff edge and the grey-blue Channel extends beyond it. |
+| Birling Gap, 5.45 km | Real 09, 11 and 12. Games 01 and 04. | The road rises above a grey flint beach. A low line of whitewater reaches the shingle and recedes beneath the worn chalk faces. |
+| Belle Tout, 6.29 km | Real 02, 04, 06 and 14. Games 02 and 05. | The squat white tower, black-glazed lantern and attached keeper’s house mark the eastward turn. The chalk track curves up to the lighthouse. |
+| Return over the downs, 9.61 km | Real 01, 05, 06 and 07. Games 01 and 03. | The white-edged road pitches over open sheep-grazed downs. Flowering gorse, a National Trust waymarker and split timber fences frame the next crest. |
+
+Cut flutes into the chalk, tint flint bands in the surface and round the turf over the lip. A stepped shingle beach takes the tide beneath the brows. Use foreground gates and hedges for parallax and draw the distant profile as a continuous silhouette on Low. The lighthouse is the squat clifftop Belle Tout shown in real-04, 06 and 14. Cuckmere is a river with cut-off oxbows in a flat floodplain. Drive near sheep necks, gull wings and breakers from ride time. Dispose geometry, textures and buffers on exit. Measure the two busiest moving sections as in the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.

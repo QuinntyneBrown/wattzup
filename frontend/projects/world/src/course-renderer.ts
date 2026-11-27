@@ -44,6 +44,7 @@ import type { SeaPointPromenade } from './sea-point-promenade';
 import type { SellaClimb } from './sella-climb';
 import type { SellaRondaRide } from './sella-ronda-ride';
 import type { SerpentineLake } from './serpentine-lake';
+import type { SevenSistersDowns } from './seven-sisters-downs';
 import type { ConeyBoardwalk } from './coney-boardwalk';
 import type { copacabanaPromenade } from './copacabana-promenade';
 import type { CopacabanaBeach } from './copacabana-beach';
@@ -296,6 +297,14 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   ParkTarmac: 740,
   ParkPavilion: 830,
   ParkVisitors: 195,
+  ChalkScarps: 4300,
+  ChannelWater: 5500,
+  CuckmereRiver: 1400,
+  DownsTurf: 2700,
+  FlintShingle: 1350,
+  DownlandGorse: 315,
+  CoastguardWhitewash: 1350,
+  BelleToutGlass: 1300,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -440,6 +449,7 @@ export class CourseRenderer implements WorldRenderer {
   private sellaClimb: SellaClimb | null = null;
   private sellaRonda: SellaRondaRide | null = null;
   private serpentine: SerpentineLake | null = null;
+  private downs: SevenSistersDowns | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -1988,6 +1998,18 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(lake.root);
         this.disposables.push(lake);
       }
+      if (this.course.file.id === 'sevensisters') {
+        const { SevenSistersDowns } = await import('./seven-sisters-downs');
+        if (this.disposed) return false;
+        const downs = await SevenSistersDowns.load(this.course);
+        if (this.disposed) {
+          downs.dispose();
+          return false;
+        }
+        this.downs = downs;
+        this.scene.add(downs.root);
+        this.disposables.push(downs);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2938,6 +2960,7 @@ export class CourseRenderer implements WorldRenderer {
     this.sellaClimb?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.sellaRonda?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.serpentine?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.downs?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
@@ -3145,6 +3168,7 @@ export class CourseRenderer implements WorldRenderer {
     this.boardwalk?.group.removeFromParent();
     this.sellaRonda = null;
     this.serpentine = null;
+    this.downs = null;
     this.boardwalk = null;
     this.pacificPark = null;
     this.seaPoint = null;
@@ -3569,6 +3593,7 @@ export class CourseRenderer implements WorldRenderer {
     Object.assign(materials, this.sellaClimb?.materials);
     Object.assign(materials, this.sellaRonda?.materials);
     Object.assign(materials, this.serpentine?.materials);
+    Object.assign(materials, this.downs?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -4155,6 +4180,7 @@ export class CourseRenderer implements WorldRenderer {
     this.marktSquare?.furniture.sightline(metres, this.camera.position, ahead);
     this.sellaRonda?.frameView(metres, this.camera.position, ahead);
     this.serpentine?.frameView(metres, this.camera.position, ahead);
+    this.downs?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -4704,6 +4730,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.triangles = renderer.info.render.triangles;
     if (this.sellaRonda) Object.assign(drawn, this.sellaRonda.report());
     if (this.serpentine) Object.assign(drawn, this.serpentine.report());
+    if (this.downs) Object.assign(drawn, this.downs.report());
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
     if (this.pacificPark) Object.assign(drawn, this.pacificPark.report());
     if (this.seaPoint) Object.assign(drawn, this.seaPoint.report());

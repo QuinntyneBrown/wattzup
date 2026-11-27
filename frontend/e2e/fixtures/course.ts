@@ -60,6 +60,7 @@ import seapointElevation from './seapoint-elevation.json';
 import sellaElevation from './sella-elevation.json';
 import sellaRondaElevation from './sellaronda-elevation.json';
 import serpentineElevation from './serpentine-elevation.json';
+import sevensistersElevation from './sevensisters-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6156,6 +6157,58 @@ export const serpentineCourseMap = {
       seg('work', 30, 24, 100),
       seg('recover', 30, 16, 85),
       seg('cool-down', 60, 10, 80),
+    ],
+  },
+};
+
+export const sevenSistersCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'seven-sisters-cliffs',
+  name: 'Seven Sisters Cliffs',
+  routeName: 'The South Downs road',
+  place: 'East Sussex, England',
+  world: 'sevensisters',
+  distanceKm: 12.483333333333,
+  climbingM: 467,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: sevensistersElevation,
+  },
+  thumbnailUrl: 'maps/seven-sisters-cliffs.jpg',
+  photoUrl: 'maps/seven-sisters-cliffs-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 260, 14, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 135, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 90, 11, 80),
+      seg('work', 60, 24, 100),
+      seg('cool-down', 165, 10, 80),
     ],
   },
 };

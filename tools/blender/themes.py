@@ -1852,3 +1852,7 @@ SCENERY['sella']=_sella.scenery
 import serpentine as _serpentine
 THEMES['serpentine'] = _serpentine.THEME
 SCENERY['serpentine'] = _serpentine.scenery
+
+import sevensisters as _sevensisters
+THEMES['sevensisters']=_sevensisters.THEME
+SCENERY['sevensisters']=_sevensisters.scenery
