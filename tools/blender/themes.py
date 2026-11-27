@@ -1665,3 +1665,8 @@ import moab as _moab
 
 THEMES['moab'] = _moab.THEME
 SCENERY['moab'] = _moab.scenery
+
+import monaco as _monaco
+
+THEMES['monaco'] = _monaco.THEME
+SCENERY['monaco'] = _monaco.scenery

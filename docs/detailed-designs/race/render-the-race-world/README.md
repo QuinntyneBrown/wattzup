@@ -1639,3 +1639,18 @@ The legacy scene supplies fierce sunlight and a winding road. The race catalogue
 | La Sal overlook, 12.28 km | Real 01, 06–08 and 10–12. Games 01, 04 and 05. | The final bends pass low sage and glowing red-orange benches. Snow on distant La Sal summits catches the remaining light beyond the desert. |
 
 Anchor the rock formations in course coordinates and the La Sal skyline in the distance. Give each arch genuine open space under its lintel and asymmetric supports. Separate the bedding and vertical joints in Wingate walls from wind-carved Navajo domes. Bake recess shade into the geometry and use bounded trail riders, river ripples and dust on the race clock. Release all scene resources when the rider leaves. Compare the opening and the busiest landmark against Caribana’s submitted-frame benchmark. Commit a3b75bcdf restored all 15 real photographs, five game views and the credits in docs/worlds/moab/SOURCES.md. The Moab title search returned #2165.
+
+## Monaco Street Circuit (#2166)
+
+The class scene already has a race-weekend harbour and grade-aligned paint, as captured in Monaco iteration 061. The race catalogue lacks this class-length native course. Bind the maps API and the normal race entry to the original Non-Stop Sprinting intervals. Keep the course’s 30-degree bend rhythm and construct each road stripe and kerb against the road samples.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Port Hercule quay, 0.08 km | Real 01, 07, 09–10. Games 01–03. | Rows of white stern-to superyachts rise behind Armco on the harbour straight. Dark decks, glazing and masts stand out against Mediterranean blue water. |
+| Tabac grandstands, 1.62 km | Real 02, 04 and 08. Games 01–02 and 05. | Steep blue seats step up from the catch fencing, filled with fans. Red and white kerbs round the bend and the grey barriers follow the grade. |
+| Casino Square, 3.22 km | Real 10–11, 14–15. Games 02–03. | The casino’s symmetrical towers, clock and copper-green roofline rise over palms and the fountain garden. Pastel balconies climb the hill behind them. |
+| Fairmont tunnel, 4.86 km | Real 12 and 14. Games 02 and 04. | Strip lighting picks out the curving tunnel roof, panel joints and sponsor boards. A bright exit reveals the sea beyond the dark racing line. |
+| Race-weekend pit lane, 6.54 km | Real 01–06 and 13. Games 01, 02 and 05. | An amber-lit safety car approaches a marshal post beside the pit garages. Road paint and pit markings stay flush to the grade. |
+| Monaco-Ville and the Palace, 9.32 km | Real 07, 09–10 and 15. Games 03–05. | The final waterfront bends open a sightline to the Prince’s Palace on the rock. Stern terraces and palm crowns frame the pastel town across the harbour. |
+
+Keep the rock, the pastel hillside and the casino fixed beyond the close racing line. Give the yachts stepped deckhouses, transoms and masts, and give the tunnel true interior space and a visible exit. Use sectioned Armco, batched seating, baked shadow and bounded ride-clock motion for the waterline, fountain and safety car. Release the course resources when the rider leaves. Use the submitted frames at the opening and the pits for the Caribana performance comparison. Credits are in docs/worlds/monaco/SOURCES.md. The Monaco title search returned #2166.

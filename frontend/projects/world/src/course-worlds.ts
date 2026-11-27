@@ -89,6 +89,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   merce: 'courses/merce',
   miami: 'courses/miami',
   moab: 'courses/moab',
+  monaco: 'courses/monaco',
   oldtown: 'courses/oldtown',
   machupicchu: 'courses/machupicchu',
   marinabay: 'courses/marinabay',
