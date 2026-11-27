@@ -1655,3 +1655,8 @@ import merce as _merce
 
 THEMES['merce'] = _merce.THEME
 SCENERY['merce'] = _merce.scenery
+
+import miami as _miami
+
+THEMES['miami'] = _miami.THEME
+SCENERY['miami'] = _miami.scenery

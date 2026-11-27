@@ -19,6 +19,7 @@ import marrakechElevation from './marrakech-elevation.json';
 import mardigrasElevation from './mardigras-elevation.json';
 import maunakeaElevation from './maunakea-elevation.json';
 import merceElevation from './merce-elevation.json';
+import miamiElevation from './miami-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4431,6 +4432,54 @@ export const merceCourseMap = {
       seg('work', 60, 19, 90),
       seg('work', 120, 21, 90),
       seg('cool-down', 115, 11, 80),
+    ],
+  },
+};
+
+export const miamiCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'miami-neon-nights',
+  name: 'Miami Neon Nights',
+  routeName: 'the neon boulevard',
+  place: 'Miami Beach, Florida',
+  world: 'miami',
+  distanceKm: 8.3975,
+  climbingM: 9,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: miamiElevation,
+  },
+  thumbnailUrl: 'maps/miami-neon-nights.jpg',
+  photoUrl: 'maps/miami-neon-nights-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 14, 90),
+      seg('work', 30, 18, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 30, 18, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 30, 18, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 50, 21, 90),
+      seg('recover', 40, 13, 90),
+      seg('work', 50, 21, 90),
+      seg('recover', 40, 13, 90),
+      seg('work', 50, 21, 90),
+      seg('recover', 40, 13, 90),
+      seg('work', 45, 22, 60),
+      seg('recover', 45, 14, 90),
+      seg('work', 45, 22, 60),
+      seg('recover', 45, 14, 90),
+      seg('work', 45, 22, 60),
+      seg('recover', 45, 14, 90),
+      seg('work', 45, 22, 60),
+      seg('recover', 45, 14, 90),
+      seg('work', 45, 24, 63),
+      seg('recover', 30, 11, 90),
+      seg('work', 45, 24, 63),
+      seg('cool-down', 150, 11, 82),
     ],
   },
 };

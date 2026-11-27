@@ -170,6 +170,7 @@ import type { JemaaSquare } from './jemaa-square';
 import type { StCharlesParade } from './st-charles-parade';
 import type { MaunaKeaSummit } from './mauna-kea-summit';
 import type { MerceFestival } from './merce-festival';
+import type { OceanDrive } from './ocean-drive';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -395,6 +396,7 @@ export class CourseRenderer implements WorldRenderer {
   private stCharlesParade: StCharlesParade | null = null;
   private maunaKeaSummit: MaunaKeaSummit | null = null;
   private merceFestival: MerceFestival | null = null;
+  private oceanDrive: OceanDrive | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1243,6 +1245,21 @@ export class CourseRenderer implements WorldRenderer {
         this.merceFestival = festival;
         this.scene.add(festival.root);
         this.disposables.push(festival);
+      }
+      if (this.course.file.id === 'miami') {
+        const { OceanDrive } = await import('./ocean-drive');
+        if (this.disposed) return false;
+        const drive = await OceanDrive.load(this.course);
+        if (this.disposed) {
+          drive.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.oceanDrive = drive;
+        this.scene.add(drive.root);
+        this.disposables.push(drive);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -2228,6 +2245,7 @@ export class CourseRenderer implements WorldRenderer {
     this.stCharlesParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.maunaKeaSummit?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.merceFestival?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.oceanDrive?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2410,6 +2428,7 @@ export class CourseRenderer implements WorldRenderer {
     this.stCharlesParade = null;
     this.maunaKeaSummit = null;
     this.merceFestival = null;
+    this.oceanDrive = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2681,6 +2700,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.stCharlesParade) Object.assign(materials, this.stCharlesParade.materials);
     if (this.maunaKeaSummit) Object.assign(materials, this.maunaKeaSummit.materials);
     if (this.merceFestival) Object.assign(materials, this.merceFestival.materials);
+    if (this.oceanDrive) Object.assign(materials, this.oceanDrive.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3277,6 +3297,7 @@ export class CourseRenderer implements WorldRenderer {
     this.jemaaSquare?.sightline(metres, this.camera.position, ahead);
     this.maunaKeaSummit?.sightline(metres, this.camera.position, ahead);
     this.merceFestival?.sightline(metres, this.camera.position, ahead);
+    this.oceanDrive?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -3830,6 +3851,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.stCharlesParade) Object.assign(drawn, this.stCharlesParade.report());
     if (this.maunaKeaSummit) Object.assign(drawn, this.maunaKeaSummit.report());
     if (this.merceFestival) Object.assign(drawn, this.merceFestival.report());
+    if (this.oceanDrive) Object.assign(drawn, this.oceanDrive.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }
