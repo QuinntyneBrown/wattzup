@@ -28,6 +28,7 @@ import montroyalElevation from './montroyal-elevation.json';
 import mountwashingtonElevation from './mountwashington-elevation.json';
 import muertosElevation from './muertos-elevation.json';
 import mulhollandElevation from './mulholland-elevation.json';
+import murdehuyElevation from './murdehuy-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4824,6 +4825,55 @@ export const mulhollandCourseMap = {
       seg('work', 120, 19, 80),
       seg('work', 60, 24, 100),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const murDeHuyCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mur-de-huy',
+  name: 'Mur de Huy',
+  routeName: 'Mur de Huy',
+  place: 'Huy, Belgium',
+  world: 'murdehuy',
+  distanceKm: 11.2,
+  climbingM: 534,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: murdehuyElevation,
+  },
+  thumbnailUrl: 'maps/mur-de-huy.jpg',
+  photoUrl: 'maps/mur-de-huy-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 18, 85),
+      seg('work', 30, 21, 90),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 23, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 23, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 23, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 23, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 40, 22, 100),
+      seg('work', 10, 24, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 40, 22, 100),
+      seg('work', 10, 24, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 40, 22, 100),
+      seg('work', 10, 24, 100),
+      seg('cool-down', 120, 11, 80),
     ],
   },
 };

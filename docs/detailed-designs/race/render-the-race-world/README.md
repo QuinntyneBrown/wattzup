@@ -1744,3 +1744,18 @@ The original class supplies the resistance and cadence intervals and its rolling
 | Scenic overlook, 16.42 km | Real 05–07, 10 and 12–14. Games 01–04. | Visitors use a viewing scope beside curved rails on a paved turnout. Palms and poles silhouette against sunset haze over Los Angeles. |
 
 Align the yellow lines, driveways, guardrails and viewing platforms with the changing grade. The Hollywood letters stand separately on Mount Lee below the mast. Use low sun, pale haze and distinct oak, palm and eucalyptus silhouettes. Give a passing roadster, an overlook visitor and a small group of wind-blown plants bounded motion on race time. Share roadside meshes, section the terrain and release loaded art on exit. Compare the ridge opening and the scenic overlook to Caribana. Credits are in docs/worlds/mulholland/SOURCES.md. The title search returned #2172.
+
+## Mur de Huy (#2173)
+
+The 26-minute class returns to the climb over successive efforts. Fit each ascent and recovery to the interval profile. At the steep bend put the spectators behind grade-aligned barriers so the rider can see the pitch against the vertical posts.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Lower town, 0.08 km | Real 06, 09 and 10. Games 02 and 05. | Terraces crowd the foot of the climb. Dark wheel tracks and worn white names lead into the lane. |
+| Chemin des Chapelles, 2.34 km | Real 01, 04 and 08. Games 01 and 04. | A white roadside oratory sits inside the chicane. Its pointed roof and recessed niche stand clear of the passing riders. |
+| Steepest bend, 4.81 km | Real 02–05, 07 and 13. Games 01 and 05. | The 26% pitch tips the painted tarmac upward between steel crowd barriers. Spectators reach over the outside rail. |
+| Meuse valley, 6.53 km | Real 14 and 15. Game 03. | The road shoulder opens above the Meuse and Huy rooftops. The fort rises from its rocky bluff beside the river. |
+| Wooded slope, 8.80 km | Real 03, 06, 07 and 12. Games 01 and 04. | Leafy branches arch over the riders while damp patches break up the spring light on the lane. |
+| Notre-Dame de la Sarte, 10.82 km | Real 01, 04 and 11. Games 02 and 05. | The summit finish arch frames the lane beside the church. Flags and spectators line the approach. |
+
+Keep the citadel fixed above the river and give nearby chapels dimensional roofs, plinths and niches. Repeat the barrier pickets and share crowd geometry. Drive the cyclists, flags and spectators from elapsed race time. Release all course-owned geometry and materials on exit. Reference credits are in docs/worlds/murdehuy/SOURCES.md.

@@ -179,6 +179,7 @@ import type { MontRoyalPark } from './montroyal-park';
 import type { WashingtonSummit } from './washington-summit';
 import type { MuertosParade } from './muertos-parade';
 import type { MulhollandOverlook } from './mulholland-overlook';
+import type { HuyClimb } from './huy-climb';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -413,6 +414,7 @@ export class CourseRenderer implements WorldRenderer {
   private washingtonSummit: WashingtonSummit | null = null;
   private muertosParade: MuertosParade | null = null;
   private mulhollandOverlook: MulhollandOverlook | null = null;
+  private huyClimb: HuyClimb | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1396,6 +1398,21 @@ export class CourseRenderer implements WorldRenderer {
         this.mulhollandOverlook = overlook;
         this.scene.add(overlook.root);
         this.disposables.push(overlook);
+      }
+      if (this.course.file.id === 'murdehuy') {
+        const { HuyClimb } = await import('./huy-climb');
+        if (this.disposed) return false;
+        const climb = await HuyClimb.load(this.course, body);
+        if (this.disposed) {
+          climb.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.huyClimb = climb;
+        this.scene.add(climb.root);
+        this.disposables.push(climb);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -2396,6 +2413,7 @@ export class CourseRenderer implements WorldRenderer {
     this.washingtonSummit?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.muertosParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mulhollandOverlook?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.huyClimb?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2587,6 +2605,7 @@ export class CourseRenderer implements WorldRenderer {
     this.washingtonSummit = null;
     this.muertosParade = null;
     this.mulhollandOverlook = null;
+    this.huyClimb = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2867,6 +2886,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.washingtonSummit) Object.assign(materials, this.washingtonSummit.materials);
     if (this.muertosParade) Object.assign(materials, this.muertosParade.materials);
     if (this.mulhollandOverlook) Object.assign(materials, this.mulhollandOverlook.materials);
+    if (this.huyClimb) Object.assign(materials, this.huyClimb.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3473,6 +3493,7 @@ export class CourseRenderer implements WorldRenderer {
     this.washingtonSummit?.sightline(metres, this.camera.position, ahead);
     this.muertosParade?.sightline(metres, this.camera.position, ahead);
     this.mulhollandOverlook?.sightline(metres, this.camera.position, ahead);
+    this.huyClimb?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4035,6 +4056,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.washingtonSummit) Object.assign(drawn, this.washingtonSummit.report());
     if (this.muertosParade) Object.assign(drawn, this.muertosParade.report());
     if (this.mulhollandOverlook) Object.assign(drawn, this.mulhollandOverlook.report());
+    if (this.huyClimb) Object.assign(drawn, this.huyClimb.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

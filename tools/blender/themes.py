@@ -1700,3 +1700,8 @@ import mulholland as _mulholland
 
 THEMES['mulholland'] = _mulholland.THEME
 SCENERY['mulholland'] = _mulholland.scenery
+
+import murdehuy as _murdehuy
+
+THEMES['murdehuy'] = _murdehuy.THEME
+SCENERY['murdehuy'] = _murdehuy.scenery
