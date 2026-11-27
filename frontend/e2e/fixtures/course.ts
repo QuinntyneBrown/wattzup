@@ -56,6 +56,7 @@ import route66Elevation from './route66-elevation.json';
 import saguaroElevation from './saguaro-elevation.json';
 import sambadromeElevation from './sambadrome-elevation.json';
 import santamonicaElevation from './santamonica-elevation.json';
+import seapointElevation from './seapoint-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6034,6 +6035,56 @@ export const santamonicaCourseMap = {
       seg('work', 30, 24, 100),
       seg('recover', 30, 10, 80),
       seg('work', 30, 24, 100),
+    ],
+  },
+};
+
+export const seaPointCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'sea-point-cape-town',
+  name: 'Sea Point, Cape Town',
+  routeName: 'Sea Point Promenade',
+  place: 'Cape Town, South Africa',
+  world: 'seapoint',
+  distanceKm: 8.45,
+  climbingM: 10,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: seapointElevation,
+  },
+  thumbnailUrl: 'maps/sea-point-cape-town.jpg',
+  photoUrl: 'maps/sea-point-cape-town-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 100, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 10, 80),
+      seg('work', 20, 24, 100),
+      seg('cool-down', 160, 10, 80),
     ],
   },
 };

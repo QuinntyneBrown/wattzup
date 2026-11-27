@@ -40,6 +40,7 @@ import type { blossomFestival } from './blossom-festival';
 import type { ChicagoRailway } from './chicago-railway';
 import type { chichenPlaza } from './chichen-plaza';
 import type { PacificPark } from './pacific-park';
+import type { SeaPointPromenade } from './sea-point-promenade';
 import type { ConeyBoardwalk } from './coney-boardwalk';
 import type { copacabanaPromenade } from './copacabana-promenade';
 import type { CopacabanaBeach } from './copacabana-beach';
@@ -271,6 +272,13 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   LeaningPalm: 750,
   PairedPalms: 750,
   PacificWater: 2200,
+  BeachRoad: 570,
+  SeaPointFlats: 1600,
+  TidalRock: 620,
+  CapeAtlantic: 2400,
+  CapePalms: 750,
+  SeaPointFamilies: 260,
+  PavilionWater: 680,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -411,6 +419,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 
 export class CourseRenderer implements WorldRenderer {
   private pacificPark: PacificPark | null = null;
+  private seaPoint: SeaPointPromenade | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -1907,6 +1916,20 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(detail.root);
         this.disposables.push(detail);
       }
+      if (this.course.file.id === 'seapoint') {
+        const { SeaPointPromenade } = await import('./sea-point-promenade');
+        if (this.disposed) return false;
+        const detail = await SeaPointPromenade.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.seaPoint = detail;
+        this.camera.far = 21500;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2853,6 +2876,7 @@ export class CourseRenderer implements WorldRenderer {
     this.copacabanaPromenade?.follow(metres);
     this.copacabana?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.pacificPark?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.seaPoint?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
@@ -3060,6 +3084,7 @@ export class CourseRenderer implements WorldRenderer {
     this.boardwalk?.group.removeFromParent();
     this.boardwalk = null;
     this.pacificPark = null;
+    this.seaPoint = null;
     this.daytonaBoardwalk = null;
     this.daytonaShore = null;
     this.copacabanaPromenade?.root.removeFromParent();
@@ -3476,6 +3501,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.cactusForest) Object.assign(materials, this.cactusForest.materials);
     if (this.rioParade) Object.assign(materials, this.rioParade.materials);
     Object.assign(materials, this.pacificPark?.materials);
+    Object.assign(materials, this.seaPoint?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -4134,6 +4160,7 @@ export class CourseRenderer implements WorldRenderer {
     this.jouvert?.aim(metres, this.camera.position, ahead);
     this.climbers?.aim(metres, this.camera.position, ahead);
     this.pacificPark?.sightline(metres, this.camera.position, ahead);
+    this.seaPoint?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
       ahead.y +
@@ -4607,6 +4634,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
     if (this.pacificPark) Object.assign(drawn, this.pacificPark.report());
+    if (this.seaPoint) Object.assign(drawn, this.seaPoint.report());
     if (this.boardwalk) {
       Object.assign(drawn, {
         carRadius: this.boardwalk.street.carRadius,

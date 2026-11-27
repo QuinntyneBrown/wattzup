@@ -2196,3 +2196,18 @@ The 8.85 km beach course follows an undulating concrete ribbon north to one fixe
 | Yacht Harbor and Route 66, 8.80 km | Real 05–08, 13 and 15. Games 03–05. | The last sprint reaches the timber pier and its elevated approach with the blue-and-gold Yacht Harbor arch, End of the Trail shield, deck rail and shadow beneath the pilings. |
 
 Build the timber deck, cross-braces and piles in place. Mount the rotating wheel on its axle with gravity-upright cars. Drive the coaster train along the actual fixed track and animate the skater, cruiser and surf from ride time. Bake plank wear, salt residue and sand drifts. Batch palms and beachgoers by distance, keep a bounded surf band, and release owned geometry and materials on exit. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.
+
+## Sea Point, Cape Town (#2203)
+
+Issue #908 praised the previous scene. Preserve its breaking Atlantic surf, Lion’s Head, Table Mountain, green seafront lawns and square diagonally striped lighthouse. The catalogue selects the native course from Map Select. Each 4.225 km circuit shares fixed scenery, a northbound seaside leg and a southbound inland return. Use sampled physical elevation throughout the race and HUD.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Sea Point Promenade, 0.08 km | Real 01, 05, 09 and 14. Games 01 and 03. | Beach Road runs beside a green lawn, broad concrete footway and metal seawall rail. Walkers, runners and a dog share the promenade. |
+| Atlantic rock pools, 0.69 km | Real 03, 04, 10 and 11. Games 01 and 04. | Atlantic breakers fold over exposed dark rock shelves. Green kelp fringes sheltered blue tidal pools below the rail. |
+| Sea Point Pavilion, 1.13 km | Real 05, 06, 09 and 14. Games 02 and 04. | The outdoor seawater pool sits between the promenade and the ocean, with swimming lanes, railings and a stepped spectator terrace. |
+| Mouille Point lighthouse, 1.94 km | Real 07, 08 and 14. Games 02 and 05. | The square Green Point lighthouse has diagonal red stripes, a projecting white gallery and a glazed red lantern. Short buildings cluster around its base. |
+| Lion’s Head and Signal Hill, 3.02 km | Real 02–04, 08, 14 and 15. Games 01–03. | The inland return looks up past palm trunks and the projecting balconies of white flats. A pointed granite cap rises above the long green shoulder of Signal Hill. |
+| Table Mountain, 7.87 km | Real 01, 08 and 15. Games 02, 03 and 05. | The flat summit and near-vertical sandstone faces of Table Mountain show past a gap in the apartment rows. A low tablecloth cloud spills over the ledge. |
+
+Build the fixed peaks as layered, faceted terrain with a broad Atlantic horizon. Model the lighthouse balcony and lantern, individual rock ledges, pool coping and balcony recesses. Use instancing and shared meshes for the moving surf, runners and swimmers. Advance secondary movement on the ride clock and dispose all allocated meshes and textures on exit. Reference real-13 is from Hawaii and informs only the shape of a low breaker. Benchmark the loaded opening and busiest stretch as described in meet-performance-budgets. See ADRs 0021, 0023, 0030, 0034 and 0035.

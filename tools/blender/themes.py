@@ -1840,3 +1840,7 @@ SCENERY['sambadrome'] = _sambadrome.scenery
 import santamonica as _santamonica
 THEMES['santamonica']=_santamonica.THEME
 SCENERY['santamonica']=_santamonica.scenery
+
+import seapoint as _seapoint
+THEMES['seapoint']=_seapoint.THEME
+SCENERY['seapoint']=_seapoint.scenery
