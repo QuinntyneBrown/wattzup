@@ -156,6 +156,7 @@ import type { KilaueaVents } from './kilauea-vents';
 import type { KilaueaCaldera } from './kilauea-caldera';
 import type { BroadwayRace } from './broadway-race';
 import type { KonaTriathlon } from './kona-triathlon';
+import type { KoppenbergBanks } from './koppenberg-banks';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -367,6 +368,7 @@ export class CourseRenderer implements WorldRenderer {
   private caldera: KilaueaCaldera | null = null;
   private broadway: BroadwayRace | null = null;
   private queenK: KonaTriathlon | null = null;
+  private cobbledBanks: KoppenbergBanks | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1008,6 +1010,20 @@ export class CourseRenderer implements WorldRenderer {
         this.queenK = triathlon;
         this.scene.add(triathlon.root);
         this.disposables.push(triathlon);
+      }
+      if (this.course.file.id === 'koppenberg') {
+        const { KoppenbergBanks } = await import('./koppenberg-banks');
+        if (this.disposed) return false;
+        const banks = await KoppenbergBanks.load(this.course);
+        if (this.disposed) {
+          banks.dispose();
+          return false;
+        }
+        this.camera.setViewOffset(1, 1, 0, 0.045, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.cobbledBanks = banks;
+        this.scene.add(banks.root);
+        this.disposables.push(banks);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1979,6 +1995,7 @@ export class CourseRenderer implements WorldRenderer {
     this.vents?.update(metres, frame.reducedMotion ? 0 : frame.time, this.camera);
     this.broadway?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.queenK?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.cobbledBanks?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2147,6 +2164,7 @@ export class CourseRenderer implements WorldRenderer {
     this.caldera = null;
     this.broadway = null;
     this.queenK = null;
+    this.cobbledBanks = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2403,6 +2421,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.caldera) Object.assign(materials, this.caldera.materials);
     if (this.broadway) Object.assign(materials, this.broadway.materials);
     if (this.queenK) Object.assign(materials, this.queenK.materials);
+    if (this.cobbledBanks) Object.assign(materials, this.cobbledBanks.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -2984,6 +3003,7 @@ export class CourseRenderer implements WorldRenderer {
     this.vents?.sightline(metres, this.camera.position, ahead);
     this.broadway?.sightline(metres, this.camera.position, ahead);
     this.queenK?.sightline(metres, this.camera.position, ahead);
+    this.cobbledBanks?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -3523,6 +3543,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.vents) Object.assign(drawn, this.vents.report());
     if (this.broadway) Object.assign(drawn, this.broadway.report());
     if (this.queenK) Object.assign(drawn, this.queenK.report());
+    if (this.cobbledBanks) Object.assign(drawn, this.cobbledBanks.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

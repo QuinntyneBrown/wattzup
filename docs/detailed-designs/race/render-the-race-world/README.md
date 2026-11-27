@@ -1395,3 +1395,18 @@ Use the course renderer from normal Map Select and Race Setup. The distance-weig
 | Aliʻi Drive, 9.51 km | Real 09, 12 and 15; games 02–04 | The shoulder becomes a palm-lined seafront street with spectators, race banners and the finish arch. |
 
 Adapt Caribana’s three depths to the foreground cyclists, the mid-distance station or finish and the fixed inland shields and ocean. Batch bike frames, wheel rims, bottles and grass. Wind, distant optical shimmer and the pedalling motion use the race clock. The course owns and releases its instance buffers, original textures and materials. Preserve the full sourced reference folder.
+
+## Koppenberg Cobbles (#2150)
+
+Load the native course from Map Select and Race Setup. Preserve the ten original stages of GCN Training’s Low Cadence Strength Builder and its three-second video offset. Base the long climbs on the hard stages, concentrating their ascent in short, signposted ramps where the terrain reaches 22%. Ease the settling grade between ramps. Sample that same line for the race profile and riders, spectators and cobbles.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Melden farm lanes, 0.08 km | Real 05, 07, 11, 13–14 and game 05 | Brick farmhouses and pollarded poplars flank a patched approach through ploughed fields. |
+| Foot of the Koppenberg, 1.06 km | Real 01, 04, 06, 08 and games 01–02 | Concrete gives way to wet, domed setts. Moss collects at the verges and polished crowns pick out the riding line. |
+| Steep chute, 2.39 km | Real 01–04, 08, 15 and games 01–03 | A short 22% pitch narrows between undercut grass banks. Only two riders fit abreast. |
+| Race crowds, 3.74 km | Real 01–03, 06, 09–10 and games 02–04 | Fans lean over the metal barriers and wave yellow Flemish lion flags. Race signs and a canvas beer tent break up the banks. |
+| Wooded crest, 4.90 km | Real 02–03, 08, 11, 14–15 and games 02 and 05 | Bare branches and early leaf buds close above the last wet stones. Spring mist softens the trees across the next field. |
+| Melden overlook, 5.32 km | Real 05, 07, 11–14 and games 04–05 | Beyond a row of poplars, Sint-Martinus has a dark rectangular tower, pointed spire and pitched nave above the Scheldt fields. |
+
+Real 01–03 are Koppenberg race views. Real 04–10 show the neighbouring Paterberg and inform barrier scale, cobble patterns and temporary race infrastructure. Real 12–13 establish Melden’s church and the surrounding sightline. Adapt Caribana’s fixed landmark and depth layers to the church, trees and foreground banks. Keep flag deformation, spectator gestures and drifting mist on race time. Batch the crowd and flags, bake stone wear and release all course resources on exit.

@@ -1585,3 +1585,8 @@ import kona
 
 THEMES['kona'] = kona.THEME
 SCENERY['kona'] = kona.scenery
+
+import koppenberg
+
+THEMES['koppenberg'] = koppenberg.THEME
+SCENERY['koppenberg'] = koppenberg.scenery
