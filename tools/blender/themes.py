@@ -1615,3 +1615,8 @@ import letras
 
 THEMES['letras'] = letras.THEME
 SCENERY['letras'] = letras.scenery
+
+import lisbon
+
+THEMES['lisbon'] = lisbon.THEME
+SCENERY['lisbon'] = lisbon.scenery

@@ -1487,3 +1487,18 @@ Use the original twenty-seven stages of GCN Training’s Hank’s Hardest Traini
 | Páramo de Letras, 21.49 km | Real 02–03, 05 and 13–14 and games 02 and 05 | Silver-leaved frailejones, ochre tussocks and moss replace forest near the signed 3,679 m summit under cool grey light. |
 
 The Caldas chivas and Murillo façades in the credited photographs supply construction and paint references for the modelled towns. The Cocora photographs establish wax palm proportions. Use the game views for riding-scale framing and contrast in the fog. Adapt Caribana’s moving traffic and layered skyline to the valley switchbacks, use shared assets for plantings and release route-owned buffers on exit. The issue-title search returned #2155.
+
+## Lisbon Tram Hills (#2156)
+
+GCN Training’s 15 Minute Strength Workout supplies sixteen stages and a three-second video offset. The route compresses Alfama’s climb into 6,337.5 m. The rails, cobbles and wire share the centre-line geometry with the tram. Keep the restrained composition requested in rider feedback #931. Use simple planes of sun and shadow through the lanes, then give each terrace a clear view of the river and a distinct landmark.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Tram 28 lane, 0.08 km | Real 01–04, 06 and 12 and games 03 and 05 | A yellow Remodelado takes the bend beneath the contact wire. Twin steel rails follow the polished calçada through the lane. |
+| Sé Cathedral, 1.04 km | Real 04, 07 and 10 and games 01 and 04 | The cathedral’s two square towers and recessed rose window close the street. An escadinha branches away from its sunlit forecourt. |
+| Alfama beco, 2.18 km | Real 05 and 07–11 and games 03–05 | Blue and green azulejos, iron balconies and hanging laundry frame a stepped side alley. Locals gather beside café tables beneath bougainvillea. |
+| Santa Luzia, 3.36 km | Real 03, 08, 11 and 13 and games 01–02 | A blue-tiled parapet and flowering pergola open onto terracotta ridges and the broad Tagus. |
+| Portas do Sol, 4.70 km | Real 05, 09 and 13–14 and games 02 and 04 | Low roofs descend from the terrace toward the river. São Vicente’s paired white towers rise above them. |
+| Castelo de São Jorge, 6.02 km | Real 13–15 and games 01–02 | Crenellated stone walls climb to a square keep beyond the final bend. A shaded arch opens beneath the battlements. |
+
+Use the real streets and municipal tram photographs for proportions and materials. The reference folder has no direct cathedral portrait. The Sé’s twin fortress towers and rose window and São Vicente’s paired white towers follow the issue brief. Keep these silhouettes fixed above the roofs as in Caribana’s skyline. Batch repeated balconies and roof tiles into the street sections, animate tram travel, laundry and pedestrians on race time, and release course-owned resources on exit.
