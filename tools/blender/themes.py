@@ -1900,3 +1900,8 @@ import stbernard as _stbernard
 
 THEMES['stbernard'] = _stbernard.THEME
 SCENERY['stbernard'] = _stbernard.scenery
+
+import stelvio as _stelvio
+
+THEMES['stelvio'] = _stelvio.THEME
+SCENERY['stelvio'] = _stelvio.scenery

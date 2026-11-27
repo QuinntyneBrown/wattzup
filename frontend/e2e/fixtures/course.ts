@@ -70,6 +70,7 @@ import southbeachElevation from './southbeach-elevation.json';
 import stampedeElevation from './stampede-elevation.json';
 import stanleyparkElevation from './stanleypark-elevation.json';
 import stbernardElevation from './stbernard-elevation.json';
+import stelvioElevation from './stelvio-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6574,6 +6575,49 @@ export const stbernardCourseMap = {
       seg('work', 85, 22, 100),
       seg('recover', 85, 24, 100),
       seg('cool-down', 115, 11, 80),
+    ],
+  },
+};
+
+export const stelvioCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'stelvio-pass',
+  name: 'Stelvio Pass',
+  routeName: 'Passo dello Stelvio',
+  place: 'South Tyrol, Italy',
+  world: 'stelvio',
+  distanceKm: 8.175,
+  climbingM: 630,
+  rating: 'Brutal',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: stelvioElevation,
+  },
+  thumbnailUrl: 'maps/stelvio-pass.jpg',
+  photoUrl: 'maps/stelvio-pass-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 80),
+      seg('work', 60, 16, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 80),
+      seg('work', 30, 22, 90),
+      seg('recover', 60, 18, 80),
+      seg('work', 30, 22, 90),
+      seg('work', 60, 18, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 18, 80),
+      seg('work', 30, 22, 90),
+      seg('recover', 60, 18, 80),
+      seg('work', 30, 22, 90),
+      seg('work', 60, 18, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 30, 22, 90),
+      seg('recover', 60, 18, 80),
+      seg('work', 30, 22, 90),
+      seg('recover', 60, 18, 80),
+      seg('cool-down', 60, 10, 80),
     ],
   },
 };
