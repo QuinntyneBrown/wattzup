@@ -119,6 +119,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Napa Vineyards (`napa`) | Easy Riding (GCN Training, 20:00) | 8.200 km | 51 m | `public/courses/napa.glb` ([ride views](screenshots/napa-vineyards/README.md)) | Built and ridden; open from the start on the map catalogue |
 | North Shore, Oahu (`northshore`) | 20 Minute Fat Burning Workout (GCN, 20:30) | 8.914 km | 42 m | `public/courses/northshore.glb` ([ride views](screenshots/north-shore-oahu/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Notting Hill Carnival (`nottinghill`) | Quick HIIT Workout (GCN, 13:45) | 5.933 km | 87 m | `public/courses/nottinghill.glb` ([ride views](screenshots/notting-hill-carnival/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Avenida 9 de Julio (`nuevedejulio`) | High Power Anaerobic Sprints (GCN Training, 40:00) | 18.000 km | 49 m | `public/courses/nuevedejulio.glb` ([ride views](screenshots/avenida-9-de-julio/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

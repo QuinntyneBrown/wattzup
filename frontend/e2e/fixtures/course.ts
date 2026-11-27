@@ -32,6 +32,7 @@ import murdehuyElevation from './murdehuy-elevation.json';
 import napaElevation from './napa-elevation.json';
 import northshoreElevation from './northshore-elevation.json';
 import nottinghillElevation from './nottinghill-elevation.json';
+import nuevedejulioElevation from './nuevedejulio-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5007,6 +5008,53 @@ export const nottingHillCourseMap = {
       seg('recover', 20, 11, 80),
       seg('work', 60, 24, 100),
       seg('cool-down', 105, 11, 80),
+    ],
+  },
+};
+
+export const nueveDeJulioCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'avenida-9-de-julio',
+  name: 'Avenida 9 de Julio',
+  routeName: 'Avenida 9 de Julio',
+  place: 'Buenos Aires, Argentina',
+  world: 'nuevedejulio',
+  distanceKm: 18,
+  climbingM: 49,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: nuevedejulioElevation,
+  },
+  thumbnailUrl: 'maps/avenida-9-de-julio.jpg',
+  photoUrl: 'maps/avenida-9-de-julio-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 90),
+      seg('work', 420, 17, 90),
+      seg('recover', 120, 13, 90),
+      seg('work', 30, 22, 90),
+      seg('recover', 60, 13, 90),
+      seg('work', 60, 20, 90),
+      seg('recover', 60, 13, 90),
+      seg('work', 120, 22, 90),
+      seg('recover', 120, 15, 90),
+      seg('work', 60, 22, 90),
+      seg('recover', 120, 13, 90),
+      seg('work', 60, 22, 90),
+      seg('recover', 120, 13, 90),
+      seg('work', 60, 22, 90),
+      seg('recover', 90, 16, 90),
+      seg('work', 30, 22, 90),
+      seg('recover', 60, 13, 90),
+      seg('work', 120, 22, 90),
+      seg('recover', 180, 14, 90),
+      seg('work', 120, 22, 90),
+      seg('recover', 60, 13, 90),
+      seg('work', 60, 22, 90),
+      seg('recover', 30, 13, 90),
+      seg('cool-down', 120, 14, 90),
     ],
   },
 };

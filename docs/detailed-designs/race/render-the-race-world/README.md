@@ -1804,3 +1804,18 @@ Place the London streetscape around the original ten-degree bends over 150 metre
 | Jerk grills and food stalls, 5.61 km | Real 04, 10–12 and 14. Games 01 and 03. | Thin smoke curls up from a split drum grill. Caribbean flags brighten the stall awnings and whistle-blowing spectators stand beside the serving tables. |
 
 Model the open speaker mouths, band headdresses, steel pan bowls and the underside of the flyover. Reuse crowd geometry and animate the nearest performers, float and grill smoke from elapsed race time. Release scene-owned assets on exit. Compare the opening and pan float with Caribana. The reference credits are in docs/worlds/nottinghill/SOURCES.md.
+
+## Avenida 9 de Julio (#2177)
+
+The 18 km class course adapts the avenue to its 24 stages, with the original two-degree bends over 600 metres. Model the avenue in metres so a line of cars, the bus platform and the 67-metre obelisk give three distinct measures of scale.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Avenida 9 de Julio, 0.08 km | Real 01, 03, 05 and 14. Games 01 and 05. | Seven paved lanes fan out beside the central Metrobus corridor. Long dashed lines, billboard crowns and jacarandas frame the sprint. |
+| Metrobus station, 3.21 km | Real 02, 04, 08–11 and 15. Games 03 and 05. | A colectivo runs beside the red-roofed platforms. The boarding islands carry shelter columns, handrails, stop names and waiting passengers. |
+| Ministry of Health, 6.74 km | Real 04, 12 and 14. Games 01 and 02. | The steel outline of Eva Perón spans the Ministry’s pale window grid. Passing taxis and palms establish its height above the avenue. |
+| Teatro Colón, 9.78 km | Real 03, 06 and 13. Games 01 and 02. | The opera house’s pediment, arched windows, pilasters and stone cornices rise above the planted side plaza. Purple jacarandas shade the pavement. |
+| Multi-stage crossing, 13.62 km | Real 02, 04, 06, 08–10. Games 03–05. | Long zebra crossings break at the raised median islands. Pedestrians wait by signal posts as taxis, buses and motorbikes stream past. |
+| Plaza de la República, 17.53 km | Real 01, 03, 05–07, 11 and 15. Games 01, 02 and 04. | The four-sided Obelisco rises 67 metres over the plaza, tapering toward the pyramidal tip. Evening lights gather along its base and the surrounding avenues. |
+
+Use a four-sided tapered shaft and distinct cap, the opera house’s architectural bays and the Ministry’s steel portrait. The crossing markings and traffic lanes must meet across each island. Give the colectivo, taxis and waiting or walking pedestrians bounded movement on race time. Share roadside materials and release loaded artwork on exit. Compare the opening and dusk plaza with Caribana. Credits are in docs/worlds/nuevedejulio/SOURCES.md.

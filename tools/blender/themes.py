@@ -1720,3 +1720,8 @@ import nottinghill as _nottinghill
 
 THEMES['nottinghill'] = _nottinghill.THEME
 SCENERY['nottinghill'] = _nottinghill.scenery
+
+import nuevedejulio as _nueve
+
+THEMES['nuevedejulio'] = _nueve.THEME
+SCENERY['nuevedejulio'] = _nueve.scenery
