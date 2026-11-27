@@ -1984,3 +1984,18 @@ Map Select and Race Setup load the historical workout into the local authored-co
 | Downtown dawn, 10.13 km | Real 03, 05 and 10–12. Games 03–05. | An open view frames downtown glass towers, the Space Needle and warm reflections on Elliott Bay. Brick paving and a final arc of market spectators bring the route home. |
 
 Use brick courses and crosswalk paint aligned with the physical road. Open the Post Alley gap between brick buildings. The Seattle skyline, wheel and Olympic ridgeline are fixed in world space, while a bounded fish toss, coffee steam and ferry read the shared ride clock. Merge repeated stalls and curb detail by section. Release textures, geometry and materials on exit. Compare the submitted frames at the clock and the produce arcade with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/pikeplace/SOURCES.md.
+
+## Playground Park Loop (#2189)
+
+Five circuits share the same park furniture and terrain. Distance and elapsed time continue across the painted lap line. The route curves round a central pond. Keep the play structures and the water visible through openings in the mature tree canopy.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Tree-lined park gate, 0.08 km | Real 11, 12 and 15. Games 01 and 03. | Worn twin yellow lines lead between mature trees. Gaps in the canopy cast patches of sun across the path beside a wayfinding sign and benches. |
+| Climbing fort, 0.43 km | Real 02, 03, 07 and 09. Games 01 and 02. | Two roofed climbing decks flank a rope bridge. Open steps, a curved slide and a bank of suspended swing seats are visible from the path. |
+| Splash terrace, 0.89 km | Real 01, 03–06 and 13. Games 02 and 05. | Red and green spray stems stand on blue and ochre wet paving under a triangular shade sail. A child runs between staggered jets. |
+| Family promenade, 1.32 km | Real 08–12 and 15. Games 01 and 03. | A parent pushes a hooded stroller along the wide shoulder. A helmeted child on a scooter passes a bench and a double-headed park lamp. |
+| Fountain pond, 1.85 km | Real 04, 06 and 14. Games 04 and 05. | A stone lip follows the pond and its central fountain. Water gleams between reeds, with lawns and the city edge behind. |
+| Picnic meadow, 2.30 km | Real 07, 10, 11 and 13. Games 02–04. | Families sit on checkered blankets beneath spreading shade trees. A pavilion and distant apartment buildings mark the return toward the playground. |
+
+Model the climbing frames, slides, swings, benches and shaded canopy at rider scale. Use fixed meshes for path paint and shadows, batch repeated furniture, and use the shared ride clock for the swing angle, spray and stroller wheels. Release each course resource on exit. Compare the gate and splash terrace with Caribana’s tablet capture. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/playground/SOURCES.md.

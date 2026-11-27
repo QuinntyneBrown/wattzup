@@ -130,6 +130,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | San Fermín, Pamplona (`pamplona`) | Sprint Sprint Sprint (GCN Training, 22:00) | 9.133 km | 29 m | `public/courses/pamplona.glb` ([ride views](screenshots/san-fermin-pamplona/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Ffordd Pen Llech (`penllech`) | Steepest Climb in the World (GCN Training, 45:40) | 14.267 km | 180 m | `public/courses/penllech.glb` ([ride views](screenshots/ffordd-pen-llech/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Pike Place at Dawn (`pikeplace`) | Wake Up and Smell the Lactic (GCN Training, 25:00) | 10.438 km | 65 m | `public/courses/pikeplace.glb` ([ride views](screenshots/pike-place-at-dawn/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Playground Park Loop (`playground`) | HIIT for Time-Crunched Parents (GCN Training, 30:00) | 13.225 km | 55 m | `public/courses/playground.glb` ([ride views](screenshots/playground-park-loop/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

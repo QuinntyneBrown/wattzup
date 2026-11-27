@@ -43,6 +43,7 @@ import palouseElevation from './palouse-elevation.json';
 import pamplonaElevation from './pamplona-elevation.json';
 import penllechElevation from './penllech-elevation.json';
 import pikeplaceElevation from './pikeplace-elevation.json';
+import playgroundElevation from './playground-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5447,6 +5448,40 @@ export const pikeplaceCourseMap = {
       seg('recover', 30, 10, 80),
       seg('work', 30, 21, 90),
       seg('recover', 30, 18, 85),
+      seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const playgroundCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'playground-park-loop',
+  name: 'Playground Park Loop',
+  routeName: 'The park loop',
+  place: 'City park',
+  world: 'playground',
+  distanceKm: 13.225,
+  climbingM: 55,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: playgroundElevation,
+  },
+  thumbnailUrl: 'maps/playground-park-loop.jpg',
+  photoUrl: 'maps/playground-park-loop-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 13, 80),
+      seg('work', 180, 16, 85),
+      seg('recover', 120, 11, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 19, 90),
       seg('cool-down', 120, 10, 80),
     ],
   },

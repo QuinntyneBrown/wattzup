@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“No Sleep Till Brooklyn” Route Details (New York)](https://zwiftinsider.com/route/no-sleep-till-brooklyn/) (g0111) | © Zwift |
 | game-04.jpg | Zwift: [“Petite Douleur” Route Details (France)](https://zwiftinsider.com/route/petite-douleur/) (g0117) | © Zwift |
 | game-05.jpg | Zwift: [“Sacre Bleu” Route Details (France)](https://zwiftinsider.com/route/sacre-bleu/) (g0132) | © Zwift |
+
+The shipped tree and family atlases are original images created for this course with OpenAI ImageGen. The play equipment, shared circuit, benches, fountain, terrain and spray terrace are original Blender geometry. The reference images above informed proportions, planting, light and rider sightlines.

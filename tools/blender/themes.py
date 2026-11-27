@@ -1771,3 +1771,8 @@ import pikeplace as _pikeplace
 
 THEMES['pikeplace'] = _pikeplace.THEME
 SCENERY['pikeplace'] = _pikeplace.scenery
+
+import playground as _playground
+
+THEMES['playground'] = _playground.THEME
+SCENERY['playground'] = _playground.scenery
