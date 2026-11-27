@@ -238,6 +238,7 @@ import type { Tayelet } from './tayelet';
 import type { TempelhoferFeld } from './tempelhofer-feld';
 import type { AvenueOfTheDead } from './avenue-of-the-dead';
 import type { TimesSquareCountdown } from './times-square-countdown';
+import type { TorontoHarbourfront } from './toronto-harbourfront';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -408,6 +409,8 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   TahoePines: 1800,
   WesternSky: 62000,
   TelAvivHotels: 1800,
+  BerlinHorizon: 62000,
+  TerminalBays: 1800,
   BerlinHorizon: 62000,
   TerminalBays: 1800,
   BerlinHorizon: 62000,
@@ -592,6 +595,7 @@ export class CourseRenderer implements WorldRenderer {
   private tempelhof: TempelhoferFeld | null = null;
   private teotihuacan: AvenueOfTheDead | null = null;
   private timessquare: TimesSquareCountdown | null = null;
+  private toronto: TorontoHarbourfront | null = null;
   private mountain: ManxMountain | null = null;
   private rush: JunkanooRush | null = null;
   private vents: KilaueaVents | null = null;
@@ -2455,6 +2459,20 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(square.root);
         this.disposables.push(square);
       }
+      if (this.course.file.id === 'toronto') {
+        const { TorontoHarbourfront } = await import('./toronto-harbourfront');
+        if (this.disposed) return false;
+        const harbour = await TorontoHarbourfront.load(this.course);
+        if (this.disposed) {
+          harbour.dispose();
+          return false;
+        }
+        this.toronto = harbour;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(harbour.root);
+        this.disposables.push(harbour);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -3530,6 +3548,7 @@ export class CourseRenderer implements WorldRenderer {
     this.tempelhof?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.teotihuacan?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.timessquare?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.toronto?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -3722,6 +3741,7 @@ export class CourseRenderer implements WorldRenderer {
     this.tempelhof = null;
     this.teotihuacan = null;
     this.timessquare = null;
+    this.toronto = null;
     this.mountain = null;
     this.rush = null;
     this.vents = null;
@@ -3878,7 +3898,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal' || this.northShoreSurf || this.buenosAiresTraffic || this.wiesnParade || this.lasseterRoadTrain || this.course!.file.id === 'songkran')
       this.evening = eveningUniform();
-    const clearValley = ['engadin', 'tempelhof'].includes(['engadin', 'teotihuacan'].includes(['engadin', 'timessquare'].includes(this.course!.file.id) || this.course!.file.id === 'teide' || this.course!.file.id === 'tamalpais';
+    const clearValley = ['engadin', 'tempelhof'].includes(['engadin', 'teotihuacan'].includes(['engadin', 'timessquare'].includes(['engadin', 'toronto'].includes(this.course!.file.id) || this.course!.file.id === 'teide' || this.course!.file.id === 'tamalpais';
     const fogRange = this.dam
       ? ([450, 4200] as const)
       : this.course!.file.id === 'calobra'
@@ -4052,6 +4072,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.tempelhof) Object.assign(materials, this.tempelhof.materials);
     if (this.teotihuacan) Object.assign(materials, this.teotihuacan.materials);
     if (this.timessquare) Object.assign(materials, this.timessquare.materials);
+    if (this.toronto) Object.assign(materials, this.toronto.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.rush) Object.assign(materials, this.rush.materials);
     if (this.caldera) Object.assign(materials, this.caldera.materials);
@@ -4197,8 +4218,8 @@ export class CourseRenderer implements WorldRenderer {
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
       if ((((((((((((((((((
-        (this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) || this.surfers) || this.sydneyharbour) || this.teide) || this.tamalpais) || this.tahoe) || this.telaviv) || this.tempelhof) || this.teotihuacan) || this.timessquare) &&
-        (group === 'Sun' || (this.timessquare && group === 'Moon'))
+        ((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) || this.surfers) || this.sydneyharbour) || this.teide) || this.tamalpais) || this.tahoe) || this.telaviv) || this.tempelhof) || this.teotihuacan) || this.timessquare) &&
+        (group === 'Sun' || (this.timessquare || this.toronto) && group === 'Moon'))
       )
         mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
@@ -4731,6 +4752,7 @@ export class CourseRenderer implements WorldRenderer {
     this.tempelhof?.frameView(metres, this.camera.position, ahead);
     this.teotihuacan?.frameView(metres, this.camera.position, ahead);
     this.timessquare?.frameView(metres, this.camera.position, ahead);
+    this.toronto?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -5354,6 +5376,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.tempelhof) Object.assign(drawn, this.tempelhof.report());
     if (this.teotihuacan) Object.assign(drawn, this.teotihuacan.report());
     if (this.timessquare) Object.assign(drawn, this.timessquare.report());
+    if (this.toronto) Object.assign(drawn, this.toronto.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.rush) Object.assign(drawn, this.rush.report());
     if (this.vents) Object.assign(drawn, this.vents.report());

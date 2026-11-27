@@ -1975,3 +1975,8 @@ import timessquare as _timessquare
 
 THEMES['timessquare'] = _timessquare.THEME
 SCENERY['timessquare'] = _timessquare.scenery
+
+import toronto as _toronto
+
+THEMES['toronto'] = _toronto.THEME
+SCENERY['toronto'] = _toronto.scenery

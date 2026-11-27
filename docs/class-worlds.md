@@ -171,6 +171,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Tempelhof Field (`tempelhof`) | Intense High Tempo Bike Workout (GCN Training, 28:45) | 12.909 km | 5 m | `public/courses/tempelhof.glb` ([ride views](screenshots/tempelhof-field/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Teotihuacán (`teotihuacan`) | Threshold Pyramid (GCN Training, 50:00) | 22.275 km | 39 m | `public/courses/teotihuacan.glb` ([ride views](screenshots/teotihuacan/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Times Square New Year's Eve (`timessquare`) | Give Me One Minute (GCN Training, 20:00) | 8.700 km | 3 m | `public/courses/timessquare.glb` ([ride views](screenshots/times-square-new-years-eve/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Toronto Waterfront Trail (`toronto`) | 30 Minute Sprint and Threshold HIIT (GCN Training, 30:00) | 13.075 km | 7 m | `public/courses/toronto.glb` ([ride views](screenshots/toronto-waterfront-trail/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
