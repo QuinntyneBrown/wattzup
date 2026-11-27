@@ -73,6 +73,7 @@ import stbernardElevation from './stbernard-elevation.json';
 import stelvioElevation from './stelvio-elevation.json';
 import steppeElevation from './steppe-elevation.json';
 import stpatricksElevation from './stpatricks-elevation.json';
+import stradeElevation from './strade-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6701,6 +6702,47 @@ export const stpatricksCourseMap = {
       seg('recover', 90, 10, 75),
       seg('work', 30, 24, 100),
       seg('cool-down', 361, 10, 75),
+    ],
+  },
+};
+
+export const stradeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'strade-bianche',
+  name: 'Strade Bianche',
+  routeName: 'The white roads',
+  place: 'Siena, Italy',
+  world: 'strade',
+  distanceKm: 8.25,
+  climbingM: 132,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: stradeElevation,
+  },
+  thumbnailUrl: 'maps/strade-bianche.jpg',
+  photoUrl: 'maps/strade-bianche-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 18, 85),
+      seg('work', 30, 21, 90),
+      seg('work', 30, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('cool-down', 180, 11, 80),
     ],
   },
 };

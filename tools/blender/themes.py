@@ -1915,3 +1915,8 @@ import stpatricks as _stpatricks
 
 THEMES['stpatricks'] = _stpatricks.THEME
 SCENERY['stpatricks'] = _stpatricks.scenery
+
+import strade as _strade
+
+THEMES['strade'] = _strade.THEME
+SCENERY['strade'] = _strade.scenery

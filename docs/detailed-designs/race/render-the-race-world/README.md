@@ -2451,3 +2451,18 @@ Stretch the parade itinerary to the original class distance. Keep the Spire in w
 | O’Connell Bridge, 11.79 km | Real 09, 10, 13 and 15. Games 02 and 05. | The bronze O’Connell Monument marks the bridge approach. Stone balusters and lanterns open onto the Liffey; the shopfronts drop away until the opposite quay. |
 
 Model six Ionic columns, a tapered steel Spire, bridge piers and the bronze monument. Batch the static crowd and animate bounded near figures on the ride clock. Wet stone uses baked highlights and dark recesses. Scale curb and track height to the class grade. Capture the six rider views and measure the opening and pipe band on the simulated tablet. Dispose of route textures, figures and instance buffers on exit. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Strade Bianche (#2220)
+
+The class fixes the grade and the 8.25 km length. The course compresses the gravel sectors and Siena approach into that distance. The two separate skyline landmarks stay anchored as the road turns. Keep the shadowed cypress avenue in the middle distance and the ruts, riders and fans nearest the rider.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| White gravel sector, 0.12 km | Real 01, 02 and 05. Games 01 and 02. | Pale crushed limestone follows the contour of a bare ridge. The worn wheel lines and loose darker stones read separately at riding speed. A race sector board stands at the verge. |
+| Cypress avenue, 1.54 km | Real 02, 04, 05 and 09. Games 03 and 04. | Tall pencil cypresses frame the crest. A narrow drive rises to a stone farmhouse with a terracotta roof and an olive grove. |
+| Crete Senesi, 3.10 km | Real 03, 07, 10 and 11. Games 03 and 04. | Spring green and harvested ochre fields sweep over the clay hills. Chalk cuts form pale ribs in the calanchi beyond the turn. |
+| Dust behind the bunch, 4.59 km | Real 01, 05 and 06. Games 01 and 02. | A small racing group attacks the white rise. Dust trails from the rear tyres and drifts over the verge below the cypresses. |
+| Tifosi on the gravel bank, 6.37 km | Real 01, 08 and 15. Games 01 and 05. | Fans lean over barriers and wave flags on the last gravel bank. A numbered sector arch spans the road. The brick Mangia tower stands in the distance. |
+| Piazza del Campo, 8.05 km | Real 12–15. Games 03 and 05. | The brick pavement opens into the Campo beneath the narrow Torre del Mangia. The striped Duomo bell tower and pale dome rise on their own ridge. Finish barriers guide the rider into the square. |
+
+Build the Torre del Mangia with its brick shaft, projecting pale crown and bell opening. Give the Duomo its striped campanile and separate dome. Merge repeated cypresses, roof geometry and sector signs. Animate a bounded number of riders, fans and translucent dust patches on ride time. Release shared textures, geometry and instance buffers on exit. Capture the six rider views and measure the opening and dust sections on the simulated tablet. See ADRs 0021, 0023, 0030, 0034 and 0035.
