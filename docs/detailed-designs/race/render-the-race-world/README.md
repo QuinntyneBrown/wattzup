@@ -1999,3 +1999,18 @@ Five circuits share the same park furniture and terrain. Distance and elapsed ti
 | Picnic meadow, 2.30 km | Real 07, 10, 11 and 13. Games 02–04. | Families sit on checkered blankets beneath spreading shade trees. A pavilion and distant apartment buildings mark the return toward the playground. |
 
 Model the climbing frames, slides, swings, benches and shaded canopy at rider scale. Use fixed meshes for path paint and shadows, batch repeated furniture, and use the shared ride clock for the swing angle, spray and stroller wheels. Release each course resource on exit. Compare the gate and splash terrace with Caribana’s tablet capture. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/playground/SOURCES.md.
+
+## Prague Old Town (#2191)
+
+The Royal Way follows an extended sequence of central Prague streets for the historical class. The tower gate opens into medieval streets and squares. Charles Bridge spans the Vltava before the climbing streets reach Hradčany.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Powder Tower gateway, 0.08 km | Real 02, 03 and 13. Games 01 and 02. | The granite-sett road enters a pointed Gothic gateway beneath a steep dark roof and corner pinnacles. Pale stucco and mosaic pavements frame the portal. |
+| Old Town Square, 3.64 km | Real 04–08, 13 and 14. Games 02 and 03. | The lane opens onto the square. The two many-spired towers of Týn Church rise behind the arcades, the Jan Hus monument anchors the square and soap bubbles drift past sightseers. |
+| Astronomical Clock, 6.12 km | Real 04, 06, 13 and 14. Games 01 and 03. | The gold astrolabe and painted calendar dial read as two distinct faces on the Old Town Hall wall. The Gothic chapel window and copper roof rise above a knot of visitors. |
+| Charles Bridge, 10.84 km | Real 01, 03, 09–11 and 15. Games 02 and 04. | The bridge crosses the Vltava on stone arches. Paired rows of Baroque figures on plinths frame the Gothic bridge tower. A passenger boat passes a low weir and swans swim beside the bridge. |
+| Nerudova climb, 16.48 km | Real 02, 10, 14 and 15. Games 01, 03 and 05. | The road pitches uphill between tight pastel rows. Painted house signs stand over door portals, while a break in the roofline opens onto Malá Strana. |
+| Hradčany overlook, 21.18 km | Real 09–12, 14 and 15. Games 02, 04 and 05. | The St Vitus spires and a long palace wing stand above a terrace. Red tile roofs, a verdigris dome and the river remain visible below the final ramp. |
+
+Use a fan-shaped granite sett pattern scaled to the lane and a finer mosaic on each pavement. Keep open arches under the deck, stone plinths between pedestrians and the parapet, and let the rider see the river on both sides. The cathedral is a fixed group of spires and nave, with palace wings and smaller roof rows below. Use ride time for the excursion boat, swan and drifting bubbles. Reuse materials and release all resources on leaving the course. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/prague/SOURCES.md.

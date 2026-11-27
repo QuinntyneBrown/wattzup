@@ -1776,3 +1776,8 @@ import playground as _playground
 
 THEMES['playground'] = _playground.THEME
 SCENERY['playground'] = _playground.scenery
+
+import prague as _prague
+
+THEMES['prague'] = _prague.THEME
+SCENERY['prague'] = _prague.scenery

@@ -44,6 +44,7 @@ import pamplonaElevation from './pamplona-elevation.json';
 import penllechElevation from './penllech-elevation.json';
 import pikeplaceElevation from './pikeplace-elevation.json';
 import playgroundElevation from './playground-elevation.json';
+import pragueElevation from './prague-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5483,6 +5484,49 @@ export const playgroundCourseMap = {
       seg('recover', 120, 10, 80),
       seg('work', 300, 19, 90),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const pragueCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'prague-old-town',
+  name: 'Prague Old Town',
+  routeName: 'The Royal Way',
+  place: 'Prague, Czechia',
+  world: 'prague',
+  distanceKm: 21.525,
+  climbingM: 104,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: pragueElevation,
+  },
+  thumbnailUrl: 'maps/prague-old-town.jpg',
+  photoUrl: 'maps/prague-old-town-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 19, 90),
+      seg('recover', 120, 11, 80),
+      seg('work', 300, 16, 85),
+      seg('work', 180, 19, 90),
+      seg('recover', 120, 21, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 180, 11, 80),
+      seg('work', 300, 16, 85),
+      seg('work', 180, 19, 90),
+      seg('recover', 120, 21, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 180, 11, 80),
+      seg('work', 300, 16, 85),
+      seg('recover', 180, 19, 90),
+      seg('work', 120, 21, 90),
+      seg('recover', 60, 24, 100),
+      seg('cool-down', 180, 12, 80),
     ],
   },
 };
