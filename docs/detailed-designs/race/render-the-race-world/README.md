@@ -1290,3 +1290,1650 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Holi in Jaipur (#2143)
+
+The legacy race follows the sprint class through the shared road renderer. Preserve its workout and progression while giving the gates, festival and palace a position along the course. Map Select supplies the original GCN plan to Race Setup. The lazy authored-course renderer loads the same-origin Jaipur GLB and its arc-length profile. Race time owns the dancers, throws and traffic on both rendering backends.
+
+| Rider position | Real and game references | What reads at riding speed |
+| --- | --- | --- |
+| Sanganeri Gate, 0.08 km | Real 01, 05, 11 and game 01 | Recess the arched opening and keep daylight visible through it. Place the first pavement stains and low shop roofs ahead. |
+| Johari Bazaar, 1.36 km | Real 03, 10, 12–14 and game 05 | A repeating pink arcade follows the bend. Broken white linework, fabric awnings and goods distinguish shops while their undersides stay in shadow. |
+| Hawa Mahal, 2.92 km | Real 06, 12–13 and game 04 | Five narrowing tiers of projecting windows read across the street. Deeper oriels and domes break the silhouette above the roofline. |
+| Festival crowd, 4.58 km | Real 02, 04, 07–09, 15 and games 02–03 | Give revellers staggered throws and visible arm movement. Overlapping translucent powder grows above the throw, drifts and clears, leaving the centre line visible. |
+| Market traffic, 6.21 km | Real 03, 07, 10, 14 and game 01 | An auto-rickshaw has a small front wheel, open sides and canopy. Keep moving traffic, parked scooters and resting cattle at distinct depths. |
+| Chandpole, 8.12 km | Real 01, 05, 11–13 and games 04–05 | Chhatris stand clear of the shop parapets. Behind the second city gate the fort follows a fixed ridge in the spring haze. |
+
+Batch the arcades and road wear by distance and bake shadow into recesses. Use shared actor geometry, a bounded pool of powder puffs and a single race clock. Release the pool, its materials and any generated textures on exit. Match Caribana’s fixed skyline and animate only where the rider can see the result. Compare six HUD-visible views at matched distances. Measure submitted frames, p95, worst interval, peak calls and advancing distance on the opening and the busiest market stretch after nine seconds of warm-up.
+
+## Trinidad J’Ouvert (#2145)
+
+Keep the existing J’Ouvert soundtrack, Frederick Street identity and GCN sprint plan. Map Select supplies the class to Race Setup. The lazy course renderer loads the same-origin GLB and stage-based road profile, and the existing race engine owns resistance, cadence, pause and progression. No additional rider feedback appeared in the issue-title search.
+
+| Rider position | References | How the feature reads on Low |
+| --- | --- | --- |
+| Frederick Street, 0.08 km | Real 01, 07, 11 and 15, games 02 and 03 | Deep balconies, projecting signs and overhead cables enclose the narrow street. Small pools of lamplight leave the hills dark behind its vanishing point. |
+| Blue devils, 1.43 km | Real 02 and 06, games 01 and 05 | Curving horns and loose chains distinguish the blue-painted masqueraders from the mud and paint band. Staggered dancing bodies move towards the verges for each sprint. |
+| Soca truck, 2.68 km | Real 04–06, games 02 and 05 | A rolling truck carries banks of speaker cones below a high rail. Coloured light catches powder above the crowd and pools beneath the rear lamps. |
+| Pan side, 3.67 km | Real 03 and 08, games 03 and 04 | Players in matching shirts strike shallow metal pans; double pans and deep bass drums sit on wheeled frames. Keep mallets and polished rims visible from rider height. |
+| Red House, 4.82 km | Real 09–12 and 14, games 03 and 04 | Model the long red wings, white pilasters and central projecting pavilion beside the square’s fence. Reserve a sightline across the grass between the trees. |
+| Dawn, 5.93 km | Real 01, 07, 09–11 and 13–15, games 01 and 03 | Lift the eastern sky to blue while lit signs and lamps remain visible. Royal palms, almond and flamboyant crowns frame flags and splashed plaster above cups, rags and dirty asphalt. |
+
+Use the local Port of Spain photos for buildings and geography. Real 04–06 depict celebrations in Aruba and Jamaica and inform only crowd density, light and paint. Real 03 informs band spacing; the Trinidad pans in real 08 supply the instrument details. Caribana’s speaker silhouettes, bounded crowd batches and fixed skyline provide comparisons for the original models. Keep the truck, dancers, pan players and powder on race time. Reuse the world music player and its volume control. Release shared geometry, textures and materials on exit. Record six matched rider views and report actual submissions, p95, worst interval, draw calls and advancing distance for both tablet runs.
+
+## Joshua Tree (#2144)
+
+The legacy Park Boulevard ride uses a generic class world. Retain its 13-stage ramp session, cadence and target resistance. Map Select and Race Setup open the native course through the lazy race-world renderer, which reads the same-origin GLB and the stage-based centre line. No other Joshua Tree rider feedback appeared in the issue-title search.
+
+| Position | References | Rider view on Low |
+| --- | --- | --- |
+| Park Boulevard, 0.08 km | Real 03–05, 07, 10–12 and games 02 and 05 | The yellow centre lines sweep between gravel banks. Short broken trunks and forks support uneven shaggy crowns. Sparse creosote and sage leave visible gaps between the trees. |
+| Hidden Valley, 4.25 km | Real 02, 08, 13 and games 01 and 03 | Warm light picks out separate weathered blocks and cracks. A climber changes holds above a belayer, with parked cars at the turnout below. |
+| Skull Rock, 9.78 km | Real 02, 06 and 13 and game 03 | Deep shadow inside two eye sockets and a nasal opening gives the weathered boulder its silhouette, with other jointed granite behind. |
+| Jumbo Rocks, 12.37 km | Real 01, 08 and 13 and games 03–04 | Separate tent pitches, tables and pulled-in cars fill gaps among rounded boulders at the foot of the climbing wall. |
+| Cholla Cactus Garden, 17.63 km | Real 09 and 15 and games 02 and 04 | Low branch clusters with pale tips catch the sun against a darker foothill. The gravel between the plants remains visible. |
+| Mountain outlook, 22.31 km | Real 04, 05, 10, 14 and 15 and game 05 | The road crosses open scrub beneath a fixed Little San Bernardino skyline. Long warm shadows identify the direction of the low sun throughout the bend. |
+
+Use Caribana’s fixed distant skyline and independently culled near detail. Bake rock seams and ground wear, batch roadside plants, and retain the limbs, spines and rock recesses at low detail. Animate climbers from the ride clock with shared geometry. Stop updating distant actors and release buffers and textures when leaving the race. Compare six matched rider-height views with the HUD visible. Measure actual submissions, p95, longest frame time, draw calls and advancing distance through both moving samples.
+
+## Junkanoo, Nassau (#2146)
+
+Preserve the 22-stage GCN class and the existing world soundtrack. Give the race a physical Bay Street course with original Nassau landmarks. Map Select and Race Setup pass the rider into the lazy course renderer, which loads the same-origin GLB and its arc-length profile. No other Junkanoo issue appeared in the rider-feedback title search.
+
+| Rider view | Real and game references | What remains legible on Low |
+| --- | --- | --- |
+| Bay Street, 0.08 km | Real 07, 11, 13–14 and games 01 and 04 | A narrow floodlit lane between colonial shop galleries, Bahamian shutters and freestanding barriers, with raised grandstands behind the spectators. |
+| Valley Boys, 2.31 km | Real 01–06 and games 02–03 | A giant original crepe-paper lead piece, its cut fringe and high headpiece reflecting the floodlights. The group name is readable over the crowd. |
+| Saxons, 4.76 km | Real 03–04, 09–10 and 12 and games 01 and 03 | Shoulder straps hold the goatskin drums. Hands swing cowbells, horn bells point above the players and the Saxons banner identifies the troupe. |
+| Rawson and Parliament squares, 7.24 km | Real 07, 13–14 and games 01 and 05 | Leave a sightline past palms to the seated Queen Victoria on her plinth, the pink government buildings, white verandahs and louvred shutters. |
+| Roots, 9.48 km | Real 02, 05–06 and 08–09 and games 03 and 05 | A distinct lead silhouette, group banner, fringe, spectators on tiers behind their barriers and black, aquamarine and yellow flags. |
+| Prince George Wharf, 12.12 km | Real 01, 13 and 15 and games 02 and 04 | Bands leave paper on the tarmac. A break in the shopfronts reveals water, the cruise-ship decks and a pink sky behind the wharf. |
+
+Real 10 depicts the Harbour Island band and informs drum scale and carriage. Use the Nassau street photographs for local buildings. Compare the distant harbour and moving parade foreground with Caribana’s skyline and bands. Batch the paper, barriers and musicians, animate from race time and release geometry, materials and textures when the rider exits. Match six HUD-visible viewpoints and record submitted FPS, p95, longest interval, peak calls and distance through the two one-minute tablet rides.
+
+## Kīlauea Lava Road (#2147)
+
+The route compresses Crater Rim Drive, the vent fields and Nāhuku into the original class distance. Preserve the six GCN stages and existing soundtrack. A same-origin GLB and arc-length course load through the normal Map Select and Race Setup flow. Keep the existing violet sky, cool moonlight, volcanic haze and sun below the horizon as requested in rider feedback #936. Recoveries can descend while efforts climb. The map preview samples the same physical grade as the race.
+
+| Rider view | Local and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Lava fields, 0.08 km | Real 01, 05, 07, 11 and 13 and games 01 and 04 | Double yellow markings break where a black flow has cut the old surface. Rounded ropes and crumpled skin contrast with angular clinker. Mauna Loa forms a fixed, gently rising shield behind the flows. |
+| Wahinekapu, 1.54 km | Real 06, 08–09 and 14 and games 01 and 04 | Low rails border scrub and open vents. Unequal columns form at the cracks, expand, drift and fade with the race clock. |
+| Sulphur Banks, 2.62 km | Real 06, 08–09 and 14 and game 04 | Mineral aprons put pale yellow and ochre edge deposits around the steaming openings. |
+| Nāhuku, 3.94 km | Real 02, 12 and 14 and game 05 | Tree fern fronds and red lehua flowers gather above a dark tube mouth recessed into the bank beside the road. |
+| Halemaʻumaʻu, 5.68 km | Real 03–04, 10 and 15 and games 01–03 | A near rim drops through broken benches around a broad recessed basin. A glowing, crusted lake sits on the floor and a drifting plume catches light beneath. |
+| Dusk, 7.24 km | Real 03–05, 11 and 15 and games 01–03 | The low orange reflection concentrates under the crater cloud. The shield and violet dusk remain visible around it. |
+
+Keep near rock, ferns and fissures anchored to the grade; draw the distant shield once. Adapt Caribana’s bounded foreground batches to steam, tree ferns and clinker. Across the street references, Real 01, 02, 07 and 11 show neighbouring Chain of Craters Road and inform surface and vegetation. Real 12 supplies Crater Rim Drive itself. Use the game images for light contrast and approaching silhouettes. Keep the source photographs in their credited reference directory. Release all textures and instance buffers on exit.
+
+## Knicks Championship Parade (#2148)
+
+Keep the existing championship parade, New York morning light, street banners, moving floats and original soundtrack. The native course anchors the class grade and public landmarks to the race distance. Load Broadway’s existing street model and crowd only when entering this course. The rider advances through the map via Map Select and Race Setup. Sprintavals keeps its eighteen original stages, cadence, resistance and video timing.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Bowling Green, 0.08 km | Real 07, 08, 10 and 13–14 and games 01 and 05 | The bull has a lowered head, curved horns, a humped shoulder and bronze highlights against the park fence. |
+| Float, 1.42 km | Real 01–04 and games 02 and 03 | Rails and team figures ride above the flatbed. Orange and blue fans crowd the blue barriers. Paper tumbles past open windows and accumulates on the road. |
+| Trinity Church, 2.65 km | Real 05, 09 and 15 and games 01–02 | The narrow Gothic spire, churchyard fence and trees break the wall of commercial buildings. |
+| Open bus, 3.88 km | Real 01–06 and 12 and games 03 and 04 | A moving double-decker has an open roof, visible passenger rail and two rows of windows. The lower Broadway street name and signals hang above its lane. |
+| St. Paul’s Chapel, 5.27 km | Real 05, 07, 12 and 15 and games 04 and 05 | A columned porch and pale steeple are seen at the churchyard. Bronze route plaques occupy the granite pavement. Tower shadows leave distinct sunlit bands. |
+| City Hall, 6.69 km | Real 05, 11–12 and 15 and games 01 and 05 | Terra-cotta setbacks and the green copper crown stay at the far end of Broadway and approach the rider. |
+
+Real 01–04 show the US women’s national soccer team parade and supply proportions of floats, fan barriers and viewing distance. Real 06 shows a transit bus and supplies vehicle scale. All Knicks colours and designs come from original game assets. Feedback #900 requires continuous float, crowd and ticker motion. Keep wrapped objects outside the visible interval, fade a paper fragment at each end and use the ride clock for pause and reduced motion. Use bounded buffers and release all native course textures and batches.
+
+## Kona Ironman (#2149)
+
+Use the course renderer from normal Map Select and Race Setup. The distance-weighted resistance sets each stage’s physical grade; the map panel reads the same sampled elevation. GCN’s High Intensity Race Day Effort has seven stages lasting 25:05, with a three-second offset. Keep the existing world soundtrack. No other Kona issue appeared in the rider-feedback title search.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Queen K, 0.08 km | Real 01–02, 05–08, 11 and 13–14; games 01 and 05 | Double yellow and white markings follow straight, rolling tarmac with a wide paved shoulder. Angular ʻaʻā and smooth pāhoehoe flank the road. Hualālai and the higher Mauna Kea silhouette stay fixed inland. |
+| Coral, 1.53 km | Real 02, 05–08 and 13 for the dark verges; games 01 and 03 | Names on the verge are made from separate irregular pale stones. Dry fountain grass bends in the same crosswind across adjacent patches. |
+| Aero riders, 3.24 km | Real 03, 04 and 10; games 02 and 05 | Triathletes ride apart on the shoulder, with forearms on the extensions, aero helmets, numbers and dark disc wheels. |
+| Aid station, 4.92 km | Real 03–06 and 09–10; games 02 and 04 | Volunteers reach from behind cones and fold-out tables stacked with bottles. Tents and race bunting are visible before the rider reaches the station. Real 09 supplies crowd and banner scale at a Kona event. |
+| Coast, 7.30 km | Real 07, 08, 12, 13 and 15; games 03–05 | Pacific blue and wind-driven surf meet black shore shelves. The near road remains sharp and the low heat shimmer stays in the distance. |
+| Aliʻi Drive, 9.51 km | Real 09, 12 and 15; games 02–04 | The shoulder becomes a palm-lined seafront street with spectators, race banners and the finish arch. |
+
+Adapt Caribana’s three depths to the foreground cyclists, the mid-distance station or finish and the fixed inland shields and ocean. Batch bike frames, wheel rims, bottles and grass. Wind, distant optical shimmer and the pedalling motion use the race clock. The course owns and releases its instance buffers, original textures and materials. Preserve the full sourced reference folder.
+
+## Koppenberg Cobbles (#2150)
+
+Load the native course from Map Select and Race Setup. Preserve the ten original stages of GCN Training’s Low Cadence Strength Builder and its three-second video offset. Base the long climbs on the hard stages, concentrating their ascent in short, signposted ramps where the terrain reaches 22%. Ease the settling grade between ramps. Sample that same line for the race profile and riders, spectators and cobbles.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Melden farm lanes, 0.08 km | Real 05, 07, 11, 13–14 and game 05 | Brick farmhouses and pollarded poplars flank a patched approach through ploughed fields. |
+| Foot of the Koppenberg, 1.06 km | Real 01, 04, 06, 08 and games 01–02 | Concrete gives way to wet, domed setts. Moss collects at the verges and polished crowns pick out the riding line. |
+| Steep chute, 2.39 km | Real 01–04, 08, 15 and games 01–03 | A short 22% pitch narrows between undercut grass banks. Only two riders fit abreast. |
+| Race crowds, 3.74 km | Real 01–03, 06, 09–10 and games 02–04 | Fans lean over the metal barriers and wave yellow Flemish lion flags. Race signs and a canvas beer tent break up the banks. |
+| Wooded crest, 4.90 km | Real 02–03, 08, 11, 14–15 and games 02 and 05 | Bare branches and early leaf buds close above the last wet stones. Spring mist softens the trees across the next field. |
+| Melden overlook, 5.32 km | Real 05, 07, 11–14 and games 04–05 | Beyond a row of poplars, Sint-Martinus has a dark rectangular tower, pointed spire and pitched nave above the Scheldt fields. |
+
+Real 01–03 are Koppenberg race views. Real 04–10 show the neighbouring Paterberg and inform barrier scale, cobble patterns and temporary race infrastructure. Real 12–13 establish Melden’s church and the surrounding sightline. Adapt Caribana’s fixed landmark and depth layers to the church, trees and foreground banks. Keep flag deformation, spectator gestures and drifting mist on race time. Batch the crowd and flags, bake stone wear and release all course resources on exit.
+
+## Oude Kwaremont (#2151)
+
+Map Select opens the class-backed solo race. GCN Training’s Cobbled Mayhem has eleven stages over 40:00 with a three-second video offset. The final series of hard intervals carries the 2.2 km cobbled drag from 12.80 to 15.00 km. The village is the steepest part. Use the same physical centre line for the race, camera, gutter stones, crowd rails and elevation profile.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Kluisbergen approach, 0.08 km | Real 09, 14–15 and games 03–05 | Furrows and clipped hedges mark gently sloping fields around a brick farm gateway. Bare trees line the next bend. |
+| Foot of the Kwaremont, 12.84 km | Real 03–05, 11–12, 15 and games 01 and 05 | The lane changes from tarmac to crowned, damp setts. The smooth strips narrow beside the muddy verges. |
+| Village square, 13.56 km | Real 01–02, 10, 14 and games 01 and 03 | Two-storey brick and rendered cafés face the narrow riding line. Rider names cross the cobbles below a kilometre banner. |
+| Beer tents, 14.12 km | Real 06–08, 13 and games 01–02 | White VIP marquees rise in tiers above temporary boardwalks, with speaker stacks, serving counters and spectators several rows deep. |
+| Upper drag, 14.65 km | Real 03–06, 11–13 and games 02, 04–05 | Yellow lion flags mix with club banners above the metal rails. Fans lean over the edge of the wet cobbles. |
+| Melden and Kluisbergen fields, 15.28 km | Real 07–09, 14–15 and games 03–05 | The crowds thin at the end of the cobbles, revealing muddy field edges, clipped hedges and the village roofs under low April cloud. |
+
+The reference photographs distinguish the deep temporary VIP structures in real 07–08 from the permanent village façades in real 02 and 10. The gate in real 14 belongs to a Kluisbergen farm. Use original lettering and race banners. Adapt Caribana’s close animated participants, middle-distance structures and stable far skyline to the fans, village and fields. Instance animated figures and flags, batch buildings and barriers, and release course-owned textures and geometry at race exit. Rider feedback search found only #2151.
+
+## Kyoto Hanami (#2152)
+
+Use the normal catalogue and solo race entry. The eleven original stages of GCN Training’s Cadence Training to Improve Pedalling run for 25:00 from the beginning of the video. Extend the distinct sections of the Philosopher’s Path to the class-derived 10.400 km course. Keep the canal alongside the path, place bridge abutments on opposite walls and sample the physical grade for the map and HUD.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Nanzen-ji, 0.08 km | Real 13–15 and games 03–04 | The approach passes the timber temple gate, broad tiled eaves and flanking white walls before joining the canal. |
+| Lake Biwa canal, 1.54 km | Real 01–04, 10–11 and games 01 and 03 | The water runs below the narrow path between inclined walls of fitted stone. Pale gravel and rectangular edging separate the rider from the canal. |
+| Granite bridge, 3.28 km | Real 02–03, 05 and 08–11 and games 01 and 05 | A low granite span crosses the canal to the opposite bank. The shaded opening and its reflection stay visible under the parapet. |
+| Hanami walk, 5.42 km | Real 01–03, 06–09 and games 01–03 | Strollers and photographers gather under the pale pink canopy. Clusters of petals drift by and smaller petals float downstream. |
+| Tea shops, 7.46 km | Real 03–05, 09–11 and games 04–05 | Low timber shop fronts, lattice screens, indigo curtains and the carved 哲学の道 path marker frame the near bank. |
+| Ginkaku-ji approach, 10.04 km | Real 04, 10–11 and 13–15 and games 03–05 | Hedges and tiled timber buildings lead toward the Ginkaku-ji entrance, with green Higashiyama ridges beyond the last bridge. |
+
+Real 12 is the Philosopher’s Walk at Tatsuno in Hyōgo and supplies the stone-marker convention only. Real 13–15 establish Nanzen-ji’s gates. The northern gate is an original interpretation of the Ginkaku-ji approach. Use the daytime photographs for spring light and game 02 for contrast between petals and the riding line. Adapt Caribana’s physical separation of near participants and far skyline to visitors, bridges and green mountain ridges. Batch walkers and small drifting petals, keep the visible canal section bounded, and dispose the course-owned textures, batches and materials on exit. The issue title search found only #2152.
+
+## Chicago Lakefront Trail (#2153)
+
+Use the normal catalogue, race setup and native course renderer. GCN’s 25 Minute Sprint Intervals has sixteen original stages over 25:30 and a three-second video offset. Keep the grades small on the 10.525 km trail. The centre line, lane markings, beach edges, revetment and camera use the same physical coordinates.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Lincoln Park, 0.08 km | Real 01, 05–07 and games 01–02 | Mature park trees cast shade on a wide striped trail. Riders, runners and skaters approach between the inland lawn and the lake. |
+| Harbour, 1.78 km | Real 03, 06–07, 10 and games 01 and 03 | Rows of masts and mooring fingers follow the harbour curve, with sailboats moving on the sheltered water. |
+| North Avenue Beach, 3.54 km | Real 02, 11 and 13–15 and games 02–03 | The blue and white ship-shaped beach house rises beside umbrellas and a tall lifeguard chair, with lake and sand behind it. |
+| Concrete revetment, 5.68 km | Real 02, 08–09, 12 and games 01 and 04 | Low waves break against staggered concrete steps. Lake fog stays low over the water while the paved line stays legible. |
+| Oak Street Beach, 7.84 km | Real 02, 07–08 and 12–13 and games 03–05 | People sit on steps and gather around parasols. Blue Divvy bikes, runners and inline skaters pass in marked lanes. |
+| Skyline overlook, 9.94 km | Real 01, 07–08, 10–11 and 15 and games 03 and 05 | The dark braced Hancock tower and bundled Willis Tower stand above the shoreline cluster across turquoise water. |
+
+Real 04 depicts a trail at Geneva, New York and informs path scale only. Real 14 shows a smaller North Avenue beach building. Use the ship-shaped main beach house from the issue brief, with the shore and skyline proportions established by real 11 and 15. Caribana’s fixed skyline and detailed moving foreground translate to Chicago’s distinctive towers and the active path users. Batch the masts, beach furniture and wheeled traffic, keep secondary motion on race time and release each course-owned resource on exit. The world-specific feedback title search found only #2153.
+
+Model the North Avenue Beach House with a streamlined blue-and-white hull, portholes and an open upper deck. Its current concrete structure was designed by Wheeler Kearns Architects and opened in 2000. [Chicago Park District, North Avenue Beach](https://www.chicagoparkdistrict.com/parks-facilities/north-avenue-beach)
+
+## Lake Louise (#2154)
+
+The 8 km ride compresses the lakeshore and two nearby mountain roads into thirteen stages of GCN Training’s 20 Min Cardio Spin Bike Workout. Keep the lake at a single elevation. Place Victoria Glacier and the ridges in fixed positions so gaps in the trees reveal the same landmarks from different angles. Bake blue-green reflections beneath the cliffs and leave distant water clear enough to read the red canoe silhouettes.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Château forecourt, 0.08 km | Real 08, 13–14 and game 05 | Arcaded limestone walls and rows of windows rise from the terrace. Hikers cross between the lawn and the low stone parapet. |
+| Canoe dock, 1.22 km | Real 04–05, 09–11 and game 03 | Red canoes leave a timber boathouse, their paddles dipping beside the dock against milky turquoise water. |
+| Victoria Glacier, 2.68 km | Real 06–07 and games 01 and 04 | The hanging glacier sits in a notch between dark rock faces above its reflection, visible beyond the stone-lined gravel trail. |
+| Bow Valley Parkway, 4.14 km | Real 02–03 and 12 and game 02 | Lodgepole pines and spruce close around a narrow asphalt bend. A park sign and timber bench mark a pullout. |
+| Fairview shoreline, 5.86 km | Real 06, 10 and 15 and game 04 | The steep grey shoulder of Fairview drops into jade water. Hikers and road cyclists pass on the near side of the lake. |
+| Moraine Lake road, 7.52 km | Real 01, 03, 14–15 and games 01 and 05 | The road turns past a signed viewpoint. Mount Temple rises beyond the lower tree-covered slopes. |
+
+Use Caribana’s separate skyline and instanced foreground for the mountain profiles, groups of spruce, visitors and moving boats. The shoreline walls and benches follow the gravel path. Animate canoe paddles, hulls, hikers and cyclists on the race clock. Release the course-owned textures, instance buffers and materials on exit. The Lake Louise issue-title search returned #2154.
+
+## Alto de Letras (#2155)
+
+Use the original twenty-seven stages of GCN Training’s Hank’s Hardest Training Session on a 22.150 km interpretation of Ruta 50. The lower bends cross coffee country before Fresno. Exposed ridges carry wax palms. Padua marks the transition to cloud forest and the final páramo. Model the distant switchbacks in the same elevation system as the rider and keep tall palms, town façades and rising traffic legible from a moving bike.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Coffee slopes, 0.08 km | Real 09–10 and games 01 and 04 | Low rows of glossy coffee bushes and broad plantain leaves climb above the first switchback in warm sunlight. |
+| Fresno, 3.62 km | Real 06–08 and game 03 | A painted chiva passes timber balconies, a bakery and a stall selling fruit and arepas. Its roof luggage and open rows of seats stay visible around the bend. |
+| Wax palm ridge, 7.68 km | Real 01, 10–12 and games 01 and 05 | Slender wax palms rise above an exposed green ridge. The road folds back below the rider and local cyclists climb alongside. |
+| Padua, 11.84 km | Real 04, 06–08 and games 02–03 | A loaded lorry climbs past painted shopfronts and an aguapanela stall as the first cloud crosses the road. |
+| Cloud forest, 16.92 km | Real 01, 04–05 and 14–15 and games 02 and 04 | Tree canopies frame switchbacks that disappear into a moving band of mist. Patches of cloud fill the valley beneath the asphalt. |
+| Páramo de Letras, 21.49 km | Real 02–03, 05 and 13–14 and games 02 and 05 | Silver-leaved frailejones, ochre tussocks and moss replace forest near the signed 3,679 m summit under cool grey light. |
+
+The Caldas chivas and Murillo façades in the credited photographs supply construction and paint references for the modelled towns. The Cocora photographs establish wax palm proportions. Use the game views for riding-scale framing and contrast in the fog. Adapt Caribana’s moving traffic and layered skyline to the valley switchbacks, use shared assets for plantings and release route-owned buffers on exit. The issue-title search returned #2155.
+
+## Lisbon Tram Hills (#2156)
+
+GCN Training’s 15 Minute Strength Workout supplies sixteen stages and a three-second video offset. The route compresses Alfama’s climb into 6,337.5 m. The rails, cobbles and wire share the centre-line geometry with the tram. Keep the restrained composition requested in rider feedback #931. Use simple planes of sun and shadow through the lanes, then give each terrace a clear view of the river and a distinct landmark.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Tram 28 lane, 0.08 km | Real 01–04, 06 and 12 and games 03 and 05 | A yellow Remodelado takes the bend beneath the contact wire. Twin steel rails follow the polished calçada through the lane. |
+| Sé Cathedral, 1.04 km | Real 04, 07 and 10 and games 01 and 04 | The cathedral’s two square towers and recessed rose window close the street. An escadinha branches away from its sunlit forecourt. |
+| Alfama beco, 2.18 km | Real 05 and 07–11 and games 03–05 | Blue and green azulejos, iron balconies and hanging laundry frame a stepped side alley. Locals gather beside café tables beneath bougainvillea. |
+| Santa Luzia, 3.36 km | Real 03, 08, 11 and 13 and games 01–02 | A blue-tiled parapet and flowering pergola open onto terracotta ridges and the broad Tagus. |
+| Portas do Sol, 4.70 km | Real 05, 09 and 13–14 and games 02 and 04 | Low roofs descend from the terrace toward the river. São Vicente’s paired white towers rise above them. |
+| Castelo de São Jorge, 6.02 km | Real 13–15 and games 01–02 | Crenellated stone walls climb to a square keep beyond the final bend. A shaded arch opens beneath the battlements. |
+
+Use the real streets and municipal tram photographs for proportions and materials. The reference folder has no direct cathedral portrait. The Sé’s twin fortress towers and rose window and São Vicente’s paired white towers follow the issue brief. Keep these silhouettes fixed above the roofs as in Caribana’s skyline. Batch repeated balconies and roof tiles into the street sections, animate tram travel, laundry and pedestrians on race time, and release course-owned resources on exit.
+
+## Loire Châteaux (#2157)
+
+Use the nineteen stages of GCN Training’s Sweet Spot Endurance Training on a 12.200 km circuit linking compressed interpretations of the Loire and its tributary the Cher. Build four different château silhouettes. Chenonceau’s gallery must cross actual water, leaving sky or the opposite bank visible through all five arches. Chambord has a central lantern and a dense roofline. Chaumont and Amboise occupy separate high terraces.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Loire à Vélo levee, 0.08 km | Real 01–04, 12–13 and games 01 and 03 | Green cycle signs mark the embankment above sandbars and willow islands. Passing touring cyclists and the narrow ground shadows of poplars give scale to the wide Loire. |
+| Chambord gardens, 2.12 km | Real 04–05 and games 02 and 04 | Round corner towers and a crowded slate roofline of chimneys, lanterns and turrets rise beyond symmetrical hedges and a still moat. |
+| Vouvray vineyards, 4.32 km | Real 03–04, 11–12 and games 01 and 05 | Vine rows converge up the slope. Chalk cave doors punctuate a tuffeau ledge above the lane. |
+| Chenonceau on the Cher, 6.58 km | Real 06, 13 and 15 and games 02 and 04 | The château’s long pale gallery lies across five open arches, with a separate tower at the bank. Moving water breaks the reflected arch rhythm. |
+| Amboise river town, 8.92 km | Real 02, 08–10 and 14 and games 03–05 | The high terrace and round riding tower overlook a town of slate-roofed limestone houses. A flat-bottomed riverboat passes the quay. |
+| Chaumont overlook, 11.60 km | Real 07, 08, 10 and 13–14 and games 02 and 05 | Pointed grey roofs crown the round towers of Chaumont above the slope. The final levee passes willows and low sandbanks in hazy summer light. |
+
+The Saumur photographs (08–10) guide the relationship between cliff, town and river. For Amboise, use the royal château’s documented riding towers and terraced promontory. [Château royal d’Amboise, Les tours cavalières](https://www.chateau-amboise.com/les-tours-cavalieres-du-chateau-royal-damboise/).
+
+Use Caribana’s fixed skyline and bounded moving foreground for the towers, the cyclists and the riverboat. Draw the repeating vine rows and avenues in sections along the lane, with softer detail at the opposite bank. Release course-owned materials, textures and buffers on exit. The Loire issue-title search returned #2157.
+
+## Machu Picchu Road (#2158)
+
+Keep the World Ride bend profile of 60 degrees and 48 m and the existing heading function. Rider feedback #939 explicitly calls out these turns. Transfer the alignment to the native race centreline, sampling heading through each bend. Use the original Step It Up workout clock and distance integration. Compress the real sequence from town to citadel into the ride.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Aguas Calientes bridge, 0.08 km | Real 03, 10 and 12. Games 01 and 02. | The bridge’s cross-bracing frames the town, the railway embankment and the first glimpse of brown water. |
+| Urubamba gorge, 1.74 km | Real 03, 10 and 11. Games 01 and 05. | Fast brown water breaks against granite boulders below the outside verge. Overlapping green ridges enclose the gorge. |
+| Hiram Bingham switchbacks, 3.88 km | Real 01–05. Games 03–05. | A two-tone shuttle rounds a bend above the exposed retaining wall. The narrow outer verge reveals the next cut in the forest. |
+| Cloud forest, 6.22 km | Real 04, 06 and 09. Games 03 and 04. | Ferns and climbing bromeliads frame the patched road as cloud crosses the distant rock faces. |
+| Inca agricultural terraces, 8.40 km | Real 07–09 and 13–15. Games 03 and 05. | Grassed terrace tops step down between dry granite retaining walls. Stone stairs cut diagonally across the rider’s view. |
+| Citadel saddle, 10.37 km | Real 07–09 and 13–15. Games 02 and 05. | Roofless gabled walls and temple courts sit on the saddle in front of the steep asymmetric peak of Huayna Picchu. |
+
+Use Caribana’s fixed skyline for Huayna Picchu and the outer mountains, with separate nearer rock faces and sectioned terraces. Bake shade beneath granite blocks and across the forest floor. Keep original shuttle art separate from shared bus geometry. Move the buses, broken water and drifting cloud on race time. Dispose of course-owned textures, materials and buffers on exit. The photo and game credits are in docs/worlds/machupicchu/SOURCES.md.
+
+## Marina Bay Night (#2160)
+
+Rider feedback #913 praises the original night world. Its class street module already has a lit skyline, three leaning hotel towers and the SkyPark. Retain that palette and the open view across the water. The race route places its landmarks at fixed positions around the bay. The original seven-stage GCN class is Fast Paced Cadence Variations.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Bayfront promenade, 0.08 km | Real 01, 06, 10 and 14. Games 01 and 02. | Three inclined towers support the cantilevered SkyPark across open water. Lamps and palm trunks pass the rider while the hotel stays fixed on the skyline. |
+| Merlion Park, 1.84 km | Real 06, 07 and 11. Games 02 and 05. | The white lion and scaled tail rise on a wave plinth. Its water jet curves into the bay in front of the reflected CBD towers. |
+| Esplanade shore, 3.62 km | Real 03, 06, 07 and 12. Games 01 and 04. | Twin spiked theatre domes catch gold light behind the promenade. Strollers and joggers pass the rail by the dark water. The spherical Apple pavilion in real 12 is a separate south-bank landmark. |
+| Helix Bridge and lotus, 5.36 km | Real 02, 04, 05 and 14. Games 03–05. | Two illuminated spirals twist over the bridge deck. The ArtScience lotus petals open beyond the structure. |
+| Supertree Grove, 7.58 km | Real 08–09. Games 03–05. | Violet and cyan branches spread above a narrow suspended OCBC Skyway. The crowns change colour on the ride clock. |
+| Flyer and light show, 10.12 km | Real 01, 03, 10, 13 and 15. Games 01–02 and 04. | Upright white capsules follow the illuminated Singapore Flyer rim. Narrow beams cross the bay above the reflections. |
+
+Use Caribana’s fixed skyline and merged window strips for the CBD, and tint their broken reflections on the water plane. Keep the Helix Bridge spirals and lotus geometry separate from the skyline. Batch railings, palm crowns and garden branches along the route. Animate the wheel, tree light and joggers directly from race time. Release course textures and draw buffers when leaving the route. Image credits are in docs/worlds/marinabay/SOURCES.md.
+
+## Marrakech Medina (#2161)
+
+Use the original Fast Fitness: High Cadence 30 intervals to determine stage length. The race leaves the square for the spice and lantern souks and returns past the ramparts. The existing class registry supplies its warm dusk palette, gentle bends and flat sprint profile. Give the square depth through a fixed Koutoubia silhouette, a nearer tier of roof terraces and the stalls and passersby closest to the rider.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Jemaa el-Fnaa at dusk, 0.08 km | Real 01, 03–06 and 14. Games 01–03. | Koutoubia’s square sandstone minaret rises above the open plaza, beyond grill canopies, palm crowns and glowing café windows. |
+| Night grill stalls, 2.16 km | Real 01–06. Games 01 and 03. | Steam and charcoal smoke drift above rows of numbered canvas stalls. Bare bulbs pick out seated diners and cooks. |
+| Spice and juice market, 4.32 km | Real 02, 11–12. Games 01 and 04. | Orange pyramids, spice mounds and striped awnings narrow the passage. A donkey cart passes the juice sellers. |
+| Souk Semmarine, 6.68 km | Real 07–10 and 15. Games 01 and 05. | Reed screens stripe the lane. Hanging rugs and leather slippers give way to perforated brass lamps. A moped threads between the stalls. |
+| Musicians and performers, 9.24 km | Real 01–04 and 09. Games 02–03. | A half-ring of onlookers gathers around a seated pipe player, a rising snake and a percussionist. A clear line through the square stays visible to the rider. |
+| Ramparts and café terraces, 12.24 km | Real 04–06 and 13–15. Games 02, 04 and 05. | Crenellated red walls and a passage under a horseshoe arch frame the closing lane. Lit rooftop cafés overlook the square, with the Atlas behind the minaret. |
+
+Adapt Caribana’s baked occlusion and bounded moving foreground. Alternate sun-warmed lime plaster, darker patched areas and small pools of pierced light along the souk passage. Batch reed slats, hanging goods and roof silhouettes. Use a bounded set of smoke planes, a moving scooter and foreground musicians. Course geometry, materials, images and animation buffers follow the renderer lifetime. Reference credits are in docs/worlds/marrakech/SOURCES.md. The issue-title search returned #2161.
+
+## Mardi Gras, New Orleans (#2159)
+
+The original class assignment at commit a881e993d pairs this world with GCN Training’s Ride to the Beat. A later change (480826a71) moved that class to Miami Neon Nights. Restore its original 25-stage plan for the separate New Orleans race and preserve the existing Miami assignment. Carry the World Ride dusk palette and gentle avenue turns into the Garden District and Canal Street. The costume and vehicle designs are original.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| St. Charles streetcar, 0.08 km | Real 05, 09 and 12. Games 03 and 05. | An olive-green Perley Thomas car runs along the grassy neutral ground under overhead wire and arching live oaks. |
+| Garden District mansions, 1.56 km | Real 05, 09 and 12. Games 03 and 04. | Painted porch columns, iron fencing and purple, green and gold bunting line the avenue. Bead strings hang from oak branches. |
+| School brass band, 3.18 km | Real 03, 08 and 14. Games 01 and 05. | White plumes and bright sousaphone bells rise behind paired snare drummers. The crowd follows the band from ladders behind barricades. |
+| Masked krewe float, 4.74 km | Real 01, 02, 06, 07 and 11. Games 01 and 02. | An original painted jester float with a raised deck rolls between spectators. Masked riders reach out and bright throws fall from the deck. |
+| Flambeaux procession, 6.24 km | Real 03, 10, 13 and 14. Games 02 and 05. | Torchlight catches the dancers, metallic costume trim and cups and beads on the asphalt as dusk deepens. |
+| Canal Street finish, 7.96 km | Real 01, 04, 13 and 15. Games 01, 03 and 04. | Families fill the iron-lace galleries and the street behind the final float. Warm shop windows and street lamps frame the finish. |
+
+Use Caribana’s bounded parade animation and repeated crowd geometry. Place the St. Charles streetcar on a separate grassy track, with a trolley pole and a shared overhead wire. Keep the band’s instrument silhouettes and float deck moving independently, linked to race time. Bake iron gallery shadows and small throws along the kerb. Release course-owned textures, geometry and materials on exit. Reference credits are in docs/worlds/mardigras/SOURCES.md.
+
+## Mauna Kea (#2162)
+
+The original 60 Minutes of Brutal Power intervals set the distance of each stage. Place the Onizuka visitor stop at 2,800 m and the summit at 4,207 m. Use a distance-dependent background grade plus the resistance deviation within each section, preserving both landmarks' elevations. Preserve the 4WD gravel transition and the return to black tarmac near the observatories.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Saddle Road lava fields, 0.08 km | Real 06–07 and 11. Games 01 and 04. | Black lava hummocks and pale grass border the yellow-lined tarmac. Mauna Loa forms a broad, low shoulder behind the saddle. |
+| Māmane woodland, 4.42 km | Real 04–07. Games 04–05. | Twisted māmane trunks and sparse grey-green crowns give way to an increasingly open hillside. Cloud drifts across the lower switchbacks. |
+| Onizuka visitor station, 8.98 km | Real 04–05. Games 01 and 03. | A stone visitor building, silversword rosettes, cones and a four-wheel-drive sign mark the transition to the unpaved climbing road at 2,800 m. |
+| Cinder switchbacks, 14.74 km | Real 03, 09, 13–14. Games 02–03 and 05. | The gravel road cuts into bare red and ochre cones. A service vehicle climbs the next bend, with the low cloud deck visible beyond it. |
+| Observatory ridge, 21.96 km | Real 01–02, 08–11. Games 01–03. | Two Keck domes, Subaru’s cylindrical enclosure and Gemini’s silver segmented dome stand on the ridge. Dark access shutters and platforms interrupt the pale metal shells. |
+| Summit at sunset, 25.24 km | Real 09–15. Games 01 and 03. | The high paved road passes a summit altitude marker. Orange light crosses the domes and catches the cloud tops below the ridge. |
+
+Keep the observatories at fixed ridge positions like Caribana’s CN Tower. Use stepped volcanic material bands, baked underside shade and a layered cloud horizon. Separate moving enclosures from their fixed telescope buildings. The vehicle, enclosure and cloud drift use race time, and their geometry and materials belong to the course renderer. The photographic and game credits are in docs/worlds/maunakea/SOURCES.md. The issue-title search returned #2162.
+
+## La Mercè, Barcelona (#2163)
+
+The legacy renderer already supplies a violet dusk and a rideable street. The catalogue lacks a native La Mercè race. Restore the original class intervals through the maps API, use the same physical course distance in the HUD and renderer, and lazy-load the native mesh and festival materials on race entry. Preserve the warm violet sky over the stone avenue.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Via Laietana, 0.08 km | Real 01, 05–07. Games 01 and 03. | Rows of five- to seven-storey stone office blocks frame the broad striped avenue. Low sodium pools, striped senyeres and spectators at the barriers guide the riding line. |
+| Gegants and capgrossos, 2.24 km | Real 09–12. Games 01 and 04. | A giant in a red barretina and a tall skirted partner turn above their handlers. The big-headed dancers weave below them at the edge of the avenue. |
+| Correfoc, 4.58 km | Real 02–04 and 14–15. Games 02 and 05. | Hooded devils flank a blue horned fire beast. Airborne sparks arc through street smoke, lighting the paving and the faces behind the barriers. |
+| Plaça Sant Jaume, 6.76 km | Real 08–09. Games 01 and 04. | The castellers form a broad pinya under narrowing rows of red shirts, white trousers and dark waist sashes. The Ajuntament and Palau de la Generalitat face each other across the plaza. |
+| Cathedral and Gothic Quarter, 9.32 km | Real 06–07 and 13. Games 02–03. | Narrow limestone lanes open onto the Cathedral’s pointed windows and central spire. Warm light grazes projecting stonework and balconies. |
+| Piromusical finale, 12.26 km | Real 02, 05 and 14–15. Games 03 and 05. | Coloured projection light washes across the avenue façades. Fireworks break above the distant Montjuïc ridge behind lit festival bunting. |
+
+Keep the Cathedral, civic buildings and the Montjuïc ridge fixed in course coordinates. Batch the barriers, spectators and balconies into visibility sections. Paint recess shade, joints and worn gutters into the local stone and tarmac. Vary seated children, raised phones, clothing and flag placement along the barriers. Animate the giants and bounded pools of sparks and fireworks on race time. The renderer owns and releases the textures, materials, geometry and buffers. Measure the moving rider after assets load on both stretches recorded above. Credits are in docs/worlds/merce/SOURCES.md. A GitHub title search for La Mercè returned #2163.
+
+## Miami Neon Nights (#2164)
+
+The existing class already rides a wet boulevard, with Atlantic surf on the left, neon hotels on the right and traffic at the kerb. Its repeated street uses invented hotel names. Keep the orientation and Ride to the Beat’s original intervals. Give the race six fixed landmarks through the maps API, native course assets and a route-scoped renderer. Commit 480826a71 records the class assignment. The original class entry and music stay available.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Colony Hotel and Ocean Drive, 0.08 km | Real 01–03 and 06. Games 02–03. | A blue vertical Colony blade rises between two curved neon eyebrows. Pink and cyan pools break over wet asphalt while the Atlantic opens beyond the palms on the other side. |
+| Carlyle sidewalk cafés, 1.44 km | Real 04–05, 09–11 and 14. Games 02–03. | Rounded Carlyle corner glazing and horizontal eyebrows overlook umbrella tables, diners and a couple strolling past raised café terraces. |
+| Ocean Drive cruisers, 2.88 km | Real 06–08, 11 and 15. Games 02 and 04. | An open convertible passes parked two-tone classics. Red tail lamps and alternating blade signs leave broken streaks in the road. |
+| Lummus Park beach, 4.36 km | Real 01, 06 and 13–14. Games 01 and 05. | A raised pastel lifeguard tower, its ladder and wraparound deck stand between coconut palms. White foam catches the moon beyond the sand. |
+| Breakwater neon frontage, 6.04 km | Real 01–05, 07–08 and 10. Games 02–03. | The stepped Breakwater crown and vertical sign alternate with blue and pink window bands. A little steam crosses the kerb near the busiest café. |
+| Brickell across the bay, 8.06 km | Real 07–08 and 12. Games 01, 03 and 05. | The boulevard opens toward illuminated Brickell and downtown tower silhouettes. Royal palms and streetlight halos frame the rider against the bay. |
+
+Use the Colony’s central blade, Breakwater’s steps and the Carlyle’s curved corner as the foreground equivalents of Caribana’s recognisable skyline. Put separate rows of umbrellas, palm trunks, beach furniture and surf between the rider and the horizon. Tie the wet streaks to their hotel signs and break them up with asphalt grain. Batch static detail into roadside sections, with fixed buildings and bounded moving car, surf and steam geometry. Release all owned geometry, materials and textures on leaving. Measure the submitted frames through Colony and Breakwater after warm-up. Credits are in docs/worlds/miami/SOURCES.md. The Miami title search returned #2164.
+
+## Moab Slickrock (#2165)
+
+The legacy scene supplies fierce sunlight and a winding road. The race catalogue lacks the native map and the six fixed views. Assemble a class-length interpretation of the Highway 128 and Arches landscapes. Keep the original Hurt Locker intervals and bend rhythm. Load the course from the maps API through the native world loader at race entry.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Highway 128 river canyon, 0.08 km | Real 01–02, 04–06 and 10. Games 01 and 03. | The double yellow line follows the Colorado River between dark Wingate walls. A gap in the canyon opens onto the snow-dusted La Sal Mountains. |
+| Slickrock trailhead, 2.18 km | Real 03, 10–11 and 13. Games 02 and 05. | Two mountain bikers roll over a rounded Navajo sandstone dome off the tarmac. Twisted juniper, sagebrush and dark soil crust mark the trailhead. |
+| Balanced Rock and fins, 4.32 km | Real 08–09 and 13. Games 01 and 03. | Balanced Rock’s large rounded cap meets a narrow pedestal beside the layered Organ fins. Recesses stay dark against the orange sunlit walls. |
+| The Windows, 6.52 km | Real 03, 13–15. Games 02, 04 and 05. | The North Window opens through a thick sandstone fin, framing a second pinnacle. Pale cross-bedded rock and a dark arch underside reveal its depth. |
+| Delicate Arch bowl, 9.24 km | Real 07, 12 and 14. Games 03–04. | A freestanding asymmetrical arch rises from the curved slickrock bowl. Its broad foot and slender opposite leg frame the sky, with the La Sals behind it. |
+| La Sal overlook, 12.28 km | Real 01, 06–08 and 10–12. Games 01, 04 and 05. | The final bends pass low sage and glowing red-orange benches. Snow on distant La Sal summits catches the remaining light beyond the desert. |
+
+Anchor the rock formations in course coordinates and the La Sal skyline in the distance. Give each arch genuine open space under its lintel and asymmetric supports. Separate the bedding and vertical joints in Wingate walls from wind-carved Navajo domes. Bake recess shade into the geometry and use bounded trail riders, river ripples and dust on the race clock. Release all scene resources when the rider leaves. Compare the opening and the busiest landmark against Caribana’s submitted-frame benchmark. Commit a3b75bcdf restored all 15 real photographs, five game views and the credits in docs/worlds/moab/SOURCES.md. The Moab title search returned #2165.
+
+## Monaco Street Circuit (#2166)
+
+The class scene already has a race-weekend harbour and grade-aligned paint, as captured in Monaco iteration 061. The race catalogue lacks this class-length native course. Bind the maps API and the normal race entry to the original Non-Stop Sprinting intervals. Keep the course’s 30-degree bend rhythm and construct each road stripe and kerb against the road samples.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Port Hercule quay, 0.08 km | Real 01, 07, 09–10. Games 01–03. | Rows of white stern-to superyachts rise behind Armco on the harbour straight. Dark decks, glazing and masts stand out against Mediterranean blue water. |
+| Tabac grandstands, 1.62 km | Real 02, 04 and 08. Games 01–02 and 05. | Steep blue seats step up from the catch fencing, filled with fans. Red and white kerbs round the bend and the grey barriers follow the grade. |
+| Casino Square, 3.22 km | Real 10–11, 14–15. Games 02–03. | The casino’s symmetrical towers, clock and copper-green roofline rise over palms and the fountain garden. Pastel balconies climb the hill behind them. |
+| Fairmont tunnel, 4.86 km | Real 12 and 14. Games 02 and 04. | Strip lighting picks out the curving tunnel roof, panel joints and sponsor boards. A bright exit reveals the sea beyond the dark racing line. |
+| Race-weekend pit lane, 6.54 km | Real 01–06 and 13. Games 01, 02 and 05. | An amber-lit safety car approaches a marshal post beside the pit garages. Road paint and pit markings stay flush to the grade. |
+| Monaco-Ville and the Palace, 9.32 km | Real 07, 09–10 and 15. Games 03–05. | The final waterfront bends open a sightline to the Prince’s Palace on the rock. Stern terraces and palm crowns frame the pastel town across the harbour. |
+
+Keep the rock, the pastel hillside and the casino fixed beyond the close racing line. Give the yachts stepped deckhouses, transoms and masts, and give the tunnel true interior space and a visible exit. Use sectioned Armco, batched seating, baked shadow and bounded ride-clock motion for the waterline, fountain and safety car. Release the course resources when the rider leaves. Use the submitted frames at the opening and the pits for the Caribana performance comparison. Credits are in docs/worlds/monaco/SOURCES.md. The Monaco title search returned #2166.
+
+## Montmartre (#2167)
+
+Rider feedback in #917 asks that the existing golden-afternoon look and feel be kept. Iteration 026 corrected paint that sank below the cobbles on steep ramps. The class already has café terraces, easels and domes. Give the race catalogue the same class-length route, carry the paint over the actual road triangles, and model the individual corners from their credited photographs.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Le Consulat corner, 0.08 km | Real 01–02, 08. Games 02–03. | Red café awnings follow the narrow wedge of Le Consulat. Bistro tables, woven chairs and green lamps frame a glimpse of the domes above the cobbles. |
+| La Maison Rose, 1.58 km | Real 03–04, 09–10, 13. Games 03 and 05. | Pink stucco, deep green shutters and the sloping rue de l’Abreuvoir identify La Maison Rose. A stone gutter and short bollards turn with the lane. |
+| Clos Montmartre and Au Lapin Agile, 2.91 km | Real 05, 09–10, 12. Games 03 and 05. | Terraced vines and ivy rise above the garden wall opposite the cabaret’s green paling and ochre sign. Golden light catches the upper leaves. |
+| Place du Tertre, 4.38 km | Real 07–08, 14. Games 01 and 03. | Painters lift their brushes beside tilted canvases and parasols. Red and green terrace awnings lead back into the lane beyond the square. |
+| Rue Foyatier, 6.02 km | Real 03, 10–11, 15. Games 02 and 05. | Stone steps and twin iron rails climb beside the steep street. WATTZUP and VAS-Y follow the pavés, with a Wallace fountain and a green Métro entrance at street level. |
+| Sacré-Cœur, 7.91 km | Real 01, 06 and 15. Games 01–02 and 04. | The tall central dome and smaller white domes of Sacré-Cœur rise beyond the rooftops. The nearest stone courses and cornices stay warm in the low sun. |
+
+Keep the basilica fixed on the hill with layered drums, domes and lanterns. Model the steps and iron rails against the road grade, and batch granite gutters, vine rows and garden walls in visible sections. Share café furniture and painter geometry. Advance the painters’ brushes, terrace movement and Wallace fountain on the bounded ride clock. Release loaded materials and actor geometry on exit. Compare the lower lanes and the painters’ square to Caribana’s submitted frames. Photo and game credits are in docs/worlds/montmartre/SOURCES.md.
+
+## Montreal Jazz Fest (#2168)
+
+Preserve the festival look praised in #909 and recorded in iteration 001. The class scene already has summer dusk, saxophone banners, festoons and live stages. Its opening capture records a dark street, uniform lit windows and thin rows of people. Keep the street legible, break up lit windows by floor and build pockets of varied spectators around the stage. Expose the original class through the race catalogue.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Rue Sainte-Catherine, 0.08 km | Real 01, 08 and 13. Games 01 and 03. | Historic stone shops and glass offices line a closed street. Terrace tables, food stalls and saxophone banners mark the approach to the festival. |
+| Place des Festivals main stage, 1.76 km | Real 03–07 and 10. Games 02–03. | A broad black stage roof, truss legs, stacked speakers and coloured spots frame the live band. Spectators fill the front rail in staggered rows. |
+| Place des Arts and fountain court, 3.31 km | Real 01, 04, 09 and 15. Games 02 and 04. | Fountain jets rise from the plaza paving. The sloping theatre roof, tall bent white light masts and red lighting dots identify the Quartier des spectacles. |
+| Village pink-ball canopy, 4.89 km | Real 02, 08 and 13. Games 03–04. | Pink strands sag across the narrow street. Shop awnings, warm windows and a bike-share dock give the overhead canopy scale. |
+| Food kiosks and summer terrasses, 6.77 km | Real 05–06, 11–12 and 14. Games 02–03. | Festivalgoers move between illuminated food stands, café terraces and a blue Métro entrance. A second set plays beyond the crowd. |
+| Mount Royal cross street, 9.12 km | Real 01, 04, 08, 12 and 15. Games 01 and 05. | A cross street opens onto wooded Mount Royal and its cross. Glass towers frame the hill as dusk deepens and the festival lights brighten. |
+
+Use the class’s four-degree bends over 300 m, broad plaza openings and restrained gradients. Separate the fixed Mount Royal silhouette from near shop façades, stage steelwork and overhead strings. Animate band gestures, crowd poses and fountain jets on the ride clock. Batch rows of spectators and pink balls, cull street sections and release textures and instances when the rider leaves. Compare the opening and main-stage sections to Caribana’s tablet measurements. Street geometry and light are based on the credited material in docs/worlds/montreal/SOURCES.md.
+
+## Mont Royal (#2169)
+
+The existing class supplies the workout and forty-degree bends, while the shared street scene provides its surroundings. The race needs an autumn park, identifiable lake and summit, and depth between the terrace and downtown. Fit the existing work and recovery stages to repeated efforts on the mountain rather than stretching a single summit to the full workout length.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Voie Camillien-Houde, 0.08 km | Real 01–05 and 07. Games 02–03. | Club cyclists climb in pairs inside the painted bike lane. Québec park markers and maple crowns frame the road. |
+| Camillien-Houde hairpin, 4.42 km | Real 01–04, 06 and 09. Games 01–03. | The sweeping turn cuts through exposed grey stone. Guardrail sections wrap around the outside of the turn and the bike lane holds its width. |
+| Olmsted Road, 8.19 km | Real 04, 06, 08–09 and 14. Games 01 and 04. | Runners use a gravel carriage path beside golden birches and deep red maples. Trunks and overhanging branches cast broken patches of shade. |
+| Lac aux Castors, 13.03 km | Real 06, 09, 13–14. Games 01 and 05. | The trees open onto Beaver Lake, its curved lawn and a low glass pavilion. Reflections shift on the water while the shore stays fixed. |
+| Croix du mont Royal, 18.64 km | Real 06, 09, 12 and 14. Games 01 and 04. | The illuminated lattice cross rises through an opening in the upper forest. Steel bracing and horizontal arms remain legible from the saddle. |
+| Belvédère Kondiaronk, 24.56 km | Real 10–11 and 15. Games 02 and 05. | Stone balustrades frame the chalet terrace, the towers of downtown Montréal and the distant St. Lawrence and bridges. |
+
+Construct the hairpin, bike-lane edges, rail posts and rock cuts against the road samples. Use distinct maple, oak and birch silhouettes. Leave openings through the trees at the lake, the steel cross and the lookout. Fix the skyline, river and bridge behind the stone terrace. Club riders, park runners and water movement share the ride clock. Section and reuse foliage and rail geometry, keep the distant skyline inexpensive and dispose of all resources on exit. Compare the club climb and the lookout approach to Caribana. Credits are in docs/worlds/montroyal/SOURCES.md. The Mont Royal title search returned #2169.
+
+## Mount Washington Auto Road (#2170)
+
+The class supplies the original workout, 45-degree bends and resistance-driven climbs. Its shared roadside scene lacks a grade-aligned rack railway and the changes in vegetation and exposure that make this ascent identifiable. Fit the physical climb to the class distance, leaving the outer drops open and steepening the final wall.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Auto Road forest gate, 0.08 km | Real 03–04, 07 and 11. Games 01 and 05. | Mile posts and a timber entrance sign frame a narrow patched road. Autumn hardwoods give way to dense spruce up the climb. |
+| Gravel shoulder and krummholz, 3.62 km | Real 03–07. Games 01–02 and 05. | Worn asphalt breaks into gravel along an exposed bend. Wind-stunted firs lean beside the unguarded drop. |
+| Great Gulf treeline break, 6.37 km | Real 01, 03–04, 08 and 12. Games 02–04. | Low shrubs give way to lichen-covered talus. The Great Gulf falls away beneath the long silhouettes of Adams and Madison. |
+| Cog Railway trestle, 8.49 km | Real 08, 11 and 13–14. Games 03 and 05. | The steam locomotive pushes a red passenger coach up an inclined rack railway. The plume drifts across the timber trestle. |
+| Cloud bank above treeline, 10.32 km | Real 02, 08–10, 12 and 15. Games 01 and 04. | Wind drives broken cloud over the road. Roadside cairns and rime pick out the edge at the entrance to the fog. |
+| Sherman Adams summit, 12.31 km | Real 01–02 and 08–10. Games 02–05. | Spectators ring cowbells at the final steep wall below the visitor centre. The cylindrical observatory tower and low stone Tip-Top House stand above the boulder field. |
+
+Anchor the Presidential Range behind a steep Great Gulf. Keep the road free of guardrails, weather the shoulder, step from deciduous canopies to spruce to krummholz and end with low talus. Align the cog locomotive, coach and trestle to the same inclined track. Shape the Sherman Adams building, instrument tower and Tip-Top House separately. Bound steam, cloud and spectator motion by visibility and drive it with race time. Section static detail and release course resources on exit. Compare the forest and summit to Caribana. Credits are in docs/worlds/mountwashington/SOURCES.md. The title search returned #2170.
+
+## Día de Muertos Parade (#2171)
+
+The class supplies the original plan and a straight, gently rolling boulevard. Its shared scene lacks the landmark and parade. Place a fixed winged Ángel, Reforma’s towers and layered trees behind the moving foreground. Preserve the original four-degree bends over 300 metres, keeping an open racing lane between the floats and the crowd.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Paseo de la Reforma, 0.08 km | Real 01–02, 12 and 14. Games 01–03. | A broad racing lane runs between marigold beds, mature trees, glass towers and lamps. The gilded Ángel glows above the boulevard. |
+| Giant catrinas, 1.44 km | Real 04–09. Games 02–03 and 05. | Tall papier-mâché skeleton puppets in vivid dresses sway above the rail. A painted-face crowd gathers beneath the brim of the Catrina’s hat. |
+| Monarch dancers, 2.68 km | Real 03–04, 08 and 13. Games 03–04. | Monarch dancers lift their veined orange wings over the marigold median. The road remains open between fans and performers. |
+| Ángel de la Independencia, 3.96 km | Real 01–02, 12 and 14. Games 01, 03 and 05. | A winged gold figure crowns the fluted stone column beyond the flower-filled roundabout. Bronze statuary and the lit steps give its base scale. |
+| Alebrije float and lowriders, 5.52 km | Real 06–07, 09–11 and 15. Games 02–04. | An illuminated alebrije floats above a rolling platform, followed by a lowrider. Spectators in calavera make-up fill the pavement. |
+| Papel picado at night, 7.47 km | Real 02, 05, 10–11, 13 and 15. Games 01–03. | Cut-paper flags arc across the avenue above lamps and warm float lights. Lit towers stand beyond the darker street trees. |
+
+Use the photographs for costume silhouettes, float proportions, boulevard width and night lighting. Keep the marigold beds and stands tied to the terrain. Advance puppet sway, monarch wings and rolling floats from the race clock. Give the papel picado real cut-outs, share flower and crowd geometry, cull street sections and release all loaded art on exit. Compare the opening and alebrije procession to Caribana. Credits are in docs/worlds/muertos/SOURCES.md. The title search returned #2171.
+
+## Mulholland Drive (#2172)
+
+The original class supplies the resistance and cadence intervals and its rolling 35-degree bends over 70 metres. Its shared street scene does not distinguish the basin from the Valley. Build a physical ridge with houses anchored on its slopes, a fixed skyline on the Los Angeles side and a separate low grid backed by mountains on the Valley side.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Ridge road and chaparral, 0.08 km | Real 01–04 and 10. Games 01, 03 and 05. | Double yellow lines turn around a dry chaparral bank, past chevrons, a timber power pole and the first open view of the ridge. |
+| Los Angeles basin, 2.63 km | Real 03, 05, 07 and 13. Games 02–04. | A pull-out opens over the folded Hollywood Hills to the distant downtown towers. Sage and a galvanized rail frame the near edge. |
+| Modernist hillside houses, 5.19 km | Real 08–10 and 14. Games 02–04. | White modernist volumes, shaded glass and decks on stilts step down the hillside above gated driveways. Eucalyptus and palms stand on the bends. |
+| Hollywood Sign on Mount Lee, 8.27 km | Real 01, 06, 12 and 15. Games 01, 03 and 05. | Separate white letters read HOLLYWOOD across the brush-covered flank of Mount Lee. A slender broadcast mast rises above the sign. |
+| San Fernando Valley, 12.06 km | Real 03–05, 07 and 11. Games 02–05. | The northern shoulder opens onto the valley’s straight street grid below the foothills. Golden grass gives way to distant blue-grey mountains. |
+| Scenic overlook, 16.42 km | Real 05–07, 10 and 12–14. Games 01–04. | Visitors use a viewing scope beside curved rails on a paved turnout. Palms and poles silhouette against sunset haze over Los Angeles. |
+
+Align the yellow lines, driveways, guardrails and viewing platforms with the changing grade. The Hollywood letters stand separately on Mount Lee below the mast. Use low sun, pale haze and distinct oak, palm and eucalyptus silhouettes. Give a passing roadster, an overlook visitor and a small group of wind-blown plants bounded motion on race time. Share roadside meshes, section the terrain and release loaded art on exit. Compare the ridge opening and the scenic overlook to Caribana. Credits are in docs/worlds/mulholland/SOURCES.md. The title search returned #2172.
+
+## Mur de Huy (#2173)
+
+The 26-minute class returns to the climb over successive efforts. Fit each ascent and recovery to the interval profile. At the steep bend put the spectators behind grade-aligned barriers so the rider can see the pitch against the vertical posts.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Lower town, 0.08 km | Real 06, 09 and 10. Games 02 and 05. | Terraces crowd the foot of the climb. Dark wheel tracks and worn white names lead into the lane. |
+| Chemin des Chapelles, 2.34 km | Real 01, 04 and 08. Games 01 and 04. | A white roadside oratory sits inside the chicane. Its pointed roof and recessed niche stand clear of the passing riders. |
+| Steepest bend, 4.81 km | Real 02–05, 07 and 13. Games 01 and 05. | The 26% pitch tips the painted tarmac upward between steel crowd barriers. Spectators reach over the outside rail. |
+| Meuse valley, 6.53 km | Real 14 and 15. Game 03. | The road shoulder opens above the Meuse and Huy rooftops. The fort rises from its rocky bluff beside the river. |
+| Wooded slope, 8.80 km | Real 03, 06, 07 and 12. Games 01 and 04. | Leafy branches arch over the riders while damp patches break up the spring light on the lane. |
+| Notre-Dame de la Sarte, 10.82 km | Real 01, 04 and 11. Games 02 and 05. | The summit finish arch frames the lane beside the church. Flags and spectators line the approach. |
+
+Keep the citadel fixed above the river and give nearby chapels dimensional roofs, plinths and niches. Repeat the barrier pickets and share crowd geometry. Drive the cyclists, flags and spectators from elapsed race time. Release all course-owned geometry and materials on exit. Reference credits are in docs/worlds/murdehuy/SOURCES.md.
+
+## Napa Vineyards (#2174)
+
+Rider feedback in #915 singles out the existing world’s look and feel. Keep the low rolling Silverado Trail, warm afternoon and sightline to the winery tower, and capture the original ride at each position before changing it. Preserve the existing 18-degree bends over 130 metres and the cadence and resistance of Easy Riding.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Silverado Trail, 0.08 km | Real 01–03 and 06. Games 02 and 04. | A broad paved shoulder follows the yellow centre lines between the first trellises. Long oak shadows cross the tarmac. |
+| Mustard between trellises, 1.46 km | Real 04, 05, 09–11. Games 01–03. | Sunlit mustard and orange poppies edge weathered vineyard posts. Parallel vine rows run across the valley floor to the dry hills. |
+| Stone winery terrace, 3.12 km | Real 06, 08, 09 and 14. Games 02 and 03. | A gravel turnoff climbs to the fieldstone cellar. Low walls, shaded tables, wine barrels and parasols line its tasting terrace. |
+| Oak-shaded gate, 4.63 km | Real 02, 07, 13 and 15. Games 03 and 05. | A carved winery sign hangs between masonry piers. Iron gate leaves open under a spreading live oak. |
+| Vaca and Mayacamas ranges, 6.18 km | Real 01, 03, 06, 10 and 12. Games 01 and 04. | A rise reveals both belts of tawny hills behind the vineyards. A convertible follows the bends and another rider pedals along the shoulder. |
+| Mission winery, 7.84 km | Real 07, 08 and 15. Games 02 and 05. | A red-tiled arcade meets the white stucco bell tower. The road rises toward its bell opening and the courtyard beyond. |
+
+Build the arcade, bell opening and stone terrace at rider scale. Vary the vineyard row direction and spacing across fields, retain clear driveway openings and use the distant hills to orient riders. Use repeatable geometry for vines, posts and gates. Share moving actors and release loaded images and meshes on exit. Compare the opening and busy winery approach with Caribana. Credits are in docs/worlds/napa/SOURCES.md.
+
+## North Shore, Oahu (#2175)
+
+Rider feedback in #912 asks to preserve the existing look and feel. Compare six matching positions before and after building the course. Retain the 14-degree bends over 180 metres, gentle rolling grades and original class stages along Kamehameha Highway.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Haleiwa town, 0.08 km | Real 02, 04, 05 and 12. Games 02 and 03. | The painted surfer sign stands beside timber shops and a fruit stall. A double yellow line runs past a parked board-laden truck. |
+| Anahulu River, 1.33 km | Real 02, 06 and 10. Games 03 and 04. | Rainbow Bridge spans the river between sandy verges. The concrete arches frame the turquoise inlet and wind-bent palms. |
+| Waimea Bay, 2.86 km | Real 01, 08, 10, 11 and 14. Games 01 and 02. | The highway bends above a curved bay. White breakers peel past jumping rock, with the church tower tucked into the green hillside. |
+| Banzai Pipeline, 4.49 km | Real 08, 09, 11 and 13. Games 01 and 04. | A surfer carries a board toward the beach. Beyond the palms a winter swell curls over a turquoise face and breaks white. |
+| Sunset Beach, 6.56 km | Real 03, 06, 14 and 15. Games 02, 04 and 05. | A truss bridge carries the road beside ironwoods. Trade-wind clouds catch golden light offshore and the Koolau ridges remain inland. |
+| Kahuku shrimp trucks, 8.49 km | Real 02, 03, 07 and 12. Games 03 and 05. | Shrimp trucks face a gravel pullout. Written signatures surround the serving hatch, customers queue and picnic benches sit in palm shade. |
+
+Keep the crest of Waimea’s swell below the highway and give Pipeline a curling lip that moves sideways along the breaker. Build the food truck serving opening, palms, picnic tables and shoreline rock at rider scale. Compare the opening street and queue with Caribana. Share roadside materials and release all animated geometry on exit. Reference credits are in docs/worlds/northshore/SOURCES.md.
+
+## Notting Hill Carnival (#2176)
+
+Place the London streetscape around the original ten-degree bends over 150 metres. The avenue’s street trees, stucco bays, railings and concrete flyover establish London before the carnival artists and floats enter view. Preserve the complete GCN Quick HIIT Workout.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Ladbroke Grove, 0.08 km | Real 01, 04, 13 and 15. Games 01, 03 and 04. | Plane trees frame a broad curve between London terraces. Kerbside crowds leave an open riding line through the August street party. |
+| Feathered mas band, 1.04 km | Real 02, 05–09. Games 02 and 04. | Red and gold plumes turn beside turquoise and magenta wings. Riders pass between the edge of the band and the crowd barriers. |
+| Corner sound system, 2.13 km | Real 01–04, 09 and 10. Games 02 and 05. | A stack of bass bins and horns faces Ladbroke Grove from the corner. Caribbean flags hang from the balconies and spectators film from the kerb. |
+| Steel pan float, 3.09 km | Real 03, 09–11. Games 02 and 03. | A flatbed carries polished steel pans on racks, players and overhead bunting through pastel terraces. Confetti and powder mark the road below. |
+| Westway flyover, 4.37 km | Real 01, 04, 13 and 15. Games 01 and 05. | The broad concrete deck crosses above the road on paired supports. The riders move from August sun into its shade and back out to the procession. |
+| Jerk grills and food stalls, 5.61 km | Real 04, 10–12 and 14. Games 01 and 03. | Thin smoke curls up from a split drum grill. Caribbean flags brighten the stall awnings and whistle-blowing spectators stand beside the serving tables. |
+
+Model the open speaker mouths, band headdresses, steel pan bowls and the underside of the flyover. Reuse crowd geometry and animate the nearest performers, float and grill smoke from elapsed race time. Release scene-owned assets on exit. Compare the opening and pan float with Caribana. The reference credits are in docs/worlds/nottinghill/SOURCES.md.
+
+## Avenida 9 de Julio (#2177)
+
+The 18 km class course adapts the avenue to its 24 stages, with the original two-degree bends over 600 metres. Model the avenue in metres so a line of cars, the bus platform and the 67-metre obelisk give three distinct measures of scale.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Avenida 9 de Julio, 0.08 km | Real 01, 03, 05 and 14. Games 01 and 05. | Seven paved lanes fan out beside the central Metrobus corridor. Long dashed lines, billboard crowns and jacarandas frame the sprint. |
+| Metrobus station, 3.21 km | Real 02, 04, 08–11 and 15. Games 03 and 05. | A colectivo runs beside the red-roofed platforms. The boarding islands carry shelter columns, handrails, stop names and waiting passengers. |
+| Ministry of Health, 6.74 km | Real 04, 12 and 14. Games 01 and 02. | The steel outline of Eva Perón spans the Ministry’s pale window grid. Passing taxis and palms establish its height above the avenue. |
+| Teatro Colón, 9.78 km | Real 03, 06 and 13. Games 01 and 02. | The opera house’s pediment, arched windows, pilasters and stone cornices rise above the planted side plaza. Purple jacarandas shade the pavement. |
+| Multi-stage crossing, 13.62 km | Real 02, 04, 06, 08–10. Games 03–05. | Long zebra crossings break at the raised median islands. Pedestrians wait by signal posts as taxis, buses and motorbikes stream past. |
+| Plaza de la República, 17.53 km | Real 01, 03, 05–07, 11 and 15. Games 01, 02 and 04. | The four-sided Obelisco rises 67 metres over the plaza, tapering toward the pyramidal tip. Evening lights gather along its base and the surrounding avenues. |
+
+Use a four-sided tapered shaft and distinct cap, the opera house’s architectural bays and the Ministry’s steel portrait. The crossing markings and traffic lanes must meet across each island. Give the colectivo, taxis and waiting or walking pedestrians bounded movement on race time. Share roadside materials and release loaded artwork on exit. Compare the opening and dusk plaza with Caribana. Credits are in docs/worlds/nuevedejulio/SOURCES.md.
+
+## Okinawa Coast Road (#2178)
+
+The island course retains the original twenty-degree bends over 120 metres outside the long Kouri Bridge crossing. Give the narrow road low seawalls so the rider can see the shift from white sand through clear lagoon to dark offshore reef.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Route 58, 0.08 km | Real 01, 05, 06 and 15. Games 01 and 03. | An orange centre line curves between the coral seawall and subtropical greenery. A Japanese route shield stands at the edge of the village. |
+| Shisa village, 2.76 km | Real 01, 05 and 06. Games 01–03. | A pair of shisa guard the red-tiled house and coral-stone gate. Pandanus and cycads break up the roofline against Yanbaru’s green hills. |
+| Kouri Bridge, 5.47 km | Real 02–04, 07 and 14. Games 01 and 04. | The bridge carries the road on a long low deck above clear shallows. Repeated piers and the distant island reveal the full crossing. |
+| Mushroom islets, 8.91 km | Real 09, 12 and 13. Games 02 and 05. | Limestone islets with narrow eroded feet stand in pale aqua water. Dark reef patches remain visible in the lagoon around their bases. |
+| Coral beach, 11.83 km | Real 08, 11–13 and 15. Games 03–05. | Fine white sand slopes into the lagoon. Parasols and swimmers sit below the road and the water deepens from pale aqua to blue. |
+| Cape Manzamo, 16.19 km | Real 05, 09, 10 and 15. Games 02 and 05. | The grass-covered headland ends in a limestone elephant trunk. Deep water and pale foam show through the opening beneath its arch. |
+
+Build the bridge deck, parapet, pier caps and regularly spaced supports in metres. The two eroded limestone landmarks need distinct silhouettes. Keep the opening in Cape Manzamo’s trunk visible to the riding camera. Give the village greenery, swimming figures and cresting foam bounded movement on race time. Compare the village and bridge with Caribana. Credits are in docs/worlds/okinawa/SOURCES.md.
+
+## Oktoberfest, Munich (#2179)
+
+The course follows the original eight-degree bends over 150 metres. Keep enough clear road between the tents for the rider to overtake the procession. The reference folder includes all 15 photographs, five game views and their credits, restored in a3b75bcdf.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Wiesn main street, 0.08 km | Real 01–03 and 08–09. Games 01 and 03. | The wide festival avenue runs between timber beer halls, their painted gables rising above linked crowds in Dirndls and Lederhosen. |
+| Brass procession, 1.86 km | Real 04–07. Games 01 and 02. | Rows of musicians carry brass instruments and drums past the Schottenhamel bandstand. Blue-and-white pennants cross overhead. |
+| Brewery dray, 3.41 km | Real 04 and 07. Games 02 and 03. | Draught horses pull a decorated brewery wagon past the Paulaner tower. Harness, wheels, casks and greenery move together along the street. |
+| Bavaria and Ruhmeshalle, 5.79 km | Real 02, 11 and 14. Games 04 and 05. | Bavaria raises her wreath on the grassy hill beside the lion. The long Doric colonnade stands behind the bronze statue. |
+| Gingerbread market, 7.71 km | Real 01, 03, 08 and 09. Games 01 and 03. | Heart-shaped Lebkuchen, pretzels and roasted almonds line the lit stalls. People gather beneath striped awnings as the sky warms. |
+| Fairground at night, 10.19 km | Real 02, 10–13 and 15. Games 03 and 05. | Gondolas hang beneath the turning Ferris wheel. The five Olympia Looping rings and carousel canopy stand above the glowing tent roofs. |
+
+Use the painted entry gables, Bavaria’s raised wreath, the Ferris wheel spokes and the five coloured coaster loops as distinct silhouettes. Keep the horse team and dray together on the changing grade. Anchor crowd feet to the street and share stall geometry and band materials. Use the ride clock for each moving landmark and release all course assets on exit. Compare the crowded avenue and evening fairground to Caribana. Credits are in docs/worlds/oktoberfest/SOURCES.md.
+
+## Old Town Criterium (#2180)
+
+Retain the existing elevation samples, stage distances, advertised climb and starter unlock. Redistribute the heading through the townhouse corner over a 20 m arc, with a straight entry and exit. Open the frontage beside the seventh sprint so the west portal is visible across the square. Model the visible faces of the spire, portal and gables in silhouette, match the size of the setts to the bicycle tyres and keep the street furniture outside the riding line. The bannered rails and the three crowd rows overlap at different depths. Keep objects anchored to the local grade.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Steenstraat, 0.08 km | Real 06–09, 11 and 15. Games 01 and 03. | Shuttered townhouses crowd the narrow street. The changing sun picks out the rounded blue-grey setts and their dark joints. |
+| Cathedral kick, 2.53 km | Real 01–05 and 13. Games 01–03. | Bannered steel crowd barriers narrow the uphill sprint. Fans three deep cheer beneath the west tower on the skyline. |
+| Townhouse turn, 4.31 km | Real 06–09, 11 and 12. Games 01 and 04. | Bollards draw a line around the kerb of the right-angle corner. Closely spaced shutters, gables and overhead pennants turn with the bunch. |
+| Café terraces, 6.98 km | Real 01, 02, 10, 12 and 13. Games 02 and 04. | Striped parasols shade café tables, chairs and shopfronts behind the barriers. Warm plaster faces the hard midday shadows. |
+| Cathedral square, 10.45 km | Real 01–05, 13 and 14. Games 01 and 05. | Buttresses, pointed windows and a layered west portal resolve below the distant spire as the rider climbs into the square. |
+| Finish straight, 14.05 km | Real 01, 03, 05 and 13. Games 02 and 05. | The truss gantry spans the setts beside the lap board. The bell and waving flags stand against sunlight on the cathedral stone. |
+
+Bake the cathedral stone, window tracery, contact shadows and shop fronts. Share the spectator atlas and street furniture. Give each bounded group of moving supporters a deterministic phase. Use the existing race clock for the bell and pennants. Compare both tablet captures against the submitted-frame and draw-call evidence for Caribana. Original references and licences are in docs/worlds/oldtown/SOURCES.md.
+
+## Oregon Coast (#2181)
+
+Condense the north-to-south Highway 101 landmarks into the historical FTP Builder stages. Keep the ocean on the west side and spruce on the inland slope. Shape the two lighthouse sites separately. Render the tidal channel under the steel bridge and the opening in the Boardman arch from the rider’s side of the guardrail.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Highway 101, 0.08 km | Real 01–05 and 13. Games 01 and 03. | A rain-darkened two-lane highway curves between wind-shaped Sitka spruce, a silver guardrail and weathered shingle buildings. |
+| Cannon Beach, 3.18 km | Real 06, 07, 13 and 14. Games 01 and 05. | The broad basalt base and blunt, sloping crown of Haystack Rock rise above the Needles. Bleached logs lie across the grey beach. |
+| Yaquina Head, 6.83 km | Real 05, 11 and 15. Games 01 and 04. | The tall white tower and dark lantern stand clear of a low spruce headland. A brown pullout sign and low coastal fog sit nearer the road. |
+| Yaquina Bay Bridge, 9.96 km | Real 03, 10 and 11. Games 02 and 04. | Green through-arch ribs, diagonal trusses and slender vertical hangers frame the rider above a tidal channel. |
+| Heceta Head, 14.34 km | Real 08, 09, 12 and 15. Games 03 and 04. | A short white lighthouse and red-roofed service buildings overlook surf that wraps around the steep wooded point. |
+| Boardman headlands, 18.86 km | Real 02, 05, 12–14. Games 01, 03 and 05. | Water shows through a dark basalt arch. White breakers curl in front of it and wind-shaped spruce bracket the distant stacks. |
+
+Use merged native meshes for the rock, truss, roadway and keeper buildings. Vary the silhouette and spacing of spruce clumps. Place beach logs, pale breakers and distant headlands at different depths. Sample wind, beacon and breaker movement from the ride clock. Compare the submitted frames on the forest and lighthouse stretches to Caribana. Credits are in docs/worlds/oregon/SOURCES.md.
+
+## Outback Highway (#2182)
+
+Condense the Lasseter Highway into the historical Running on Empty stages. Use the driving side of the Australian highway for the rider and keep the road train in the opposite lane. Use separate silhouettes and distances for the long flat table of Mount Conner, rounded Kata Tjuta domes and the grooved west face of Uluru.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Erldunda turnoff, 0.08 km | Real 01, 06–08 and 15. Games 02 and 03. | Green direction boards lead onto straight bitumen. White edge lines separate the riding surface from red wheel ruts and golden spinifex. |
+| Road train, 1.71 km | Real 01, 05 and 15. Games 02, 03 and 05. | A long-bonneted prime mover and three articulated trailers pass in the opposing lane. Dust trails off the outer wheels and the apparent wind shifts as the vehicle passes. |
+| Curtin Springs, 3.62 km | Real 07, 08, 11 and 14. Games 02 and 03. | Fuel bowsers stand on a red-sand apron below the corrugated roadhouse veranda. The next-fuel sign, desert oaks and timber fencing stand apart from its frontage. |
+| Mount Conner lookout, 5.41 km | Real 06, 10, 13 and 14. Games 02 and 05. | The distant mesa has a long level summit and sloping shoulders. A wedge-tailed eagle circles above roadside scrub and the yellow wildlife-warning signs. |
+| Kata Tjuta, 7.88 km | Real 03, 04, 09 and 15. Games 02–04. | A cluster of rounded rock domes rises beyond the desert oaks. Sunset begins to catch the shoulders of the domes. |
+| Uluru at dusk, 10.21 km | Real 02, 09 and 12. Games 01, 03 and 04. | Uluru rises as a broad single monolith, warm orange-red across a dark spinifex plain. Erosion channels mark its face under a pink and purple sky. |
+
+Grade the red verge down from the seal and stretch the wheel ruts along the road. Build the three trailers, couplings and wheels at their own physical lengths. Dust and eagle flight follow the ride clock. Use a bounded set of native scrub clusters and warm the rock faces as the sky cools near the finish. Compare the busiest passing sequence with the Caribana tablet evidence. Credits are in docs/worlds/outback/SOURCES.md.
+
+## Overseas Highway (#2183)
+
+Fit the Florida Keys crossing to the original Time to Spin Out stages. Keep both bridge decks above open water with the old railway on the Gulf side. Deck joints, piers and the Pigeon Key ramp follow the same physical alignment. The single navigation hump rises above an otherwise low time-trial course.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Marathon approach, 0.08 km | Real 01, 02 and 15. Games 02–03. | A green US 1 sign and mile marker stand beside white edge stripes. Mangroves and wind-bent palms part around the entrance to the bridge. |
+| Old railway viaduct, 1.51 km | Real 03, 08, 10 and 11. Games 01 and 04. | Repeated masonry arches carry the historic bridge alongside the modern concrete deck. Their openings frame strips of shallow blue-green water. |
+| Pigeon Key, 2.87 km | Real 05–07, 09 and 13. Games 02–04. | Yellow-and-white cottages, palm crowns, the old access ramp and a small timber dock distinguish Pigeon Key from the distant mangrove islands. |
+| Navigation channel, 4.42 km | Real 01–06 and 08. Games 01 and 04. | The only sustained climb lifts the rider above the flats. A fishing boat crosses the deep-water channel below the crest. |
+| Missing railway span, 6.31 km | Real 04, 08, 10–12 and 14. Games 01, 04 and 05. | Open water separates the ends of the abandoned span. Pelicans and gulls skim the chop beside the surviving piers. |
+| Lower Keys landfall, 8.02 km | Real 02, 05, 09, 13–15. Games 02, 03 and 05. | A low key and leaning palms rise ahead of the rails. Sunlit cumulus, dark seagrass patches and white wind chop extend to the horizon. |
+
+Distinguish the old concrete arches from the modern girder deck, and leave the missing span physically open. Use the water depth bands, near rails, island porches and fixed cloud towers for parallax. Animate the fishing launch and birds on the ride clock. Compare opening and Pigeon Key tablet frame submissions with Caribana. Credits are in docs/worlds/overseas/SOURCES.md.
+
+## Torres del Paine (#2184)
+
+Map Select and Race Setup load the original GCN class and its local authored course. Centreline elevations drive the rider and HUD. The Cuernos have a dark sedimentary cap above pale granite, while the slender Torres form a separate skyline farther along the course. Both occupy fixed coordinates. Bake shade into the rocky shore and use the lightest sky values for the snowfields.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Pehoé gravel, 0.08 km | Real 01–02 and 11. Games 02 and 04. | Two wheel ruts and pale loose stone frame wind-bent tussocks on the golden steppe. Low shrubs and a layered lenticular cloud show the direction of the wind. |
+| Cuernos shore, 2.24 km | Real 03–05, 10 and 14. Games 01 and 03. | Across a blue-green bay, almost black Cuernos caps top lighter granite buttresses. Glacier ice and windblown snow collect in the cleft. |
+| Guanaco grazing ground, 4.57 km | Real 06, 09 and 12. Games 01–02. | Several tawny guanacos graze beside the gravel, one upright with alert ears. Their slender legs and cream undersides stand out above the bent grass. |
+| Salto Grande, 7.22 km | Real 07–08 and 15. Games 03–04. | A rocky lip carries turquoise upper water over a broken white curtain into the lower lake. Spray crosses the lip while the road follows the bank. |
+| Torres overlook, 9.82 km | Real 04, 11 and 13–14. Games 03 and 05. | Three steep granite towers stand separately above moraine benches. A hanging glacier and snow apron occupy the shaded basin beneath them. |
+| Lake Pehoé return, 12.54 km | Real 03, 05, 07, 10 and 15. Games 04–05. | Whitecaps cross turquoise Pehoé in streaks under layered cloud. The long slant of the tussocks and the dark foothill cast shadows across the gravel. |
+
+Merge the gravel, wheel ruts and tussocks into local sections. Keep both lake levels tied to the waterfall lip and banks. Animate the near guanacos, wind and spray from ride time. Dispose of shared geometry, textures and water materials on exit. Use the Caribana submitted-frame measurement in the opening and at Salto Grande. See ADRs 0021, 0023, 0030, 0034 and 0035, the performance-budget design and docs/worlds/paine/SOURCES.md.
+
+## The Palouse (#2185)
+
+Map Select and Race Setup load the historical class into the authored-course renderer. The sampled centreline supplies the elevation for the road, rider and HUD. Carry the crops across every fold of the terrain. The butte stays fixed and rises above the lower fields as the elevation and viewing angle change. All 15 real photos, five game views and accompanying credits are present in docs/worlds/palouse.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Wheat-hill road, 0.08 km | Real 01, 07 and 13. Games 02 and 04. | A narrow striped country road crests between fresh barley and ripe wheat. The next two folds overlap against a broad afternoon sky. |
+| Red barn hollow, 2.76 km | Real 02, 05 and 10. Games 01 and 04. | A red gambrel barn with white doors sits below the road with a farm silo, gravel apron and a line of tall poplars. |
+| Harvest turn, 5.48 km | Real 03, 09 and 12. Games 01–03. | The gravel section runs beside a weathered hillside combine with a cutting reel. An old grain truck waits at the edge of the stubble. |
+| Colfax grain siding, 8.25 km | Real 02, 07, 12 and 13. Games 03 and 04. | White grain elevators tower over the low country buildings. A rail siding, loading spout and grain hoppers distinguish the elevator from the farm silo. |
+| Steptoe Butte, 12.32 km | Real 01, 06 and 15. Games 02 and 05. | A single steep rounded butte rises above the softer loess ridges. The road skirts its base between contour-ploughed fields. |
+| Golden-hour overlook, 17.62 km | Real 03–04, 06, 11 and 14. Games 01, 03 and 05. | The last crest reveals green lentils, yellow barley and brown stubble in curved strips across the folds. Sunlit shoulders alternate with long blue-brown shadows. |
+
+Give farmstead and railroad buildings separate silhouettes. Alternate crop colours across broad plots and run the finer harvest lines along their contours. Bake relief and long field shadows into vertex colours. Use the ride clock for near-field wheat, the reel and grain hoppers. Bound the active actors by distance and release their shared geometry and textures on exit. Compare submitted frames at the opening and grain siding with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/palouse/SOURCES.md.
+
+## San Fermín, Pamplona (#2186)
+
+Map Select and Race Setup bind the original class to the local authored-course renderer. Extend the real encierro sequence to the workout distance. Rebuild Mercaderes as an actual right-angle turn, widen Plaza Consistorial and align the final tunnel with the road. Keep the crowds behind the double barriers and the racing lane open.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Santo Domingo approach, 0.08 km | Real 01, 07–08 and 10. Games 01 and 02. | Double rows of timber barricades enclose the first sprint. Red pañuelos stand out against white shirts behind the rails. A medic and police officer occupy a fence opening. |
+| Plaza Consistorial, 1.54 km | Real 05–06 and 09–10. Games 04 and 05. | The narrow approach opens onto the baroque Ayuntamiento. A layered stone pediment, balconies and hanging flags stand above the crowd. |
+| Mercaderes turn, 3.16 km | Real 03–04, 07 and 15. Games 02–03. | The marked right-angle turn into Calle Estafeta follows the wall and its two street plaques. Timber barriers protect the outside of the corner. |
+| Calle Estafeta, 5.02 km | Real 02–04, 08 and 09. Games 01 and 03. | Four- and five-storey houses close around the wet stone street. Their iron balconies are packed with spectators and red scarves, with warm light reaching only the upper floors. |
+| Telefónica barriers, 7.17 km | Real 01, 07–08 and 12. Games 01 and 04. | Sashed runners pass waving spectators at the double fence. Damp setts and scattered fiesta confetti lead toward the bullring. |
+| Callejón entrance, 8.92 km | Real 10–11 and 14. Games 02 and 05. | The open entrance tunnel disappears beneath the brick and stone bullring. A glimpse of the ochre arena and the rings of red-and-white spectators draws the rider forward. |
+
+Model the urban canyon, cross-street openings, balconies, town hall and the bullring portal in three dimensions. Bake the contrast between blue street shade and sunlit cornices into the building materials. Render the repeated crowds and timber sections in bounded sections. Update runner, hanging scarf and light confetti from ride time, and dispose of their textures, geometries and materials with the route. Compare the opening and packed street with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/pamplona/SOURCES.md.
+
+## Ffordd Pen Llech (#2187)
+
+Keep the famous street short within the longer historical class. Approach across Morfa Harlech and the town, put the measured steep metres and tight hairpin inside the sustained work stage, then finish above the bay. Share the centreline between rider pitch, road, grade and HUD. Keep houses vertical and step their foundations so their sills make the slope legible.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Morfa Harlech approach, 0.08 km | Real 11–15. Games 01 and 04. | The coastal plain leads toward the castle on its rock. A break in the rain lights the dunes while cloud stays on the mountain ridge. |
+| Stryd Fawr terraces, 3.42 km | Real 04–10. Games 02 and 05. | Slate-roofed stone terraces, narrow shopfronts, chimneys and bilingual street furniture mark the transition from the plain into Harlech. |
+| Ffordd Pen Llech foot, 10.86 km | Real 01–03 and 05–06. Games 02–03. | A Welsh street-name plate and steep-gradient warning guard a narrow wet lane. Mossy walls leave only a single track with no pavement. |
+| The steepest metres, 11.12 km | Real 01–04. Games 02–03 and 05. | The 37.45% section pitches the rider upward between level cottage sills and stepped walls. Locals wave from doorways and the wall top. |
+| Upper left hairpin, 11.20 km | Real 01–04, 07 and 15. Games 02–03. | A tight left-hand bend interrupts the wall. The blockwork and standing spectators stay vertical while the road changes direction on the grade. |
+| Castle and bay overlook, 13.68 km | Real 11–15. Games 01, 04 and 05. | Round towers and curtain walls rise out of the castle rock. Beyond them the coastal fields, Morfa dunes, Tremadog Bay and the mountains recede under broken grey cloud. |
+
+Model the castle gatehouse and towers on a fixed rock and shade the far mountains independently of rain over the lane. Use damp asphalt, mossy drystone and slate throughout the upper streets. Limit drizzle particles and animate the near spectator and flag on ride time. Dispose of those assets on exit. Compare the opening and the sustained climb with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/penllech/SOURCES.md.
+
+## Pike Place at Dawn (#2188)
+
+Map Select and Race Setup load the historical workout into the local authored-course renderer. Extend the market street and waterfront approach to the workout distance. The clock, steel sign frame, low stall roofs, downhill sightline and ferries give the rider distinct near, middle and distant landmarks. Retain the actual market sign wording and model its steel supports.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Public Market Center clock, 0.08 km | Real 01, 04, 06–08 and 12. Games 01 and 03. | The red Public Market Center letters and round clock rise on a steel frame above the brick intersection. A crosswalk, parked delivery truck and morning shoppers establish scale. |
+| Fish counter, 1.79 km | Real 02, 09 and 13. Games 02 and 04. | Warm pendant lamps light silver salmon on crushed ice, crab and handwritten price cards. A vendor tosses a salmon above the counter. |
+| Farmers Market arcade, 3.38 km | Real 01, 05, 07–08 and 15. Games 01 and 03. | Green columns and a striped awning frame produce pyramids and bouquets. Meet the Producer lettering runs above the stalls opposite the Corner Market. |
+| Post Alley entrance, 5.22 km | Real 03, 08 and 14. Games 02, 04 and 05. | A narrow brick side lane recedes under the Post Alley sign. Dawn catches steam above the café and vent at the opening. |
+| Elliott Bay descent, 7.69 km | Real 03, 10–12. Games 01 and 05. | The downhill street opens onto a white-and-green ferry crossing Elliott Bay. The Great Wheel, piers and Olympic skyline stand beyond the lower market roofs. |
+| Downtown dawn, 10.13 km | Real 03, 05 and 10–12. Games 03–05. | An open view frames downtown glass towers, the Space Needle and warm reflections on Elliott Bay. Brick paving and a final arc of market spectators bring the route home. |
+
+Use brick courses and crosswalk paint aligned with the physical road. Open the Post Alley gap between brick buildings. The Seattle skyline, wheel and Olympic ridgeline are fixed in world space, while a bounded fish toss, coffee steam and ferry read the shared ride clock. Merge repeated stalls and curb detail by section. Release textures, geometry and materials on exit. Compare the submitted frames at the clock and the produce arcade with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/pikeplace/SOURCES.md.
+
+## Playground Park Loop (#2189)
+
+Five circuits share the same park furniture and terrain. Distance and elapsed time continue across the painted lap line. The route curves round a central pond. Keep the play structures and the water visible through openings in the mature tree canopy.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Tree-lined park gate, 0.08 km | Real 11, 12 and 15. Games 01 and 03. | Worn twin yellow lines lead between mature trees. Gaps in the canopy cast patches of sun across the path beside a wayfinding sign and benches. |
+| Climbing fort, 0.43 km | Real 02, 03, 07 and 09. Games 01 and 02. | Two roofed climbing decks flank a rope bridge. Open steps, a curved slide and a bank of suspended swing seats are visible from the path. |
+| Splash terrace, 0.89 km | Real 01, 03–06 and 13. Games 02 and 05. | Red and green spray stems stand on blue and ochre wet paving under a triangular shade sail. A child runs between staggered jets. |
+| Family promenade, 1.32 km | Real 08–12 and 15. Games 01 and 03. | A parent pushes a hooded stroller along the wide shoulder. A helmeted child on a scooter passes a bench and a double-headed park lamp. |
+| Fountain pond, 1.85 km | Real 04, 06 and 14. Games 04 and 05. | A stone lip follows the pond and its central fountain. Water gleams between reeds, with lawns and the city edge behind. |
+| Picnic meadow, 2.30 km | Real 07, 10, 11 and 13. Games 02–04. | Families sit on checkered blankets beneath spreading shade trees. A pavilion and distant apartment buildings mark the return toward the playground. |
+
+Model the climbing frames, slides, swings, benches and shaded canopy at rider scale. Use fixed meshes for path paint and shadows, batch repeated furniture, and use the shared ride clock for the swing angle, spray and stroller wheels. Release each course resource on exit. Compare the gate and splash terrace with Caribana’s tablet capture. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/playground/SOURCES.md.
+
+## Prague Old Town (#2191)
+
+The Royal Way follows an extended sequence of central Prague streets for the historical class. The tower gate opens into medieval streets and squares. Charles Bridge spans the Vltava before the climbing streets reach Hradčany.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Powder Tower gateway, 0.08 km | Real 02, 03 and 13. Games 01 and 02. | The granite-sett road enters a pointed Gothic gateway beneath a steep dark roof and corner pinnacles. Pale stucco and mosaic pavements frame the portal. |
+| Old Town Square, 3.64 km | Real 04–08, 13 and 14. Games 02 and 03. | The lane opens onto the square. The two many-spired towers of Týn Church rise behind the arcades, the Jan Hus monument anchors the square and soap bubbles drift past sightseers. |
+| Astronomical Clock, 6.12 km | Real 04, 06, 13 and 14. Games 01 and 03. | The gold astrolabe and painted calendar dial read as two distinct faces on the Old Town Hall wall. The Gothic chapel window and copper roof rise above a knot of visitors. |
+| Charles Bridge, 10.84 km | Real 01, 03, 09–11 and 15. Games 02 and 04. | The bridge crosses the Vltava on stone arches. Paired rows of Baroque figures on plinths frame the Gothic bridge tower. A passenger boat passes a low weir and swans swim beside the bridge. |
+| Nerudova climb, 16.48 km | Real 02, 10, 14 and 15. Games 01, 03 and 05. | The road pitches uphill between tight pastel rows. Painted house signs stand over door portals, while a break in the roofline opens onto Malá Strana. |
+| Hradčany overlook, 21.18 km | Real 09–12, 14 and 15. Games 02, 04 and 05. | The St Vitus spires and a long palace wing stand above a terrace. Red tile roofs, a verdigris dome and the river remain visible below the final ramp. |
+
+Use a fan-shaped granite sett pattern scaled to the lane and a finer mosaic on each pavement. Keep open arches under the deck, stone plinths between pedestrians and the parapet, and let the rider see the river on both sides. The cathedral is a fixed group of spires and nave, with palace wings and smaller roof rows below. Use ride time for the excursion boat, swan and drifting bubbles. Reuse materials and release all resources on leaving the course. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/prague/SOURCES.md.
+
+## The Poggio (#2190)
+
+Along the opening Aurelia the Ligurian Sea is on the rider’s left. Climb away from it through glasshouses on terraces, crest beside the church, then lose the elevation on a physically winding descent toward the Via Roma straight.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| SS1 Aurelia, 0.08 km | Real 03, 04, 08, 10 and 15. Games 02 and 05. | The coast road runs between green-shuttered Riviera houses and a stone seawall. Canary palms and a palm-shadowed zebra crossing break up the seafront. |
+| Capo headlands, 1.84 km | Real 05–07, 11 and 14. Games 04 and 05. | The capes overlap over the Ligurian Sea. An arched road tunnel pierces the nearest rocky spur, with moving whitewash at its foot. |
+| Flower terraces, 4.82 km | Real 01, 02, 06 and 12. Games 01 and 03. | A blue sign points to Poggio on the narrow climbing road. Switchbacks turn between retaining walls, glasshouses and terraces of carnations. |
+| Summit church, 7.15 km | Real 02, 09, 12 and 13. Games 01 and 02. | Pastel walls frame the church front, campanile and clock. Tifosi lean over temporary rails and wave Italian flags at the summit. |
+| Walled descent, 8.38 km | Real 01, 05, 11, 12 and 14. Games 03 and 05. | A tight descending bend passes a rough stone wall. Behind the outside rail three coastal ridges fall away toward the water. |
+| Via Roma sprint, 11.41 km | Real 03, 08–10 and 15. Games 02–04. | The final straight narrows between barriers and shuttered shops. Dense spectators and flags line the finish gantry, with painted finish markings under the arch. |
+
+Keep the headlands fixed in world space and show gaps between ridges. Break up the glasshouse roofs with repeated ribs and rows of flowers. Use a local mesh for the campanile and individual rows of shops on Via Roma. Animate whitewash, a summit tricolore and finish pennants on the ride clock. Share materials and release the course resources on exit. Compare both sampling locations with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/poggio/SOURCES.md.
+
+## Prospect Park (#2193)
+
+Use two laps of the same 6.2 km park drive. One hill rises toward the plaza each lap, with the lake and Lullwater at the low end of the loop. The individual workout stages keep the historical class timing across the lap line. Reuse the autumn scene’s lane paint, runners, green benches and cast-iron lamps as visual cues.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| East Drive beneath the canopy, 0.08 km | Real 01–04 and 12. Games 01 and 04. | Lane markings separate runners from the weekend pace line. Trees cast broken shadows across the asphalt. Iron park lamps mark the curve ahead. |
+| Long Meadow, 1.24 km | Real 02, 03, 06 and 12. Games 02 and 03. | The near canopy opens onto a broad lawn. A dog chases a ball past picnic blankets while a runner passes the line of green benches. |
+| Grand Army Plaza, 2.86 km | Real 01 and 10. Games 01 and 05. | The arch has one deep opening, paired pillars, bronze reliefs and a crowning quadriga. Brownstone stoops and apartment roofs mark the Brooklyn edge. |
+| Weekend market, 4.06 km | Real 01, 13 and 14. Games 03 and 05. | People queue between rows of canvas tents and food trucks. The stall counters, hanging signs and stacked crates sit below the riders’ sightline. |
+| Prospect Park Lake, 5.13 km | Real 05–07 and 11. Games 02 and 04. | Willows bend over the shore. Swans leave wakes across the lake and the green iron bridge spans the narrow end of the water. |
+| Boathouse on the Lullwater, 11.92 km | Real 07–09 and 15. Games 01 and 04. | Two storeys of white terracotta stand above their reflection. A red roof, repeated round arches and the waterside balustrade frame the Audubon Center. |
+
+Place each landmark once in the physical landscape and revisit it on the second lap. Set the Boathouse across the water behind an unbroken band of reflections. Keep brownstone façades at the edge of the canopy. Instance hardwoods and market figures, and drive the runner, dog and swan from ride time. Dispose of their geometry, textures and materials on exit. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/prospect/SOURCES.md.
+
+Rider feedback in [#920](https://github.com/QuinntyneBrown/wattzup/issues/920) praises the existing Prospect Park look and feel. Preserve its early-autumn morning light, marked lanes, Long Meadow weekend activity, quiet lake and brownstone backdrop. The existing scene in `world-prospect.ts` repeats those props every 380 m. The native race needs a full drive where the same arch and Boathouse return at the same place each lap. Keep the separate World Ride scene available to its current callers.
+
+## Prairie Paceline (#2192)
+
+The starter catalogue entry already loads courses/prairie.glb. Keep the measured elevation and every stage boundary from the existing native course. Replace the winding horizontal alignment with the long, straight Route 9 corridor. Retain its warm farmland palette, barns, round bales and roadside fencing.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Route 9 shoulder, 0.08 km | Real 01, 03–05 and 09. Games 01, 03 and 04. | A dashed yellow centre line converges with the gravel shoulders. Wind-tossed wheat, wooden poles and wire fences slide past in the foreground. |
+| Wind farm service road, 2.48 km | Real 02, 04–07, 11 and 15. Games 01 and 02. | Several rows of three-blade turbines turn above the ridge. A near tower, fenced service track and distant rows show scale and parallax. |
+| Canola quarter section, 5.21 km | Real 05 and 07–10. Games 03 and 04. | Rectangular canola and wheat fields meet along a straight service track. A swath of wind-bent flower stems catches the low sun beside the road. |
+| Farmyard and bales, 8.74 km | Real 01, 03, 09 and 10. Games 01 and 03. | A red barn, corrugated grain bins and straw bales sit beside a shelterbelt. Power wires sag from the double crossarms above the fence. |
+| Railway grain elevator, 12.61 km | Real 12–14. Games 02, 04 and 05. | The square elevator and its headhouse rise above the track, loading annex and hoppers. Weathered timber, a painted place name and the rails show the scale of the town. |
+| Last prairie crest, 17.96 km | Real 04–10 and 15. Games 01, 04 and 05. | A shallow crest reveals turbines behind a second ridge. Cumulus and high cirrus fill the amber sky above fence and field shadows. |
+
+Stage turbine rows at distinct distances along both ridges. Taper each tower and blade. Use one shared rotor geometry, a bounded near-verge cluster and far clouds driven by the ride clock. Bake field rows and the shadow beneath every farm building. Give the roadside elevator a trackside loading wing and grain hoppers. Release geometry, materials and textures on route exit. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/prairie/SOURCES.md.
+
+## Provence Lavender (#2194)
+
+Map Select restores the historical GCN class. Race Setup passes the same course to the lazy renderer and the HUD. Set the public Blender road on the rolling Valensole plateau, with an open view along the rows from the very first turn.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| D8 plateau road, 0.08 km | Real 01–04, 10 and 11. Games 02 and 05. | The narrow patched road runs between gold wheat and violet lavandin. Pale dirt separates the rounded rows. Distant Alpine ridges remain fixed as the rider moves. |
+| Stone mas and almond tree, 3.31 km | Real 04–08 and 14. Games 01 and 03. | Blue shutters and a terracotta roof distinguish the pale limestone farmhouse. An isolated broad almond tree breaks the skyline, and a dry stone borie stands by the track. |
+| Apiary among the rows, 6.44 km | Real 02, 06, 14 and 15. Games 03 and 05. | Coloured wooden hive boxes, honey supers and flying bees are visible at shoulder height. Bent lavender stems and poppies give the sandy verge a different scale from the planted rows. |
+| Mechanical harvest, 9.63 km | Real 02, 12–14. Games 02 and 03. | A yellow tractor tows the blue lavender harvester. The reel turns at the row ends beside cut swaths, a trailer and round straw bales. |
+| Valensole market square, 13.72 km | Real 04, 08, 09 and 11. Games 01, 03 and 04. | Overlapping tiled roofs lead to the church tower. Plane trees shade a lavender stall, visitors and a distillery sign beside the road. |
+| Puimoisson ridge, 17.96 km | Real 03–07 and 09–11. Games 02, 04 and 05. | Sunflowers and wheat border the final ranks of purple. Puimoisson’s village roofs and steeple sit on the near ridge with blue-grey mountains behind. |
+
+Use raised rounded rows and warm gaps of bare soil close to the rider. Merge them into larger planted blocks over distance. Keep the Verdon edge and Alpine backdrop fixed behind village roofs and isolated tree silhouettes. Instance verge flowers, bees and harvest reel parts, animate them on ride time, and dispose of textures and geometry on exit. Verify the submitted frames on the plateau and through the busiest market approach. See ADRs 0021, 0023, 0030, 0034 and 0035, the performance-budget design and docs/worlds/provence/SOURCES.md.
+
+## Andalusian White Villages (#2195)
+
+Use one Blender course for the opening olive road, the lake descent, the limestone climb and the bridge deck. Map Select restores the historical class and the HUD draws its profile from the exported road samples. The villages are a compressed riding itinerary across Andalusia.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Olive road, 0.08 km | Real 01, 04, 14 and 15. Games 01 and 02. | Silver olive rows follow the ochre contours beside narrow edge-painted asphalt. The stone wall curves past a break in the orchard, framing distant white houses. |
+| Zahara de la Sierra, 3.42 km | Real 02, 03, 08 and 09. Games 01 and 04. | A square Moorish keep crowns a jagged rock above stacked white roofs, while the road stays low enough to read the castle against the sky. |
+| Zahara-El Gastor reservoir, 6.21 km | Real 03, 08 and 09. Games 01 and 05. | The verge drops away to uneven turquoise coves. A small boat crosses the water below olive terraces, and the distant shoreline stays fixed behind it. |
+| Grazalema pass, 10.66 km | Real 01, 04, 10 and 15. Games 01 and 03. | Oak and pinsapo forest frame the mountain bend. The village appears as a band of white walls against the tilted limestone layers of the sierra. |
+| Puente Nuevo and El Tajo, 15.47 km | Real 11–14. Games 03 and 04. | Before the crossing the rider sees the tall central arch of Puente Nuevo and its upper openings between sheer cliffs. Houses line the rim, with the river far below the bridge deck. |
+| Olvera white streets, 20.91 km | Real 02, 05–08, 12 and 15. Games 02–05. | Iron grilles, hanging geraniums and terracotta pots border a tight whitewashed lane. Beyond it the bell tower, red tile roofs and ruined keep share the hilltop skyline. |
+
+Keep the masonry bridge fixed in the gorge, visible from its approach before the rider crosses the same deck. Place the castle above the roofs and give the white walls hard shade beneath every ledge and balcony. Reuse the silhouettes of the near olive trees on the distant terraces. Drive the boat, bird and bell from ride time. Bound the moving actors and release all course geometry, materials and textures on exit. See ADRs 0021, 0023, 0030, 0034 and 0035, the performance-budget design and docs/worlds/pueblos/SOURCES.md.
+
+## Old Québec (#2196)
+
+Set the lower town at the foot of a fixed château cliff. Two circuits climb to the stone ramparts and return to the same cobbled square. The catalogue holds the historical class and shares the road elevation with the HUD.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Place Royale, 0.08 km | Real 01, 12, 13 and 15. Games 01 and 04. | Fieldstone houses with steep dormered roofs frame the cobbled square. A clear gap above the eaves places the copper-roofed château on the cliff. |
+| Petit-Champlain and the steps, 1.08 km | Real 04–07 and 12. Games 01, 02 and 04. | Shop signs, iron globe lamps, flower boxes and café tables line the tight lane. The Escalier Casse-Cou climbs between the façades beside the rider. |
+| Côte de la Montagne, 2.26 km | Real 01, 02, 04, 08 and 14. Games 02 and 03. | The twisting cobbled road climbs sharply between the stone wall and houses. Château Frontenac shows its brick wings, tall central tower and oxidized copper roofs above the bend. |
+| Porte Saint-Louis, 3.39 km | Real 03, 04 and 09. Games 02 and 04. | The road passes beneath the grey limestone gate. A round turret, crenellations and the grass-topped wall read against autumn maples. |
+| Terrasse Dufferin, 4.63 km | Real 08, 10, 11, 14 and 15. Games 03 and 05. | The iron rail and boardwalk run above the St. Lawrence. Green-and-white gazebos, globe lamps, flags and a moving ferry share the view with the far shore. |
+| Porte Kent and the ramparts, 12.17 km | Real 03, 08, 09 and 15. Games 01, 04 and 05. | A second castellated opening and the long grassy glacis carry the penultimate descent. Historic cannon carriages sit along the wall under red and gold maples. |
+
+Frame the single central tower from each bend with low roofs and clearings in the maples. Make the gate openings and boardwalk plane actual geometry. Place the ferry below the terrace on the river. Merge distant stone frontages, limit moving flags and signs to their local groups and release their resources when leaving the race. See ADRs 0021, 0023, 0030, 0034 and 0035, the performance-budget design and docs/worlds/quebec/SOURCES.md.
+
+## La Redoute (#2197)
+
+Restore the historical GCN class through Map Select. Preserve the existing World Ride scene’s painted names, campervans, forest, frites stall and concrete viaduct in the native race. The full timed itinerary traverses the valley before the short, steep climb above Remouchamps. Sample the same road for the rider, camera and HUD profile.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Remouchamps church, 0.08 km | Real 06, 07 and 13–15. Games 02 and 04. | Slate roofs and pale stone houses cluster below the church spire. The old rail arches frame the exit from the village beside the Amblève. |
+| Amblève pastures, 5.43 km | Real 08, 10–12, 14 and 15. Games 01 and 03. | Wire fences, cattle and spring hedges follow the wet road. The river turns beneath wooded valley slopes beyond the pasture. |
+| Campervan approach, 11.64 km | Real 01–05 and 11. Games 02 and 05. | The first motorhomes and a frites stall frame the narrowing lane. Belgian flags rise above spectators behind the barriers. |
+| Painted wall, 12.57 km | Real 01–05, 08 and 09. Games 01–03. | Large hand-painted PHIL names and tricolours run across damp asphalt. The straightest part pitches into double digits between a dense crowd and the hedgerow. |
+| E25 crossing, 13.39 km | Real 01, 06, 08, 11 and 13. Games 01, 04 and 05. | The concrete motorway deck crosses the rider’s road on tall piers near the upper slope. Beech and spruce crowd the verges and a team car passes above. |
+| Redoute summit stone, 15.56 km | Real 08–10, 12, 14 and 15. Games 03–05. | A La Redoute stone stands at the summit turnout. Beyond the wire fence, the wooded Amblève valley and the river are visible beneath an overcast spring sky. |
+
+Use pale local stone and slate for the village and an overcast sky above fresh beech and spruce. The old masonry rail arches belong in the valley; the later motorway deck is concrete on tall piers. Bake wet grit beneath hand-painted lettering, retain an open view down the valley from the crest, and merge the crowd into bounded groups. Drive the flags, grazing cattle and moving car from ride time. Release all owned buffers, materials and textures on exit. See ADRs 0021, 0023, 0030, 0034 and 0035, the performance-budget design and docs/worlds/redoute/SOURCES.md.
+
+## Rome Colosseum Loop (#2198)
+
+Lay the avenue and Palatine return as one closed course under three circuits of the historical class. The start faces the marble monument before turning onto Via dei Fori Imperiali. Place the amphitheatre in fixed world space at the far end, so approaching, passing and looking back reveal different faces of the same structure.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Piazza Venezia, 0.08 km | Real 01, 02 and 13. Games 01 and 04. | The avenue opens beside the Vittoriano. Wide marble steps ascend to its deep colonnade and the two bronze quadrigas on its roof. |
+| Trajan’s Market, 0.52 km | Real 01, 02, 11 and 12. Games 01 and 02. | A low parapet opens onto the excavated brick hemicycle, ranks of columns and the rectangular tower above the market. Tour groups move along the pavement. |
+| Via dei Fori Imperiali, 0.91 km | Real 01–05 and 08. Games 02 and 03. | The worn basalt fans of the wide straight lead towards the elliptical Colosseum. Deep arcades, broken upper walls and warm arch bays stand clear of the pines. |
+| Arch of Constantine, 1.37 km | Real 08–11 and 15. Games 03 and 04. | Beside the amphitheatre stands the marble arch with a high central opening, two lower passages, relief panels and a projecting attic. A guide raises an umbrella. |
+| Via di San Gregorio, 2.21 km | Real 04–07 and 14. Games 02 and 05. | Flat pine crowns rise above the Palatine brick ruins. A red Vespa and white taxi drive along the roadside with a clear lane for the rider. |
+| Piazza del Colosseo, 11.15 km | Real 03, 08–10 and 15. Games 01, 03 and 05. | On the third circuit the rider passes the same travertine piers, stacked arches and irregular rim at close range. Tourists and street sellers give the building scale. |
+
+Model the amphitheatre openings through the masonry and vary the surviving outer rim by sector. Bake travertine shadow, brick runoff and fan-pattern basalt at physical scale. The fixed skyline and middle-distance Forum terrace stay visible through turns. Batch pines, architectural repeats and pedestrians by local visibility. Advance the guide, Vespa and taxi on ride time and release their owned resources on exit. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.
+
+## Route 66 Desert (#2199)
+
+Set the Arizona towns in east-to-west order on a condensed 8 km course. The Painted Desert opening runs straight before the later bends of the Black Mountains. Keep the existing highway shields, rhyme boards, two-tone cars, diner neon, poles and tumbleweed in the native race. Align each stage to the original class and sample the road elevation for the HUD.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Painted Desert highway, 0.08 km | Real 01, 02, 04 and 06. Games 01, 04 and 05. | A chipped black-and-white shield and yellow centre line stretch towards banded mesas beneath a wide blue sky. Power poles diminish along the red gravel shoulder. |
+| Holbrook Wigwam Motel, 1.16 km | Real 02, 10 and 11. Games 01 and 05. | White concrete wigwams with red trim stand in a staggered row. Turquoise station wagons and finned coupes sit by their low rectangular doors. |
+| Seligman boardwalk, 2.64 km | Real 06 and 11–14. Games 02 and 03. | Bright western false-fronts and a timber boardwalk frame a pastel pickup and a string of original short rhyme boards. |
+| Hackberry General Store, 3.86 km | Real 06, 09 and 12. Games 02 and 04. | A steel awning shades weathered fuel pumps and vintage signs. A red roadside Pegasus and worn storefront stand above rusting car parts. |
+| Kingman chrome diner, 5.13 km | Real 07, 08 and 11. Games 01, 04 and 05. | A roadside diner has chrome bands, pink and turquoise panels, luminous roof trim and a glass-fronted counter with red stools. A classic car passes outside. |
+| Oatman and Sitgreaves Pass, 7.26 km | Real 03, 05 and 13–15. Games 02, 03 and 05. | A burro walks beside timber boardwalks and rough wooden storefronts below the broken skyline of the Black Mountains. The climbing road turns towards Sitgreaves Pass. |
+
+Keep mesas fixed in world space. Use physical ledges and sediment bands, baked sun and shade, fine cracked asphalt and dusty shoulders. Model the white motel cones, cars, pump globes, diner counter and false-front boardwalks. Batch roadside plants in sections and move the car, tumbleweed and burro on ride time. Release their owned resources on exit. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.
+
+## Saguaro Desert (#2200)
+
+Set Cactus Forest Drive on a closed physical route under the full historical workout. Keep the park sign, roadrunner, distant hot-air balloon, many-armed saguaros and ocotillo from the existing ride. Use the same continuous elevation for the road, rider and HUD.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Cactus Forest Drive entrance, 0.08 km | Real 01–03 and 06. Games 01–03. | A brown park sign marks the entrance to the narrow one-way loop. Ribbed saguaros stand above loose red gravel with the Rincon ridgeline beyond. |
+| Dawn cactus stand, 1.21 km | Real 07–09, 11 and 14–15. Games 03 and 04. | Several differently branched saguaros break the orange-pink horizon. Long shadows cross the pavement, a hawk perches on one arm and a balloon drifts beyond the ridge. |
+| Sandy wash crossing, 2.68 km | Real 01, 03–05 and 13. Games 02 and 05. | The undulating drive descends into a sandy arroyo. A dip warning and low masonry culvert announce the crossing; a roadrunner moves near the shoulder. |
+| Cactus forest rollers, 4.81 km | Real 03, 10–13 and 15. Games 02–05. | Tall green saguaros with crooked arms and deep ribs surround the bend. Prickly pear pads, cholla and red-tipped ocotillo grow under palo verde between rocky rollers. |
+| Stone picnic ramada, 7.32 km | Real 02, 04–05, 10 and 13. Games 01 and 05. | At the bollarded gravel pullout a low stone ramada shelters a picnic table. A pair of quail walks across the foreground beneath the palo verde canopy. |
+| Rincon overlook, 9.74 km | Real 03–05, 08–10 and 14–15. Games 02–04. | A sweeping descent turns towards successive blue-grey ridges. Side-lit saguaros and ocotillo frame the valley from the pullout before the return to the entrance. |
+
+Separate the near ribbed trunks and crooked arms from the distant silhouette belt. Shape continuous sandy arroyo banks below the culvert, bake long morning shadows onto the rocky ground and keep the roadway clear. Grade the sky from warm horizon to clear blue and place fixed rugged mountain ridges on both sides of the basin. Batch local vegetation, animate the birds on ride time and dispose of owned resources when leaving the course. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.
+
+## Rio Sambadrome (#2201)
+
+Place one fixed 700 m avenue between the stands. Three complete laps of 1,866⅔ m return around the outside of the parade; the final straight completes the 6.3 km class at the white arch. Align every pass, stage and movement to the same rider distance.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Marquês de Sapucaí, 0.08 km | Real 02, 07, 11 and 13–15. Games 01 and 03. | Floodlights and crowded stepped stands converge on the single concrete runway. The white Apoteose arch marks the far end and the rider lane remains clear. |
+| Feathered alas, 0.21 km | Real 01, 07–11. Games 02 and 04. | Coordinated wings of turquoise, green and pink feathered dancers fill the flanks. Bare concrete, paint joints, cast light and scattered confetti remain visible beneath them. |
+| Carros alegóricos, 0.34 km | Real 01–06 and 12. Games 03–05. | Tall original floats stack moving performers, sculpted tropical birds, gold foliage and luminous blue scrolls. Nearby figures give their three-dimensional decks scale. |
+| Bateria, 2.34 km | Real 07–09 and 11. Games 01, 02 and 04. | Uniformed musicians stand in deep staggered ranks with surdos, raised mallets and tamborims. The foreground drumline performs beneath the stadium lights. |
+| Mestre-sala and porta-bandeira, 4.29 km | Real 03, 05 and 07–11. Games 02–04. | A flag-bearer in a wide embroidered skirt turns an original blue-and-gold school banner beside her partner, with spectators, phones and waving flags on the terraces. |
+| Praça da Apoteose, 6.25 km | Real 01, 02 and 12–15. Games 01, 03 and 05. | The runway opens out beneath Niemeyer’s white arch, with its central suspended sweep and two wide legs. The finish crosses the arch axis against layered Rio hills and favela windows. |
+
+Model Niemeyer’s arch as a continuous sculptural span with clear air under its two openings. Build original carros alegóricos with stepped decks, large figures and lamps. Use batched crowd bands along the stepped stands and animate individual foreground performers, surdo mallets and the couple’s actual cloth banner on ride time. Bake pools of coloured light and bound the confetti particles. Keep the Rio ridge and hillside windows fixed beyond the outer streets. Dispose of owned GPU resources on exit. See ADRs 0021, 0023, 0030, 0034 and 0035, Caribana’s screenshots and performance-budget design.
+
+## Santa Monica Pier (#2202)
+
+The 8.85 km beach course follows an undulating concrete ribbon north to one fixed pier. Preserve the previous ride’s turquoise lifeguard towers, wheel, coaster, Pacific surf on the left and palms and hotels on the right. The bike path stays at beach level beneath the elevated access to the pier. The HUD samples the same road elevation.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Marvin Braude beach path, 0.08 km | Real 01, 02, 11 and 12. Games 01 and 04. | A dashed yellow stripe follows a narrow concrete ribbon through windblown sand. Thin fan palms, beach hotels and the Santa Monica Mountains stand inland. |
+| Lifeguard tower, 1.86 km | Real 03, 04, 09 and 11. Games 01 and 02. | A turquoise lifeguard hut stands on legs. Its long wooden access ramp, white safety rails, observation windows, number and flag read above the sand. |
+| Pacific breakers, 3.21 km | Real 06, 08, 10 and 11. Games 01 and 02. | A bend reveals parallel foamy breakers, wet sand and a surfer waiting beyond the break. A low western sun casts a warm reflection on the water. |
+| Palisades palms, 5.06 km | Real 01, 02, 11, 12 and 14. Games 03 and 04. | Slender fan palms line the bluff beyond raised beach houses. A skater and a cruiser travel along the path edge while shadows stretch across the concrete. |
+| Pacific Park, 8.49 km | Real 05–08 and 15. Games 03–05. | The pier crosses the shore on dark timber piles. The turning Pacific Wheel has open spokes and upright passenger cars; the coaster runs over its red-and-yellow track. |
+| Yacht Harbor and Route 66, 8.80 km | Real 05–08, 13 and 15. Games 03–05. | The last sprint reaches the timber pier and its elevated approach with the blue-and-gold Yacht Harbor arch, End of the Trail shield, deck rail and shadow beneath the pilings. |
+
+Build the timber deck, cross-braces and piles in place. Mount the rotating wheel on its axle with gravity-upright cars. Drive the coaster train along the actual fixed track and animate the skater, cruiser and surf from ride time. Bake plank wear, salt residue and sand drifts. Batch palms and beachgoers by distance, keep a bounded surf band, and release owned geometry and materials on exit. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.
+
+## Sea Point, Cape Town (#2203)
+
+Issue #908 praised the previous scene. Preserve its breaking Atlantic surf, Lion’s Head, Table Mountain, green seafront lawns and square diagonally striped lighthouse. The catalogue selects the native course from Map Select. Each 4.225 km circuit shares fixed scenery, a northbound seaside leg and a southbound inland return. Use sampled physical elevation throughout the race and HUD.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Sea Point Promenade, 0.08 km | Real 01, 05, 09 and 14. Games 01 and 03. | Beach Road runs beside a green lawn, broad concrete footway and metal seawall rail. Walkers, runners and a dog share the promenade. |
+| Atlantic rock pools, 0.69 km | Real 03, 04, 10 and 11. Games 01 and 04. | Atlantic breakers fold over exposed dark rock shelves. Green kelp fringes sheltered blue tidal pools below the rail. |
+| Sea Point Pavilion, 1.13 km | Real 05, 06, 09 and 14. Games 02 and 04. | The outdoor seawater pool sits between the promenade and the ocean, with swimming lanes, railings and a stepped spectator terrace. |
+| Mouille Point lighthouse, 1.94 km | Real 07, 08 and 14. Games 02 and 05. | The square Green Point lighthouse has diagonal red stripes, a projecting white gallery and a glazed red lantern. Short buildings cluster around its base. |
+| Lion’s Head and Signal Hill, 3.02 km | Real 02–04, 08, 14 and 15. Games 01–03. | The inland return looks up past palm trunks and the projecting balconies of white flats. A pointed granite cap rises above the long green shoulder of Signal Hill. |
+| Table Mountain, 7.87 km | Real 01, 08 and 15. Games 02, 03 and 05. | The flat summit and near-vertical sandstone faces of Table Mountain show past a gap in the apartment rows. A low tablecloth cloud spills over the ledge. |
+
+Build the fixed peaks as layered, faceted terrain with a broad Atlantic horizon. Model the lighthouse balcony and lantern, individual rock ledges, pool coping and balcony recesses. Use instancing and shared meshes for the moving surf, runners and swimmers. Advance secondary movement on the ride clock and dispose all allocated meshes and textures on exit. Reference real-13 is from Hawaii and informs only the shape of a low breaker. Benchmark the loaded opening and busiest stretch as described in meet-performance-budgets. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Passo Sella (#2204)
+
+The catalogue selects the single Passo Sella climb, 11.6375 km, independently of the four-pass Sella Ronda course. The previous generic scene supplied alpine colours and roadside posts. Use the architectural proportions and cliff layering of the repository’s Sellaronda models. Build both fixed massifs around this particular climbing road and set their scree feet into its terrain.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Larch wood, 0.08 km | Real 02, 12 and 15. Game 03. | Warm larches and darker spruce enclose the lower SS242. A white edge line and delineator posts follow the road into a sunlit opening. |
+| Numbered tornante, 2.46 km | Real 01, 02 and 04. Games 02 and 04. | Look across the inside of a numbered hairpin toward the next stretch of smooth road. A motorbike leans on the far arm and climbs away. |
+| Hay barn and pasture, 4.92 km | Real 04, 12, 14 and 15. Games 01 and 03. | A dark larch hay barn sits on a stone foot in a sloping meadow. Cattle lower their heads among patches of alpine flowers. |
+| Sassolungo walls, 7.29 km | Real 01, 07–09 and 11. Games 01, 02 and 05. | Three distinct pale towers stand over a continuous scree apron. Their deep clefts and sunlit facets clear the treeline above the cyclist group. |
+| Città dei Sassi, 9.74 km | Real 10–13. Games 04 and 05. | Angular limestone blocks rise alongside the road between dwarf pines. Across the saddle the Sella group has a tiered table-like rim. |
+| Passo Sella summit, 11.58 km | Real 05–07 and 14. Games 01 and 02. | A summit sign reads Passo Sella / Sellajoch 2244 m beside the rifugio. Timber balconies, the gravel forecourt and white road edge remain visible against the mountains. |
+
+Reference signs show 2240 m and several historical names. Use the issue’s required bilingual 2244 m label with the proportions and painted finish of real-05 and real-06. Real-03 and real-09 inform regional road and stone character. Sample the same centre-line elevation in the HUD. Merge fixed scenery by distance, keep distant cliffs visible on Low and advance nearby road traffic and grazing poses on the ride clock. Release scene assets on exit. Measure opening and upper samples as specified in meet-performance-budgets. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Sella Ronda (#2205)
+
+The existing native Sella Ronda is the baseline. Retain its class, sampled centre line, four distinct cols, sculpted limestone massif, regional villages, cableways and paraglider orbits. The API currently describes 11.7 km and 357 m, while the native course measures 11.65 km and 364 m. Align catalogue and HUD elevation to the measured course.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Corvara approach, 0.20 km | Real 03, 11 and 13. Games 02 and 05. | The road approaches Corvara’s church and timber balconies beneath the massif. A group of cyclists leaves the village ahead of the rider. |
+| Passo Campolongo, 2.06 km | Real 03, 04, 06 and 07. Games 02 and 03. | The first col has a signed roadside refuge, a mown pasture and a ski-lift line rising clear of the roofs. |
+| Arabba valley, 3.08 km | Real 03, 13 and 15. Games 02 and 05. | The plunge into Arabba ends at village windows and a church tower. The next ribbon of climbing tarmac can be traced against the meadow. |
+| Passo Pordoi, 4.90 km | Real 09, 10, 12 and 15. Games 01 and 04. | The numbered Pordoi switchbacks climb to the pass refuge. Sass Pordoi and the snow streaks of Marmolada rise on opposite horizons. |
+| Passo Sella approach, 7.44 km | Real 01, 06, 08, 11 and 12. Games 02 and 04. | Sassolungo rises ahead on the open approach. The road then bends past the touring motorbike and the summit sign at the col. |
+| Passo Gardena, 10.10 km | Real 05–09 and 14. Games 03 and 05. | The last refuge and signed col lie among summer meadows above Selva. A banner moves in the wind beside the chapel and a chairlift traverses the slope. |
+
+Preserve the geometry in sellaronda_kit, including the fixed central rock faces. Add local road wear and stone detail, readable pass faces, articulated cyclists and a banking motorcycle moving along the sampled road. Run the cloth and riders on the same clock as the lifts, with bounded batches and owned geometry disposal. Use real-02 only for hairpin sightlines because its source identifies Mallorca. Maintain the existing best-time ghost, class timing, controls and finish. Measure foreground bunch and high-pass traffic independently on the simulated tablet. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Serpentine, Hyde Park (#2206)
+
+The existing SerpentineStreet repeats a 500 m section. Preserve its lakeside railing, jetty, lamps, swans and bridge. The catalogue entry for GCN Training’s 15 Minute HIIT Cardio selects a measured two-lap native scene with one bridge, one Lido and a physical shore. Long views across the water reveal the far bank and establish where the rider is on the second lap.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Boathouse jetty, 0.08 km | Real 05, 06 and 13. Games 01 and 03. | The timber boating pavilion and stacked blue-and-white pedalos sit beside the north-bank road. The first band of trees leaves a clear view across open water. |
+| Deckchair lawn, 0.62 km | Real 03, 07, 11, 12 and 15. Games 02 and 03. | Mottled plane trunks and dappled tarmac frame striped folding chairs. A jogger moves along the separate lawn path between strolling families. |
+| Bridge approach, 1.29 km | Real 01, 02, 04 and 10. Games 02 and 04. | Five pale stone arches meet the water on tapered piers. The near abutment grows beside the approaching rider while a far tower stays steady above the trees. |
+| South-bank Lido, 2.13 km | Real 05, 09 and 13. Games 03 and 05. | A low lakeside café, west-facing terrace and marked bathing water distinguish the Lido. London plane crowns frame the boathouse on the opposite shore. |
+| Reed-edge birds, 3.04 km | Real 01, 06, 08 and 14. Games 01 and 03. | Curved mute-swan necks, darker geese and small ducks stand out along the near waterline. V-shaped wakes trail the swimming birds. |
+| Long Water vista, 4.51 km | Real 02, 04, 09 and 10. Games 04 and 05. | A moving rowboat crosses a gap in the nearer tree cover. The five-arch bridge and slim Knightsbridge tower overlap at different distances. |
+
+Build the bridge from arch rings, spandrels, a parapet and cutwaters. Use a dark underside and a baked reflection at water level. Near the shore, articulated oars and swimming birds expose their actual pose to the simulated ride. Merge static deckchair frames and benches by section, instance original plane crowns, and keep the most distant skyline in one fixed mesh. Original artwork uses the reference folder for scale and light. Load course data on selection, dispose textures and geometry on exit and measure actual submitted frames for the opening and second bridge approach. ADRs 0021, 0023, 0030, 0034 and 0035 and the performance design govern those checks.
+
+## Seven Sisters Cliffs (#2207)
+
+The previous world used rolling road defaults. Restore the historical GCN class to the catalogue. Two sets of seven efforts ride east along the chalk and return on a parallel downland lane after Belle Tout. Both look out on one fixed coast. Each summit opens a different view of the next chalk face.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Coastguard Cottages, 0.10 km | Real 03, 08, 13 and 15. Games 02 and 04. | White cottages with dark pitched roofs and paired chimneys overlook the haven. Their foreground roofs sit below a receding sequence of chalk headlands. |
+| Cuckmere valley, 0.93 km | Real 05, 07 and 10. Games 01 and 03. | The road looks down across a looping tidal river, grazing sheep and a timber field gate. Flint walls flank the chalk lane. |
+| Chalk brows, 2.55 km | Real 03, 09, 12, 13 and 15. Games 02 and 04. | Deep green-swarded saddles separate the white cliff brows. A gull banks above a cliff edge and the grey-blue Channel extends beyond it. |
+| Birling Gap, 5.45 km | Real 09, 11 and 12. Games 01 and 04. | The road rises above a grey flint beach. A low line of whitewater reaches the shingle and recedes beneath the worn chalk faces. |
+| Belle Tout, 6.29 km | Real 02, 04, 06 and 14. Games 02 and 05. | The squat white tower, black-glazed lantern and attached keeper’s house mark the eastward turn. The chalk track curves up to the lighthouse. |
+| Return over the downs, 9.61 km | Real 01, 05, 06 and 07. Games 01 and 03. | The white-edged road pitches over open sheep-grazed downs. Flowering gorse, a National Trust waymarker and split timber fences frame the next crest. |
+
+Cut flutes into the chalk, tint flint bands in the surface and round the turf over the lip. A stepped shingle beach takes the tide beneath the brows. Use foreground gates and hedges for parallax and draw the distant profile as a continuous silhouette on Low. The lighthouse is the squat clifftop Belle Tout shown in real-04, 06 and 14. Cuckmere is a river with cut-off oxbows in a flat floodplain. Drive near sheep necks, gull wings and breakers from ride time. Dispose geometry, textures and buffers on exit. Measure the two busiest moving sections as in the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## San Francisco Hills (#2208)
+
+The earlier procedural world combines generic city props and a rolling road. Restore the GCN class to the catalogue and use one measured centre line for the camera, grade, vehicles and intersection flats. The 120 m Filbert pitch gains 37.8 m between 2.740 and 2.860 km. Keep railway tracks off the crooked, brick-paved Lombard block.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Russian Hill row houses, 0.10 km | Real 01, 03, 04, 10 and 13. Games 02 and 03. | Stepped, painted bay windows and raised stoops mark each lot. Overhead wires, ficus crowns, a flat zebra crossing and a cast manhole mark the first block. |
+| Powell–Hyde line, 1.38 km | Real 02, 07 and 08. Games 02 and 04. | A red-and-cream cable car moves along the steel running rails and central grip slot. Its clerestory and open riding platform remain distinct at rider height. |
+| Filbert wall, 2.82 km | Real 01, 11, 12 and 13. Games 02 and 05. | A 31.5 percent concrete pitch rises between stepped sidewalks. Parked cars lean with the road, with their wheels turned toward the curb. A level landing breaks the steep block. |
+| Telegraph Hill crest, 4.22 km | Real 03, 04, 09 and 14. Games 01 and 04. | Coit Tower’s pale fluted shaft and arched crown rise above Telegraph Hill. Alcatraz and the Bay Bridge appear beyond the sudden drop in the street. |
+| Lombard switchbacks, 6.72 km | Real 05 and 06. Games 03 and 04. | Eight tight bends wind down a continuous red-brick street. Hydrangea beds fill the inside of each turn. A local car threads the bends below the rider. |
+| Bay overlook, 8.36 km | Real 02, 07, 11 and 15. Games 01 and 05. | A fog bank slides over the water beyond the foreground wires. The island and bridge stay fixed while warm light picks out projecting bay windows on the last descent. |
+
+Model the bays, dentilled cornices, cable-car roof and Coit Tower’s top openings in silhouette. Reuse original facade elevations over stepped geometry and batch wires and window frames by block. Keep Alcatraz, the bridge and Telegraph Hill fixed across the route; a translucent marine layer moves independently of the landmarks. Measure submitted frames with the whole HUD and loaded meshes, and dispose textures, geometry and scene-local actors on exit. See the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Shibuya Crossing (#2209)
+
+The race catalogue selects an 8.15 km course comprising two 4.075 km laps. Use one fixed station, crossing and 109 fork. The geometry determines the grade on Dogenzaka and the HUD elevation. Original nighttime signage uses invented shop names and artwork.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Hachikō station plaza, 0.12 km | Real 02, 11, 13 and 15. Games 03 and 05. | The bronze dog stands on its stone plinth outside the station. Elevated JR tracks cross behind it, below the lit profiles of Hikarie and Scramble Square. |
+| Scramble crossing, 0.72 km | Real 02, 03, 08, 13 and 15. Games 01 and 04. | Diagonal and straight zebra stripes meet across one broad junction. Umbrella groups wait together at the curb and then walk several crossings at once. |
+| QFRONT screens, 0.81 km | Real 01, 04, 06, 07 and 08. Games 01 and 03. | The curved screen frontage rises above the crossing. Original moving graphics change colour on the panel and glimmer on wet tarmac below. |
+| 109 fork, 1.48 km | Real 05, 09, 10 and 12. Games 02 and 03. | The silver cylindrical Shibuya 109 facade stands between the two streets. A taxi passes beneath the green signals and turns onto the climbing road. |
+| Dogenzaka climb, 2.65 km | Real 03, 09, 10 and 12. Games 01, 02 and 05. | Vertical karaoke and hotel signs stack above narrow shopfronts. Clear umbrellas catch the colour of individual signs as riders climb Dogenzaka. |
+| Station return, 4.79 km | Real 04, 06, 07, 11 and 14. Games 03 and 04. | A second pass brings the screen, waiting pedestrians and elevated train into a single street-level view. The tower lights remain visible above the train. |
+
+Bake window and shop lighting into shared facade atlases. Draw the near wet-asphalt reflection in the same colours as the screen above it. One pedestrian cycle holds the umbrella groups on both corners and starts the diagonal and straight crossings together. Keep the rider lane clear. The train follows the viaduct, and the taxi follows the road. Batch repeated street and window geometry by block and retain the distinctive silhouettes on Low. Dispose the scene and its materials on exit. Use the performance design and ADRs 0021, 0023, 0030, 0034 and 0035 for the submitted-frame checks.
+
+## Silverstone Track Day (#2210)
+
+The existing silverstone world palette supplies soft cloud and damp pavement. The race catalogue loads a fixed native course through the course registry. Compress the circuit to two equal 5.544 km laps to retain the 11.0875 km class progression. Orient the projecting roof, garage apron and stands beside the racing surface, with painted kerbs following the actual apex and gravel outside each turn. The original photographs and game references are present with their credits in docs/worlds/silverstone on the default branch.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Hamilton Straight and the Wing, 0.10 km | Real 01–03 and 09. Games 02 and 04. | The silver folded roof kicks up over the pit exit. Level garage doors, the fenced pit wall and an empty grandstand frame the timing line. |
+| BRDC clubhouse, 1.42 km | Real 04, 06 and 07. Games 01 and 03. | White canopy peaks and a glass front stand beyond the catch fence. A pit crew member rolls a trolley along the service apron. |
+| Maggotts and Becketts, 3.18 km | Real 05, 07, 08 and 13. Games 03 and 05. | Red-and-white inner kerbs alternate through the esses. The racing line switches sides below the long empty roof of the Becketts stand. |
+| Hangar Straight, 4.15 km | Real 08, 11 and 13. Games 01 and 02. | The uninterrupted straight rises gently toward Stowe. Paired distance boards and a sparse line of hedges recede into a grey horizon. |
+| Stowe gravel trap, 4.85 km | Real 10–15. Games 03 and 05. | A track-day sports car steers around the right apex. The grey gravel fan, alternating tyre stacks and orange marshal post follow the outside of the bend. |
+| Club and the pit entrance, 5.48 km | Real 01, 04, 07 and 09. Games 02 and 04. | The white pit-entry divider leads back to the Wing. A marshal waves beside the orange shelter while the second lap begins beneath the start gantry. |
+
+The asphalt carries the worn rubber line and edge paint. Batch fence posts, seat rows and garage doors into local native sections. Draw the Wing’s folded roof and long grandstand silhouettes from further away than the gravel and wire mesh. Sample track-day car, trolley and marshal poses on ride time and release the geometry and materials on route exit. Verify Low/WebGL 2 from map selection, followed by separate 60-second performance samples through Hamilton Straight and the esses (ADRs 0021, 0023, 0030, 0034 and 0035).
+
+## Isle of Skye Fog (#2211)
+
+Retain the muted light and moist single-track road of the existing world palette. The rider enters via the catalogue and the course registry loads the original 12.725 km course with the GCN class. Use distinct relief for the dark gabbro ridge and the rounded rusty hills. Ground the pools, bridges, houses and animals against the measured road.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Carbost crofts, 0.10 km | Real 02, 03 and 14. Games 01 and 02. | White harled houses, a chapel bellcote and dark slate roofs step down to Loch Harport. A white diamond marks a passing place on the narrow damp road. |
+| Loch Harport, 1.78 km | Real 03, 12 and 14. Games 01 and 05. | Grey water and a handful of moorings lie below the grassy bank. The road leaves the coastal strip for rough heather, with rounded red granite ahead. |
+| Red Cuillin shoulder, 3.98 km | Real 06, 11 and 15. Games 03 and 05. | The Red Cuillin rises in smooth russet screes. A horned Highland cow turns its head beside the passing bay while sheep crop the unfenced verge. |
+| Fairy Pools burn, 6.32 km | Real 04, 05 and 07. Games 03 and 04. | Under the footbridge a short white cascade drops into a clear blue-green rock pool. The dark gabbro skyline rises behind the boulders. |
+| Black Cuillin mist, 8.84 km | Real 01, 05, 08, 09 and 13. Games 02 and 04. | A ragged gabbro ridge appears through moving low cloud. The white passing-place diamond and near sheep stay readable against the heather. |
+| Glen Brittle shore, 12.14 km | Real 01, 04, 10 and 11. Games 01 and 05. | The glen opens onto grey sea water below the crofts. A shaft of light touches the last grassy shoulder; the dark ridge stays fixed on the horizon. |
+
+The ridge is fixed beyond the travelling bike. Place low moving fog in the glen between rider and peaks, keeping nearby signs and the HUD clear. A separate water surface carries the falls over the lip of the rock cut. Keep the two lochs in their own valleys. Batch bracken, stones and roadside clumps, use one reusable rig for grazing cattle, and release the glen materials and moving groups on exit. Use the budgets and backends in ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Songkran, Bangkok (#2212)
+
+The four-lap race uses one original 2.9375 km district loop to cover the full 11.75 km GCN class. Retain the original street palette and soaked surface. The catalogue and course registry load the scene only on entering the race. The existing credited photographs and game plates are complete in docs/worlds/songkran on the default branch. Silom crowd photos establish density and Chiang Mai photos inform the bucket and water-toy poses. The Thai temple photograph informs roof materials and decoration.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Khao San shopfronts, 0.10 km | Real 05, 07, 08 and 10. Games 01 and 05. | Hostel balconies, projecting guesthouse signs and awnings squeeze the view down the wet street. The rider has a clear lane between the two lines of revellers. |
+| Songkran water fight, 0.48 km | Real 01–04, 06, 11 and 13. Games 01 and 04. | Festivalgoers in floral shirts lean from the kerbs. A bucket tips, a hose arcs and bright water toys send streams into the wet street. Chalk paste is visible on cheeks. |
+| Pad thai and fruit carts, 0.96 km | Real 07–10 and 14. Games 02 and 03. | Stainless carts with woks, fruit trays, umbrella shades and warm bulbs stand against the shopfronts. Puddle reflections break around tyre marks. |
+| Tuk-tuk rank, 1.42 km | Real 02, 08, 10 and 14. Games 03 and 05. | A three-wheel taxi with a curved blue canopy and chrome passenger rails noses forward from the kerb. Parked tuk-tuks and overhead shop signs mark the rank. |
+| Wat Chana Songkhram approach, 2.34 km | Real 07–10 and 15. Games 02 and 04. | Layered red temple roofs with golden chofa finials rise past a pale gate at the end of the street. The surrounding shophouses stay below the roofline. |
+| Evening on Khao San, 9.31 km | Real 05, 06, 09, 11–13. Games 01 and 05. | On the final lap, neon Thai signs and warm stall lamps reflect on the tarmac. Overhead bulbs trace the narrow street above the water fight. |
+
+Use original daylit shophouse fronts and transparent festival portraits alongside fixed roof and cart geometry. Keep riders clear of the kerb activities. One clock drives the falling water and tuk-tuk. The evening transition uses course progression to strengthen emissive signs and reflections. Batch repeating facades and people by street block. Dispose the course materials, vehicles and water meshes on exit, following ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## South Beach Sunrise (#2213)
+
+The current Race selector maps South Beach to the Vice City GLB because Vice City shares its World Ride palette. Distinguish the requested catalogue world when selecting a native asset, keeping Vice City’s independent race and class preparation intact. South Beach loads its own 7.025 km Ocean Drive. Keep the pastel hotels, Caribbean colours, open Atlantic, painted road writing and closing deco tower praised in rider feedback #898 and documented in the earlier bend captures. The course derives the grade of each stage from its resistance.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Colony Hotel, 0.10 km | Real 01, 04, 07 and 09. Games 01 and 03. | The vertical COLONY fin glows blue above white horizontal eyebrows. The first palms cast long shadows across the café frontage and painted race lane. |
+| Carlyle café terrace, 1.34 km | Real 02, 03 and 08. Games 01 and 02. | The Carlyle’s stepped mint frontage rises behind striped umbrellas, menu stands and a parked two-tone convertible. A cleaner sweeps the sidewalk. |
+| Breakwater neon fin, 2.64 km | Real 04, 06, 07 and 09. Games 02 and 03. | The central stepped fin reads BREAKWATER above the coral and cream wings. Its neon fades as the sun climbs; the original sprint paint follows the uphill grade. |
+| Lummus Park beachwalk, 4.01 km | Real 05, 10, 14 and 15. Games 01, 04 and 05. | A rollerblader and a dog walker pass under slender royal palms beside the paved beachwalk. Sea oats and the Atlantic show through the gaps. |
+| Lifeguard stand at sunrise, 5.15 km | Real 11–15. Games 03–05. | A turquoise and pink raised tower, stairs and railings stand on the open sand. The low orange sun and a narrow band of reflected light sit over the sea. |
+| Ocean Drive finish tower, 6.82 km | Real 01–03, 06 and 09. Games 01 and 03. | The stepped art deco crown stands on the final sightline. A long boulevard of pastel hotels, café terraces and palms leads to the finish. |
+
+Model the projecting brows, stepped hotel fins and station platforms. Bake palm shadows along the actual grade. Use original hotel elevations and a common foliage atlas, separate the beachwalk from the road, and keep the sea visible on Low. Animate neon, cleaner and rollerblader on ride time. Release their geometry, textures and lighting when leaving the race. Use ADRs 0021, 0023, 0030, 0034 and 0035 and the performance design for the two one-minute measurements.
+
+## Calgary Stampede (#2214)
+
+Keep the thirteen-stage GCN class and use its resistance changes for the grade. Calgary Tower and the Rockies are fixed distant landmarks. Split the street, oval and park scenery into distance-culled sections. The game references guide the view over the cyclist and the photos guide the proportions, colours and spacing.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Downtown parade, 0.12 km | Real 01–05 and 15. Games 01 and 03. | The red observation deck of Calgary Tower rises above sandstone façades and a kerb packed with white cowboy hats. Brass players march past bunting and a mounted parade rider. |
+| Western parade float, 2.23 km | Real 01–05 and 10. Games 01 and 02. | A decorated flatbed rolls past the crowd. Straw bales and split rails separate the riders from plaid shirts, boots and Smithbilt hats. |
+| Chuckwagon track, 4.54 km | Real 06, 07 and 13. Games 02 and 05. | Four horses in two pairs pull a canvas-topped wagon around a packed ochre oval. A low timber rail keeps the team outside the race lane. |
+| Grandstand and chutes, 6.91 km | Real 08, 09, 13 and 14. Games 01 and 04. | The long canopy shades two tiers of spectators; white numbered bucking chutes face the dusty infield. The tower and pale Rockies remain on the horizon. |
+| Elbow River Camp, 9.12 km | Real 02, 04 and 12. Games 03 and 05. | Tipis stand in a grassy clearing by the river. Participants and visitors gather along the footpath; the downtown towers remain visible beyond the trees. |
+| Stampede Park midway, 12.65 km | Real 10–13 and 15. Games 01 and 04. | A Ferris wheel turns over striped food booths and flags. The high prairie sun casts short shadows across the closing straight. |
+
+Batch distant hats, railings and canopy supports; keep the four articulated horses and their wagon near the rider. Advance their legs, the float axle and the wheel on ride time. Bake dirt ruts, storefront wear and recessed shadows into the low-tier surfaces. Release section buffers, atlas textures and moving assemblies on exit. Compare six matching rider captures and measure one minute at each tablet station. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Stanley Park Seawall (#2215)
+
+Preserve the earlier graded pavement lettering, sea to the right and sequence of landmarks from feedback #910. Use the 15-minute class to define the 6.2 km ride and its changes of grade. Keep the North Shore, offshore rocks and bridge fixed in world space.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Seawall cycle path, 0.10 km | Real 01, 03 and 14. Games 01 and 04. | A white line and bicycle markings follow the camber of the narrow path above coursed stone. The footpath and dark tidal rocks face open water on the right, with cedars inland. |
+| Brockton Point poles, 1.09 km | Real 07 and 08. Games 01 and 04. | A break in the cedar wall reveals tall painted wooden poles of different heights in the clearing. Visitors gather on the path below the broad wings. |
+| Brockton Point light, 2.04 km | Real 01, 02 and 10. Games 01 and 05. | The squat white lighthouse has a broad red band and lantern on its headland. A sailor trims the boom on a boat just off the seawall. |
+| Burrard Inlet, 3.22 km | Real 04–06, 10 and 11. Games 02 and 03. | A freighter moves across cool blue water in front of successive forested North Shore ridges. Kelp, tide pools and wet stones mark the waterline. |
+| Siwash Rock, 4.48 km | Real 03, 09, 12 and 14. Games 01 and 05. | A solitary tree leans over a weathered sea stack with a narrow base amid surf and boulders. Waves rise and fall below the basalt cliff on the other side of the path. |
+| Lions Gate Bridge, 5.91 km | Real 02, 04–06, 10, 11, 13 and 15. Games 02, 03 and 05. | The green lattice suspension towers, stiffening truss and vertical hangers grow over the rider on the closing sprint; mountains show through the open steelwork. |
+
+Give the suspension deck depth, carry its cable down to the anchored ends and brace both tower legs. Use paired crossed cutouts for the red cedars and original cliff surface artwork. Batch rocks and rough stone coping in culled road sections. Update the boom, ship and tidal wash from ride time and release all textures, meshes and animation state on exit. Retain the existing bend comparison alongside six matched views. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Great St Bernard Pass (#2216)
+
+Keep the grade tied to the GCN climbing efforts. Above the gallery the route turns back across the valley and then enters the rocky saddle around the lake. Place the hospice, customs and statue on the same summit approach so they grow in the view as the rider climbs. Real 10 documents the scale and setting of a different memorial; use it for the knoll and bronze silhouette.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Avalanche gallery, 0.12 km | Real 01, 04 and 06. Games 01 and 03. | Heavy concrete piers and a thick roof shelter the road. Spaced openings reveal a rising granite wall, roadside snow poles and the cold light at the gallery mouth. |
+| Granite switchbacks, 4.12 km | Real 01, 03–06, 13 and 15. Games 02 and 05. | The narrow road doubles back across scree and rough tundra. Hairpins remain visible on the opposing slope; roadside posts and granite blocks mark the outside of the bend. |
+| Snow cutting, 8.24 km | Real 02, 04 and 14. Games 01–04. | A tall cut bank stands just outside the tarmac. Dirty melt layers, wind scallops and shallow runoff interrupt the pale face; high cloud moves past jagged peaks. |
+| Summit lake, 12.75 km | Real 08, 09, 12 and 14. Games 01 and 05. | The cold lake fills its rocky basin beside the road. Wind shifts patches of exposed water between irregular sheets of shore ice. The roof of the hospice rises at the far end. |
+| Hospice and kennels, 15.51 km | Real 07, 09 and 11. Games 01 and 03. | The steep grey roofs, many rows of small windows and contrasting granite wings form the hospice court. A heavy-coated Saint Bernard turns its head by the kennel rail. |
+| Swiss–Italian border, 17.09 km | Real 07, 10 and 11. Games 02 and 04. | Customs huts and flags mark the road across the col. A bronze figure stands on a rocky knoll beyond the border signs while the flags move in the wind. |
+
+Model the snow gallery roof and piers, the hospice wings and their slate roof planes. Use original granite, compacted snow and pale stone surface textures. Batch scree and snow poles by section; use a fixed far ridge. The lake ripples through gaps in the ice, a dog turns in the kennel and border flags move with ride time. Release the scene resources on exit. Compare six matched rider captures and measure actual submissions through the gallery and hospice. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Stelvio Pass (#2217)
+
+The original scene paints the wall of hairpins and fixes its horizon as the rider turns. Preserve that stable skyline and the grade-aligned props from the previous bend review. Compress the 48 numbered bends into the GCN class distance. The native road itself doubles back across a shared hillside. The profile reaches 2,757 m on the final stage. Real 03 depicts the Sustenpass, and supplies retaining-wall proportions only.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Trafoi larches, 0.10 km | Real 01, 02 and 15. Games 04 and 05. | Tall larch and pine frame the lower road, a rider climbs ahead and the first tornante plaque counts down from 48. The inner rock cut and outside posts follow the grade. |
+| Stone retaining wall, 1.57 km | Real 01–03, 06 and 12. Games 02 and 05. | The next traverse sits on a battered dry-stone wall. A motorbike leans through the bend between white edge markings and scuffed stone parapets. |
+| Trafoi wall of hairpins, 3.83 km | Real 04, 05, 07–09, 12 and 13. Games 02–04. | A view across the slope shows real traverses stacked above and below. The stone walls keep their positions as the rider turns through the numbered bend. |
+| Painted climbers’ bend, 5.21 km | Real 01, 05 and 14. Games 03 and 05. | Original rider names and encouragement follow the worn tarmac uphill. A slow camper takes the outside of the next bend while other cyclists climb on the right. |
+| Ortler snowfield, 6.73 km | Real 02, 06–08 and 14. Games 01–04. | The larches give way to fractured grey scree and lingering banks. Pale glacier tongues cut the dark Ortler massif while cloud moves below the peaks. |
+| Passo dello Stelvio summit, 8.05 km | Real 10, 11 and 14. Games 01 and 05. | The last numbered tornante opens below the pale yellow summit hotel, sausage stand and souvenir shops. The 2,757 m sign and snowfields remain visible past the finish. |
+
+Set the station and number of each physical turn from the same course geometry used by its sign. Fit the ground between adjacent traverses. Keep the Ortler massif fixed and use distance-limited sections for wall stones, larches, lettering and stalls. Animate the fellow rider, motorbike and camper on ride time. Dispose their meshes and shared material maps on exit. Retain the historical captures alongside six matched rider views, with one-minute measurements in the forest and at the upper wall. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Mongolian Steppe (#2218)
+
+Use the original eighteen class stages to place the rises and hollows of the grass track. The distant rolling ridge stays fixed in world space while nearby wheel ruts split and rejoin. The five game references guide the size of nearby objects and the space above the rider; the credited photos guide the landscape and architecture.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Branching double-track, 0.12 km | Real 01–04. Games 01 and 03. | Twin strips of pale gravel cut across the grass. An older pair branches off and rejoins over the rise. The broad horizon stays open between the rider and the blue hills. |
+| Ger camp, 3.16 km | Real 05, 06 and 14. Games 02 and 05. | A cluster of round white felt gers sits below a ridge. Roof poles, low chimneys, dark binding ropes and orange timber doors read against the grass. |
+| Running horses, 6.55 km | Real 09, 10 and 15. Games 01 and 03. | Stocky dun and brown horses with short upright manes run beside the rider. Their legs lift in staggered groups, then the herd crosses the far track. |
+| Ovoo cairn, 9.74 km | Real 07, 08 and 13. Games 01 and 04. | Irregular stone piles rise beside the crest. Blue khadag scarves flutter on the poles; far below, tracks diverge across a treeless river valley. |
+| Herders and livestock, 13.42 km | Real 09–13. Games 02 and 05. | A mounted herder in a deel collects sheep, goats and shaggy yaks off the track. Small wildflowers and gravel pick out the near verge. |
+| Evening grassland, 18.74 km | Real 03, 05, 13–15. Games 01 and 05. | Low warm light stretches the horse and ger shadows across the grass. The silhouettes of the hills remain fixed below the clouds. |
+
+Use the same grade for the track, ger platforms and mounted actors. Keep felt roofs, rope bands and the stone cairn in distance-limited geometry. Bound the galloping herd, grazing flock and moving scarves; tie movement and cloud shadow to ride time. Release their buffers, geometry and textures on exit. Compare six matched captures and measure submitted frames in the opening and beside the moving horses. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## St. Patrick’s Day, Dublin (#2219)
+
+Stretch the parade itinerary to the original class distance. Keep the Spire in world space and preserve the relative scale of the GPO, the median and the river. As in Caribana, the near parade articulates while recessed stone and glass establish mid-distance depth.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Luas median, 0.12 km | Real 06, 07 and 09. Games 01 and 04. | Steel Luas rails run beside the planted median. Pale March light picks out wet wheel tracks, overhead wires, plane trees and tricolour bunting. |
+| The Spire, 2.18 km | Real 07, 09 and 15. Games 02 and 05. | The Spire rises from its broad brushed-steel base to a needle point 120 metres above the stone island. The street turns just enough to separate its silhouette from the flags. |
+| General Post Office, 4.29 km | Real 06, 08 and 10. Games 03 and 05. | Six Ionic columns cast shadows beneath the GPO pediment. Across the street, a projecting clock and recessed shop windows mark Clerys. |
+| Pipe band, 6.58 km | Real 01, 02, 04 and 05. Games 01 and 03. | Pipers in dark tunics, patterned kilts and tall caps march in ranks. Drones, upright bass drums and moving drumsticks stand above rows of spectators in green behind steel barriers. |
+| Parade puppet, 8.71 km | Real 03, 11, 12 and 14. Games 01 and 04. | An oversized puppet nods above a rolling float. Spectators wave Irish flags beside a camera platform and a temporary grandstand. |
+| O’Connell Bridge, 11.79 km | Real 09, 10, 13 and 15. Games 02 and 05. | The bronze O’Connell Monument marks the bridge approach. Stone balusters and lanterns open onto the Liffey; the shopfronts drop away until the opposite quay. |
+
+Model six Ionic columns, a tapered steel Spire, bridge piers and the bronze monument. Batch the static crowd and animate bounded near figures on the ride clock. Wet stone uses baked highlights and dark recesses. Scale curb and track height to the class grade. Capture the six rider views and measure the opening and pipe band on the simulated tablet. Dispose of route textures, figures and instance buffers on exit. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Strade Bianche (#2220)
+
+The class fixes the grade and the 8.25 km length. The course compresses the gravel sectors and Siena approach into that distance. The two separate skyline landmarks stay anchored as the road turns. Keep the shadowed cypress avenue in the middle distance and the ruts, riders and fans nearest the rider.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| White gravel sector, 0.12 km | Real 01, 02 and 05. Games 01 and 02. | Pale crushed limestone follows the contour of a bare ridge. The worn wheel lines and loose darker stones read separately at riding speed. A race sector board stands at the verge. |
+| Cypress avenue, 1.54 km | Real 02, 04, 05 and 09. Games 03 and 04. | Tall pencil cypresses frame the crest. A narrow drive rises to a stone farmhouse with a terracotta roof and an olive grove. |
+| Crete Senesi, 3.10 km | Real 03, 07, 10 and 11. Games 03 and 04. | Spring green and harvested ochre fields sweep over the clay hills. Chalk cuts form pale ribs in the calanchi beyond the turn. |
+| Dust behind the bunch, 4.59 km | Real 01, 05 and 06. Games 01 and 02. | A small racing group attacks the white rise. Dust trails from the rear tyres and drifts over the verge below the cypresses. |
+| Tifosi on the gravel bank, 6.37 km | Real 01, 08 and 15. Games 01 and 05. | Fans lean over barriers and wave flags on the last gravel bank. A numbered sector arch spans the road. The brick Mangia tower stands in the distance. |
+| Piazza del Campo, 8.05 km | Real 12–15. Games 03 and 05. | The brick pavement opens into the Campo beneath the narrow Torre del Mangia. The striped Duomo bell tower and pale dome rise on their own ridge. Finish barriers guide the rider into the square. |
+
+Build the Torre del Mangia with its brick shaft, projecting pale crown and bell opening. Give the Duomo its striped campanile and separate dome. Merge repeated cypresses, roof geometry and sector signs. Animate a bounded number of riders, fans and translucent dust patches on ride time. Release shared textures, geometry and instance buffers on exit. Capture the six rider views and measure the opening and dust sections on the simulated tablet. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Strasbourg Christmas Market (#2221)
+
+Extend the market itinerary to the original 10.15 km class distance. Keep the cathedral’s single spire fixed above the lanes, open the square around the Christmas tree, and lower the river below the quays. Full-height shop fronts read at rider scale, while rooflines and the distant towers sit behind the chalets.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Garland lane, 0.12 km | Real 01, 02, 07 and 09. Games 01, 03 and 04. | Golden star garlands cross a narrow sandstone lane. The damp cobbles carry short broken highlights between the coloured timber frames. |
+| Cathedral square, 1.83 km | Real 03, 06, 08 and 12. Games 01 and 03. | The asymmetrical pink sandstone west front rises above the market roofs. One tall openwork spire, its rose window and recessed portals stand in warm floodlight against the deep blue sky. |
+| Market chalets, 3.57 km | Real 03, 04, 07, 10 and 11. Games 02 and 05. | Low wooden chalets display gingerbread hearts, bredele and painted ornaments beneath pine garlands. Steam lifts from a hot-drink stall beside winter shoppers. |
+| Rue Mercière, 5.32 km | Real 01, 08, 09 and 15. Games 01 and 02. | Large teddy bears and wrapped gifts cling to projecting half-timbered upper floors. Illuminated blue-and-gold angel motifs cross above the cyclists. |
+| Place Kléber, 7.21 km | Real 05, 10 and 13. Games 03 and 05. | The square opens to the enormous fir. Warm bulbs, baubles and the star brighten the branches; shoppers in hats and scarves gather at its foot. |
+| Ponts Couverts, 9.87 km | Real 09 and 14. Games 04 and 05. | The route follows the Ill to the stone bridge. The defensive towers break the low skyline, and reflections of the towers and amber lamps ripple in the dark water. |
+
+Use baked highlights on wet cobbles and lit facade recesses. Share materials across repeated roof timbers, market roofs and overhead lights. Tie cup steam, tree bulbs and rippling canal highlights to the ride clock. Bound translucent layers and release their textures and geometry on exit. Capture six rider views and measure the opening and Place Kléber on the simulated tablet. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Suburban Sunrise (#2222)
+
+The register of the street changes from a straight tree tunnel to gently curved residential blocks and a broad cul-de-sac. Use the Quebec, Connecticut and Wisconsin imagery for maple and porch proportions. It is a composite residential avenue. Class resistance supplies the grade across the original 6.575 km distance.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Maple canopy, 0.12 km | Real 01–04 and 10. Games 01 and 04. | Warm dawn light catches mature maple leaves above the narrow lane. Parked family cars, long tree shadows and overhead wires frame the rider. |
+| Porch row, 1.19 km | Real 05–08 and 12. Games 02 and 03. | Two-storey clapboard houses sit back from the curb behind mown lawns. Three wooden steps lead to each columned porch; a mailbox stands at a driveway. |
+| Lawn sprinklers, 2.46 km | Real 04, 07, 13 and 14. Games 01 and 03. | Small sprinklers sweep glittering arcs of droplets across a dewy lawn and adjoining concrete sidewalk. The grass strip breaks at a driveway. |
+| Newspaper delivery, 3.73 km | Real 01, 03, 06 and 12. Games 02 and 04. | A delivery cyclist follows the curb with a stack of folded papers. One rolled paper arcs from the moving rider toward a porch lawn. |
+| The waking block, 4.91 km | Real 05, 08, 11 and 12. Games 03 and 05. | A neighbour raises a coffee cup and waves from a porch. A jogger and dog walker pass a fire hydrant and a basketball hoop farther along the sidewalk. |
+| Cul-de-sac loop, 6.35 km | Real 08–10, 14 and 15. Games 01 and 05. | The pavement widens and the course bends around the end of the cul-de-sac. Cars, stop signs and wooden poles outline the return under a pink-orange sky. |
+
+Keep distant trees stationary behind the near maple branches and the delivery cyclist. Cast long dawn shadows along the road and grass strips. Set porch steps, driveways and moving actors on the course grade. Share geometry for cars and street furniture and bound the moving water droplets and paper. Dispose of their meshes and textures on exit. Capture six rider views and measure the opening and delivery scenes. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Surfers Paradise (#2223)
+
+Extend the beachfront itinerary and its inland tram section to the 13.2 km class distance. Keep Q1 fixed behind the moving foreground and leave the wide ocean visible between palms. The photos establish building profiles, reflective beach width and tram livery. The game views establish the clearance around the cyclist and the legibility of the next landmark.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The Esplanade, 0.12 km | Real 01, 04, 09 and 12. Games 01 and 03. | The rider follows a two-lane road between apartment balconies and the foreshore path. Parked cars, pandanus and tall palms break up the near edge of the sand. |
+| Q1 above the foreshore, 2.23 km | Real 03, 05, 06 and 07. Games 01 and 03. | Q1 rises above its neighbouring towers, with a sloping glass crown and a single long gold-tipped mast. White balcony slabs and turquoise glass separate the surrounding high-rises. |
+| Breakers and surfers, 4.42 km | Real 07 and 09–12. Games 02 and 04. | Long Pacific breakers advance across bands of wet sand. A board and surfer lift over a swell, with swimmers and cumulus beyond. |
+| Cavill Avenue arch, 6.63 km | Real 01, 02 and 04. Games 01 and 05. | The curved steel Surfers Paradise arch spans the pedestrian entrance at Cavill Avenue. Its lettering reads above the path and the ocean shows through the opening. |
+| Patrolled beach, 9.05 km | Real 05, 07, 09 and 13. Games 04 and 05. | Paired red-and-yellow flags mark the swimming area beside a raised lookout and warning signs. The cloth bends in the sea breeze above the reflective shore. |
+| Cavill Avenue station, 12.88 km | Real 08, 14 and 15. Games 01 and 03. | A yellow and blue G:link tram passes the station platform. Glazed doors, articulations, paved track and overhead wire distinguish the tram corridor from the beachfront road. |
+
+Merge repeated tower floors and palms, with taller skyline forms visible beyond the street. Model Q1’s wedge crown and mast, the entrance arch and the tram articulations. Move bounded surf bands, cloth and tram doors or carriage bodies on ride time. Keep water and flags readable in low detail and dispose of course textures and geometry on exit. Capture the six viewpoints and measure both tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Sydney Harbour Fireworks (#2224)
+
+The class fixes the itinerary at 12.45 km. Keep the paired steel arches and pylons fixed to the bridge deck while the waterfront approach opens views of the Opera House and CBD. Boats, foreshore crowds and fireworks occupy distinct depth layers. Reference photographs establish the colour, shape and spacing; game views set legibility above the rider.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Circular Quay, 0.12 km | Real 06, 08, 09 and 14. Games 01 and 04. | Lit towers frame the quay. Yellow-green ferries and spectator boats sit on dark water, with the bridge arch beyond the wharf lights. |
+| Bennelong Point, 2.36 km | Real 01, 04, 08 and 10. Games 03 and 05. | Distinct ribbed Opera House sails rise from Bennelong Point. Their pale surfaces catch colour above the spectator-lined steps. |
+| Granite pylons, 4.58 km | Real 07, 09 and 12–15. Games 01 and 03. | The granite portals flank the wide Bradfield Highway deck. Riveted steel, lane paint and suspended lamps frame the climb onto the bridge. |
+| Midnight over the span, 6.77 km | Real 01–06 and 11. Games 01 and 04. | Shell-shaped trails expand over the arch and over barges. Smoke drifts between the bursts and red, white and gold streaks shimmer on the water. |
+| Bridge waterfall, 9.23 km | Real 02, 04, 07 and 11. Games 02 and 05. | A falling curtain of golden light follows the outside of the span. The opposite steelwork changes colour and remains visible through the glow. |
+| Milsons Point, 12.13 km | Real 03, 06, 08 and 15. Games 02 and 04. | The route descends toward Luna Park’s illuminated entrance face and towers. Moored boats and the skyline remain visible across the harbour. |
+
+Model the bridge from paired curved trusses, intermediate hangers, cross-bracing and four pylons. Render bounded batches of sparks and falling lights on ride time. Smoke and harbour highlights take their colour from the same display. Keep the Opera House shells distinct behind the foreshore, and provide an open sightline to the Luna Park entrance. Release all geometry, textures and instance buffers with the course. Capture six fixed rider views and measure both tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Mount Teide (#2227)
+
+The existing Teide street supplies the summit, Roques, cable and sea of clouds. Place these on a continuous 13.50 km centre line with the TF-24 cut, Roque Cinchado and observatory at distinct distances. The Race catalogue resolves mount-teide to teide. The world library loads the course GLB, centre line, textures and moving models when Race enters the course.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Canary pine approach, 0.12 km | Real 03, 05, 06 and 11. Games 01 and 03. | TF-21 climbs between Canary pines rooted in black scoria. White edge paint leads toward the snow-streaked brown summit. |
+| Above the cloud sea, 2.78 km | Real 06, 11, 12 and 15. Games 01 and 05. | A low stone wall gives way to a white inversion below the road. The western ridge and distant island break through the cloud. |
+| La Tarta, 5.31 km | Real 02, 03 and 07. Games 02 and 04. | Cream pumice separates dark basalt and red ash in the exposed cut. Three pro riders climb the bend past flowering tajinaste. |
+| Roques de García, 7.93 km | Real 01, 08–10, 13 and 14. Games 03 and 04. | Roque Cinchado balances an ochre cap on a narrow darker waist. Companion pinnacles and the Parador sit on the caldera floor. |
+| Llano de Ucanca, 10.48 km | Real 01, 08, 12–15. Games 02 and 05. | Frozen black lava tongues cross pale pumice beds beneath Pico del Teide. A cable car glides up the flank beyond retama and red flowers. |
+| Izaña observatory, 13.19 km | Real 03, 04, 06 and 15. Games 01 and 04. | White telescope domes, shutter seams, service buildings and the taller solar tower stand above the ridge against a deep blue sky. |
+
+Use Caribana’s fixed skyline and moving near group as the reference for the volcano silhouette and training pack. Model the towers, domes, lava tongues and tajinaste at their roadside scale. Give the cloud deck bounded motion below the road, with the cable car on its own wire. Merge static details by section, keep the summit visible on low, and dispose of the actors, textures and materials on exit. Capture all six rider views. Advance distance while measuring submitted frames through both sixty-second benchmarks. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Mount Tamalpais (#2226)
+
+The existing world supplies wet asphalt and a fog palette. Race needs a selectable map and a continuous climb. Resolve mount-tamalpais to the tamalpais course and load its GLB, centre line and Marin scenery with the lazy world renderer. Rise from 150 m to the 784 m summit over 12.149 km, weighting slope by each original stage’s target resistance.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Muir Woods approach, 0.12 km | Real 03, 08 and 09. Games 01 and 02. | Furrowed redwood trunks rise beside the striped two-lane road, with cool shade, fern banks, a timber rail and pools of sunlight. |
+| Panoramic Highway, 2.31 km | Real 01, 08 and 09. Games 01, 03 and 05. | A club group pedals through the uphill bend. Its jerseys stand out against the red bark and the dark cut bank. |
+| Marine inversion, 4.77 km | Real 02, 05, 06 and 15. Games 03 and 04. | Fog curls around the shoulder below the road. The crest, oak and red-barked manzanita stay clear against the golden grass. |
+| Golden Gate turnout, 6.95 km | Real 01, 02, 06 and 13. Games 03 and 04. | A timber rail overlooks the two vermilion towers above the fog, with the San Francisco skyline and bay beyond. |
+| Ridgecrest Boulevard, 9.42 km | Real 07, 10–12 and 15. Games 03 and 05. | The land drops away through chaparral to the arc of Stinson Beach. Thin lines of surf move onto the sand below the ridge. |
+| East Peak, 11.92 km | Real 04, 12–14. Games 02 and 03. | A glass-walled fire lookout and its railed walkway stand on the East Peak rocks above a gravel turnout and trailhead sign. |
+
+Caribana keeps its landmark skyline fixed and its near participants dimensional. Here the far Pacific and bay stay fixed while the trees, gravel turnouts, bridge towers and fire lookout have separate geometry. Local rider joints share the ride clock with the fog and surf. Merge the static trunks and rail sections, bound the club group, and release every course allocation on exit. Compare six rider views on low detail and count frames submitted during sixty seconds of moving tablet footage in both benchmark sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Lake Tahoe (#2225)
+
+The original TahoeStreet repeats 360 m of shoreline. Retain its clear summer light, paddleboarders, granite and snow while placing the coves, island and marina at distinct distances along the 19.75 km class. The Race catalogue resolves lake-tahoe to tahoe. The world library loads courses/tahoe.course.json and courses/tahoe.glb only on entering the course.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The shore highway, 0.12 km | Real 01–05 and 15. Games 01–04. | Paired yellow lines and an edge stripe lead around a granite cut. Jeffrey pine trunks interrupt the lake view beyond a low guard rail. |
+| Sand Harbor, 3.82 km | Real 06, 08, 09 and 11. Games 02 and 05. | Pale rounded boulders sit partly below the surface. The sand bed and dark underwater stones show through turquoise shallows that deepen to sapphire. |
+| Zephyr Cove, 7.18 km | Real 08, 10 and 12. Games 02 and 04. | A paddler dips a blade beside the sandy beach and timber pier. Swimmers and the pine-covered headland give scale to the cove. |
+| Emerald Bay overlook, 11.24 km | Real 04, 05, 07 and 14. Games 01 and 05. | Guard rails open a view down to Fannette Island with its tiny stone tea house. Dark green slopes enclose the bay and a snowy Sierra ridge stands beyond. |
+| Tahoe City marina, 15.63 km | Real 03, 10, 12 and 13. Games 03 and 05. | Moored boats bob at finger piers below the highway. A green-roofed timber lodge faces the slips while light catches the windows and hulls. |
+| East Shore pines, 19.38 km | Real 01, 02, 06 and 15. Games 01, 03 and 04. | Tall Jeffrey and sugar pines shade a needle-covered shoulder. A yellow curve sign stands against the forest and the lake opens between branches. |
+
+Use the Caribana skyline technique for the fixed Sierra rim. Place dimensional boulders at the waterline and vary pine trunks and crowns along the road. Grade the water from clear shallow sand to deep blue according to distance from the shore. Batch the static roadside objects, keep the paddle, water and hull animations bounded and release the assets on exit. Compare six rider views, then measure submitted frames for sixty seconds on low/WebGL2 at the highway and marina. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Tel Aviv Promenade (#2228)
+
+The existing seafront preset supplies the warm light. The Race catalogue resolves tel-aviv-promenade to telaviv and loads the 10.70 km authored course from the world library. Place the pool and sailboats near the northern start, the courts and cafés on distinct beaches, and the Jaffa headland at the southern end.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Herbert Samuel promenade, 0.12 km | Real 01–05 and 07. Games 01 and 03. | The red bike lane passes circles of cream and brown stone. Date palms cast long shadows between the path and the white hotel balconies. |
+| Gordon Pool and marina, 2.08 km | Real 04, 07, 12 and 15. Games 01 and 02. | Lane ropes stripe an open-air swimming pool. Masts and bobbing sailboats rise beyond its fence inside the rock breakwater. |
+| Frishman Beach courts, 4.25 km | Real 06, 08 and 09. Games 02 and 04. | A volleyball crosses a net on the sand while a pair plays matkot nearer the water. Ochre lifeguard huts and tall lamps overlook the courts. |
+| Beachfront cafés, 6.47 km | Real 01, 03, 09, 10 and 14. Games 01, 03 and 05. | Timber shade pergolas, parasols, sunbeds and café tables face the sea. White apartment and hotel towers rise behind the palms. |
+| Banana Beach, 8.36 km | Real 09–14. Games 03 and 04. | Turquoise surf breaks over warm sand as the setting sun reflects on the Mediterranean. The stone Jaffa headland marks the southern end of the coast. |
+| Old Jaffa, 10.41 km | Real 10–13. Games 02 and 05. | The clock tower, St Peter’s bell tower and stepped sandstone buildings stand above the beach ahead, behind benches and promenade lamps. |
+
+Keep Caribana’s fixed skyline and animate a small group in the near field. Tile the stone circles at walking scale, keep the shore and breakwaters continuous and layer the coastal town behind the beach. Group the hotel elevations, palms and shade shelters by course section. Share the court, sailboat and foam materials, animate from ride time and release every course resource on exit. Compare six reference positions. Count submitted frames and advancing distance in both sixty-second benchmarks. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Tempelhof Field (#2229)
+
+The legacy Tempelhof street already depicts the broad runway, kites and radar tower. Carry those into the 12.909 km Race course, with distinct apron, community garden and taxiway sections. The catalogue resolves tempelhof-field to tempelhof; Race loads its Blender geometry and matching centre line, then the low-tier scenery on entry.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Runway threshold, 0.12 km | Real 01–05, 14 and 15. Games 01 and 03. | Worn threshold bars, slab joints, tyre marks and inset centreline lights lead across the broad runway under a moving Berlin sky. |
+| The terminal apron, 2.48 km | Real 06–09, 14 and 15. Games 02 and 03. | The curved limestone terminal, glazed hangar doors and projecting apron canopy stretch along the field. The old radar tower rises above the roof. |
+| The kite runway, 4.91 km | Real 01–04, 11 and 14. Games 01 and 04. | A kite-skater follows the wind under a swept canopy and taut lines. More colourful kites move beyond the mown runway edge. |
+| Allmende-Kontor gardens, 7.16 km | Real 10–13. Games 01 and 05. | The ring road passes raised timber beds, garden sheds, picnic tables, a red information container and people tending or using the park. |
+| Skylark meadow, 9.52 km | Real 05–07 and 11–15. Games 01, 02 and 04. | Tall meadow grass behind a wire fence gives way to Neukölln apartments and church spires, with the Fernsehturm sphere on its slender mast. |
+| The windsock taxiway, 12.64 km | Real 01–05, 09 and 14. Games 03 and 05. | Taxiway arrows and yellow signs guide the return to concrete. A striped windsock turns beside the old airfield lights while skaters cross the apron. |
+
+Use Caribana’s fixed skyline, occupied middle distance and moving foreground to set the scale of the open field. Keep the concrete slab pattern continuous through the threshold, use real geometry for the canopy and terminal arc, and merge fence posts, beds and hangar details by course section. Share a bounded set of actors, kite lines and park furniture, animate on ride time and release all resources on exit. Compare six rider views and collect sixty seconds of submitted-frame timings for each tablet section. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Teotihuacán (#2230)
+
+Use the historic Threshold Pyramid plan to space out the ceremonial axis over 22.275 km. Keep the Sun pyramid on the east side and the Moon pyramid beyond the finishing plaza. Stretch the distances between monuments to follow the class while retaining each building’s proportions. The map catalogue selects the authored centre line and a lazily loaded scene on Race entry.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| La Ciudadela, 0.14 km | Real 10, 12–14 and game 01 | Serpent heads project from the sloped masonry of the southern enclosure. The first platform leaves an open sightline north. |
+| Calzada de los Muertos, 4.20 km | Real 01–05, 14–15 and games 03 and 05 | Parallel platforms frame a straight strip of packed earth. Low agave and nopal grow in the verges below the distant ridge. |
+| Pirámide del Sol, 8.48 km | Real 06, 08–10 and game 02 | Five broad levels rise around the central stair on the east side. Recessed masonry and small chinking stones catch the morning light. |
+| Morning balloons, 12.78 km | Real 03, 06, 11 and games 02 and 03 | Striped balloons drift across the mountain silhouette, well above the low terraces. Their envelopes, ropes and baskets read against the clouds. |
+| The vendors’ court, 17.45 km | Real 07, 10–13 and game 04 | A hat seller and visitors animate the edge of the avenue beside craft blankets, shaded tables and a pepper tree. |
+| Plaza de la Luna, 22.05 km | Real 01, 05, 12, 14–15 and games 01 and 05 | The spreading staircase and nested platforms of the Moon pyramid close the avenue below Cerro Gordo. |
+
+As in Caribana, separate the fixed distant ridge, middle-distance landmark geometry and close moving figures. Model the terraces, central stairs and serpent relief in depth. Share textured walls and baked masonry shadows across all levels. Merge low platforms by course section, keep landmark silhouettes at distance and release all actor geometry and materials on exit. Compare six riding positions and measure the southern enclosure and Sun pyramid over separate sixty-second windows. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Times Square New Year's Eve (#2231)
+
+Stretch the Broadway approach and crowd pens to fit Give Me One Minute’s 8.70 km course. Build the physical bow tie where Seventh Avenue crosses Broadway. Keep the One Times Square wedge, rooftop mast and crystal ball fixed in world space. The catalogue resolves the map to the authored course and Race loads the nighttime scenery on entry.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Broadway approach, 0.12 km | Real 02, 04, 11–13 and games 03 and 05 | The dark road and yellow lane stripes run between illuminated shop windows, theatre marquees and deep rows of office windows. |
+| The billboard canyon, 1.74 km | Real 02–05, 11–12 and games 01, 03 and 05 | Wraparound LED panels alternate red, blue and gold artwork on different buildings. Broken bands of colour reflect from the asphalt. |
+| Duffy Square, 3.38 km | Real 03–05, 11, 14 and games 02 and 04 | The TKTS red steps rise across the Broadway and Seventh Avenue bow tie. Crossing stripes frame the narrow end of the wedge. |
+| The crowd pens, 5.19 km | Real 01, 06–08, 13–15 and games 02 and 03 | Blue police barricades, officers and camera crews line the cleared lane. Winter coats, party hats and condensed breath fill the spectator pens. |
+| One Times Square, 7.22 km | Real 02, 06–07, 09–10 and games 01 and 05 | A live countdown ticks beneath the illuminated faceted ball. The ball slides along the rooftop mast as spectators look up. |
+| Midnight on Broadway, 8.52 km | Real 01, 06–10, 14–15 and games 01 and 04 | The 2027 sign shines above the clearing. Coloured paper flutters into the light and gathers on the marked road by the barriers. |
+
+Use the Caribana crowd and skyline depth arrangement to separate shoulder-height barricades, crowd pens and towers. Chunk the street fronts and repeat original LED artwork over distinct planes. Bake reflection colour and lettering into the low-tier surfaces, share crowd cutouts, and bound the number of moving confetti sheets and breath sprites. Derive the countdown, ball drop and moving effects from the race clock so pause holds every element. Compare six rider views and sample sixty seconds at each tablet position. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Toronto Waterfront Trail (#2232)
+
+Keep downtown on the north side of Queens Quay and open Lake Ontario to the south. Set the tower core, observation decks and antenna to Caribana’s 553 m proportions. Build the Rogers Centre roof separately so its pale dome remains distinct against the glass condo frontage. Space the trail landmarks along the 13.075 km historical class profile.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Queens Quay trailhead, 0.14 km | Real 01–03, 10–11 and games 01–02 | A red cycleway, square granite curbs and pale maple-leaf markers lead past summer joggers and bike-share riders. |
+| The Queens Quay streetcar, 2.63 km | Real 01–03, 12 and games 01, 02 and 04 | An articulated red streetcar rolls under overhead wires on its own rails, with glazed condo balconies on the north side. |
+| Simcoe WaveDeck, 4.91 km | Real 01, 03–04, 12, 15 and games 03 and 05 | Long curved timber ribs dip toward the harbour edge. The Rogers Centre dome and CN Tower rise behind the condo roofs. |
+| HTO Park, 7.05 km | Real 04, 08, 11 and 14 and games 03–05 | Canary-yellow parasols and Muskoka chairs stand in pale sand. Breezy water, railings and white sails separate the park from the islands. |
+| Jack Layton Ferry Terminal, 9.88 km | Real 05–06, 09, 12–13 and 15 and games 02–03 | A double-ended white island ferry glides away from the landing with a wake. Lake Ontario extends past the low island shore. |
+| Sugar Beach, 12.81 km | Real 07–08, 12–15 and games 03 and 05 | Pink umbrellas and waterfront boardwalk seating open a final sightline across the harbour. Local pedestrians and cyclists use the red trail. |
+
+Caribana’s skyline, middle-distance street activity and close silhouettes guide the composition. Render the glass balconies and foliage on shared original atlases. Build curving WaveDeck ribs, streetcar rails and umbrella canopies in sectioned geometry. Reuse the Toronto tower dimensions and silhouette. Float the double-ended ferry at lake level, run the streetcar along its own rails and keep joggers on the trail shoulder. Tie motion to ride time, bound actor counts, release all materials, and measure both sections for sixty seconds. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Tremola, Gotthard Pass (#2234)
+
+Climb from the Leventina side to 2,106 m in 10.875 km. Carry the historic Low Cadence Workout stages into the Race catalogue. The carriageway reverses on granite terraces while the Ticino runs down the valley. Build the hospice and lake into the finishing plateau.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The historic road, 0.14 km | Real 01–03, 08, 12 and games 01–02 | Hand-set granite fans lead uphill between low granite bollards, a yellow pass sign and the historic Tremola plaque. |
+| Val Tremola turns, 2.34 km | Real 02–06, 10–13 and games 02–04 | The returning road climbs above massive dry-stone retaining walls. Several carriageways can be seen at different heights across the valley. |
+| The Ticino crossing, 4.61 km | Real 06, 09, 11–13 and games 03–04 | A stone arch spans the stream. Bright water crosses grey blocks below lingering snow patches on the rock face. |
+| Airolo overlook, 6.55 km | Real 04–05, 08, 10–13 and games 03–05 | Houses and a motorway viaduct lie far below the stone parapet, with switchbacks winding into the Leventina valley. |
+| The PostAuto bend, 8.46 km | Real 01–03, 06–07, 12 and games 02–03 | A yellow postbus passes a burgundy vintage car. A road cyclist climbs at low cadence alongside the granite edge stones. |
+| The summit hospice, 10.69 km | Real 08, 13–15 and games 03–05 | The pink hospice and stone museum overlook a small summit lake at 2,106 m. A yellow sign gives the pass name. |
+
+Adapt Caribana’s separation of fixed landmarks, moving middle distance and textured foreground. Lay the setts by distance along the road and across its width to keep the fans aligned through each bend. Model the curved wall, edge stones, arch and viaduct in depth. Share a small fleet and cyclist geometry and animate from the ride clock. Use original artwork for stone, vehicles and the hospice with the world folder retaining source attribution. Release resources on exit and measure sixty seconds in each tablet section. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Col du Tourmalet (#2233)
+
+Map the Four Minute Devils class to 10.400 km of climbing above La Mongie. Set the upper end of the climbing profile to 2,115 m. Use the stage resistance to shape each ramp and recovery. Keep the meadow, observatory ridge and summit sculpture in distinct depth layers as the road reverses on the upper slope.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| La Mongie, 0.14 km | Real 04, 11 and 15 and games 01 and 04 | The road climbs between concrete ski apartments and a lift station. Empty summer chairs run toward the first bare-green ramp. |
+| The devil’s ramp, 2.17 km | Real 01–03, 09 and 13 and games 02 and 05 | The red-horned devil jogs beside the rider with his trident raised. Chalk names and orange Basque flags mark the steep lane. |
+| The grazing slopes, 4.32 km | Real 03, 06, 10–12 and 14 and games 01 and 04 | A flock grazes below grey scree, with a cow and pony at the verge. A yellow-and-white borne gives the kilometres to the summit. |
+| Pic du Midi, 6.65 km | Real 06, 09–11 and 14 and games 01–02 | White observatory domes and the mast break the upper ridge. The climb leaves a shallow layer of mist below the next bend. |
+| The painted hairpin, 8.64 km | Real 01–03, 06–09 and 13 and games 03 and 05 | Polka-dot and orange jerseys line a chalk-covered corner. Basque and French flags ripple at the roadside above the valley. |
+| Le Géant du Tourmalet, 10.22 km | Real 05–08 and 14 and games 02 and 05 | The silver cyclist stands above the 2,115 m pass sign. The rim of the saddle frames the crowd, downhill road and high peaks. |
+
+Use the Caribana tablet crowd batching and landmark silhouettes for the finish. Separate the close trident, flags and yellow bornes from grazed slopes and distant mist. Sculpt the cyclist and bicycle in three dimensions, texture the concrete resort and weathered road, and share crowd cutouts by section. Animate chairs, flags and the devil on ride time. Release textures and geometry on exit. Compare six rider views and time both tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Trollstigen (#2235)
+
+The map catalogue and course renderer currently have no Trollstigen entry. Restore its historical class plan, expose the climb through Race and load its assets only after selection. Trace 12 km from Isterdalen to the summit. Lay eleven direction reversals into the route itself so riders encounter the same bridge, peaks and valley from different angles.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The Isterdalen approach, 0.14 km | Real 01–03 and game 01 | A narrow wet road climbs out of green Isterdalen between the dark walls of the U-shaped valley. |
+| The lower switchbacks, 2.45 km | Real 02–07 and games 02–04 | The next return bend cuts across the grey wall above the rider. Individual stone parapet blocks mark the exposed edge. |
+| Stigfossen bridge, 4.98 km | Real 07–09, 12 and game 03 | Water drops in white ribbons from the cliff above the stone bridge and rejoins the torrent below the arch. |
+| Tourist traffic, 7.28 km | Real 04, 09–11 and games 01–02 | A camper van leads a car and touring motorbike around the narrow upper bend. |
+| The upper skyline, 9.45 km | Real 01, 07, 12–15 and games 03–05 | Separate Kongen, Dronninga and Bispen silhouettes rise through moving cloud, with summer snow caught on ledges. |
+| The summit overlook, 11.78 km | Real 05, 07, 12–15 and games 04–05 | Visitors stand on a rusted steel cantilever over Isterdalen. The low visitor centre follows the line of the upper stream. |
+
+Use Caribana’s fixed skyline and merged static detail for the named peaks, retaining walls and platform. Map original granite and heath textures across terrain in world coordinates. Keep water and cloud motion tied to elapsed ride time and share geometry across the three traffic vehicles. A tier change or route exit releases the meshes, materials and textures. Capture the six positions through Race on low and measure sixty seconds each on the approach and traffic bend. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Dutch Tulip Fields (#2236)
+
+The Race catalogue and native course registry currently lack the Dutch Tulip Fields entry. Restore Easy Cadence Workout for the 10.1 km ride. Build the polder as large rectangular plots with exposed soil between crop rows and only a metre of relief at minor crossings. Preserve long sightlines by drawing mills beyond the local detail window.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Bollenstreek road, 0.14 km | Real 01–04, 11 and games 01–02 | Long red, white and yellow beds cross the view under the open April sky. The narrow lane has grass verges. |
+| The drainage ditch, 2.16 km | Real 04–06, 10, 15 and games 02–03 | A straight water-filled ditch reflects a row of clipped willows between the road and the next bulb plot. |
+| Keukenhof mill, 4.17 km | Real 08, 12–13 and games 01, 04 | Four lattice sails turn around the cap of a tall Dutch smock mill above its timber gallery. |
+| The mixed bulb beds, 5.89 km | Real 05–07, 09, 14 and games 02–04 | Blocks of violet hyacinths and yellow daffodils break the tulip stripes; small groups of tourists stop to photograph them. |
+| The bulb farm, 7.64 km | Real 01, 03, 10–11, 15 and games 03, 05 | Brick farmhouses, low storage sheds and a line of poplars enclose the fields behind an upright Dutch cyclist. |
+| The windmill sprint, 9.92 km | Real 07, 12–15 and games 01, 04–05 | A second mill marks the sprint with a canal and swaying red and white tulips beside the finish. |
+
+Use Caribana’s separation of textured foreground, moving middle-distance subjects and fixed horizon. Model the tapered smock and gallery in depth, share geometry across the four sails, and group nearer bloom heads and distant planted rows separately. Willow trunks, water banks and farm buildings establish parallax. Load artwork with the course and release materials, textures and geometry on exit. Compare the six marked rider views and measure both sixty-second sections on the low tier. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Utrecht Bike City (#2237)
+
+The Race catalogue and native course registry currently lack Utrecht. Bind the historical class to a 22.59 km route with short rises at canal bridges. Give the water, wharf, cellar fronts and upper road separate heights, seen together from the opposite bank. Use a fixed Dom Tower with square lower tiers, an open octagonal belfry and a spire.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Oudegracht aan de Werf, 0.14 km | Real 01–03, 10, 13 and games 01–02 | An upper brick street looks across a lower cafe terrace, vaulted cellar doors and the green canal beneath the gabled houses. |
+| The Dom Tower approach, 4.25 km | Real 01, 04, 12–13 and games 02–03 | A straight street frames the square Gothic tower. The open bell lantern rises above the rooftops. |
+| Stationsplein bicycle garage, 8.36 km | Real 05, 07–09 and game 05 | A red two-way bicycle ramp leads under the station canopy. Two tiers of parked bikes line the illuminated garage entrance. |
+| The red cycle lane, 12.32 km | Real 05–07, 12, 15 and games 03–04 | White shark teeth and dashed lane markings lead up to traffic lights where a cargo bike joins waiting Dutch cyclists. |
+| Nieuwegracht bridge, 16.78 km | Real 02–03, 10–11, 14 and games 01, 04 | A low brick arch with iron railings spans the green canal. A tour boat and a paddler pass beneath the trees. |
+| The wharf finish, 22.32 km | Real 01–03, 10, 13–14 and games 01–02 | Gabled trading houses, lit cellar cafes, hanging greenery and the distant Dom mark the return to the old wharves. |
+
+Adapt Caribana’s tower proportions, layered skyline and animated middle distance. Build cellar-front walls and narrow canal houses in runs; vary frontage, roof, greenery and terraces. Share geometry for the garage racks, boats and street traffic, render distant landmarks at low detail, and release the course-specific resources on exit. Capture the six rider locations and measure the two tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Valais Ski Stations (#2238)
+
+Restore the historical Zone 2 class to the Race catalogue and give the world its own lazy native scene. Follow twelve kilometres of station road with a gradual climbing profile. Hold the glacier skyline fixed as the road turns. The resort architecture and empty lift infrastructure belong on the rolling green slopes below the peaks.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The summer meadow, 0.14 km | Real 03–05, 11, 13 and games 01–02, 05 | Alpine daisies edge a smooth tarmac road. The Matterhorn and Weisshorn rise above the sunny green pasture. |
+| Grimentz granaries, 2.35 km | Real 06–08, 10 and games 02–03 | Dark larch chalets carry red window boxes. A stone-roofed mazot stands on mushroom-shaped stone supports. |
+| The idle ski lift, 4.65 km | Real 04–05, 11–12 and games 01–03 | Empty chairs hang over a summer piste between pylons. Larch and pine mark the edge of the meadow. |
+| The Hérens pasture, 6.73 km | Real 03, 09, 11 and games 02, 04–05 | A black cow grazes near her calf. The brass bell beneath her collar swings as she lowers her head. |
+| The PostBus junction, 8.92 km | Real 01–02, 05–06, 12 and games 01, 03–04 | A yellow postal bus rounds the hairpin near a yellow hiking sign. The white village church rises beyond the bus. |
+| Rhône valley overlook, 11.76 km | Real 11–15 and games 02, 04–05 | Beyond the stone parapet, terraced vineyards descend to the wide Rhône valley and snow-covered skyline. |
+
+Adapt Caribana’s fixed horizon, varied middle distance, animated foreground and shared materials. Build peaked roofs, wooden galleries, stilt footings, chairs and cables in depth. Keep summer lift machinery stationary. Animate the cow’s head, bell and bus from the ride clock, gate the bell audio on the rider’s sound setting, and release media and GPU resources on exit. Compare all six positions and measure both 60-second tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Valparaíso Stairways (#2239)
+
+Restore the historical Reverse Steps class to the Race catalogue and register a lazy native hillside course. Use the hard intervals for the climbs and the lighter stages for the descent through the port neighbourhoods. Set the stairs apart from the road so all twenty-four stages remain rideable. Place the rails, wires, stacked houses and port beyond them at distinct depths.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Cerro Concepción lane, 0.14 km | Real 01–04, 07 and games 01–03 | Sunlight catches the yellow and turquoise corrugated houses. A tangle of wires crosses the street between painted timber balconies. |
+| Pasaje Piano, 5.18 km | Real 06–08, 15 and games 02–04 | White risers and black piano keys climb a pedestrian stair beside the rideable lane. A rail and an original mural wrap the landing. |
+| Ascensor El Peral, 10.35 km | Real 03–05, 09–10 and games 02–03 | Wooden funicular cars pass each other on steep rails beside the road. The port appears between the houses below the station. |
+| Cerro Alegre murals, 14.82 km | Real 02, 06–08, 14 and games 01, 03–04 | Original painted walls and rainbow steps frame a hillside cafe, an artist at work and a street dog. |
+| The trolleybus bend, 20.14 km | Real 03–04, 07, 11–12 and games 03–05 | A cream and green electric trolleybus follows its overhead wires on the lower street under the cerros. |
+| Paseo Gervasoni, 26.41 km | Real 02, 05, 11–15 and games 01–02, 05 | Iron mirador railings overlook hillside roofs, working harbour cranes and a container ship under the pink Pacific haze. |
+
+Use Caribana’s fixed landmarks, worn street surfaces and ride-clock motion for the mirador, layered street scenes, two ascensor cars and trolleybus. Give the stepped risers and murals their own UVs. Share geometry across houses and wires; release the course art, geometry and materials on exit. Match all six locations and measure the opening and busy funicular sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Las Vegas Strip (#2240)
+
+The existing VegasStreet class scene supplies the Welcome sign, cruising traffic, signals and lit fountains on a repeating street. Race currently lacks a persistent Las Vegas Boulevard course in its catalogue and renderer. Restore Quick HIIT Sprint Workout, reuse the sign artwork and place the named landmarks in order along nine kilometres.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The Welcome sign, 0.14 km | Real 01, 06, 08–09 and games 02–03 | The white diamond and starburst stand on a planted median. Palm crowns frame the first stretch of broad boulevard beneath the Luxor beam. |
+| New York-New York, 1.86 km | Real 01–04, 06–08 and games 01–03 | Art Deco towers rise beyond red and yellow marquees. Taxis and a stretch limousine cruise in the neighbouring lanes. |
+| Bellagio fountain lake, 3.84 km | Real 02, 10–11, 14–15 and games 03–05 | Rows of white jets rise at different heights in front of the illuminated hotel and reflect in the lake. |
+| Paris and Caesars, 4.78 km | Real 02, 04–06, 12 and games 01, 03–04 | The Eiffel lattice and blue globe rise across the road from classical colonnades. Light from LED boards shifts across the asphalt. |
+| The Venetian footbridge, 6.33 km | Real 03, 05–08, 12 and games 03–05 | The campanile and gilded arcades stand behind a pedestrian bridge, lit palms, crowds and a party bus. |
+| The northern skyline, 8.81 km | Real 01, 04, 12–14 and games 01–03 | The High Roller turns above the hotel terraces while the narrow Strat shaft and its observation pod mark the next light. |
+
+Use Caribana’s fixed skyline and moving detail for the Strat, Eiffel lattice, High Roller, fountain rows and traffic. Group emissive surfaces and bake reflected colours into road materials on low. Draw nearby jets and vehicles from shared geometry, keep distant architecture in broad sections and release all local resources on exit. Compare six rider-height views and measure two moving sixty-second samples. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Pico Veleta (#2241)
+
+Restore the historical class to the Race catalogue and register a native 25.25 km climb. The stage-weighted profile climbs 1,258 m from Pradollano to 3,398 m. The historical class title says 55 minutes; its stages sum to 56 minutes and the ride uses their actual durations. Keep the Granada basin, observatories and Mulhacén as fixed landmarks on the ascent.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Pradollano approach, 0.14 km | Real 02, 05, 12–14 and games 02–03 | A maintained A-395 lane passes the ski village, lift terminal and lower pines. The bare summit rises beyond the roofs. |
+| The long switchbacks, 5.47 km | Real 01, 03–05, 08 and games 01–02 | A return bend cuts through slate and broom. The carriageway above the rider shows the next switchback. |
+| The Granada overlook, 10.62 km | Real 03, 06, 11–12, 14 and games 02, 04 | The Vega and Granada lie far below the edge of the road. Brown foothills recede into blue haze. |
+| The observatory ridge, 15.26 km | Real 05, 07, 10, 13 and games 02–03 | The IRAM dish tilts above its pedestal beside the observatory domes. Snow gullies run below the crest. |
+| The upper barrier, 20.61 km | Real 01, 04, 07–09, 13 and games 01, 05 | The surface narrows and breaks up. A red-white barrier stands open beside scree and the last roadside snow. |
+| The summit ridge, 24.98 km | Real 04, 07–09, 11, 15 and games 03–05 | From Veleta, Mulhacén and a glacial lake fill the open ridge beyond the summit post. No trees reach this elevation. |
+
+Adapt Caribana’s landmark geometry, surface wear and depth separation to the dish pedestal, village and battered upper tarmac. Share the existing animated course cyclist and simplify the distant ski machinery and snowfields at low tier. Release the local scene on exit. Match six locations and measure the two busiest moving sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+### Lee Valley Velodrome (#2242)
+
+The 8.725 km session covers 34 full 250 m laps and a final 225 m. Use the same physical oval on every lap. Store cumulative distance for the workout and race rankings. Place timber seams along the direction of travel and vary the bank continuously from the straights to the bends. Keep the shared track surface and arena in memory once. Place the crowd behind the glass, with the lower infield visible from the boards. Reuse the shared cyclist kit for close pursuit riders, adding track wheels and aero helmets. Scope the riders, scoreboard, audio and textures to the race. The app's sound preference and ride clock govern the bell and crowd.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Home straight, 0.51 km | Real 02, 05, 06 and game 01 | Pale pine strips run along the riding line. A blue apron separates the boards from the pens. |
+| Pursuit bend, 1.58 km | Real 01, 03, 12–13 and game 04 | The outer boards climb to 42 degrees. Three pursuit riders lean together above the red sprinter line. |
+| Team pens, 3.14 km | Real 07, 09, 14 and games 02–03 | A coach watches a rider warm up on rollers among spare wheels and the low pen dividers. |
+| Roof lattice, 4.69 km | Real 02, 04–05, 11, 15 and game 05 | Arched timber and roof cables cross above the far stands. Floodlights follow the straights. |
+| Back straight stands, 6.30 km | Real 07–10 and games 01, 04 | Spectators rise behind clear safety panels. The lit arena screen stays legible across the track. |
+| Lap board, 8.51 km | Real 03, 06–08, 12 and game 01 | An official rings the bell beside the start line. The lap board changes as the rider crosses. |
+
+### Venice Beach Boardwalk (#2243)
+
+Keep the pier rooted in the coast and the bike path independent of the wider pedestrian promenade. Rise and fall by four metres of cumulative climb across 6.95 km. Use concrete joint strips, sand and dune variation, palm silhouettes at three depths, and merged shop fronts. Model the Muscle Beach exercise rigs, skatepark bowl profiles, lifeguard tower ramp and the pier on piles in Blender. Animate skaters along the bowl contours, the busker's strumming arm and the gondolas using the ride clock. Dispose of moving meshes and textures on leaving. Benchmark the market and bowls on the normal race route.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Muscle Beach, 0.14 km | Real 01, 04–05 and games 01, 03 | The lifting platforms and steel exercise frames sit inside the open gym fence. Ocean Front Walk runs beside the bike path. |
+| Ocean Front Walk, 1.32 km | Real 02–03, 05–07, 09 and game 03 | Painted arcades, souvenir racks and awnings alternate behind a separate pedestrian promenade. Palm trunks frame the sprints. |
+| Venice Skatepark, 2.64 km | Real 10–11 and games 02, 05 | Skaters carve through connected concrete bowls below metal coping. Roller skaters pass on the promenade. |
+| Venice Art Walls, 3.81 km | Real 08–09, 12 and games 01, 04 | Original painted concrete walls step down to the sand. Buskers play beside benches and strolling spectators. |
+| Lifeguard tower, 5.11 km | Real 02, 10, 14–15 and game 02 | A raised blue lifeguard tower faces breaking Pacific surf beyond broad sand. The mountains recede into summer haze. |
+| Santa Monica Pier, 6.77 km | Real 13–15 and games 02, 04 | The Pacific Park wheel turns above the timber pier, with the coaster rails and the wooden piles visible along the waterline. |
+
+### Mont Ventoux (#2244)
+
+Fit the climb from the forest below Chalet Reynard to the 1,910 m crest to the class's 8.395 km. Weight the successive gradients by the stage resistance and retain 615 m of total climbing. Root the observatory and mast at the summit and keep their silhouette visible across lower switchbacks. Model the Chalet terrace, memorial steps, stone wall and yellow-capped bornes. Use original rock and panorama artwork, merge roadside forms in track sections, animate the cyclists, cloth and fans on the ride clock and dispose of their resources on leaving the race.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Lower cedar road, 0.14 km | Real 07–09 and games 01, 03 | A pair of amateur cyclists climb between cedar and pine. The shade ends sharply above the junction. |
+| Chalet Reynard, 1.72 km | Real 01, 09, 11–12 and game 01 | The broad wooden restaurant and its terrace stand at the fork. The striped summit mast rises beyond the treeline. |
+| Limestone scree, 3.32 km | Real 01–05, 11 and games 02, 05 | The white D974 edges curve across pale broken limestone. Painted encouragement remains visible on the tarmac. |
+| Mistral shelter, 4.94 km | Real 04, 10, 13, 15 and games 02–03 | A flag snaps behind a low wall. Beyond the winding road, Provence fields, the Vaucluse hills and distant Alps fill the view. |
+| Tom Simpson memorial, 6.83 km | Real 03, 06, 14 and games 01, 04 | The granite stele rises above its stone steps with a portrait plaque, bottles and caps at the foot. Passing riders stand on their pedals. |
+| Summit observatory, 8.22 km | Real 01–02, 05, 10–12, 15 and games 04–05 | The cream weather station and red-white mast stand on the ridge behind the summit sign. Supporters applaud the final turn. |
+
+### Verona Arena Finale (#2245)
+
+The 24 km race starts on the Torricelle, reaches 273 m, then descends to the Adige and the historic streets. Cross a modelled Ponte Pietra above the water. Give Portoni della Bra two open arches and a clock between them. Align an entrance in the arena's two-tier arcade with the racing line. Place the finish inside the ellipse with sightlines across the stepped seating. Real 09 depicts Bucharest and supplies no evidence of Veronese architecture. The ride clock controls the lead riders, river ripples and scarves. Release each scene resource when the rider leaves.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Torricelle climb, 0.14 km | Real 07, 10, 13, 15 and games 01, 05 | Cypresses and vineyard rows open onto red roofs below the climbing riders. |
+| Adige overlook, 6.31 km | Real 07, 08, 10 and games 03, 05 | The river curls beneath the terracotta riverfront and the stone and brick bridge. |
+| Ponte Pietra, 11.43 km | Real 07, 08, 10, 14 and game 04 | Ride between the stone parapets over the moving Adige, toward the bridge tower. |
+| Piazza delle Erbe, 16.72 km | Real 01, 10, 14 and games 03, 04 | The brick Lamberti tower and octagonal belfry rise above market parasols and pink paving. |
+| Portoni della Bra, 21.85 km | Real 01, 06, 11, 15 and games 02, 04 | The twin arches and clock lead to the cafes of the Liston behind pink crowd barriers. |
+| Arena finish, 23.97 km | Real 02-05, 12, 13 and games 01, 02 | Enter the pink limestone arcade and finish inside the seating bowl under waving pink scarves. |
+
+### Victoria Harbour (#2246)
+
+The originals and credits were restored in commit a3b75bcdf. Use all fifteen photos and five game views in docs/worlds/victoria. Keep the promenade on the Kowloon side and the skyline and light sources fixed on Hong Kong Island. Differentiate the pier, Clock Tower and bronze statue in geometry. Vary the rail posts, promenade tiling, lamps and photographers at the near distance. The original boat artwork, surface reflections and narrow beams share the ride clock and release their drawing resources on leaving. Benchmark both the opening pier and the waterfront during the light show.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Kowloon Clock Tower, 0.14 km | Real 01, 08, 15 and game 03 | The railway clock tower rises between the old pier and the tiled promenade under warm lights. |
+| Star Ferry crossing, 1.72 km | Real 08, 11, 12, 15 and games 02, 04 | A green-and-white double-ended ferry moves past the landing, lighting the water beneath its windows. |
+| Avenue of Stars, 3.38 km | Real 02, 03, 04, 09 and games 01, 03 | The bronze Bruce Lee figure faces the harbour above star and handprint plaques along the rails. |
+| Red-sailed junk, 5.16 km | Real 08, 10, 13 and game 04 | A timber junk crosses below its three red battened sails, with a tug and freighter farther out. |
+| Central skyline, 7.18 km | Real 06, 07, 13, 14 and games 01, 04 | The IFC crown, Bank of China diagonals and Central Plaza light stand ahead of Victoria Peak. The lights reflect across the water. |
+| Symphony of Lights, 9.18 km | Real 01, 04, 05, 06, 07, 14 and games 02, 05 | Coloured laser fans sweep from the island towers as photographers gather on the Kowloon railing. |
+
+### Vienna Ringstrasse (#2247)
+
+Lay a single 5.3 km closed ring with cumulative distance for the 14 km class. Share the boulevard mesh across laps. Keep the trams on their own rails with overhead wire, leaving the cycle path open. Use near summer tree crowns and park fences, middle-distance moving trams and fixed monumental facades. Compose the stepped Parliament portico, Athena pedestal, museum domes, Rathaus spire and Votivkirche towers in geometry. Reuse the original Staatsoper and palace elevations as facade material. Animate the tram, fountain and park rider from the ride clock. Release each local resource on leaving.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Wiener Staatsoper, 0.14 km | Real 01, 08, 13, 14 and games 01, 05 | The opera loggia and copper roof rise across the tram rails. A red and ivory tram runs beside the rider. |
+| Maria-Theresien-Platz, 1.19 km | Real 03, 04, 05, 14 and games 02, 04 | The twin museum domes flank the bronze Maria Theresa monument beyond a tree-lined forecourt. |
+| Parliament and Athena, 2.02 km | Real 02, 11, 12, 15 and games 02, 04 | The white Greek portico stands above broad steps. The Athena fountain plays beneath a gilded figure. |
+| Rathaus and Burgtheater, 2.55 km | Real 02, 09, 10 and games 01, 05 | The pointed Rathaus tower and smaller pinnacles face the projecting Burgtheater facade across the Ring. |
+| Votivkirche approach, 3.12 km | Real 03, 05, 09, 10 and games 01, 04 | Two narrow openwork spires rise beyond the trees and overhead tram wires. |
+| Stadtpark boulevard, 4.71 km | Real 03-07 and games 03, 05 | The path follows mature trees and the park fence. A commuter rolls past as trams continue around the Ring. |
+
+### Westminster Rush Hour (#2248)
+
+Keep the rider on the left. Place the bus lane, approach zigzags and parapet lamps on the deck profile and drop the Thames below the pier foundations. Anchor Elizabeth Tower and Parliament to the west bank and the Eye and County Hall to the opposite bank. Use fixed geometry for the clock and its layered crowns, the bridge arches, statues and wheel supports. Give each vehicle a three-dimensional body, wheels, lights and original painted flanks. Sample the road independently under each vehicle. Rotate the Eye on its fixed axle, keeping the capsules upright. Share meshes and materials and release all owned GPU resources when the race ends.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Bridge lamps, 0.14 km | Real 04–06, 15 and games 01, 04 | Triple lanterns and green pierced parapets frame the wet bridge deck. Elizabeth Tower rises at the west landing. |
+| Elizabeth Tower, 0.43 km | Real 01–04, 09, 10, 14 and games 01, 05 | The illuminated four-faced clock and gilded details rise above the red buses. |
+| Parliament Square, 1.22 km | Real 09, 10, 13 and games 02, 03 | The route bends beside statues and the square lawn. A taxi crosses the junction beyond the signal. |
+| Whitehall, 2.38 km | Real 02, 09, 10, 13 and games 02, 03 | Black cabs and red buses pass lit stone buildings, phone boxes and a zebra crossing. |
+| County Hall and London Eye, 4.62 km | Real 07, 08, 11, 12 and game 04 | The Eye rotates above the South Bank and County Hall reflects its blue-hour light in the Thames. |
+| Westminster riverside, 6.12 km | Real 03–06, 10, 15 and games 01, 05 | The Houses of Parliament extend along the river. The green bridge arches stand out against the lit stone. |
+
+### Winnats Pass (#2250)
+
+Follow the existing race catalogue into a Blender-built course and its own lazily loaded scene. The 13.5 km class includes the approach and high moor around the short climb. Rise 88 m in 440 m across the upper ramp. Share sampled elevation between the camera, bikes, cattle grids and road. Model limestone faces and grass shelves at distinct depths. Scatter small scree and tuft clumps around the bases. Frame Mam Tor from the upper road and the Castleton patchwork from the overlook. Use original grass, rock, walkers and distant valley art. Keep moving limbs near the rider and release textures, geometry and rider resources on exit.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Castleton approach, 0.14 km | Real 09, 13–15 and game 05 | A farm wall, stone cottages and Castleton’s ridge give way to the moorland approach. |
+| Lower cattle grid, 4.82 km | Real 01, 05, 06 and games 01, 05 | A steel cattle grid spans the unmarked lane between dry-stone wall ends at the gorge entrance. |
+| Crag narrows, 6.38 km | Real 02, 03, 06–10 and games 01, 02 | Grey limestone teeth and loose scree interrupt steep green walls on either side of the kink. |
+| Twenty-percent ramp, 7.06 km | Real 01, 04, 07, 10 and games 03, 04 | The road tilts sharply between walkers and climbing cyclists, with sheep on the grassy bank. |
+| Mam Tor shoulder, 9.86 km | Real 07, 11, 12, 14 and game 04 | The broken face of Mam Tor stands above a long, exposed green ridge under shifting cloud. |
+| Hope Valley overlook, 12.98 km | Real 02, 09, 13–15 and games 02, 05 | Past a low stone wall, the view opens back over Castleton and the small fields of Hope Valley. |
+
+### Wicklow Gap (#2249)
+
+The older street module establishes the race chalk, granite, tricolour, flowers and marshals at the opening. The Race map needs fixed valleys and a true descent through the Glendalough lake district. Use original repeatable ground material at metre scale. Model the bog pools, granite outcrops, reservoir wall and tower as fixed terrain features. Place cutout vegetation in road sections, keeping the crest open. Middle-distance spruce blocks follow the lower hillside. Draw the sheep’s black heads and legs separately from their fleece so their grazing and steps remain legible beside the road. Move a near flag and low cloud on ride time. Share geometry and materials on low and release all resources with the course. Reference 01 and 06–07 show Lough Tay and inform the treatment of water and terrain. Use 08–09 for Glendalough’s actual valley and tower.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Hollywood approach, 0.14 km | Real 01, 02 and game 02 | Gorse, low granite walls and a dashed centre line lead the R756 past a dark Sitka plantation. |
+| Blanket bog pools, 3.06 km | Real 03–05, 12, 13 and games 01, 03 | Tussocks break the black water of peat cuttings below round brown-purple slopes. |
+| Blackface sheep bend, 6.24 km | Real 04, 10–12 and games 01, 05 | Blackface sheep graze beside a low stone wall, one stepping down toward the verge. |
+| Turlough Hill turn, 8.68 km | Real 02, 05, 10–12 and games 01, 04 | A service road climbs away from the saddle to the stone embankment and pumped-storage reservoir. |
+| Tonelagee and Camaderry, 10.15 km | Real 02, 10, 11, 14 and games 01, 03 | Low cloud drifts across rounded summits while a roadside tricolour strains in the wind. |
+| Glendalough descent, 14.87 km | Real 06–09, 13–15 and games 04, 05 | The road drops through spruce toward the upper lake, with the round monastic tower below. |
+
+### Monte Zoncolan (#2253)
+
+Trace the normal Race entry to its catalogue profile and lazily loaded GLB. Model village architecture, church towers, balconies, guardrails and each gallery portal against the same rising centreline. Use original portraits and text for cycling murals. Open the terrain at the summit so the rider can see other cut road benches and the distant mountains. Preserve the tightly enclosed beech and spruce lower ramp. Keep moving cyclists, cattle heads and flag cloth bounded and release meshes, map textures and rider resources on exit. Real 01–02 guide crowd density, while 03–07 guide the exposed cuts, pasture and guardrail shapes. Use the game references for climbing sightlines, overtake spacing and crowd legibility.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Ovaro approach, 0.14 km | Real 08–12 and games 01, 05 | The street passes pale village houses with timber balconies and a Carnic bell tower. |
+| Liariis forest gate, 2.15 km | Real 08, 10, 11, 15 and games 02, 04 | Past the last village walls, beech and spruce close around the narrow patched ramp. |
+| Forest wall, 4.91 km | Real 03–06, 13 and games 02–04 | Painted riders’ names climb away on asphalt steeper than twenty percent, tight between trees. |
+| Painted galleries, 9.70 km | Real 01, 03–06 and games 02, 03 | Three short galleries interrupt the road. Light falls across original cycling murals and the open exits. |
+| Carnic high pasture, 10.91 km | Real 03–07, 13, 14 and games 01, 04 | Cows graze above a guardrail. Switchbacks cut across grassy pasture under the jagged Carnic skyline. |
+| Summit race crowd, 12.18 km | Real 01–04, 13–15 and games 03, 05 | Fans and flags fill grassy banks around tents at the finish, leaving the racing line clear. |
+
+### Yosemite Valley (#2252)
+
+Place the granite landmarks as separate, grounded masses rather than a single picture. El Capitan needs a tall near-vertical face and buttress, Half Dome a rounded crown cut by a sheer vertical plane. Shape both from their distinctive silhouettes. Place Bridalveil on the opposite wall, with a thin windblown ribbon, and Yosemite Falls in two drops separated by a shelf. Share the ride clock between their moving water, river, shuttle and local waterfall sound. Keep pine and cedar foregrounds at road scale and clear the approaches to the named views. References 01–02 are Southside Drive photographs used for roadside character. Use the normal Race catalogue, route asset and low-tier renderer, with bounded motion and teardown on exit.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Northside Drive, 0.14 km | Real 01–04, 12 and games 02, 04 | The one-way road runs through ponderosa and incense cedar, with a park shuttle beside a signed pullout. |
+| El Capitan Meadow, 2.90 km | Real 04–06, 11, 12 and games 02, 03 | Split rails bound an open meadow under El Capitan’s sheer pale wall. Climbers appear as tiny flecks. |
+| Bridalveil Fall, 4.82 km | Real 06, 08, 11 and games 01, 04 | Across the valley a thin white fall bends from its lip toward the trees. |
+| Merced and Swinging Bridge, 6.91 km | Real 06, 10, 13, 14 and games 03, 05 | Green water and pale sand flank the bridge, below the high granite walls. |
+| Yosemite Falls, 9.64 km | Real 07, 12, 13 and games 01, 05 | Upper and lower falls are separated by a rock shelf. Spray hangs at their feet. |
+| Half Dome outlook, 12.74 km | Real 03, 09, 11, 15 and games 02, 03 | The sliced face and curved crown of Half Dome glow above a meadow and shady pine foreground. |
+
+### Winterlude, Ottawa (#2251)
+
+Model one winding, level canal corridor with two racing directions and smooth connecting turns. The class covers 17.35 km, returning through the same landmarks. Build the walls, snowbanks, stairs, bridge supports and warming huts once. A scratched ice material receives cold reflected light. Use original bare tree, skyline and sculpture textures. Anchor the snow and ice artworks to separate modeled plinths, with the ice gallery shaded under a canopy. Animate the skaters’ pushes, the festival flags and light colour using the ride clock. Batch repeated trees and canal sections, reduce detail on low, and release all scene resources on exit. Pair the six views at matching chainage and stage. Record 60-second moving submitted-frame samples after warm-up.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Downtown skateway, 0.14 km | Real 01, 06, 08 and games 01, 02 | Château Laurier and the Parliament towers rise beyond bare branches and a crowd on groomed ice. |
+| Pretoria Bridge, 2.26 km | Real 02–05 and game 03 | The stone lift towers, dark steel deck and truss underside span the groomed canal. |
+| Warming huts, 4.12 km | Real 06–09, 13, 14 and games 02, 04 | The ice widens by timber warming huts, a BeaverTails stand and festival tents, with families gliding past. |
+| Snow carving terrace, 6.32 km | Real 10, 11, 13 and games 01, 04 | A large snow bear and owl stand on white plinths above steps and the canal wall. |
+| Dows Lake turn, 7.74 km | Real 06–09 and games 01, 02 | The track turns at the lake in clean winter sun. Skate scratches, snowbanks and bare maples lead into the returning lane. |
+| Illuminated ice gallery, 11.34 km | Real 11, 12, 15 and games 04, 05 | Blue and violet lights pick out transparent ice carvings in a shaded festival pavilion. |

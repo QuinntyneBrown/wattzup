@@ -26,3 +26,5 @@ Later version(s) were uploaded by Kameraad Pjotr at nl.wikip |
 | game-03.jpg | Zwift: [“Glasgow Reverse” Route Details (Scotland)](https://zwiftinsider.com/route/glasgow-reverse/) (g0054) | © Zwift |
 | game-04.jpg | Zwift: [“Outer Scotland” Route Details (Scotland)](https://zwiftinsider.com/route/outer-scotland/) (g0114) | © Zwift |
 | game-05.jpg | Zwift: [“Double Espresso” Route Details (Paris)](https://zwiftinsider.com/route/double-espresso/) (g0031) | © Zwift |
+
+The Estafeta house elevations, Ayuntamiento facade, red-and-white spectator atlas and wet paving are original generated artwork. Real 02–04 inform the old-town proportions, 05–06 the town hall and 01, 07–09 the festival crowd. The street plaques use original lettering informed by real 15. The balconies, barricades, streets and bullring tunnel are original geometry.

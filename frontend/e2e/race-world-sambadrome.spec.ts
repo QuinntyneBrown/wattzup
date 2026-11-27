@@ -1,0 +1,103 @@
+// L2-2201. Each moving landmark follows the ride clock while it is in view.
+import { newRiderProgress } from './fixtures/api';
+import { sambadromeCourseMap } from './fixtures/course';
+import { echelonBike } from './fixtures/echelon';
+import { expect, test } from './fixtures/test';
+import type { Page } from '@playwright/test';
+import type { ApiFixture } from './fixtures/api';
+import type { FakeBluetooth } from './fixtures/fake-bluetooth';
+import type { WorldRideProbe } from './fixtures/world-ride-probe';
+import { MapSelectPage } from './pages/map-select.page';
+import { RaceSetupPage } from './pages/race-setup.page';
+import { RacePage } from './pages/race.page';
+
+async function enterSambadrome(
+  metres: number,
+  page: Page,
+  api: ApiFixture,
+  bluetooth: FakeBluetooth,
+  worldRide: WorldRideProbe,
+) {
+  api.answer('GET', '/api/maps', [sambadromeCourseMap]);
+  api.answer('GET', '/api/progress', {
+    ...newRiderProgress,
+    openMapIds: [sambadromeCourseMap.id],
+  });
+  await worldRide.pin('low', 'webgl2');
+  await bluetooth.remember(echelonBike);
+  const race = new RacePage(page);
+  const maps = new MapSelectPage(page);
+  await maps.open();
+  await worldRide.startAt(metres);
+  const row = maps.row(sambadromeCourseMap.name);
+  await row.root.click();
+  const setup = new RaceSetupPage(page);
+  await setup.mode('Your best time').click();
+  await setup.start.click();
+  await expect(race.backend).toBeVisible();
+  return race;
+}
+
+for (const [actor, metres, part] of [
+  ['feathered ala', 210, 'dancerStep'],
+  ['bateria surdo', 2340, 'surdoMallet'],
+  ['porta-bandeira', 4290, 'bannerTurn'],
+] as const) {
+  test(`the ${actor} moves and holds still on pause`, async ({
+    api,
+    bluetooth,
+    page,
+    worldRide,
+  }) => {
+    const race = await enterSambadrome(metres, page, api, bluetooth, worldRide);
+    await expect.poll(() => worldRide.coursePose(part)).not.toBeNull();
+    const first = await worldRide.coursePose(part);
+    await expect.poll(() => worldRide.coursePose(part)).not.toBe(first);
+    await race.pause.click();
+    await expect(race.resume).toBeVisible();
+    const held = await worldRide.coursePose(part);
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+          ),
+        ),
+    );
+    expect(await worldRide.coursePose(part)).toBe(held);
+    await race.resume.click();
+    await expect.poll(() => worldRide.coursePose(part)).not.toBe(held);
+  });
+}
+
+test('four 700 metre parade passes share the Apoteose finish', async ({
+  page,
+  api,
+  bluetooth,
+  worldRide,
+}) => {
+  const geometry = page.waitForResponse(
+    (r) => r.url().endsWith('/courses/sambadrome.course.json') && r.ok(),
+  );
+  await enterSambadrome(6250, page, api, bluetooth, worldRide);
+  const road = (await (await geometry).json()) as {
+    lengthMetres: number;
+    startIndex: number;
+    step: number;
+    points: number[];
+  };
+  const position = (d: number, axis: number) => {
+    const at = road.startIndex + d / road.step,
+      i = Math.floor(at) * 3 + axis;
+    return road.points[i]! + (road.points[i + 3]! - road.points[i]!) * (at % 1);
+  };
+  expect(road.lengthMetres).toBe(6300);
+  for (const pass of [1, 2, 3]) {
+    for (const station of [0, 210, 340, 570, 700]) {
+      const delta = [0, 1, 2].map(
+        (axis) => position((pass * 5600) / 3 + station, axis) - position(station, axis),
+      );
+      expect(Math.hypot(...delta)).toBeLessThan(0.15);
+    }
+  }
+});

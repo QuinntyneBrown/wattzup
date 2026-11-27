@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [Cycling Benefits Complete Guide by MyWhoosh](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/01/Cycling-Benefits-Complete-Guide-by-MyWhoosh.jpg) (g0776) | © MyWhoosh |
 | game-04.jpg | MyWhoosh: [UCI_V03 (1) (1)](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/01/UCI_V03-1-1.jpg) (g0765) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Wandering Flats” Route Details (Makuri Islands)](https://zwiftinsider.com/route/wandering-flats/) (g0185) | © Zwift |
+
+The four crop textures and six plant cutouts are original generated artwork informed by real 01–07, 10–11 and 14–15. Raised beds use the same field texture across their crest and shoulders. The original limestone and plaster façades follow real 08–09. The tractor, cutting reel, hives, roadside stall and signs are modelled and lettered for this course. Real 12–13 inform the proportions of the harvester. Game 01–05 inform field scale and landmark sightlines at rider height.

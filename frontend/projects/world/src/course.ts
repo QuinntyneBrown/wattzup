@@ -35,6 +35,7 @@ export interface CourseFile {
   /** The centre line, x, y, z a point, in the glb's axes (+Y up), metres. */
   readonly points: readonly number[];
   /** Outward cross-slope in degrees, sampled beside each centre-line point on a banked track. */
+  readonly tornantiMetres?: readonly number[];
   readonly bankDegrees?: readonly number[];
   /** The world's sky from the horizon up, as `#rrggbb`; a course without one is drawn in Ibiza's sunset. */
   readonly sky?: readonly string[];
@@ -64,6 +65,17 @@ export interface CourseFile {
       readonly shore: readonly (readonly [number, number])[];
     }[];
   };
+  readonly pacificPark?: {
+    readonly wheelCentre: readonly [number, number, number];
+    readonly wheelRadius: number;
+    readonly track: readonly (readonly [number, number, number])[];
+  };
+  readonly rifugioFlags?: readonly {
+    readonly station: number;
+    readonly position: readonly [number, number, number];
+    readonly yaw: number;
+    readonly pattern: number;
+  }[];
   readonly headland?: {
     readonly lookouts: readonly number[];
     readonly surf: readonly (readonly [number, number, number])[];
@@ -330,6 +342,18 @@ export function parseCourse(value: unknown): CourseFile {
       !file.bankDegrees.every((value) => isNumber(value) && Math.abs(value) < 90))
   ) {
     throw new Error('The course’s banking does not match its centre line.');
+  }
+  if (file.tornantiMetres !== undefined) {
+    const stations = file.tornantiMetres;
+    const finish = file.lengthMetres;
+    if (
+      !Array.isArray(stations) ||
+      !stations.every(
+        (d, index) =>
+          isNumber(d) && d >= 0 && d <= finish && (index === 0 || stations[index - 1]! < d),
+      )
+    )
+      throw new Error('The numbered hairpins must follow the road in order.');
   }
   const needed = file.startIndex! + Math.ceil(file.lengthMetres / file.step) + 1;
   if (points.length / 3 < needed)

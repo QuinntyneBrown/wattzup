@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Ven-10” Route Details (France)](https://zwiftinsider.com/route/ven-10/) (g0183) | © Zwift |
 | game-04.jpg | MyWhoosh: [UCI1](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/01/UCI1.jpg) (g0764) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Gentil 8” Route Details (France)](https://zwiftinsider.com/route/gentil-8/) (g0052) | © Zwift |
+
+The native centreline uses the Silverstone LineString from Tomislav Bacinger’s [F1 circuits](https://github.com/bacinger/f1-circuits/blob/master/circuits/gb-1948.geojson), projected to local metres, rotated to Hamilton Straight and scaled to the class distance. Its MIT notice accompanies the source in tools/blender/courses/silverstone-line.LICENSE. The pit, garage, glass, seating and tyre imagery is original course artwork.

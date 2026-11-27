@@ -208,6 +208,7 @@ export class WorldScene implements AfterViewInit {
             () => this.frames.nextFrame(),
             untracked(this.timed),
             {
+              catalogueWorld: untracked(this.worldId),
               tier: quality.tier ?? undefined,
               ...(untracked(this.sunrise) ? { sunrise: true } : {}),
               stepDown: quality.stepDown,

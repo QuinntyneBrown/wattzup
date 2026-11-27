@@ -1,0 +1,37 @@
+{
+  "id": "penllech",
+  "name": "Ffordd Pen Llech",
+  "world": "penllech",
+  "theme": "penllech",
+  "seed": 2187,
+  "layout": 0,
+  "class": {
+    "id": "steepest-climb-in-the-world",
+    "title": "Steepest Climb in the World",
+    "channel": "GCN Training",
+    "videoId": "jsfxXUiMjzc",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 2400,
+        "level": 19,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "cool-down",
+        "duration": 100,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

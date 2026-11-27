@@ -62,16 +62,22 @@ export class RaceWorld {
     const visible = signal(!doc.hidden);
     const onVisibility = () => visible.set(!doc.hidden);
     const music = signal<WorldMusicPlayer | null>(null);
+    let lapBell: WorldMusicPlayer | undefined;
     let trackLoaded = false;
     let destroyed = false;
     inject(DestroyRef).onDestroy(() => {
       destroyed = true;
       doc.removeEventListener('visibilitychange', onVisibility);
       music()?.destroy();
+      lapBell?.destroy();
     });
     void import('@telo/world').then(({ WorldScene, WorldMusicPlayer }) => {
       if (destroyed) return;
-      if (this.map().world === 'bluemountains' || this.map().world === 'ghent') {
+      if (
+        ['bluemountains', 'ghent', 'valais', 'velodrome', 'yosemite'].includes(this.map().world)
+      ) {
+        if (this.map().world === 'velodrome')
+          lapBell = new WorldMusicPlayer(() => doc.createElement('audio'), doc);
         doc.addEventListener('visibilitychange', onVisibility);
         music.set(new WorldMusicPlayer(() => doc.createElement('audio'), doc));
       }
@@ -85,6 +91,18 @@ export class RaceWorld {
     effect(() => {
       const player = music();
       if (!player) return;
+      if (this.map().world === 'velodrome') {
+        const audible = this.settings().worldMusic && this.running() && visible();
+        const metres = this.raceMetres();
+        const lapPosition = metres % 250;
+        const ringing = audible && metres > 217 && (lapPosition > 217 || lapPosition < 20);
+        if (audible) player.load('velodrome', 'music/lee-valley-stands.ogg');
+        if (ringing) lapBell?.load('velodrome', 'music/lee-valley-bell.ogg');
+        player.setVolume(0.58);
+        player.sync(audible);
+        lapBell?.sync(ringing);
+        return;
+      }
       if (this.map().world === 'ghent') {
         const audible = this.settings().worldMusic && this.running() && visible();
         if (audible) player.load('ghent', 'music/ghent-six-day.ogg');
@@ -92,11 +110,29 @@ export class RaceWorld {
         return;
       }
       const metres = this.raceMetres();
-      const distance = Math.min(Math.abs(metres - 1540), Math.abs(metres - 8860));
+      if (this.map().world === 'yosemite') {
+        const proximity = Math.max(
+          0,
+          1 - Math.abs(metres - 9670) / 310,
+          0.56 * (1 - Math.abs(metres - 4850) / 190),
+        );
+        const audible = proximity > 0 && this.settings().worldMusic && this.running() && visible();
+        if (audible) {
+          player.load('yosemite', 'music/yosemite-falls.ogg');
+          player.setVolume(0.64 * proximity);
+        }
+        player.sync(audible);
+        return;
+      }
+      const pasture = this.map().world === 'valais';
+      const distance = pasture
+        ? Math.min(Math.abs(metres - 205), Math.abs(metres - 6730))
+        : Math.min(Math.abs(metres - 1540), Math.abs(metres - 8860));
       const audible = distance < 125 && this.settings().worldMusic && this.running() && visible();
       if (audible) {
         if (!trackLoaded) {
-          player.load('bluemountains');
+          if (pasture) player.load('valais', 'music/valais-cowbells.ogg');
+          else player.load('bluemountains');
           trackLoaded = true;
         }
         player.setVolume(0.65 * (1 - distance / 125) ** 2);

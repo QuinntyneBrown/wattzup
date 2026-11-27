@@ -39,6 +39,13 @@ import type { desertViewDrive } from './desert-view-drive';
 import type { blossomFestival } from './blossom-festival';
 import type { ChicagoRailway } from './chicago-railway';
 import type { chichenPlaza } from './chichen-plaza';
+import type { PacificPark } from './pacific-park';
+import type { SeaPointPromenade } from './sea-point-promenade';
+import type { SellaClimb } from './sella-climb';
+import type { SellaRondaRide } from './sella-ronda-ride';
+import type { SerpentineLake } from './serpentine-lake';
+import type { SevenSistersDowns } from './seven-sisters-downs';
+import type { SanFranciscoHills } from './san-francisco-hills';
 import type { ConeyBoardwalk } from './coney-boardwalk';
 import type { copacabanaPromenade } from './copacabana-promenade';
 import type { CopacabanaBeach } from './copacabana-beach';
@@ -150,7 +157,109 @@ import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
+import type { MarktSquare } from './markt-square';
+import type { SouthBeachDrive } from './south-beach-drive';
+import type { StampedeGrounds } from './stampede-grounds';
+import type { StanleySeawall } from './stanley-seawall';
+import type { HospiceRoad } from './hospice-road';
+import type { StelvioHairpins } from './stelvio-hairpins';
 import type { ManxMountain } from './manx-mountain';
+import type { JunkanooRush } from './junkanoo-rush';
+import type { KilaueaVents } from './kilauea-vents';
+import type { KilaueaCaldera } from './kilauea-caldera';
+import type { BroadwayRace } from './broadway-race';
+import type { KonaTriathlon } from './kona-triathlon';
+import type { KoppenbergBanks } from './koppenberg-banks';
+import type { KwaremontVillage } from './kwaremont-village';
+import type { KyotoHanami } from './kyoto-hanami';
+import type { ChicagoLakefront } from './chicago-lakefront';
+import type { LakeLouise } from './lake-louise';
+import type { AltoDeLetras } from './alto-de-letras';
+import type { LisbonHills } from './lisbon-hills';
+import type { LoireRiver } from './loire-river';
+import type { UrubambaGorge } from './urubamba-gorge';
+import type { BayfrontNight } from './bayfront-night';
+import type { JemaaSquare } from './jemaa-square';
+import type { StCharlesParade } from './st-charles-parade';
+import type { MaunaKeaSummit } from './mauna-kea-summit';
+import type { MerceFestival } from './merce-festival';
+import type { OceanDrive } from './ocean-drive';
+import type { MoabTrail } from './moab-trail';
+import type { MonacoHarbour } from './monaco-harbour';
+import type { MontmartreSquare } from './montmartre-square';
+import type { MontrealFestival } from './montreal-festival';
+import type { MontRoyalPark } from './montroyal-park';
+import type { WashingtonSummit } from './washington-summit';
+import type { MuertosParade } from './muertos-parade';
+import type { MulhollandOverlook } from './mulholland-overlook';
+import type { HuyClimb } from './huy-climb';
+import type { SilveradoTrail } from './silverado-trail';
+import type { NorthShoreSurf } from './north-shore-surf';
+import type { LondonCarnival } from './london-carnival';
+import type { BuenosAiresTraffic } from './buenos-aires-traffic';
+import type { KouriLagoon } from './kouri-lagoon';
+import type { WiesnParade } from './wiesn-parade';
+import type { PacificHeadlands } from './pacific-headlands';
+import type { LasseterRoadTrain } from './lasseter-road-train';
+import type { SevenMileChannel } from './seven-mile-channel';
+import type { PehoeWind } from './pehoe-wind';
+import type { PalouseHarvest } from './palouse-harvest';
+import type { EstafetaFestival } from './estafeta-festival';
+import type { HarlechWeather } from './harlech-weather';
+import type { ElliottMarket } from './elliott-market';
+import type { ParkActivity } from './park-activity';
+import type { VltavaVisitors } from './vltava-visitors';
+import type { RivieraRace } from './riviera-race';
+import type { BrooklynPark } from './brooklyn-park';
+import type { PrairieWind } from './prairie-wind';
+import type { ValensoleFields } from './valensole-fields';
+import type { AndalusianRoad } from './andalusian-road';
+import type { QuebecTerrace } from './quebec-terrace';
+import type { ArdennesRoadside } from './ardennes-roadside';
+import type { ForumProcession } from './forum-procession';
+import type { ArizonaRoadside } from './arizona-roadside';
+import type { CactusForest } from './cactus-forest';
+import type { RioParade } from './rio-parade';
+import type { ShibuyaCrossing } from './shibuya-crossing';
+import type { SilverstoneTrack } from './silverstone-track';
+import type { SkyeGlen } from './skye-glen';
+import type { KhaoSanRoad } from './khao-san-road';
+import type { KhentiiSteppe } from './khentii-steppe';
+import type { LiffeyParade } from './liffey-parade';
+import type { SenesiSectors } from './senesi-sectors';
+import type { GrandeIle } from './grande-ile';
+import type { MapleMorning } from './maple-morning';
+import type { GoldCoast } from './gold-coast';
+import type { PortJackson } from './port-jackson';
+import type { LasCanadas } from './las-canadas';
+import type { MarinHeadlands } from './marin-headlands';
+import type { TahoeShore } from './tahoe-shore';
+import type { Tayelet } from './tayelet';
+import type { TempelhoferFeld } from './tempelhofer-feld';
+import type { AvenueOfTheDead } from './avenue-of-the-dead';
+import type { TimesSquareCountdown } from './times-square-countdown';
+import type { TorontoHarbourfront } from './toronto-harbourfront';
+import type { ValTremola } from './val-tremola';
+import type { TourmaletPass } from './tourmalet-pass';
+import type { TrollstigenPass } from './trollstigen-pass';
+import type { BulbCountry } from './bulb-country';
+import type { UtrechtWharves } from './utrecht-wharves';
+import type { ValaisStations } from './valais-stations';
+import type { ValparaisoCerros } from './valparaiso-cerros';
+import type { VegasBoulevard } from './vegas-boulevard';
+import type { VeletaRidge } from './veleta-ridge';
+import type { LeeValleyTrack } from './lee-valley-track';
+import type { OceanFrontWalk } from './ocean-front-walk';
+import type { VentouxSummit } from './ventoux-summit';
+import type { VeronaFinale } from './verona-finale';
+import type { VictoriaWaterfront } from './victoria-waterfront';
+import type { ViennaRing } from './vienna-ring';
+import type { WestminsterTraffic } from './westminster-traffic';
+import type { WinnatsGorge } from './winnats-gorge';
+import type { WicklowWeather } from './wicklow-weather';
+import type { CarnicAscent } from './carnic-ascent';
+import type { YosemiteFalls } from './yosemite-falls';
+import type { WinterludeCanal } from './winterlude-canal';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -169,6 +278,9 @@ import type { HighlandWeather } from './bealach-weather';
 import type { HighlandLivestock } from './bealach-livestock';
 import type { BigSurCoast } from './bigsur-coast';
 import type { BlackpoolTrams } from './blackpool-trams';
+import type { JaipurFestival } from './jaipur-festival';
+import type { JouvertBands } from './jouvert-bands';
+import type { MojaveClimbers } from './mojave-climbers';
 import type { BlueMountainsYard } from './blue-mountains-yard';
 import type { MabryMill } from './mabry-mill';
 import type { BondiSurf } from './bondi-surf';
@@ -206,6 +318,120 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  FanPalm: 750,
+  LeaningPalm: 750,
+  PairedPalms: 750,
+  PacificWater: 2200,
+  BeachRoad: 570,
+  SeaPointFlats: 1600,
+  TidalRock: 620,
+  CapeAtlantic: 2400,
+  CapePalms: 750,
+  SeaPointFamilies: 260,
+  PavilionWater: 680,
+  SellaBlocks: 680,
+  SellaForest: 970,
+  SellaRifugi: 1050,
+  PassSigns: 440,
+  RondaLarches: 1150,
+  RondaRoad: 810,
+  RondaMeadow: 2300,
+  RondaInns: 610,
+  RondaPassPlates: 470,
+  LondonPlanes: 780,
+  LongWater: 1950,
+  ParkTarmac: 740,
+  ParkPavilion: 830,
+  ChalkScarps: 4300,
+  ChannelWater: 5500,
+  CuckmereRiver: 1400,
+  DownsTurf: 2700,
+  FlintShingle: 1350,
+  DownlandGorse: 315,
+  CoastguardWhitewash: 1350,
+  BelleToutGlass: 1300,
+  SFBay: 5200,
+  RussianHillBays: 970,
+  FilbertConcrete: 820,
+  LombardBrick: 670,
+  LombardFlowers: 340,
+  HillStreetSigns: 415,
+  TokyoFrontages: 680,
+  TokyoScreen: 400,
+  Tokyo109: 480,
+  TokyoWetRoad: 470,
+  PaddockAtlas: 900,
+  CircuitAsphalt: 580,
+  SkyeRoad: 680,
+  SkyeHeather: 165,
+  HarportRelief: 3500,
+  SkyeMoor: 4500,
+  BlackCuillin: 7000,
+  RedCuillin: 6600,
+  FairyPools: 520,
+  SeaLochs: 4200,
+  PassingPlaces: 320,
+  KhaoSanShops: 360,
+  FestivalCrowds: 120,
+  BangkokCarts: 220,
+  ThaiTemple: 520,
+  KhaoSanSigns: 290,
+  SongkranRoad: 260,
+  DecoHotels: 460,
+  RoyalPalms: 350,
+  LifeguardTowers: 400,
+  SprintPaint: 180,
+  AtlanticDawn: 12000,
+  WesternShops: 340,
+  WhiteHats: 135,
+  CalgarySkyline: 2100,
+  RiverCamp: 180,
+  RodeoStand: 540,
+  ParadeRoad: 320,
+  SeawallPath: 330,
+  ParkCedars: 390,
+  BrocktonPoles: 230,
+  NorthShoreRidges: 18000,
+  BurrardWater: 11000,
+  SeawallPaint: 140,
+  SiwashBasalt: 620,
+  StanleyCliffs: 450,
+  HospiceRoad: 640,
+  PassScree: 5900,
+  HospiceStone: 680,
+  SnowCut: 580,
+  ColLake: 1100,
+  PassPeaks: 28000,
+  TornanteRoad: 2200,
+  TornanteMasonry: 1400,
+  TrafoiScree: 6200,
+  TrafoiLarches: 380,
+  RiderWriting: 160,
+  TornantePlaques: 160,
+  OrtlerMassif: 22000,
+  PassHuts: 590,
+  KhentiiSky: 65000,
+  CreteRidge: 45000,
+  MapleDawn: 43000,
+  PacificRim: 62000,
+  GoldBalconies: 1800,
+  CircularQuay: 62000,
+  BennelongSails: 1800,
+  PicoTeide: 62000,
+  TradeHorizon: 3500,
+  CanaryPlants: 1800,
+  BayHorizon: 62000,
+  StinsonShore: 3200,
+  Inversion: 1900,
+  MuirRedwoods: 1800,
+  SierraRim: 62000,
+  TahoePines: 1800,
+  WesternSky: 62000,
+  TelAvivHotels: 1800,
+  BerlinHorizon: 62000,
+  TerminalBays: 1800,
+  RaumaPeaks: 62000,
+  Stigfossen: 1800,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -265,6 +491,13 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Beams: 460,
   Leaves: 210,
   Confetti: 300,
+};
+
+/** A distance one course alone asks for, where another course draws a group of the same name. */
+const COURSE_DRAW_DISTANCE: Readonly<Record<string, Readonly<Record<string, number>>>> = {
+  southbeach: { OceanDrive: 330 },
+  serpentine: { ParkVisitors: 195 },
+  silverstone: { CircuitBoards: 420 },
 };
 /** The start lights are drawn until the rider is this many metres up the road. */
 const START_LIGHTS = 150;
@@ -345,6 +578,17 @@ function jerseyColour(element: Element, jersey: string): Color {
 }
 
 export class CourseRenderer implements WorldRenderer {
+  private pacificPark: PacificPark | null = null;
+  private seaPoint: SeaPointPromenade | null = null;
+  private sellaClimb: SellaClimb | null = null;
+  private sellaRonda: SellaRondaRide | null = null;
+  private serpentine: SerpentineLake | null = null;
+  private downs: SevenSistersDowns | null = null;
+  private sanFrancisco: SanFranciscoHills | null = null;
+  private tokyo: ShibuyaCrossing | null = null;
+  private silverstone: SilverstoneTrack | null = null;
+  private skye: SkyeGlen | null = null;
+  private khaoSan: KhaoSanRoad | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -353,7 +597,105 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
+  private marktSquare: MarktSquare | null = null;
+  private southBeachDrive: SouthBeachDrive | null = null;
+  private stampede: StampedeGrounds | null = null;
+  private seawall: StanleySeawall | null = null;
+  private hospiceRoad: HospiceRoad | null = null;
+  private stelvio: StelvioHairpins | null = null;
+  private steppe: KhentiiSteppe | null = null;
+  private dublin: LiffeyParade | null = null;
+  private strade: SenesiSectors | null = null;
+  private strasbourg: GrandeIle | null = null;
+  private maple: MapleMorning | null = null;
+  private surfers: GoldCoast | null = null;
+  private sydneyharbour: PortJackson | null = null;
+  private teide: LasCanadas | null = null;
+  private tamalpais: MarinHeadlands | null = null;
+  private tahoe: TahoeShore | null = null;
+  private telaviv: Tayelet | null = null;
+  private tempelhof: TempelhoferFeld | null = null;
+  private teotihuacan: AvenueOfTheDead | null = null;
+  private timessquare: TimesSquareCountdown | null = null;
+  private toronto: TorontoHarbourfront | null = null;
+  private tremola: ValTremola | null = null;
+  private tourmalet: TourmaletPass | null = null;
+  private trollstigen: TrollstigenPass | null = null;
+  private tulips: BulbCountry | null = null;
+  private utrecht: UtrechtWharves | null = null;
+  private valais: ValaisStations | null = null;
+  private valparaiso: ValparaisoCerros | null = null;
+  private vegas: VegasBoulevard | null = null;
+  private veleta: VeletaRidge | null = null;
+  private velodrome: LeeValleyTrack | null = null;
+  private venice: OceanFrontWalk | null = null;
+  private ventoux: VentouxSummit | null = null;
+  private verona: VeronaFinale | null = null;
+  private victoria: VictoriaWaterfront | null = null;
+  private vienna: ViennaRing | null = null;
+  private westminster: WestminsterTraffic | null = null;
+  private winnats: WinnatsGorge | null = null;
+  private wicklow: WicklowWeather | null = null;
+  private zoncolan: CarnicAscent | null = null;
+  private yosemite: YosemiteFalls | null = null;
+  private winterlude: WinterludeCanal | null = null;
   private mountain: ManxMountain | null = null;
+  private rush: JunkanooRush | null = null;
+  private vents: KilaueaVents | null = null;
+  private caldera: KilaueaCaldera | null = null;
+  private broadway: BroadwayRace | null = null;
+  private queenK: KonaTriathlon | null = null;
+  private cobbledBanks: KoppenbergBanks | null = null;
+  private kwaremontVillage: KwaremontVillage | null = null;
+  private hanami: KyotoHanami | null = null;
+  private chicagoShore: ChicagoLakefront | null = null;
+  private lakeLouise: LakeLouise | null = null;
+  private letras: AltoDeLetras | null = null;
+  private lisbonHills: LisbonHills | null = null;
+  private loireRiver: LoireRiver | null = null;
+  private urubambaGorge: UrubambaGorge | null = null;
+  private bayfrontNight: BayfrontNight | null = null;
+  private jemaaSquare: JemaaSquare | null = null;
+  private stCharlesParade: StCharlesParade | null = null;
+  private maunaKeaSummit: MaunaKeaSummit | null = null;
+  private merceFestival: MerceFestival | null = null;
+  private oceanDrive: OceanDrive | null = null;
+  private moabTrail: MoabTrail | null = null;
+  private monacoHarbour: MonacoHarbour | null = null;
+  private montmartreSquare: MontmartreSquare | null = null;
+  private montrealFestival: MontrealFestival | null = null;
+  private montRoyalPark: MontRoyalPark | null = null;
+  private washingtonSummit: WashingtonSummit | null = null;
+  private muertosParade: MuertosParade | null = null;
+  private mulhollandOverlook: MulhollandOverlook | null = null;
+  private huyClimb: HuyClimb | null = null;
+  private silveradoTrail: SilveradoTrail | null = null;
+  private northShoreSurf: NorthShoreSurf | null = null;
+  private londonCarnival: LondonCarnival | null = null;
+  private buenosAiresTraffic: BuenosAiresTraffic | null = null;
+  private kouriLagoon: KouriLagoon | null = null;
+  private wiesnParade: WiesnParade | null = null;
+  private pacificHeadlands: PacificHeadlands | null = null;
+  private lasseterRoadTrain: LasseterRoadTrain | null = null;
+  private sevenMileChannel: SevenMileChannel | null = null;
+  private pehoeWind: PehoeWind | null = null;
+  private palouseHarvest: PalouseHarvest | null = null;
+  private estafetaFestival: EstafetaFestival | null = null;
+  private harlechWeather: HarlechWeather | null = null;
+  private elliottMarket: ElliottMarket | null = null;
+  private parkActivity: ParkActivity | null = null;
+  private vltavaVisitors: VltavaVisitors | null = null;
+  private rivieraRace: RivieraRace | null = null;
+  private brooklynPark: BrooklynPark | null = null;
+  private prairieWind: PrairieWind | null = null;
+  private valensoleFields: ValensoleFields | null = null;
+  private andalusianRoad: AndalusianRoad | null = null;
+  private quebecTerrace: QuebecTerrace | null = null;
+  private ardennesRoadside: ArdennesRoadside | null = null;
+  private forumProcession: ForumProcession | null = null;
+  private arizonaRoadside: ArizonaRoadside | null = null;
+  private cactusForest: CactusForest | null = null;
+  private rioParade: RioParade | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -527,6 +869,15 @@ export class CourseRenderer implements WorldRenderer {
     fallingWater: null as number | null,
     tramMetres: null as number | null,
     illumination: null as number | null,
+    throwHeight: null as number | null,
+    powderRise: null as number | null,
+    rickshawPosition: null as number | null,
+    chainSwing: null as number | null,
+    panMallet: null as number | null,
+    speakerTruck: null as number | null,
+    crowdClearance: null as number | null,
+    handHeight: null as number | null,
+    belayHand: null as number | null,
     mistPosition: null as number | null,
     speakerDepth: null as number | null,
     valleyMist: null as number | null,
@@ -597,6 +948,12 @@ export class CourseRenderer implements WorldRenderer {
   private highlandLivestock: HighlandLivestock | null = null;
   private bigSurCoast: BigSurCoast | null = null;
   private trams: BlackpoolTrams | null = null;
+  private holi: JaipurFestival | null = null;
+  private jouvert: JouvertBands | null = null;
+  private jouvertAprons: MeshBasicMaterial | null = null;
+  private frederick: MeshBasicMaterial | null = null;
+  private climbers: MojaveClimbers | null = null;
+  private mojaveFlora: MeshBasicMaterial | null = null;
   private yard: BlueMountainsYard | null = null;
   private mill: MabryMill | null = null;
   private surf: BondiSurf | null = null;
@@ -780,6 +1137,73 @@ export class CourseRenderer implements WorldRenderer {
           image.flipY = false;
         }
       }
+      if (this.course.file.id === 'jouvert') {
+        const { JouvertBands } = await import('./jouvert-bands');
+        if (this.disposed) return false;
+        const bands = await JouvertBands.load(this.course);
+        if (this.disposed) {
+          bands.dispose();
+          return false;
+        }
+        this.jouvert = bands;
+        this.scene.add(bands.group, bands.horizon);
+        this.disposables.push(bands);
+        this.camera.far = 23000;
+        const atlas = await new TextureLoader().loadAsync('courses/jouvert-frederick.webp');
+        if (this.disposed) {
+          atlas.dispose();
+          return false;
+        }
+        atlas.flipY = false;
+        atlas.colorSpace = SRGBColorSpace;
+        atlas.anisotropy = 4;
+        this.frederick = new MeshBasicMaterial({ map: atlas, side: DoubleSide, color: 0xb7afbe });
+        this.disposables.push(atlas, this.frederick);
+        const aprons = await new TextureLoader().loadAsync('courses/jouvert-aprons.webp');
+        if (this.disposed) {
+          aprons.dispose();
+          return false;
+        }
+        aprons.flipY = false;
+        aprons.colorSpace = SRGBColorSpace;
+        aprons.anisotropy = 4;
+        this.jouvertAprons = new MeshBasicMaterial({
+          map: aprons,
+          alphaTest: 0.46,
+          side: DoubleSide,
+          color: 0xd9c9bc,
+        });
+        this.disposables.push(aprons, this.jouvertAprons);
+        this.camera.clearViewOffset();
+        this.camera.fov = 62;
+        this.camera.updateProjectionMatrix();
+      }
+      if (this.course.file.id === 'joshuatree') {
+        const { MojaveClimbers } = await import('./mojave-climbers');
+        if (this.disposed) return false;
+        const climbers = await MojaveClimbers.load(this.course);
+        if (this.disposed) {
+          climbers.dispose();
+          return false;
+        }
+        this.climbers = climbers;
+        this.scene.add(climbers.group, climbers.range);
+        this.camera.far = 55000;
+        this.disposables.push(climbers);
+        const atlas = await new TextureLoader().loadAsync('courses/joshuatree-yuccas.webp');
+        if (this.disposed) {
+          atlas.dispose();
+          return false;
+        }
+        atlas.colorSpace = SRGBColorSpace;
+        atlas.flipY = false;
+        atlas.anisotropy = 4;
+        this.mojaveFlora = new MeshBasicMaterial({ map: atlas, side: DoubleSide, alphaTest: 0.46 });
+        this.disposables.push(atlas, this.mojaveFlora);
+        this.camera.clearViewOffset();
+        this.camera.fov = 62;
+        this.camera.updateProjectionMatrix();
+      }
       if (this.course.file.id === 'arenberg') {
         const { arenbergPave } = await import('./arenberg-pave');
         if (this.disposed) return false;
@@ -850,6 +1274,1541 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'junkanoo') {
+        const { JunkanooRush } = await import('./junkanoo-rush');
+        if (this.disposed) return false;
+        const rush = await JunkanooRush.load(this.course);
+        if (this.disposed) {
+          rush.dispose();
+          return false;
+        }
+        this.rush = rush;
+        this.scene.add(rush.root);
+        this.disposables.push(rush);
+      }
+      if (this.course.file.id === 'kilauea') {
+        const { KilaueaCaldera } = await import('./kilauea-caldera');
+        if (this.disposed) return false;
+        const caldera = await KilaueaCaldera.load(this.course);
+        if (this.disposed) {
+          caldera.dispose();
+          return false;
+        }
+        this.caldera = caldera;
+        this.camera.setViewOffset(1, 1, 0, 0.035, 1, 1);
+        this.scene.add(caldera.root);
+        this.disposables.push(caldera);
+        const { KilaueaVents } = await import('./kilauea-vents');
+        if (this.disposed) return false;
+        const vents = await KilaueaVents.load(this.course);
+        if (this.disposed) {
+          vents.dispose();
+          return false;
+        }
+        this.vents = vents;
+        this.scene.add(vents.root);
+        this.disposables.push(vents);
+      }
+      if (this.course.file.id === 'knicks') {
+        const { BroadwayRace } = await import('./broadway-race');
+        if (this.disposed) return false;
+        const broadway = await BroadwayRace.load(this.course);
+        if (this.disposed) {
+          broadway.dispose();
+          return false;
+        }
+        this.broadway = broadway;
+        this.camera.setViewOffset(1, 1, 0, 0.035, 1, 1);
+        this.scene.add(this.broadway.root);
+        this.disposables.push(this.broadway);
+      }
+      if (this.course.file.id === 'kona') {
+        const { KonaTriathlon } = await import('./kona-triathlon');
+        if (this.disposed) return false;
+        const triathlon = await KonaTriathlon.load(this.course, body);
+        if (this.disposed) {
+          triathlon.dispose();
+          return false;
+        }
+        this.camera.far = 32000;
+        this.camera.setViewOffset(1, 1, 0, 0.045, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.queenK = triathlon;
+        this.scene.add(triathlon.root);
+        this.disposables.push(triathlon);
+      }
+      if (this.course.file.id === 'koppenberg') {
+        const { KoppenbergBanks } = await import('./koppenberg-banks');
+        if (this.disposed) return false;
+        const banks = await KoppenbergBanks.load(this.course);
+        if (this.disposed) {
+          banks.dispose();
+          return false;
+        }
+        this.camera.setViewOffset(1, 1, 0, 0.045, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.cobbledBanks = banks;
+        this.scene.add(banks.root);
+        this.disposables.push(banks);
+      }
+      if (this.course.file.id === 'kwaremont') {
+        const { KwaremontVillage } = await import('./kwaremont-village');
+        if (this.disposed) return false;
+        const village = await KwaremontVillage.load(this.course);
+        if (this.disposed) {
+          village.dispose();
+          return false;
+        }
+        this.camera.setViewOffset(1, 1, 0, 0.045, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.kwaremontVillage = village;
+        this.scene.add(village.root);
+        this.disposables.push(village);
+      }
+      if (this.course.file.id === 'kyoto') {
+        const { KyotoHanami } = await import('./kyoto-hanami');
+        if (this.disposed) return false;
+        const walk = await KyotoHanami.load(this.course);
+        if (this.disposed) {
+          walk.dispose();
+          return false;
+        }
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.hanami = walk;
+        this.scene.add(walk.root);
+        this.disposables.push(walk);
+      }
+      if (this.course.file.id === 'lakefront') {
+        const { ChicagoLakefront } = await import('./chicago-lakefront');
+        if (this.disposed) return false;
+        const shore = await ChicagoLakefront.load(this.course, body);
+        if (this.disposed) {
+          shore.dispose();
+          return false;
+        }
+        this.camera.far = 32000;
+        this.camera.setViewOffset(1, 1, 0, 0.042, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.chicagoShore = shore;
+        this.scene.add(shore.root);
+        this.disposables.push(shore);
+      }
+      if (this.course.file.id === 'lakelouise') {
+        const { LakeLouise } = await import('./lake-louise');
+        if (this.disposed) return false;
+        const valley = await LakeLouise.load(this.course, body);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.camera.far = 28500;
+        this.camera.setViewOffset(1, 1, 0, 0.04, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.lakeLouise = valley;
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'letras') {
+        const { AltoDeLetras } = await import('./alto-de-letras');
+        if (this.disposed) return false;
+        const andes = await AltoDeLetras.load(this.course, body);
+        if (this.disposed) {
+          andes.dispose();
+          return false;
+        }
+        this.camera.far = 38000;
+        this.camera.setViewOffset(1, 1, 0, 0.038, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.letras = andes;
+        this.scene.add(andes.root);
+        this.disposables.push(andes);
+      }
+      if (this.course.file.id === 'lisbon') {
+        const { LisbonHills } = await import('./lisbon-hills');
+        if (this.disposed) return false;
+        const alfama = await LisbonHills.load(this.course);
+        if (this.disposed) {
+          alfama.dispose();
+          return false;
+        }
+        this.camera.far = 20000;
+        this.camera.setViewOffset(1, 1, 0, 0.035, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.lisbonHills = alfama;
+        this.scene.add(alfama.root);
+        this.disposables.push(alfama);
+      }
+      if (this.course.file.id === 'loire') {
+        const { LoireRiver } = await import('./loire-river');
+        if (this.disposed) return false;
+        const river = await LoireRiver.load(this.course, body);
+        if (this.disposed) {
+          river.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.loireRiver = river;
+        this.scene.add(river.root);
+        this.disposables.push(river);
+      }
+      if (this.course.file.id === 'machupicchu') {
+        const { UrubambaGorge } = await import('./urubamba-gorge');
+        if (this.disposed) return false;
+        const river = await UrubambaGorge.load(this.course);
+        if (this.disposed) {
+          river.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.urubambaGorge = river;
+        this.scene.add(river.root);
+        this.disposables.push(river);
+      }
+      if (this.course.file.id === 'marinabay') {
+        const { BayfrontNight } = await import('./bayfront-night');
+        if (this.disposed) return false;
+        const river = await BayfrontNight.load(this.course);
+        if (this.disposed) {
+          river.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.bayfrontNight = river;
+        this.scene.add(river.root);
+        this.disposables.push(river);
+      }
+      if (this.course.file.id === 'marrakech') {
+        const { JemaaSquare } = await import('./jemaa-square');
+        if (this.disposed) return false;
+        const river = await JemaaSquare.load(this.course);
+        if (this.disposed) {
+          river.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.jemaaSquare = river;
+        this.scene.add(river.root);
+        this.disposables.push(river);
+      }
+      if (this.course.file.id === 'mardigras') {
+        const { StCharlesParade } = await import('./st-charles-parade');
+        if (this.disposed) return false;
+        const river = await StCharlesParade.load(this.course);
+        if (this.disposed) {
+          river.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.stCharlesParade = river;
+        this.scene.add(river.root);
+        this.disposables.push(river);
+      }
+      if (this.course.file.id === 'maunakea') {
+        const { MaunaKeaSummit } = await import('./mauna-kea-summit');
+        if (this.disposed) return false;
+        const summit = await MaunaKeaSummit.load(this.course);
+        if (this.disposed) {
+          summit.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.maunaKeaSummit = summit;
+        this.scene.add(summit.root);
+        this.disposables.push(summit);
+      }
+      if (this.course.file.id === 'merce') {
+        const { MerceFestival } = await import('./merce-festival');
+        if (this.disposed) return false;
+        const festival = await MerceFestival.load(this.course);
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.merceFestival = festival;
+        this.scene.add(festival.root);
+        this.disposables.push(festival);
+      }
+      if (this.course.file.id === 'miami') {
+        const { OceanDrive } = await import('./ocean-drive');
+        if (this.disposed) return false;
+        const drive = await OceanDrive.load(this.course);
+        if (this.disposed) {
+          drive.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.oceanDrive = drive;
+        this.scene.add(drive.root);
+        this.disposables.push(drive);
+      }
+      if (this.course.file.id === 'moab') {
+        const { MoabTrail } = await import('./moab-trail');
+        if (this.disposed) return false;
+        const trail = await MoabTrail.load(this.course, body);
+        if (this.disposed) {
+          trail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.moabTrail = trail;
+        this.scene.add(trail.root);
+        this.disposables.push(trail);
+      }
+      if (this.course.file.id === 'monaco') {
+        const { MonacoHarbour } = await import('./monaco-harbour');
+        if (this.disposed) return false;
+        const harbour = await MonacoHarbour.load(this.course);
+        if (this.disposed) {
+          harbour.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.monacoHarbour = harbour;
+        this.scene.add(harbour.root);
+        this.disposables.push(harbour);
+      }
+      if (this.course.file.id === 'montmartre') {
+        const { MontmartreSquare } = await import('./montmartre-square');
+        if (this.disposed) return false;
+        const square = await MontmartreSquare.load(this.course);
+        if (this.disposed) {
+          square.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.montmartreSquare = square;
+        this.scene.add(square.root);
+        this.disposables.push(square);
+      }
+      if (this.course.file.id === 'montreal') {
+        const { MontrealFestival } = await import('./montreal-festival');
+        if (this.disposed) return false;
+        const festival = await MontrealFestival.load(this.course);
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.montrealFestival = festival;
+        this.scene.add(festival.root);
+        this.disposables.push(festival);
+      }
+      if (this.course.file.id === 'montroyal') {
+        const { MontRoyalPark } = await import('./montroyal-park');
+        if (this.disposed) return false;
+        const trail = await MontRoyalPark.load(this.course, body);
+        if (this.disposed) {
+          trail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.montRoyalPark = trail;
+        this.scene.add(trail.root);
+        this.disposables.push(trail);
+      }
+      if (this.course.file.id === 'mountwashington') {
+        const { WashingtonSummit } = await import('./washington-summit');
+        if (this.disposed) return false;
+        const summit = await WashingtonSummit.load(this.course);
+        if (this.disposed) {
+          summit.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.washingtonSummit = summit;
+        this.scene.add(summit.root);
+        this.disposables.push(summit);
+      }
+      if (this.course.file.id === 'muertos') {
+        const { MuertosParade } = await import('./muertos-parade');
+        if (this.disposed) return false;
+        const parade = await MuertosParade.load(this.course);
+        if (this.disposed) {
+          parade.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.muertosParade = parade;
+        this.scene.add(parade.root);
+        this.disposables.push(parade);
+      }
+      if (this.course.file.id === 'mulholland') {
+        const { MulhollandOverlook } = await import('./mulholland-overlook');
+        if (this.disposed) return false;
+        const overlook = await MulhollandOverlook.load(this.course);
+        if (this.disposed) {
+          overlook.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.mulhollandOverlook = overlook;
+        this.scene.add(overlook.root);
+        this.disposables.push(overlook);
+      }
+      if (this.course.file.id === 'murdehuy') {
+        const { HuyClimb } = await import('./huy-climb');
+        if (this.disposed) return false;
+        const climb = await HuyClimb.load(this.course, body);
+        if (this.disposed) {
+          climb.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.huyClimb = climb;
+        this.scene.add(climb.root);
+        this.disposables.push(climb);
+      }
+      if (this.course.file.id === 'napa') {
+        const { SilveradoTrail } = await import('./silverado-trail');
+        if (this.disposed) return false;
+        const trail = await SilveradoTrail.load(this.course, body);
+        if (this.disposed) {
+          trail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.silveradoTrail = trail;
+        this.scene.add(trail.root);
+        this.disposables.push(trail);
+      }
+      if (this.course.file.id === 'northshore') {
+        const { NorthShoreSurf } = await import('./north-shore-surf');
+        if (this.disposed) return false;
+        const surf = await NorthShoreSurf.load(this.course);
+        if (this.disposed) {
+          surf.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.northShoreSurf = surf;
+        this.scene.add(surf.root);
+        this.disposables.push(surf);
+      }
+      if (this.course.file.id === 'nottinghill') {
+        const { LondonCarnival } = await import('./london-carnival');
+        if (this.disposed) return false;
+        const carnival = await LondonCarnival.load(this.course);
+        if (this.disposed) {
+          carnival.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.londonCarnival = carnival;
+        this.scene.add(carnival.root);
+        this.disposables.push(carnival);
+      }
+      if (this.course.file.id === 'nuevedejulio') {
+        const { BuenosAiresTraffic } = await import('./buenos-aires-traffic');
+        if (this.disposed) return false;
+        const traffic = await BuenosAiresTraffic.load(this.course);
+        if (this.disposed) {
+          traffic.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.buenosAiresTraffic = traffic;
+        this.scene.add(traffic.root);
+        this.disposables.push(traffic);
+      }
+      if (this.course.file.id === 'okinawa') {
+        const { KouriLagoon } = await import('./kouri-lagoon');
+        if (this.disposed) return false;
+        const lagoon = await KouriLagoon.load(this.course);
+        if (this.disposed) {
+          lagoon.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.kouriLagoon = lagoon;
+        this.scene.add(lagoon.root);
+        this.disposables.push(lagoon);
+      }
+      if (this.course.file.id === 'oktoberfest') {
+        const { WiesnParade } = await import('./wiesn-parade');
+        if (this.disposed) return false;
+        const festival = await WiesnParade.load(this.course);
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.wiesnParade = festival;
+        this.scene.add(festival.root);
+        this.disposables.push(festival);
+      }
+      if (this.course.file.id === 'oldtown') {
+        const { MarktSquare } = await import('./markt-square');
+        if (this.disposed) return false;
+        const square = await MarktSquare.load(this.course);
+        if (this.disposed) {
+          square.dispose();
+          return false;
+        }
+        this.marktSquare = square;
+        this.scene.add(square.root);
+        this.disposables.push(square);
+      }
+      if (this.course.file.id === 'oregon') {
+        const { PacificHeadlands } = await import('./pacific-headlands');
+        if (this.disposed) return false;
+        const headlands = await PacificHeadlands.load(this.course);
+        if (this.disposed) {
+          headlands.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.pacificHeadlands = headlands;
+        this.scene.add(headlands.root);
+        this.disposables.push(headlands);
+      }
+      if (this.course.file.id === 'outback') {
+        const { LasseterRoadTrain } = await import('./lasseter-road-train');
+        if (this.disposed) return false;
+        const roadTrain = await LasseterRoadTrain.load(this.course);
+        if (this.disposed) {
+          roadTrain.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.lasseterRoadTrain = roadTrain;
+        this.scene.add(roadTrain.root);
+        this.disposables.push(roadTrain);
+      }
+      if (this.course.file.id === 'overseas') {
+        const { SevenMileChannel } = await import('./seven-mile-channel');
+        if (this.disposed) return false;
+        const channel = await SevenMileChannel.load(this.course);
+        if (this.disposed) {
+          channel.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.sevenMileChannel = channel;
+        this.scene.add(channel.root);
+        this.disposables.push(channel);
+      }
+      if (this.course.file.id === 'paine') {
+        const { PehoeWind } = await import('./pehoe-wind');
+        if (this.disposed) return false;
+        const wind = await PehoeWind.load(this.course);
+        if (this.disposed) {
+          wind.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.pehoeWind = wind;
+        this.scene.add(wind.root);
+        this.disposables.push(wind);
+      }
+      if (this.course.file.id === 'palouse') {
+        const { PalouseHarvest } = await import('./palouse-harvest');
+        if (this.disposed) return false;
+        const harvest = await PalouseHarvest.load(this.course);
+        if (this.disposed) {
+          harvest.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.palouseHarvest = harvest;
+        this.scene.add(harvest.root);
+        this.disposables.push(harvest);
+      }
+      if (this.course.file.id === 'pamplona') {
+        const { EstafetaFestival } = await import('./estafeta-festival');
+        if (this.disposed) return false;
+        const festival = await EstafetaFestival.load(this.course);
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.estafetaFestival = festival;
+        this.scene.add(festival.root);
+        this.disposables.push(festival);
+      }
+      if (this.course.file.id === 'penllech') {
+        const { HarlechWeather } = await import('./harlech-weather');
+        if (this.disposed) return false;
+        const weather = await HarlechWeather.load(this.course);
+        if (this.disposed) {
+          weather.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.harlechWeather = weather;
+        this.scene.add(weather.root);
+        this.disposables.push(weather);
+      }
+      if (this.course.file.id === 'pikeplace') {
+        const { ElliottMarket } = await import('./elliott-market');
+        if (this.disposed) return false;
+        const market = await ElliottMarket.load(this.course);
+        if (this.disposed) {
+          market.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.elliottMarket = market;
+        this.scene.add(market.root);
+        this.disposables.push(market);
+      }
+      if (this.course.file.id === 'playground') {
+        const { ParkActivity } = await import('./park-activity');
+        if (this.disposed) return false;
+        const activity = await ParkActivity.load(this.course);
+        if (this.disposed) {
+          activity.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.parkActivity = activity;
+        this.scene.add(activity.root);
+        this.disposables.push(activity);
+      }
+      if (this.course.file.id === 'prague') {
+        const { VltavaVisitors } = await import('./vltava-visitors');
+        if (this.disposed) return false;
+        const visitors = await VltavaVisitors.load(this.course);
+        if (this.disposed) {
+          visitors.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.vltavaVisitors = visitors;
+        this.scene.add(visitors.root);
+        this.disposables.push(visitors);
+      }
+      if (this.course.file.id === 'poggio') {
+        const { RivieraRace } = await import('./riviera-race');
+        if (this.disposed) return false;
+        const riviera = await RivieraRace.load(this.course);
+        if (this.disposed) {
+          riviera.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.rivieraRace = riviera;
+        this.scene.add(riviera.root);
+        this.disposables.push(riviera);
+      }
+      if (this.course.file.id === 'prospect') {
+        const { BrooklynPark } = await import('./brooklyn-park');
+        if (this.disposed) return false;
+        const park = await BrooklynPark.load(this.course);
+        if (this.disposed) {
+          park.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.brooklynPark = park;
+        this.scene.add(park.root);
+        this.disposables.push(park);
+      }
+      if (this.course.file.id === 'prairie') {
+        const { PrairieWind } = await import('./prairie-wind');
+        if (this.disposed) return false;
+        const wind = await PrairieWind.load(this.course);
+        if (this.disposed) {
+          wind.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.prairieWind = wind;
+        this.scene.add(wind.root);
+        this.disposables.push(wind);
+      }
+      if (this.course.file.id === 'provence') {
+        const { ValensoleFields } = await import('./valensole-fields');
+        if (this.disposed) return false;
+        const fields = await ValensoleFields.load(this.course);
+        if (this.disposed) {
+          fields.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.valensoleFields = fields;
+        this.scene.add(fields.root);
+        this.disposables.push(fields);
+      }
+      if (this.course.file.id === 'pueblos') {
+        const { AndalusianRoad } = await import('./andalusian-road');
+        if (this.disposed) return false;
+        const villages = await AndalusianRoad.load(this.course);
+        if (this.disposed) {
+          villages.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.andalusianRoad = villages;
+        this.scene.add(villages.root);
+        this.disposables.push(villages);
+      }
+      if (this.course.file.id === 'quebec') {
+        const { QuebecTerrace } = await import('./quebec-terrace');
+        if (this.disposed) return false;
+        const terrace = await QuebecTerrace.load(this.course);
+        if (this.disposed) {
+          terrace.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.quebecTerrace = terrace;
+        this.scene.add(terrace.root);
+        this.disposables.push(terrace);
+      }
+      if (this.course.file.id === 'redoute') {
+        const { ArdennesRoadside } = await import('./ardennes-roadside');
+        if (this.disposed) return false;
+        const detail = await ArdennesRoadside.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.ardennesRoadside = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
+      if (this.course.file.id === 'rome') {
+        const { ForumProcession } = await import('./forum-procession');
+        if (this.disposed) return false;
+        const detail = await ForumProcession.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.forumProcession = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
+      if (this.course.file.id === 'route66') {
+        const { ArizonaRoadside } = await import('./arizona-roadside');
+        if (this.disposed) return false;
+        const detail = await ArizonaRoadside.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.arizonaRoadside = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
+      if (this.course.file.id === 'saguaro') {
+        const { CactusForest } = await import('./cactus-forest');
+        if (this.disposed) return false;
+        const detail = await CactusForest.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.cactusForest = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
+      if (this.course.file.id === 'sambadrome') {
+        const { RioParade } = await import('./rio-parade');
+        if (this.disposed) return false;
+        const detail = await RioParade.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.rioParade = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
+      if (this.course.file.id === 'santamonica') {
+        const { PacificPark } = await import('./pacific-park');
+        if (this.disposed) return false;
+        const detail = await PacificPark.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.camera.far = 21000;
+        this.camera.updateProjectionMatrix();
+        this.pacificPark = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
+      if (this.course.file.id === 'seapoint') {
+        const { SeaPointPromenade } = await import('./sea-point-promenade');
+        if (this.disposed) return false;
+        const detail = await SeaPointPromenade.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.seaPoint = detail;
+        this.camera.far = 21500;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
+      if (this.course.file.id === 'sella') {
+        const { SellaClimb } = await import('./sella-climb');
+        if (this.disposed) return false;
+        const detail = await SellaClimb.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.sellaClimb = detail;
+        this.camera.far = 21500;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
+      if (this.course.file.id === 'sellaronda') {
+        const { SellaRondaRide } = await import('./sella-ronda-ride');
+        if (this.disposed) return false;
+        const detail = await SellaRondaRide.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.sellaRonda = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
+      if (this.course.file.id === 'serpentine') {
+        const { SerpentineLake } = await import('./serpentine-lake');
+        if (this.disposed) return false;
+        const lake = await SerpentineLake.load(this.course);
+        if (this.disposed) {
+          lake.dispose();
+          return false;
+        }
+        this.serpentine = lake;
+        this.scene.add(lake.root);
+        this.disposables.push(lake);
+      }
+      if (this.course.file.id === 'sevensisters') {
+        const { SevenSistersDowns } = await import('./seven-sisters-downs');
+        if (this.disposed) return false;
+        const downs = await SevenSistersDowns.load(this.course);
+        if (this.disposed) {
+          downs.dispose();
+          return false;
+        }
+        this.downs = downs;
+        this.scene.add(downs.root);
+        this.disposables.push(downs);
+      }
+      if (this.course.file.id === 'sfhills') {
+        const { SanFranciscoHills } = await import('./san-francisco-hills');
+        if (this.disposed) return false;
+        const city = await SanFranciscoHills.load(this.course);
+        if (this.disposed) {
+          city.dispose();
+          return false;
+        }
+        this.sanFrancisco = city;
+        this.scene.add(city.root);
+        this.disposables.push(city);
+      }
+      if (this.course.file.id === 'shibuya') {
+        const { ShibuyaCrossing } = await import('./shibuya-crossing');
+        if (this.disposed) return false;
+        const tokyo = await ShibuyaCrossing.load(this.course);
+        if (this.disposed) {
+          tokyo.dispose();
+          return false;
+        }
+        this.tokyo = tokyo;
+        this.scene.add(tokyo.root);
+        this.disposables.push(tokyo);
+      }
+      if (this.course.file.id === 'silverstone') {
+        const { SilverstoneTrack } = await import('./silverstone-track');
+        if (this.disposed) return false;
+        const track = await SilverstoneTrack.load(this.course);
+        if (this.disposed) {
+          track.dispose();
+          return false;
+        }
+        this.silverstone = track;
+        this.scene.add(track.root);
+        this.disposables.push(track);
+      }
+      if (this.course.file.id === 'skye') {
+        const { SkyeGlen } = await import('./skye-glen');
+        if (this.disposed) return false;
+        const glen = await SkyeGlen.load(this.course);
+        if (this.disposed) {
+          glen.dispose();
+          return false;
+        }
+        this.skye = glen;
+        this.scene.add(glen.root);
+        this.disposables.push(glen);
+      }
+      if (this.course.file.id === 'songkran') {
+        const { KhaoSanRoad } = await import('./khao-san-road');
+        if (this.disposed) return false;
+        const street = await KhaoSanRoad.load(this.course);
+        if (this.disposed) {
+          street.dispose();
+          return false;
+        }
+        this.khaoSan = street;
+        this.scene.add(street.root);
+        this.disposables.push(street);
+      }
+      if (this.course.file.id === 'southbeach') {
+        const { SouthBeachDrive } = await import('./south-beach-drive');
+        if (this.disposed) return false;
+        const ocean = await SouthBeachDrive.load(this.course);
+        if (this.disposed) {
+          ocean.dispose();
+          return false;
+        }
+        this.southBeachDrive = ocean;
+        this.scene.add(ocean.root);
+        this.disposables.push(ocean);
+      }
+      if (this.course.file.id === 'stampede') {
+        const { StampedeGrounds } = await import('./stampede-grounds');
+        if (this.disposed) return false;
+        const park = await StampedeGrounds.load(this.course);
+        if (this.disposed) {
+          park.dispose();
+          return false;
+        }
+        this.stampede = park;
+        this.scene.add(park.root);
+        this.disposables.push(park);
+      }
+      if (this.course.file.id === 'stanleypark') {
+        const { StanleySeawall } = await import('./stanley-seawall');
+        if (this.disposed) return false;
+        const coast = await StanleySeawall.load(this.course);
+        if (this.disposed) {
+          coast.dispose();
+          return false;
+        }
+        this.seawall = coast;
+        this.scene.add(coast.root);
+        this.disposables.push(coast);
+      }
+      if (this.course.file.id === 'stbernard') {
+        const { HospiceRoad } = await import('./hospice-road');
+        if (this.disposed) return false;
+        const pass = await HospiceRoad.load(this.course);
+        if (this.disposed) {
+          pass.dispose();
+          return false;
+        }
+        this.hospiceRoad = pass;
+        this.scene.add(pass.root);
+        this.disposables.push(pass);
+      }
+      if (this.course.file.id === 'stelvio') {
+        const { StelvioHairpins } = await import('./stelvio-hairpins');
+        if (this.disposed) return false;
+        const ascent = await StelvioHairpins.load(this.course);
+        if (this.disposed) {
+          ascent.dispose();
+          return false;
+        }
+        this.stelvio = ascent;
+        this.scene.add(ascent.root);
+        this.disposables.push(ascent);
+      }
+      if (this.course.file.id === 'steppe') {
+        const { KhentiiSteppe } = await import('./khentii-steppe');
+        if (this.disposed) return false;
+        const steppe = await KhentiiSteppe.load(this.course);
+        if (this.disposed) {
+          steppe.dispose();
+          return false;
+        }
+        this.steppe = steppe;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(steppe.root);
+        this.disposables.push(steppe);
+      }
+      if (this.course.file.id === 'stpatricks') {
+        const { LiffeyParade } = await import('./liffey-parade');
+        if (this.disposed) return false;
+        const dublin = await LiffeyParade.load(this.course);
+        if (this.disposed) {
+          dublin.dispose();
+          return false;
+        }
+        this.dublin = dublin;
+        this.scene.add(dublin.root);
+        this.disposables.push(dublin);
+      }
+      if (this.course.file.id === 'strade') {
+        const { SenesiSectors } = await import('./senesi-sectors');
+        if (this.disposed) return false;
+        const sectors = await SenesiSectors.load(this.course);
+        if (this.disposed) {
+          sectors.dispose();
+          return false;
+        }
+        this.strade = sectors;
+        this.camera.far = 33000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(sectors.root);
+        this.disposables.push(sectors);
+      }
+      if (this.course.file.id === 'strasbourg') {
+        const { GrandeIle } = await import('./grande-ile');
+        if (this.disposed) return false;
+        const market = await GrandeIle.load(this.course);
+        if (this.disposed) {
+          market.dispose();
+          return false;
+        }
+        this.strasbourg = market;
+        this.scene.add(market.root);
+        this.disposables.push(market);
+      }
+      if (this.course.file.id === 'suburbia') {
+        const { MapleMorning } = await import('./maple-morning');
+        if (this.disposed) return false;
+        const morning = await MapleMorning.load(this.course);
+        if (this.disposed) {
+          morning.dispose();
+          return false;
+        }
+        this.maple = morning;
+        this.camera.far = 30000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(morning.root);
+        this.disposables.push(morning);
+      }
+      if (this.course.file.id === 'surfers') {
+        const { GoldCoast } = await import('./gold-coast');
+        if (this.disposed) return false;
+        const coast = await GoldCoast.load(this.course);
+        if (this.disposed) {
+          coast.dispose();
+          return false;
+        }
+        this.surfers = coast;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(coast.root);
+        this.disposables.push(coast);
+      }
+      if (this.course.file.id === 'sydneyharbour') {
+        const { PortJackson } = await import('./port-jackson');
+        if (this.disposed) return false;
+        const coast = await PortJackson.load(this.course);
+        if (this.disposed) {
+          coast.dispose();
+          return false;
+        }
+        this.sydneyharbour = coast;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(coast.root);
+        this.disposables.push(coast);
+      }
+      if (this.course.file.id === 'teide') {
+        const { LasCanadas } = await import('./las-canadas');
+        if (this.disposed) return false;
+        const coast = await LasCanadas.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          coast.dispose();
+          return false;
+        }
+        this.teide = coast;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(coast.root);
+        this.disposables.push(coast);
+      }
+      if (this.course.file.id === 'tamalpais') {
+        const { MarinHeadlands } = await import('./marin-headlands');
+        if (this.disposed) return false;
+        const coast = await MarinHeadlands.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          coast.dispose();
+          return false;
+        }
+        this.tamalpais = coast;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(coast.root);
+        this.disposables.push(coast);
+      }
+      if (this.course.file.id === 'tahoe') {
+        const { TahoeShore } = await import('./tahoe-shore');
+        if (this.disposed) return false;
+        const coast = await TahoeShore.load(this.course);
+        if (this.disposed) {
+          coast.dispose();
+          return false;
+        }
+        this.tahoe = coast;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(coast.root);
+        this.disposables.push(coast);
+      }
+      if (this.course.file.id === 'telaviv') {
+        const { Tayelet } = await import('./tayelet');
+        if (this.disposed) return false;
+        const coast = await Tayelet.load(this.course);
+        if (this.disposed) {
+          coast.dispose();
+          return false;
+        }
+        this.telaviv = coast;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(coast.root);
+        this.disposables.push(coast);
+      }
+      if (this.course.file.id === 'tempelhof') {
+        const { TempelhoferFeld } = await import('./tempelhofer-feld');
+        if (this.disposed) return false;
+        const coast = await TempelhoferFeld.load(this.course);
+        if (this.disposed) {
+          coast.dispose();
+          return false;
+        }
+        this.tempelhof = coast;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(coast.root);
+        this.disposables.push(coast);
+      }
+      if (this.course.file.id === 'teotihuacan') {
+        const { AvenueOfTheDead } = await import('./avenue-of-the-dead');
+        if (this.disposed) return false;
+        const avenue = await AvenueOfTheDead.load(this.course);
+        if (this.disposed) {
+          avenue.dispose();
+          return false;
+        }
+        this.teotihuacan = avenue;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(avenue.root);
+        this.disposables.push(avenue);
+      }
+      if (this.course.file.id === 'timessquare') {
+        const { TimesSquareCountdown } = await import('./times-square-countdown');
+        if (this.disposed) return false;
+        const square = await TimesSquareCountdown.load(this.course);
+        if (this.disposed) {
+          square.dispose();
+          return false;
+        }
+        this.timessquare = square;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(square.root);
+        this.disposables.push(square);
+      }
+      if (this.course.file.id === 'toronto') {
+        const { TorontoHarbourfront } = await import('./toronto-harbourfront');
+        if (this.disposed) return false;
+        const harbour = await TorontoHarbourfront.load(this.course);
+        if (this.disposed) {
+          harbour.dispose();
+          return false;
+        }
+        this.toronto = harbour;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(harbour.root);
+        this.disposables.push(harbour);
+      }
+      if (this.course.file.id === 'tremola') {
+        const { ValTremola } = await import('./val-tremola');
+        if (this.disposed) return false;
+        const valley = await ValTremola.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.tremola = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'tourmalet') {
+        const { TourmaletPass } = await import('./tourmalet-pass');
+        if (this.disposed) return false;
+        const pass = await TourmaletPass.load(this.course);
+        if (this.disposed) {
+          pass.dispose();
+          return false;
+        }
+        this.tourmalet = pass;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(pass.root);
+        this.disposables.push(pass);
+      }
+      if (this.course.file.id === 'trollstigen') {
+        const { TrollstigenPass } = await import('./trollstigen-pass');
+        if (this.disposed) return false;
+        const valley = await TrollstigenPass.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.trollstigen = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'tulips') {
+        const { BulbCountry } = await import('./bulb-country');
+        if (this.disposed) return false;
+        const valley = await BulbCountry.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.tulips = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'utrecht') {
+        const { UtrechtWharves } = await import('./utrecht-wharves');
+        if (this.disposed) return false;
+        const valley = await UtrechtWharves.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.utrecht = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'valais') {
+        const { ValaisStations } = await import('./valais-stations');
+        if (this.disposed) return false;
+        const valley = await ValaisStations.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.valais = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'valparaiso') {
+        const { ValparaisoCerros } = await import('./valparaiso-cerros');
+        if (this.disposed) return false;
+        const valley = await ValparaisoCerros.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.valparaiso = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'vegas') {
+        const { VegasBoulevard } = await import('./vegas-boulevard');
+        if (this.disposed) return false;
+        const valley = await VegasBoulevard.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.vegas = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'veleta') {
+        const { VeletaRidge } = await import('./veleta-ridge');
+        if (this.disposed) return false;
+        const valley = await VeletaRidge.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.veleta = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'velodrome') {
+        const { LeeValleyTrack } = await import('./lee-valley-track');
+        if (this.disposed) return false;
+        const valley = await LeeValleyTrack.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.velodrome = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'venice') {
+        const { OceanFrontWalk } = await import('./ocean-front-walk');
+        if (this.disposed) return false;
+        const valley = await OceanFrontWalk.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.venice = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'ventoux') {
+        const { VentouxSummit } = await import('./ventoux-summit');
+        if (this.disposed) return false;
+        const valley = await VentouxSummit.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.ventoux = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'verona') {
+        const { VeronaFinale } = await import('./verona-finale');
+        if (this.disposed) return false;
+        const valley = await VeronaFinale.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.verona = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'victoria') {
+        const { VictoriaWaterfront } = await import('./victoria-waterfront');
+        if (this.disposed) return false;
+        const valley = await VictoriaWaterfront.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.victoria = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'vienna') {
+        const { ViennaRing } = await import('./vienna-ring');
+        if (this.disposed) return false;
+        const valley = await ViennaRing.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.vienna = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'westminster') {
+        const { WestminsterTraffic } = await import('./westminster-traffic');
+        if (this.disposed) return false;
+        const valley = await WestminsterTraffic.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.westminster = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'winnats') {
+        const { WinnatsGorge } = await import('./winnats-gorge');
+        if (this.disposed) return false;
+        const valley = await WinnatsGorge.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.winnats = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'wicklow') {
+        const { WicklowWeather } = await import('./wicklow-weather');
+        if (this.disposed) return false;
+        const valley = await WicklowWeather.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.wicklow = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'zoncolan') {
+        const { CarnicAscent } = await import('./carnic-ascent');
+        if (this.disposed) return false;
+        const valley = await CarnicAscent.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.zoncolan = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'yosemite') {
+        const { YosemiteFalls } = await import('./yosemite-falls');
+        if (this.disposed) return false;
+        const valley = await YosemiteFalls.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.yosemite = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'winterlude') {
+        const { WinterludeCanal } = await import('./winterlude-canal');
+        if (this.disposed) return false;
+        const valley = await WinterludeCanal.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.winterlude = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1077,6 +3036,21 @@ export class CourseRenderer implements WorldRenderer {
         this.dam = blackCanyon(this.course);
         this.disposables.push(this.dam);
       }
+      if (this.course.file.id === 'jaipur') {
+        const { JaipurFestival } = await import('./jaipur-festival');
+        if (this.disposed) return false;
+        const festival = await JaipurFestival.load(this.course);
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.camera.clearViewOffset();
+        this.camera.fov = 65;
+        this.camera.updateProjectionMatrix();
+        this.holi = festival;
+        this.scene.add(festival.group);
+        this.disposables.push(festival);
+      }
       this.build(
         gltf.scene,
         canvas,
@@ -1086,6 +3060,9 @@ export class CourseRenderer implements WorldRenderer {
         (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material,
         gizaMaterials,
       );
+      this.stelvio?.addClimbers(this.kit!, this.riderBatch!);
+      this.strade?.addRiders(this.kit!, this.riderBatch!);
+      this.maple?.addDelivery(this.kit!, this.riderBatch!);
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
         if (this.disposed) return false;
@@ -1725,7 +3702,17 @@ export class CourseRenderer implements WorldRenderer {
     this.gardena?.at(frame.reducedMotion ? 0 : frame.time, metres);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
-    const standing = this.ride(you, metres, 0);
+    const standing = this.ride(
+      you,
+      metres,
+      this.lasseterRoadTrain
+        ? -1.45
+        : this.sevenMileChannel
+          ? 2.65
+          : this.palouseHarvest
+            ? 1.48
+            : 0,
+    );
     // Every wheel on the road turns with the rider's: the riders keep much the same pace.
     this.kit?.roll(metres);
     this.marinaBoats?.follow(metres);
@@ -1781,20 +3768,49 @@ export class CourseRenderer implements WorldRenderer {
     this.commuters?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.copacabanaPromenade?.follow(metres);
     this.copacabana?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.pacificPark?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.seaPoint?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.sellaClimb?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.sellaRonda?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.serpentine?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.downs?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.sanFrancisco?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.tokyo?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.silverstone?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.skye?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
-      const bay = this.course?.file.id === 'bayofislands';
-      const progress = Math.max(
-        0,
-        Math.min(1, (metres - (bay ? 19_500 : 14_300)) / (bay ? 7900 : 5050)),
-      );
+      const id = this.course?.file.id;
+      const [sunsetStart, sunsetLength] =
+        id === 'maunakea'
+          ? [20_000, 5_300]
+          : id === 'moab' || id === 'montroyal'
+            ? [7700, 5850]
+            : this.northShoreSurf
+              ? [4400, 3300]
+              : this.wiesnParade
+                ? [3900, 5900]
+                : this.lasseterRoadTrain
+                  ? [5600, 4200]
+                  : this.khaoSan
+                    ? [5000, 3900]
+                    : id === 'bayofislands'
+                      ? [19_500, 7900]
+                      : [14_300, 5050];
+      const progress = Math.max(0, Math.min(1, (metres - sunsetStart) / sunsetLength));
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
       this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
       if (this.scene.fog instanceof Fog)
         this.scene.fog.color.setRGB(0.402 + 0.43 * t, 0.604 - 0.27 * t, 0.658 - 0.43 * t);
     }
+    this.khaoSan?.update(metres, frame.reducedMotion ? 0 : frame.time, this.evening?.value ?? 0);
     this.aim(metres, frame.reducedMotion);
+    this.southBeachDrive?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.stampede?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.seawall?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.hospiceRoad?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.stelvio?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mountain?.update(
       metres,
       frame.reducedMotion ? 0 : frame.time,
@@ -1802,6 +3818,98 @@ export class CourseRenderer implements WorldRenderer {
       this.camera.position.y,
       this.camera.position.z,
     );
+    this.rush?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.vents?.update(metres, frame.reducedMotion ? 0 : frame.time, this.camera);
+    this.broadway?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.queenK?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.cobbledBanks?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.kwaremontVillage?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.hanami?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.chicagoShore?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.lakeLouise?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.letras?.update(metres, frame.reducedMotion ? 0 : frame.time, this.sun, this.scene.fog);
+    this.lisbonHills?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.loireRiver?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.urubambaGorge?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.bayfrontNight?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.jemaaSquare?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.stCharlesParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.maunaKeaSummit?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.merceFestival?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.oceanDrive?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.moabTrail?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.monacoHarbour?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.montmartreSquare?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.montrealFestival?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.montRoyalPark?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.washingtonSummit?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.muertosParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.mulhollandOverlook?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.huyClimb?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.silveradoTrail?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.northShoreSurf?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.londonCarnival?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.buenosAiresTraffic?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.kouriLagoon?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.wiesnParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.marktSquare?.furniture.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.pacificHeadlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.lasseterRoadTrain?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.sevenMileChannel?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.pehoeWind?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.palouseHarvest?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.estafetaFestival?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.harlechWeather?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.elliottMarket?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.parkActivity?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.vltavaVisitors?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.rivieraRace?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.brooklynPark?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.prairieWind?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.valensoleFields?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.andalusianRoad?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.quebecTerrace?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.ardennesRoadside?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.forumProcession?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.arizonaRoadside?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.cactusForest?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.rioParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.steppe?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.dublin?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.strade?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.strasbourg?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.maple?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.surfers?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.sydneyharbour?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.teide?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.tamalpais?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.tahoe?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.telaviv?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.tempelhof?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.teotihuacan?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.timessquare?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.toronto?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.tremola?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.tourmalet?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.trollstigen?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.tulips?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.utrecht?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.valais?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.valparaiso?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.vegas?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.veleta?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.velodrome?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.venice?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.ventoux?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.verona?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.victoria?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.vienna?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.westminster?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.winnats?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.wicklow?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.zoncolan?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.yosemite?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.winterlude?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -1821,6 +3929,9 @@ export class CourseRenderer implements WorldRenderer {
     this.highlandLivestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.bigSurCoast?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trams?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.holi?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.jouvert?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.climbers?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.yard?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mill?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.surf?.update(metres, frame.reducedMotion ? 0 : frame.time);
@@ -1912,7 +4023,18 @@ export class CourseRenderer implements WorldRenderer {
       if (mesh.isMesh) mesh.geometry.dispose();
     });
     this.boardwalk?.group.removeFromParent();
+    this.sellaRonda = null;
+    this.serpentine = null;
+    this.downs = null;
+    this.sanFrancisco = null;
+    this.tokyo = null;
+    this.silverstone = null;
+    this.skye = null;
+    this.khaoSan = null;
     this.boardwalk = null;
+    this.pacificPark = null;
+    this.seaPoint = null;
+    this.sellaClimb = null;
     this.daytonaBoardwalk = null;
     this.daytonaShore = null;
     this.copacabanaPromenade?.root.removeFromParent();
@@ -1961,9 +4083,113 @@ export class CourseRenderer implements WorldRenderer {
     this.bigSurCoast = null;
     this.icelandCoast = null;
     this.divide = null;
+    this.southBeachDrive = null;
+    this.stampede = null;
+    this.seawall = null;
+    this.hospiceRoad = null;
+    this.stelvio = null;
+    this.steppe = null;
+    this.dublin = null;
+    this.strade = null;
+    this.strasbourg = null;
+    this.maple = null;
+    this.surfers = null;
+    this.sydneyharbour = null;
+    this.teide = null;
+    this.tamalpais = null;
+    this.tahoe = null;
+    this.telaviv = null;
+    this.tempelhof = null;
+    this.teotihuacan = null;
+    this.timessquare = null;
+    this.toronto = null;
+    this.tremola = null;
+    this.tourmalet = null;
+    this.trollstigen = null;
+    this.tulips = null;
+    this.utrecht = null;
+    this.valais = null;
+    this.valparaiso = null;
+    this.vegas = null;
+    this.veleta = null;
+    this.velodrome = null;
+    this.venice = null;
+    this.ventoux = null;
+    this.verona = null;
+    this.victoria = null;
+    this.vienna = null;
+    this.westminster = null;
+    this.winnats = null;
+    this.wicklow = null;
+    this.zoncolan = null;
+    this.yosemite = null;
+    this.winterlude = null;
     this.mountain = null;
+    this.rush = null;
+    this.vents = null;
+    this.caldera = null;
+    this.broadway = null;
+    this.queenK = null;
+    this.cobbledBanks = null;
+    this.kwaremontVillage = null;
+    this.hanami = null;
+    this.chicagoShore = null;
+    this.lakeLouise = null;
+    this.letras = null;
+    this.lisbonHills = null;
+    this.loireRiver = null;
+    this.urubambaGorge = null;
+    this.bayfrontNight = null;
+    this.jemaaSquare = null;
+    this.stCharlesParade = null;
+    this.maunaKeaSummit = null;
+    this.merceFestival = null;
+    this.oceanDrive = null;
+    this.moabTrail = null;
+    this.monacoHarbour = null;
+    this.montmartreSquare = null;
+    this.montrealFestival = null;
+    this.montRoyalPark = null;
+    this.washingtonSummit = null;
+    this.muertosParade = null;
+    this.mulhollandOverlook = null;
+    this.huyClimb = null;
+    this.silveradoTrail = null;
+    this.northShoreSurf = null;
+    this.londonCarnival = null;
+    this.buenosAiresTraffic = null;
+    this.kouriLagoon = null;
+    this.wiesnParade = null;
+    this.marktSquare = null;
+    this.pacificHeadlands = null;
+    this.lasseterRoadTrain = null;
+    this.sevenMileChannel = null;
+    this.pehoeWind = null;
+    this.palouseHarvest = null;
+    this.estafetaFestival = null;
+    this.harlechWeather = null;
+    this.elliottMarket = null;
+    this.parkActivity = null;
+    this.vltavaVisitors = null;
+    this.rivieraRace = null;
+    this.brooklynPark = null;
+    this.prairieWind = null;
+    this.valensoleFields = null;
+    this.andalusianRoad = null;
+    this.quebecTerrace = null;
+    this.ardennesRoadside = null;
+    this.forumProcession = null;
+    this.arizonaRoadside = null;
+    this.cactusForest = null;
+    this.rioParade = null;
     this.trainingHighlands = null;
     this.trams = null;
+    this.holi = null;
+    this.jouvert = null;
+    this.jouvertAprons = null;
+    this.frederick = null;
+    this.climbers = null;
+    this.mojaveFlora = null;
     this.yard = null;
     this.mill = null;
     this.surf = null;
@@ -2052,8 +4278,48 @@ export class CourseRenderer implements WorldRenderer {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
-    if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
-    const clearValley = this.course!.file.id === 'engadin';
+    if (
+      this.course!.file.id === 'beachroad' ||
+      this.course!.file.id === 'maunakea' ||
+      this.course!.file.id === 'moab' ||
+      this.course!.file.id === 'montroyal' ||
+      this.northShoreSurf ||
+      this.buenosAiresTraffic ||
+      this.wiesnParade ||
+      this.lasseterRoadTrain ||
+      this.course!.file.id === 'songkran'
+    )
+      this.evening = eveningUniform();
+    const clearValley = [
+      'engadin',
+      'tempelhof',
+      'teotihuacan',
+      'timessquare',
+      'toronto',
+      'tremola',
+      'tourmalet',
+      'trollstigen',
+      'tulips',
+      'utrecht',
+      'valais',
+      'valparaiso',
+      'vegas',
+      'veleta',
+      'velodrome',
+      'venice',
+      'ventoux',
+      'verona',
+      'victoria',
+      'vienna',
+      'westminster',
+      'winnats',
+      'wicklow',
+      'zoncolan',
+      'yosemite',
+      'winterlude',
+      'teide',
+      'tamalpais',
+    ].includes(this.course!.file.id);
     const fogRange = this.dam
       ? ([450, 4200] as const)
       : this.course!.file.id === 'calobra'
@@ -2194,13 +4460,128 @@ export class CourseRenderer implements WorldRenderer {
       this.seafrontSurface?.(detail) ??
       this.deckSurface ??
       coursePavement;
-    materials['Ground'] = pavement ?? ground.material;
+    if (this.climbers) {
+      materials['MojaveGranite'] = this.climbers.granite;
+      materials['MojaveSand'] = this.climbers.sand;
+    }
+    if (this.mojaveFlora) materials['MojavePlants'] = this.mojaveFlora;
+    if (this.jouvertAprons) materials['JouvertAprons'] = this.jouvertAprons;
+    if (this.frederick) materials['FrederickFronts'] = this.frederick;
+    materials['Ground'] = this.holi?.tarmac ?? this.jouvert?.road ?? pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
+    if (this.marktSquare) Object.assign(materials, this.marktSquare.materials);
+    Object.assign(materials, this.southBeachDrive?.materials);
+    Object.assign(materials, this.stampede?.materials);
+    Object.assign(materials, this.seawall?.materials);
+    Object.assign(materials, this.hospiceRoad?.materials);
+    Object.assign(materials, this.stelvio?.materials);
+    if (this.steppe) Object.assign(materials, this.steppe.materials);
+    if (this.dublin) Object.assign(materials, this.dublin.materials);
+    if (this.strade) Object.assign(materials, this.strade.materials);
+    if (this.strasbourg) Object.assign(materials, this.strasbourg.materials);
+    if (this.maple) Object.assign(materials, this.maple.materials);
+    if (this.surfers) Object.assign(materials, this.surfers.materials);
+    if (this.sydneyharbour) Object.assign(materials, this.sydneyharbour.materials);
+    if (this.teide) Object.assign(materials, this.teide.materials);
+    if (this.tamalpais) Object.assign(materials, this.tamalpais.materials);
+    if (this.tahoe) Object.assign(materials, this.tahoe.materials);
+    if (this.telaviv) Object.assign(materials, this.telaviv.materials);
+    if (this.tempelhof) Object.assign(materials, this.tempelhof.materials);
+    if (this.teotihuacan) Object.assign(materials, this.teotihuacan.materials);
+    if (this.timessquare) Object.assign(materials, this.timessquare.materials);
+    if (this.toronto) Object.assign(materials, this.toronto.materials);
+    if (this.tremola) Object.assign(materials, this.tremola.materials);
+    if (this.tourmalet) Object.assign(materials, this.tourmalet.materials);
+    if (this.trollstigen) Object.assign(materials, this.trollstigen.materials);
+    if (this.tulips) Object.assign(materials, this.tulips.materials);
+    if (this.utrecht) Object.assign(materials, this.utrecht.materials);
+    if (this.valais) Object.assign(materials, this.valais.materials);
+    if (this.valparaiso) Object.assign(materials, this.valparaiso.materials);
+    if (this.vegas) Object.assign(materials, this.vegas.materials);
+    if (this.veleta) Object.assign(materials, this.veleta.materials);
+    if (this.velodrome) Object.assign(materials, this.velodrome.materials);
+    if (this.venice) Object.assign(materials, this.venice.materials);
+    if (this.ventoux) Object.assign(materials, this.ventoux.materials);
+    if (this.verona) Object.assign(materials, this.verona.materials);
+    if (this.victoria) Object.assign(materials, this.victoria.materials);
+    if (this.vienna) Object.assign(materials, this.vienna.materials);
+    if (this.westminster) Object.assign(materials, this.westminster.materials);
+    if (this.winnats) Object.assign(materials, this.winnats.materials);
+    if (this.wicklow) Object.assign(materials, this.wicklow.materials);
+    if (this.zoncolan) Object.assign(materials, this.zoncolan.materials);
+    if (this.yosemite) Object.assign(materials, this.yosemite.materials);
+    if (this.winterlude) Object.assign(materials, this.winterlude.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
+    if (this.rush) Object.assign(materials, this.rush.materials);
+    if (this.caldera) Object.assign(materials, this.caldera.materials);
+    if (this.broadway) Object.assign(materials, this.broadway.materials);
+    if (this.queenK) Object.assign(materials, this.queenK.materials);
+    if (this.cobbledBanks) Object.assign(materials, this.cobbledBanks.materials);
+    if (this.kwaremontVillage) Object.assign(materials, this.kwaremontVillage.materials);
+    if (this.hanami) Object.assign(materials, this.hanami.materials);
+    if (this.chicagoShore) Object.assign(materials, this.chicagoShore.materials);
+    if (this.lakeLouise) Object.assign(materials, this.lakeLouise.materials);
+    if (this.letras) Object.assign(materials, this.letras.materials);
+    if (this.lisbonHills) Object.assign(materials, this.lisbonHills.materials);
+    if (this.loireRiver) Object.assign(materials, this.loireRiver.materials);
+    if (this.urubambaGorge) Object.assign(materials, this.urubambaGorge.materials);
+    if (this.bayfrontNight) Object.assign(materials, this.bayfrontNight.materials);
+    if (this.jemaaSquare) Object.assign(materials, this.jemaaSquare.materials);
+    if (this.stCharlesParade) Object.assign(materials, this.stCharlesParade.materials);
+    if (this.maunaKeaSummit) Object.assign(materials, this.maunaKeaSummit.materials);
+    if (this.merceFestival) Object.assign(materials, this.merceFestival.materials);
+    if (this.oceanDrive) Object.assign(materials, this.oceanDrive.materials);
+    if (this.moabTrail) Object.assign(materials, this.moabTrail.materials);
+    if (this.monacoHarbour) Object.assign(materials, this.monacoHarbour.materials);
+    if (this.montmartreSquare) Object.assign(materials, this.montmartreSquare.materials);
+    if (this.montrealFestival) Object.assign(materials, this.montrealFestival.materials);
+    if (this.montRoyalPark) Object.assign(materials, this.montRoyalPark.materials);
+    if (this.washingtonSummit) Object.assign(materials, this.washingtonSummit.materials);
+    if (this.muertosParade) Object.assign(materials, this.muertosParade.materials);
+    if (this.mulhollandOverlook) Object.assign(materials, this.mulhollandOverlook.materials);
+    if (this.huyClimb) Object.assign(materials, this.huyClimb.materials);
+    if (this.silveradoTrail) Object.assign(materials, this.silveradoTrail.materials);
+    if (this.northShoreSurf) Object.assign(materials, this.northShoreSurf.materials);
+    if (this.londonCarnival) Object.assign(materials, this.londonCarnival.materials);
+    if (this.buenosAiresTraffic) Object.assign(materials, this.buenosAiresTraffic.materials);
+    if (this.kouriLagoon) Object.assign(materials, this.kouriLagoon.materials);
+    if (this.wiesnParade) Object.assign(materials, this.wiesnParade.materials);
+    if (this.pacificHeadlands) Object.assign(materials, this.pacificHeadlands.materials);
+    if (this.lasseterRoadTrain) Object.assign(materials, this.lasseterRoadTrain.materials);
+    if (this.sevenMileChannel) Object.assign(materials, this.sevenMileChannel.materials);
+    if (this.pehoeWind) Object.assign(materials, this.pehoeWind.materials);
+    if (this.palouseHarvest) Object.assign(materials, this.palouseHarvest.materials);
+    if (this.estafetaFestival) Object.assign(materials, this.estafetaFestival.materials);
+    if (this.harlechWeather) Object.assign(materials, this.harlechWeather.materials);
+    if (this.elliottMarket) Object.assign(materials, this.elliottMarket.materials);
+    if (this.parkActivity) Object.assign(materials, this.parkActivity.materials);
+    if (this.vltavaVisitors) Object.assign(materials, this.vltavaVisitors.materials);
+    if (this.rivieraRace) Object.assign(materials, this.rivieraRace.materials);
+    if (this.brooklynPark) Object.assign(materials, this.brooklynPark.materials);
+    if (this.prairieWind) Object.assign(materials, this.prairieWind.materials);
+    if (this.valensoleFields) Object.assign(materials, this.valensoleFields.materials);
+    if (this.andalusianRoad) Object.assign(materials, this.andalusianRoad.materials);
+    if (this.quebecTerrace) Object.assign(materials, this.quebecTerrace.materials);
+    if (this.ardennesRoadside) Object.assign(materials, this.ardennesRoadside.materials);
+    if (this.forumProcession) Object.assign(materials, this.forumProcession.materials);
+    if (this.arizonaRoadside) Object.assign(materials, this.arizonaRoadside.materials);
+    if (this.cactusForest) Object.assign(materials, this.cactusForest.materials);
+    if (this.rioParade) Object.assign(materials, this.rioParade.materials);
+    Object.assign(materials, this.pacificPark?.materials);
+    Object.assign(materials, this.seaPoint?.materials);
+    Object.assign(materials, this.sellaClimb?.materials);
+    Object.assign(materials, this.sellaRonda?.materials);
+    Object.assign(materials, this.serpentine?.materials);
+    Object.assign(materials, this.downs?.materials);
+    Object.assign(materials, this.sanFrancisco?.materials);
+    Object.assign(materials, this.tokyo?.materials);
+    Object.assign(materials, this.silverstone?.materials);
+    Object.assign(materials, this.skye?.materials);
+    Object.assign(materials, this.khaoSan?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -2230,7 +4611,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Windows'] = windowMaterial(detail, new Color(look.haze), made);
     this.disposables.push(
       detail,
-      materials['Ground'],
+      this.holi ? ground.material : this.jouvert ? ground.material : materials['Ground'],
       materials['Walls'],
       materials['Skyline'],
       materials['Windows'],
@@ -2278,7 +4659,51 @@ export class CourseRenderer implements WorldRenderer {
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
-      if (this.mountain && group === 'Sun') mesh.visible = false;
+      const ownSky = [
+        this.mountain,
+        this.caldera,
+        this.southBeachDrive,
+        this.hospiceRoad,
+        this.stelvio,
+        this.steppe,
+        this.dublin,
+        this.strade,
+        this.strasbourg,
+        this.maple,
+        this.surfers,
+        this.sydneyharbour,
+        this.teide,
+        this.tamalpais,
+        this.tahoe,
+        this.telaviv,
+        this.tempelhof,
+        this.teotihuacan,
+        this.timessquare,
+        this.toronto,
+        this.tremola,
+        this.tourmalet,
+        this.trollstigen,
+        this.tulips,
+        this.utrecht,
+        this.valais,
+        this.valparaiso,
+        this.vegas,
+        this.veleta,
+        this.velodrome,
+        this.venice,
+        this.ventoux,
+        this.verona,
+        this.victoria,
+        this.vienna,
+        this.westminster,
+        this.winnats,
+        this.wicklow,
+        this.zoncolan,
+        this.yosemite,
+        this.winterlude,
+      ].some(Boolean);
+      if ((ownSky && group === 'Sun') || (this.timessquare && group === 'Moon'))
+        mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
           ...glow,
@@ -2362,7 +4787,8 @@ export class CourseRenderer implements WorldRenderer {
             y: middle.y,
             z: middle.z,
             reach:
-              (DRAW_DISTANCE[group] ?? 700) + sphere.radius * mesh.matrixWorld.getMaxScaleOnAxis(),
+              (COURSE_DRAW_DISTANCE[this.course!.file.id]?.[group] ?? DRAW_DISTANCE[group] ?? 700) +
+              sphere.radius * mesh.matrixWorld.getMaxScaleOnAxis(),
           });
         }
       }
@@ -2453,9 +4879,13 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.sky = carried;
       this.scene.add(carried);
-    } else if (!this.fen && !this.mountain) {
+    } else if (this.caldera) {
+      this.sky = this.caldera.sky;
+      this.scene.add(this.sky);
+    } else if (!this.fen && !this.mountain && !this.rush) {
       const dome = new SphereGeometry(9000, 24, 12);
       const sky =
+        this.cactusForest?.sky ??
         this.dam?.sky ??
         skyMaterial(
           look,
@@ -2463,12 +4893,17 @@ export class CourseRenderer implements WorldRenderer {
           detail,
           this.course!.file.id === 'atlanticroad',
           this.evening,
+          this.bayfrontNight ? 0.085 : 1,
+          this.muertosParade?.night,
+          Boolean(this.wiesnParade),
+          Boolean(this.lasseterRoadTrain),
         );
       this.skyClock = sky.at;
       this.sky = new Mesh(dome, sky.material);
       this.sky.renderOrder = -1;
       this.scene.add(this.sky);
-      this.disposables.push(dome, sky.material);
+      this.disposables.push(dome);
+      if (sky !== this.cactusForest?.sky) this.disposables.push(sky.material);
     }
 
     const fill = new HemisphereLight(look.fill[0], look.fill[1], 1.5);
@@ -2503,7 +4938,7 @@ export class CourseRenderer implements WorldRenderer {
       this.body!,
       this.course!.file.night === true,
       this.tier <= SIMPLE_RIDERS,
-      this.course!.file.id === 'aguascalientes',
+      this.course!.file.id === 'aguascalientes' || this.course!.file.id === 'velodrome',
     );
     this.kit = kit;
     // The rider wears the You jersey of the race board (L2-060).
@@ -2562,7 +4997,7 @@ export class CourseRenderer implements WorldRenderer {
   private rehearse(): void {
     if (!this.you) return;
     this.lampShadows?.begin();
-    this.ride(this.you, 0, 0);
+    this.ride(this.you, 0, this.sevenMileChannel ? 2.65 : this.palouseHarvest ? 1.48 : 0);
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.you.pose(0);
@@ -2688,7 +5123,7 @@ export class CourseRenderer implements WorldRenderer {
             ? 2.0
             : eye + (CLOSE_UP - eye) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
-    const back = course.place(metres - behind, sway, this.here);
+    const back = course.place(metres - behind, this.lasseterRoadTrain ? -1.45 : sway, this.here);
     const rim = this.plaza ? Math.max(0, 1 - Math.abs(metres - 3180) / 105) : 0;
     const cypressOverlook = this.cypressLift
       ? Math.max(
@@ -2774,8 +5209,133 @@ export class CourseRenderer implements WorldRenderer {
       ahead.z += (rider.z + 14 * uz - ahead.z) * overlook;
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
+    this.stCharlesParade?.sightline(metres, this.camera.position, ahead);
+    this.marktSquare?.furniture.sightline(metres, this.camera.position, ahead);
+    this.sellaRonda?.frameView(metres, this.camera.position, ahead);
+    this.serpentine?.frameView(metres, this.camera.position, ahead);
+    this.downs?.frameView(metres, this.camera.position, ahead);
+    this.sanFrancisco?.frameView(metres, this.camera.position, ahead);
+    this.southBeachDrive?.frameView(metres, this.camera.position, ahead);
+    this.stampede?.frameView(metres, this.camera.position, ahead);
+    this.seawall?.frameView(metres, this.camera.position, ahead);
+    this.hospiceRoad?.frameView(metres, this.camera.position, ahead);
+    this.stelvio?.frameView(metres, this.camera.position, ahead);
+    this.steppe?.frameView(metres, this.camera.position, ahead);
+    this.dublin?.frameView(metres, this.camera.position, ahead);
+    this.strade?.frameView(metres, this.camera.position, ahead);
+    this.strasbourg?.frameView(metres, this.camera.position, ahead);
+    this.maple?.frameView(metres, this.camera.position, ahead);
+    this.surfers?.frameView(metres, this.camera.position, ahead);
+    this.sydneyharbour?.frameView(metres, this.camera.position, ahead);
+    this.teide?.frameView(metres, this.camera.position, ahead);
+    this.tamalpais?.frameView(metres, this.camera.position, ahead);
+    this.tahoe?.frameView(metres, this.camera.position, ahead);
+    this.telaviv?.frameView(metres, this.camera.position, ahead);
+    this.tempelhof?.frameView(metres, this.camera.position, ahead);
+    this.teotihuacan?.frameView(metres, this.camera.position, ahead);
+    this.timessquare?.frameView(metres, this.camera.position, ahead);
+    this.toronto?.frameView(metres, this.camera.position, ahead);
+    this.tremola?.frameView(metres, this.camera.position, ahead);
+    this.tourmalet?.frameView(metres, this.camera.position, ahead);
+    this.trollstigen?.frameView(metres, this.camera.position, ahead);
+    this.tulips?.frameView(metres, this.camera.position, ahead);
+    this.utrecht?.frameView(metres, this.camera.position, ahead);
+    this.valais?.frameView(metres, this.camera.position, ahead);
+    this.valparaiso?.frameView(metres, this.camera.position, ahead);
+    this.vegas?.frameView(metres, this.camera.position, ahead);
+    this.veleta?.frameView(metres, this.camera.position, ahead);
+    this.velodrome?.frameView(metres, this.camera.position, ahead);
+    this.venice?.frameView(metres, this.camera.position, ahead);
+    this.ventoux?.frameView(metres, this.camera.position, ahead);
+    this.verona?.frameView(metres, this.camera.position, ahead);
+    this.victoria?.frameView(metres, this.camera.position, ahead);
+    this.vienna?.frameView(metres, this.camera.position, ahead);
+    this.westminster?.frameView(metres, this.camera.position, ahead);
+    this.winnats?.frameView(metres, this.camera.position, ahead);
+    this.wicklow?.frameView(metres, this.camera.position, ahead);
+    this.zoncolan?.frameView(metres, this.camera.position, ahead);
+    this.yosemite?.frameView(metres, this.camera.position, ahead);
+    this.winterlude?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
+    this.rush?.sightline(metres, this.camera.position, ahead);
+    this.vents?.sightline(metres, this.camera.position, ahead);
+    this.broadway?.sightline(metres, this.camera.position, ahead);
+    this.queenK?.sightline(metres, this.camera.position, ahead);
+    this.cobbledBanks?.sightline(metres, this.camera.position, ahead);
+    this.kwaremontVillage?.sightline(metres, this.camera.position, ahead);
+    this.hanami?.sightline(metres, this.camera.position, ahead);
+    this.chicagoShore?.sightline(metres, this.camera.position, ahead);
+    this.lakeLouise?.sightline(metres, this.camera.position, ahead);
+    this.letras?.sightline(metres, this.camera.position, ahead);
+    this.lisbonHills?.sightline(metres, this.camera.position, ahead);
+    this.loireRiver?.sightline(metres, this.camera.position, ahead);
+    this.urubambaGorge?.sightline(metres, this.camera.position, ahead);
+    this.bayfrontNight?.sightline(metres, this.camera.position, ahead);
+    this.jemaaSquare?.sightline(metres, this.camera.position, ahead);
+    this.maunaKeaSummit?.sightline(metres, this.camera.position, ahead);
+    this.merceFestival?.sightline(metres, this.camera.position, ahead);
+    this.oceanDrive?.sightline(metres, this.camera.position, ahead);
+    this.moabTrail?.sightline(metres, this.camera.position, ahead);
+    this.monacoHarbour?.sightline(metres, this.camera.position, ahead);
+    this.montmartreSquare?.sightline(metres, this.camera.position, ahead);
+    this.montrealFestival?.sightline(metres, this.camera.position, ahead);
+    this.montRoyalPark?.sightline(metres, this.camera.position, ahead);
+    this.washingtonSummit?.sightline(metres, this.camera.position, ahead);
+    this.muertosParade?.sightline(metres, this.camera.position, ahead);
+    this.mulhollandOverlook?.sightline(metres, this.camera.position, ahead);
+    this.huyClimb?.sightline(metres, this.camera.position, ahead);
+    this.silveradoTrail?.sightline(metres, this.camera.position, ahead);
+    this.northShoreSurf?.sightline(metres, this.camera.position, ahead);
+    this.londonCarnival?.sightline(metres, this.camera.position, ahead);
+    this.buenosAiresTraffic?.sightline(metres, this.camera.position, ahead);
+    this.kouriLagoon?.sightline(metres, this.camera.position, ahead);
+    this.wiesnParade?.sightline(metres, this.camera.position, ahead);
+    this.pacificHeadlands?.sightline(metres, this.camera.position, ahead);
+    this.lasseterRoadTrain?.sightline(metres, this.camera.position, ahead);
+    this.sevenMileChannel?.sightline(metres, this.camera.position, ahead);
+    this.pehoeWind?.sightline(metres, this.camera.position, ahead);
+    this.palouseHarvest?.sightline(metres, this.camera.position, ahead);
+    this.estafetaFestival?.sightline(metres, this.camera.position, ahead);
+    this.harlechWeather?.sightline(metres, this.camera.position, ahead);
+    this.elliottMarket?.sightline(metres, this.camera.position, ahead);
+    this.parkActivity?.sightline(metres, this.camera.position, ahead);
+    this.vltavaVisitors?.sightline(metres, this.camera.position, ahead);
+    this.rivieraRace?.sightline(metres, this.camera.position, ahead);
+    this.brooklynPark?.sightline(metres, this.camera.position, ahead);
+    this.prairieWind?.sightline(metres, this.camera.position, ahead);
+    this.valensoleFields?.sightline(metres, this.camera.position, ahead);
+    this.andalusianRoad?.sightline(metres, this.camera.position, ahead);
+    this.quebecTerrace?.sightline(metres, this.camera.position, ahead);
+    this.ardennesRoadside?.sightline(metres, this.camera.position, ahead);
+    this.forumProcession?.sightline(metres, this.camera.position, ahead);
+    this.arizonaRoadside?.sightline(metres, this.camera.position, ahead);
+    this.cactusForest?.sightline(metres, this.camera.position, ahead);
+    this.rioParade?.sightline(metres, this.camera.position, ahead);
+    this.tokyo?.frameView(metres, this.camera.position, ahead);
+    this.silverstone?.frameView(metres, this.camera.position, ahead);
+    this.skye?.frameView(metres, this.camera.position, ahead);
+    this.khaoSan?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
+    if (this.holi && Math.abs(metres - 2920) < 100) {
+      const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
+      const facade = course.place(2992, -38);
+      const rider = course.place(metres);
+      const dx = facade.x - rider.x,
+        dz = facade.z - rider.z,
+        distance = Math.max(1, Math.hypot(dx, dz));
+      const zoom = Math.min(1, palace * 2);
+      this.camera.position.x += (rider.x - (6 * dx) / distance - this.camera.position.x) * zoom;
+      this.camera.position.z += (rider.z - (6 * dz) / distance - this.camera.position.z) * zoom;
+      this.camera.position.y += 0.5 * zoom;
+      ahead.x += (rider.x + (14 * dx) / distance - ahead.x) * zoom;
+      ahead.z += (rider.z + (14 * dz) / distance - ahead.z) * zoom;
+      ahead.y += 1.65 * zoom;
+    }
+    this.jouvert?.aim(metres, this.camera.position, ahead);
+    this.climbers?.aim(metres, this.camera.position, ahead);
+    this.pacificPark?.sightline(metres, this.camera.position, ahead);
+    this.seaPoint?.sightline(metres, this.camera.position, ahead);
+    this.sellaClimb?.sightline(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
       ahead.y +
@@ -3147,6 +5707,15 @@ export class CourseRenderer implements WorldRenderer {
     drawn.surfCrest = this.bigSurCoast?.crest ?? null;
     drawn.illumination = this.trams?.illumination ?? null;
     drawn.tramMetres = this.trams?.nearestMetres ?? null;
+    drawn.throwHeight = this.holi?.throwHeight ?? null;
+    drawn.powderRise = this.holi?.powderRise ?? null;
+    drawn.rickshawPosition = this.holi?.rickshawPosition ?? null;
+    drawn.chainSwing = this.jouvert?.chainSwing ?? null;
+    drawn.panMallet = this.jouvert?.panMallet ?? null;
+    drawn.speakerTruck = this.jouvert?.speakerTruck ?? null;
+    drawn.crowdClearance = this.jouvert?.crowdClearance ?? null;
+    drawn.handHeight = this.climbers?.handHeight ?? null;
+    drawn.belayHand = this.climbers?.belayHand ?? null;
     drawn.mistPosition = this.yard?.mistPosition ?? null;
     drawn.speakerDepth = this.yard?.speakerDepth ?? null;
     drawn.valleyMist = this.mill?.valleyMist ?? null;
@@ -3238,7 +5807,14 @@ export class CourseRenderer implements WorldRenderer {
     drawn.torchAngle = this.fringe?.torchAngle ?? null;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    if (this.sellaRonda) Object.assign(drawn, this.sellaRonda.report());
+    if (this.serpentine) Object.assign(drawn, this.serpentine.report());
+    if (this.downs) Object.assign(drawn, this.downs.report());
+    if (this.sanFrancisco) Object.assign(drawn, this.sanFrancisco.report());
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
+    if (this.pacificPark) Object.assign(drawn, this.pacificPark.report());
+    if (this.seaPoint) Object.assign(drawn, this.seaPoint.report());
+    if (this.sellaClimb) Object.assign(drawn, this.sellaClimb.report());
     if (this.boardwalk) {
       Object.assign(drawn, {
         carRadius: this.boardwalk.street.carRadius,
@@ -3283,7 +5859,108 @@ export class CourseRenderer implements WorldRenderer {
     if (this.strip) Object.assign(drawn, this.strip.report());
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
+    if (this.marktSquare) Object.assign(drawn, this.marktSquare.furniture.report());
+    if (this.southBeachDrive) Object.assign(drawn, this.southBeachDrive.report());
+    if (this.stampede) Object.assign(drawn, this.stampede.report());
+    if (this.seawall) Object.assign(drawn, this.seawall.report());
+    if (this.hospiceRoad) Object.assign(drawn, this.hospiceRoad.report());
+    if (this.stelvio) Object.assign(drawn, this.stelvio.report());
+    if (this.steppe) Object.assign(drawn, this.steppe.report());
+    if (this.dublin) Object.assign(drawn, this.dublin.report());
+    if (this.strade) Object.assign(drawn, this.strade.report());
+    if (this.strasbourg) Object.assign(drawn, this.strasbourg.report());
+    if (this.maple) Object.assign(drawn, this.maple.report());
+    if (this.surfers) Object.assign(drawn, this.surfers.report());
+    if (this.sydneyharbour) Object.assign(drawn, this.sydneyharbour.report());
+    if (this.teide) Object.assign(drawn, this.teide.report());
+    if (this.tamalpais) Object.assign(drawn, this.tamalpais.report());
+    if (this.tahoe) Object.assign(drawn, this.tahoe.report());
+    if (this.telaviv) Object.assign(drawn, this.telaviv.report());
+    if (this.tempelhof) Object.assign(drawn, this.tempelhof.report());
+    if (this.teotihuacan) Object.assign(drawn, this.teotihuacan.report());
+    if (this.timessquare) Object.assign(drawn, this.timessquare.report());
+    if (this.toronto) Object.assign(drawn, this.toronto.report());
+    if (this.tremola) Object.assign(drawn, this.tremola.report());
+    if (this.tourmalet) Object.assign(drawn, this.tourmalet.report());
+    if (this.trollstigen) Object.assign(drawn, this.trollstigen.report());
+    if (this.tulips) Object.assign(drawn, this.tulips.report());
+    if (this.utrecht) Object.assign(drawn, this.utrecht.report());
+    if (this.valais) Object.assign(drawn, this.valais.report());
+    if (this.valparaiso) Object.assign(drawn, this.valparaiso.report());
+    if (this.vegas) Object.assign(drawn, this.vegas.report());
+    if (this.veleta) Object.assign(drawn, this.veleta.report());
+    if (this.velodrome) Object.assign(drawn, this.velodrome.report());
+    if (this.venice) Object.assign(drawn, this.venice.report());
+    if (this.ventoux) Object.assign(drawn, this.ventoux.report());
+    if (this.verona) Object.assign(drawn, this.verona.report());
+    if (this.victoria) Object.assign(drawn, this.victoria.report());
+    if (this.vienna) Object.assign(drawn, this.vienna.report());
+    if (this.westminster) Object.assign(drawn, this.westminster.report());
+    if (this.winnats) Object.assign(drawn, this.winnats.report());
+    if (this.wicklow) Object.assign(drawn, this.wicklow.report());
+    if (this.zoncolan) Object.assign(drawn, this.zoncolan.report());
+    if (this.yosemite) Object.assign(drawn, this.yosemite.report());
+    if (this.winterlude) Object.assign(drawn, this.winterlude.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
+    if (this.rush) Object.assign(drawn, this.rush.report());
+    if (this.vents) Object.assign(drawn, this.vents.report());
+    if (this.broadway) Object.assign(drawn, this.broadway.report());
+    if (this.queenK) Object.assign(drawn, this.queenK.report());
+    if (this.cobbledBanks) Object.assign(drawn, this.cobbledBanks.report());
+    if (this.kwaremontVillage) Object.assign(drawn, this.kwaremontVillage.report());
+    if (this.hanami) Object.assign(drawn, this.hanami.report());
+    if (this.chicagoShore) Object.assign(drawn, this.chicagoShore.report());
+    if (this.lakeLouise) Object.assign(drawn, this.lakeLouise.report());
+    if (this.letras) Object.assign(drawn, this.letras.report());
+    if (this.lisbonHills) Object.assign(drawn, this.lisbonHills.report());
+    if (this.loireRiver) Object.assign(drawn, this.loireRiver.report());
+    if (this.urubambaGorge) Object.assign(drawn, this.urubambaGorge.report());
+    if (this.bayfrontNight) Object.assign(drawn, this.bayfrontNight.report());
+    if (this.jemaaSquare) Object.assign(drawn, this.jemaaSquare.report());
+    if (this.stCharlesParade) Object.assign(drawn, this.stCharlesParade.report());
+    if (this.maunaKeaSummit) Object.assign(drawn, this.maunaKeaSummit.report());
+    if (this.merceFestival) Object.assign(drawn, this.merceFestival.report());
+    if (this.oceanDrive) Object.assign(drawn, this.oceanDrive.report());
+    if (this.moabTrail) Object.assign(drawn, this.moabTrail.report());
+    if (this.monacoHarbour) Object.assign(drawn, this.monacoHarbour.report());
+    if (this.montmartreSquare) Object.assign(drawn, this.montmartreSquare.report());
+    if (this.montrealFestival) Object.assign(drawn, this.montrealFestival.report());
+    if (this.montRoyalPark) Object.assign(drawn, this.montRoyalPark.report());
+    if (this.washingtonSummit) Object.assign(drawn, this.washingtonSummit.report());
+    if (this.muertosParade) Object.assign(drawn, this.muertosParade.report());
+    if (this.mulhollandOverlook) Object.assign(drawn, this.mulhollandOverlook.report());
+    if (this.huyClimb) Object.assign(drawn, this.huyClimb.report());
+    if (this.silveradoTrail) Object.assign(drawn, this.silveradoTrail.report());
+    if (this.northShoreSurf) Object.assign(drawn, this.northShoreSurf.report());
+    if (this.londonCarnival) Object.assign(drawn, this.londonCarnival.report());
+    if (this.buenosAiresTraffic) Object.assign(drawn, this.buenosAiresTraffic.report());
+    if (this.kouriLagoon) Object.assign(drawn, this.kouriLagoon.report());
+    if (this.wiesnParade) Object.assign(drawn, this.wiesnParade.report());
+    if (this.pacificHeadlands) Object.assign(drawn, this.pacificHeadlands.report());
+    if (this.lasseterRoadTrain) Object.assign(drawn, this.lasseterRoadTrain.report());
+    if (this.sevenMileChannel) Object.assign(drawn, this.sevenMileChannel.report());
+    if (this.pehoeWind) Object.assign(drawn, this.pehoeWind.report());
+    if (this.palouseHarvest) Object.assign(drawn, this.palouseHarvest.report());
+    if (this.estafetaFestival) Object.assign(drawn, this.estafetaFestival.report());
+    if (this.harlechWeather) Object.assign(drawn, this.harlechWeather.report());
+    if (this.elliottMarket) Object.assign(drawn, this.elliottMarket.report());
+    if (this.parkActivity) Object.assign(drawn, this.parkActivity.report());
+    if (this.vltavaVisitors) Object.assign(drawn, this.vltavaVisitors.report());
+    if (this.rivieraRace) Object.assign(drawn, this.rivieraRace.report());
+    if (this.brooklynPark) Object.assign(drawn, this.brooklynPark.report());
+    if (this.prairieWind) Object.assign(drawn, this.prairieWind.report());
+    if (this.valensoleFields) Object.assign(drawn, this.valensoleFields.report());
+    if (this.andalusianRoad) Object.assign(drawn, this.andalusianRoad.report());
+    if (this.quebecTerrace) Object.assign(drawn, this.quebecTerrace.report());
+    if (this.ardennesRoadside) Object.assign(drawn, this.ardennesRoadside.report());
+    if (this.forumProcession) Object.assign(drawn, this.forumProcession.report());
+    if (this.arizonaRoadside) Object.assign(drawn, this.arizonaRoadside.report());
+    if (this.cactusForest) Object.assign(drawn, this.cactusForest.report());
+    if (this.rioParade) Object.assign(drawn, this.rioParade.report());
+    if (this.tokyo) Object.assign(drawn, this.tokyo.report());
+    if (this.silverstone) Object.assign(drawn, this.silverstone.report());
+    if (this.skye) Object.assign(drawn, this.skye.report());
+    if (this.khaoSan) Object.assign(drawn, this.khaoSan.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

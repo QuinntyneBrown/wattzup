@@ -439,12 +439,28 @@ export class WorldRideProbe {
 
   /** A pose from the submitted course frame, present only while its mesh is drawn. */
   async itenDetail(part: string): Promise<number | null> {
+    return this.coursePose(part);
+  }
+
+  async coursePose(part: string): Promise<number | null> {
     return this.page.evaluate((key) => {
       const course = (window as unknown as { __wzWorldRide: { course?: Record<string, unknown> } })
         .__wzWorldRide.course;
       const pose = course?.[key];
       return typeof pose === 'number' ? pose : null;
     }, part);
+  }
+
+  async broadwayFloat(): Promise<{ station: number; seconds: number } | null> {
+    return this.page.evaluate(() => {
+      const frame = (window as unknown as { __wzWorldRide?: { course?: Record<string, unknown> } })
+        .__wzWorldRide?.course;
+      const station = frame?.['paradeFloatStation'];
+      const seconds = frame?.['paradeTime'];
+      return typeof station === 'number' && typeof seconds === 'number'
+        ? { station, seconds }
+        : null;
+    });
   }
 
   async yardMotion(part: 'speakerDepth' | 'mistPosition'): Promise<number | null> {

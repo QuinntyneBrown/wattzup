@@ -47,6 +47,10 @@ export function skyMaterial(
   detail: DataTexture,
   coastalSquall = false,
   evening?: Node<'float'>,
+  cloudOpacity = 1,
+  nightProgress?: Node<'float'>,
+  intoNight = false,
+  desertTwilight = false,
 ): Sky {
   const colours = look.sky.map((hex) => new Color(hex));
   const stop = (i: number) => vec3(colours[i]!.r, colours[i]!.g, colours[i]!.b);
@@ -64,10 +68,12 @@ export function skyMaterial(
   const drift = vec2(time.mul(DRIFT), time.mul(DRIFT * 0.4));
   const billow = texture(detail, ceiling.mul(0.11).add(drift)).g;
   const wisp = texture(detail, ceiling.mul(0.37).sub(drift.mul(1.7))).g;
-  const cover = smoothstep(0.5, 0.86, billow.mul(0.68).add(wisp.mul(0.42)))
-    // No cloud in the haze on the horizon, and thinner overhead.
-    .mul(smoothstep(0.015, 0.12, height))
-    .mul(float(1).sub(height.mul(0.5)));
+  const cover = desertTwilight
+    ? float(0)
+    : smoothstep(0.5, 0.86, billow.mul(0.68).add(wisp.mul(0.42)))
+        // No cloud in the haze on the horizon, and thinner overhead.
+        .mul(smoothstep(0.015, 0.12, height))
+        .mul(float(1).sub(height.mul(0.5)));
   // A cloud is lit from below by the horizon: its colour, lightened, and darker where the cloud is thick.
   const zenith = colours[colours.length - 1]!;
   const night = Math.max(zenith.r, zenith.g, zenith.b) < NIGHT;
@@ -100,7 +106,7 @@ export function skyMaterial(
       );
     sky = sky.add(vec3(0.85, 0.9, 1).mul(star.mul(smoothstep(0.03, 0.3, height)).mul(1.3)));
   }
-  sky = mix(sky, lit, cover.mul(night ? 0.55 : 0.85));
+  sky = mix(sky, lit, cover.mul((night ? 0.55 : 0.85) * cloudOpacity));
   sky = sky.add(vec3(light.r, light.g, light.b).mul(glow.mul(cover.mul(0.6).oneMinus())));
   // The haze along the horizon: the lights of the land, or the day's dust.
   const haze = new Color(look.haze);
@@ -137,7 +143,9 @@ export function skyMaterial(
 
   const material = new MeshBasicNodeMaterial({ side: BackSide, fog: false, depthWrite: false });
   if (evening) {
-    const sunset = mix(vec3(1.0, 0.43, 0.16), vec3(0.12, 0.19, 0.39), smoothstep(0, 0.48, height));
+    const sunset = desertTwilight
+      ? mix(vec3(0.98, 0.46, 0.35), vec3(0.16, 0.1, 0.31), smoothstep(0, 0.43, height))
+      : mix(vec3(1.0, 0.43, 0.16), vec3(0.12, 0.19, 0.39), smoothstep(0, 0.48, height));
     const lowSun = toward.dot(vec3(0.945, 0.105, 0.31).normalize()).max(0);
     const amber = sunset.add(
       vec3(1, 0.58, 0.18).mul(
@@ -148,6 +156,22 @@ export function skyMaterial(
       ),
     );
     sky = mix(sky, mix(amber, vec3(0.62, 0.44, 0.48), cover.mul(0.57)), evening);
+    if (intoNight) {
+      const nightSky = mix(
+        vec3(0.056, 0.042, 0.089),
+        vec3(0.007, 0.014, 0.04),
+        smoothstep(0, 0.48, height),
+      );
+      sky = mix(sky, nightSky, smoothstep(0.56, 1, evening));
+    }
+  }
+  if (nightProgress) {
+    const cityNight = mix(
+      vec3(0.115, 0.072, 0.13),
+      vec3(0.012, 0.023, 0.063),
+      smoothstep(0, 0.42, height),
+    );
+    sky = mix(sky, cityNight.add(cover.mul(0.026)), nightProgress);
   }
   material.colorNode = sky;
   return {

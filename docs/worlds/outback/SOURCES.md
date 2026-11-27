@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Gravel Mountain” Route Details (Gravel Mountain)](https://zwiftinsider.com/route/gravel-mountain/) (g0058) | © Zwift |
 | game-04.jpg | MyWhoosh: [Alula](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2022/12/Alula.png) (g0899) | © MyWhoosh |
 | game-05.jpg | Zwift: [“California Dreamin’” Route Details (Watopia)](https://zwiftinsider.com/route/california-dreamin/) (g0010) | © Zwift |
+
+The keeling desert oak, mulga, two spinifex forms, corrugated roadhouse, red sand and grooved sandstone are original course artwork. The prime mover and wedge-tailed eagle use separate original artwork. Real 01 and 05 guided the roadway and triple-trailer proportions. Real 09–10, 12–13 and 03–04 guided the contrasting Uluru, Mount Conner and Kata Tjuta silhouettes. Highway and wildlife signs were drawn for this course. The six paired rider views credit the real and game references used at each location.

@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Heart of Montmartre” Route Details (Paris)](https://zwiftinsider.com/route/heart-of-montmartre/) (g0061) | © Zwift |
 | game-04.jpg | Zwift: [“Seafoam Circuit” Route Details (Watopia)](https://zwiftinsider.com/route/seafoam-circuit/) (g0137) | © Zwift |
 | game-05.jpg | Zwift: [“Climb Control” Route Details (Watopia)](https://zwiftinsider.com/route/climb-control/) (g0019) | © Zwift |
+
+The Prague house fronts, arcades, granite setts, sandstone, statuary, visitors, church tracery, town hall and distant roofscape are original artwork created for this course with OpenAI ImageGen. The clock dials, tower portals, churches, bridge spans and palace terrace are original course assets. The real and game references informed their scale, surface treatment and rider sightlines.

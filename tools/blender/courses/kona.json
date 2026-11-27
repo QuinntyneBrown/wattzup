@@ -1,0 +1,61 @@
+{
+  "id": "kona",
+  "name": "Kona Ironman",
+  "world": "kona",
+  "theme": "kona",
+  "seed": 2149,
+  "layout": 0,
+  "class": {
+    "id": "high-intensity-race-day-effort",
+    "title": "High Intensity Race Day Effort",
+    "channel": "GCN",
+    "videoId": "d4EuOnDiilo",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 240,
+        "level": 14,
+        "cadenceAim": 87
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 495,
+        "level": 22,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "recover",
+        "duration": 15,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "cool-down",
+        "duration": 95,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

@@ -12,6 +12,3070 @@ namespace Telo.Ride.Api.Tests;
 public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<TeloRideApiFactory>
 {
     [Fact]
+    public async Task Jaipur_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "holi-in-jaipur");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 16, 85),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 45, 10, 80),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 45, 10, 80),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 45, 10, 80),
+                new Segment("work", 120, 18, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 120, 18, 85),
+                new Segment("work", 45, 24, 100),
+                new Segment("recover", 15, 10, 80),
+                new Segment("work", 45, 24, 100),
+                new Segment("recover", 15, 10, 80),
+                new Segment("work", 45, 24, 100),
+                new Segment("recover", 105, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Jouvert_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "trinidad-jouvert");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 14, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("recover", 60, 14, 80),
+                new Segment("work", 60, 24, 90),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 30, 24, 90),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 30, 24, 90),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 60, 24, 90),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 60, 24, 90),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 30, 24, 90),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 60, 24, 90),
+                new Segment("cool-down", 90, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Joshuatree_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "joshua-tree");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 13, 80),
+                new Segment("work", 900, 18, 85),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 600, 19, 90),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 360, 21, 90),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("cool-down", 270, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Junkanoo_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "junkanoo-nassau");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 320, 11, 82),
+                new Segment("work", 150, 16, 89),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 30, 16, 85),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 25, 24, 105),
+                new Segment("recover", 10, 10, 80),
+                new Segment("work", 10, 24, 105),
+                new Segment("recover", 50, 10, 80),
+                new Segment("work", 25, 24, 105),
+                new Segment("recover", 300, 10, 80),
+                new Segment("work", 45, 24, 100),
+                new Segment("recover", 75, 16, 85),
+                new Segment("work", 120, 10, 80),
+                new Segment("recover", 30, 24, 100),
+                new Segment("work", 90, 10, 80),
+                new Segment("recover", 15, 24, 105),
+                new Segment("work", 105, 10, 80),
+                new Segment("recover", 30, 24, 100),
+                new Segment("work", 15, 10, 80),
+                new Segment("recover", 30, 24, 100),
+                new Segment("cool-down", 165, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Kilauea_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "kilauea-lava-road");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 272, 13, 80),
+                new Segment("work", 183, 16, 85),
+                new Segment("recover", 67, 11, 80),
+                new Segment("work", 356, 18, 85),
+                new Segment("work", 150, 20, 90),
+                new Segment("cool-down", 74, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Knicks_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "knicks-championship-parade");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 11, 80),
+                new Segment("work", 120, 16, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("work", 60, 22, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 10, 24, 110),
+                new Segment("recover", 50, 11, 80),
+                new Segment("work", 10, 24, 110),
+                new Segment("recover", 50, 11, 80),
+                new Segment("work", 10, 24, 110),
+                new Segment("recover", 50, 11, 80),
+                new Segment("work", 10, 24, 110),
+                new Segment("recover", 50, 11, 80),
+                new Segment("work", 10, 24, 110),
+                new Segment("recover", 50, 11, 80),
+                new Segment("work", 30, 22, 110),
+                new Segment("cool-down", 90, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Kona_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "kona-ironman");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 14, 87),
+                new Segment("work", 300, 21, 75),
+                new Segment("work", 495, 22, 72),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 300, 22, 80),
+                new Segment("work", 60, 24, 110),
+                new Segment("cool-down", 95, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Koppenberg_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "koppenberg-cobbles");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 19, 62),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 19, 62),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 19, 62),
+                new Segment("cool-down", 60, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Kwaremont_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "oude-kwaremont");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 13, 80),
+                new Segment("work", 120, 16, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 300, 19, 88),
+                new Segment("recover", 240, 13, 80),
+                new Segment("work", 300, 19, 88),
+                new Segment("recover", 240, 13, 80),
+                new Segment("work", 240, 19, 90),
+                new Segment("work", 240, 21, 70),
+                new Segment("work", 120, 22, 60),
+                new Segment("cool-down", 180, 13, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Kyoto_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "kyoto-hanami");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 12, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 240, 19, 85),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 240, 19, 85),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 240, 19, 85),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 21, 100),
+                new Segment("cool-down", 60, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Lakefront_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "chicago-lakefront-trail");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 80),
+                new Segment("work", 60, 16, 85),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("work", 60, 13, 80),
+                new Segment("recover", 45, 14, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 180, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 180, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 180, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 180, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("cool-down", 255, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Lakelouise_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "lake-louise");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("cool-down", 180, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Letras_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "alto-de-letras");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 30, 21, 90),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 22, 100),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 24, 100),
+                new Segment("work", 30, 19, 90),
+                new Segment("recover", 60, 16, 85),
+                new Segment("cool-down", 60, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Lisbon_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "lisbon-tram-hills");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 11, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 30, 21, 90),
+                new Segment("work", 30, 18, 85),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 30, 21, 90),
+                new Segment("work", 30, 18, 85),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 30, 21, 90),
+                new Segment("recover", 30, 18, 85),
+                new Segment("cool-down", 120, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Loire_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "loire-chateaux");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 12, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("recover", 60, 16, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("recover", 120, 16, 80),
+                new Segment("work", 180, 19, 80),
+                new Segment("recover", 180, 16, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("recover", 120, 16, 80),
+                new Segment("work", 60, 21, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 21, 100),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 120, 18, 80),
+                new Segment("cool-down", 120, 13, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Machupicchu_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "machu-picchu-road");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 80),
+                new Segment("work", 120, 18, 85),
+                new Segment("recover", 180, 13, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 30, 19, 90),
+                new Segment("work", 45, 24, 100),
+                new Segment("recover", 45, 19, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("work", 60, 19, 90),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 45, 18, 85),
+                new Segment("work", 60, 19, 90),
+                new Segment("recover", 60, 21, 90),
+                new Segment("work", 85, 22, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 19, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 19, 90),
+                new Segment("cool-down", 117, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Marinabay_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "marina-bay-night");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 14, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 60, 14, 80),
+                new Segment("work", 480, 18, 88),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 480, 18, 88),
+                new Segment("cool-down", 120, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Marrakech_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "marrakech-medina");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 150, 13, 80),
+                new Segment("work", 180, 19, 65),
+                new Segment("recover", 120, 18, 103),
+                new Segment("work", 120, 19, 103),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 20, 14, 95),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 20, 14, 95),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 20, 14, 95),
+                new Segment("work", 120, 16, 100),
+                new Segment("work", 60, 21, 95),
+                new Segment("recover", 60, 18, 95),
+                new Segment("work", 60, 21, 95),
+                new Segment("recover", 60, 18, 95),
+                new Segment("work", 60, 21, 95),
+                new Segment("work", 240, 19, 90),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 30, 18, 64),
+                new Segment("work", 240, 22, 64),
+                new Segment("cool-down", 110, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Mardigras_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mardi-gras-new-orleans");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 14, 90),
+                new Segment("work", 30, 18, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 30, 18, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 30, 18, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 50, 21, 90),
+                new Segment("recover", 40, 13, 90),
+                new Segment("work", 50, 21, 90),
+                new Segment("recover", 40, 13, 90),
+                new Segment("work", 50, 21, 90),
+                new Segment("recover", 40, 13, 90),
+                new Segment("work", 45, 22, 60),
+                new Segment("recover", 45, 14, 90),
+                new Segment("work", 45, 22, 60),
+                new Segment("recover", 45, 14, 90),
+                new Segment("work", 45, 22, 60),
+                new Segment("recover", 45, 14, 90),
+                new Segment("work", 45, 22, 60),
+                new Segment("recover", 45, 14, 90),
+                new Segment("work", 45, 24, 63),
+                new Segment("recover", 30, 11, 90),
+                new Segment("work", 45, 24, 63),
+                new Segment("cool-down", 150, 11, 82),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Maunakea_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mauna-kea");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 600, 15, 85),
+                new Segment("work", 240, 14, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 240, 11, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 240, 11, 80),
+                new Segment("work", 300, 23, 100),
+                new Segment("recover", 240, 11, 80),
+                new Segment("work", 720, 22, 90),
+                new Segment("recover", 270, 11, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("cool-down", 330, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Merce_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "la-merce-barcelona");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 14, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 90, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 90, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 90, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 90, 21, 90),
+                new Segment("recover", 150, 11, 80),
+                new Segment("work", 120, 16, 85),
+                new Segment("work", 90, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 90, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 90, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 90, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("work", 60, 19, 90),
+                new Segment("work", 120, 21, 90),
+                new Segment("cool-down", 115, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Miami_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "miami-neon-nights");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 14, 90),
+                new Segment("work", 30, 18, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 30, 18, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 30, 18, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 50, 21, 90),
+                new Segment("recover", 40, 13, 90),
+                new Segment("work", 50, 21, 90),
+                new Segment("recover", 40, 13, 90),
+                new Segment("work", 50, 21, 90),
+                new Segment("recover", 40, 13, 90),
+                new Segment("work", 45, 22, 60),
+                new Segment("recover", 45, 14, 90),
+                new Segment("work", 45, 22, 60),
+                new Segment("recover", 45, 14, 90),
+                new Segment("work", 45, 22, 60),
+                new Segment("recover", 45, 14, 90),
+                new Segment("work", 45, 22, 60),
+                new Segment("recover", 45, 14, 90),
+                new Segment("work", 45, 24, 63),
+                new Segment("recover", 30, 11, 90),
+                new Segment("work", 45, 24, 63),
+                new Segment("cool-down", 150, 11, 82),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Moab_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "moab-slickrock");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 12, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 90, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 90, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 90, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 90, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 90, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 90, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("cool-down", 180, 14, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Monaco_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "monaco-street-circuit");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 13, 80),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 16, 85),
+                new Segment("work", 45, 24, 100),
+                new Segment("recover", 15, 16, 85),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 16, 85),
+                new Segment("work", 90, 23, 98),
+                new Segment("recover", 90, 17, 88),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 16, 85),
+                new Segment("work", 45, 24, 100),
+                new Segment("recover", 15, 16, 85),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 16, 85),
+                new Segment("work", 45, 24, 100),
+                new Segment("recover", 45, 21, 95),
+                new Segment("work", 30, 16, 85),
+                new Segment("recover", 15, 24, 100),
+                new Segment("cool-down", 180, 13, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Montmartre_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "montmartre");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 12, 80),
+                new Segment("work", 120, 16, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 19, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 21, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 120, 16, 80),
+                new Segment("work", 120, 18, 80),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 19, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Montreal_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "montreal-jazz-fest");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 10, 80),
+                new Segment("work", 60, 13, 80),
+                new Segment("recover", 60, 16, 85),
+                new Segment("work", 60, 19, 90),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 45, 10, 80),
+                new Segment("work", 45, 22, 100),
+                new Segment("recover", 15, 10, 80),
+                new Segment("work", 45, 22, 100),
+                new Segment("recover", 15, 10, 80),
+                new Segment("work", 45, 22, 100),
+                new Segment("recover", 15, 10, 80),
+                new Segment("work", 45, 22, 100),
+                new Segment("recover", 15, 10, 80),
+                new Segment("work", 45, 22, 100),
+                new Segment("recover", 210, 10, 80),
+                new Segment("work", 45, 22, 100),
+                new Segment("recover", 15, 10, 80),
+                new Segment("work", 45, 22, 100),
+                new Segment("recover", 15, 10, 80),
+                new Segment("work", 45, 22, 100),
+                new Segment("recover", 15, 10, 80),
+                new Segment("work", 45, 22, 100),
+                new Segment("recover", 15, 10, 80),
+                new Segment("work", 45, 22, 100),
+                new Segment("cool-down", 198, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Montroyal_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mont-royal");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 10, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 14, 80),
+                new Segment("recover", 180, 16, 85),
+                new Segment("work", 180, 18, 85),
+                new Segment("recover", 180, 21, 93),
+                new Segment("work", 240, 10, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 180, 15, 82),
+                new Segment("recover", 120, 18, 85),
+                new Segment("work", 240, 20, 90),
+                new Segment("recover", 60, 24, 100),
+                new Segment("work", 240, 10, 80),
+                new Segment("recover", 180, 15, 83),
+                new Segment("work", 240, 18, 86),
+                new Segment("recover", 180, 21, 90),
+                new Segment("work", 180, 23, 100),
+                new Segment("recover", 240, 10, 80),
+                new Segment("work", 120, 16, 85),
+                new Segment("recover", 60, 24, 100),
+                new Segment("cool-down", 240, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Mountwashington_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mount-washington-auto-road");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 16, 85),
+                new Segment("work", 60, 18, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 16, 85),
+                new Segment("work", 120, 18, 85),
+                new Segment("work", 120, 21, 90),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 16, 85),
+                new Segment("work", 180, 18, 85),
+                new Segment("recover", 180, 21, 90),
+                new Segment("cool-down", 180, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Muertos_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "dia-de-muertos-parade");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 90, 21, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 90, 21, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 22, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("cool-down", 90, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Mulholland_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mulholland-drive");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("work", 120, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 240, 16, 80),
+                new Segment("work", 120, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 240, 16, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Murdehuy_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mur-de-huy");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 30, 21, 90),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 23, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 23, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 23, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 23, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 40, 22, 100),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 40, 22, 100),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 40, 22, 100),
+                new Segment("work", 10, 24, 100),
+                new Segment("cool-down", 120, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Napa_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "napa-vineyards");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 12, 80),
+                new Segment("work", 30, 16, 80),
+                new Segment("recover", 30, 13, 100),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 16, 60),
+                new Segment("work", 15, 18, 80),
+                new Segment("recover", 45, 13, 100),
+                new Segment("work", 15, 18, 80),
+                new Segment("work", 45, 13, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 18, 60),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 18, 100),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 30, 16, 100),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 30, 16, 100),
+                new Segment("work", 120, 18, 80),
+                new Segment("cool-down", 120, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Northshore_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "north-shore-oahu");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 205, 13, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 273, 11, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("cool-down", 212, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Nottinghill_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "notting-hill-carnival");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 80),
+                new Segment("work", 40, 19, 80),
+                new Segment("recover", 20, 11, 80),
+                new Segment("work", 40, 19, 80),
+                new Segment("recover", 20, 11, 80),
+                new Segment("work", 40, 21, 90),
+                new Segment("recover", 20, 11, 80),
+                new Segment("work", 40, 21, 90),
+                new Segment("recover", 20, 11, 80),
+                new Segment("work", 40, 21, 90),
+                new Segment("recover", 20, 11, 80),
+                new Segment("work", 40, 22, 95),
+                new Segment("recover", 20, 11, 80),
+                new Segment("work", 40, 22, 95),
+                new Segment("recover", 20, 11, 80),
+                new Segment("work", 40, 22, 100),
+                new Segment("recover", 20, 11, 80),
+                new Segment("work", 40, 22, 100),
+                new Segment("recover", 20, 11, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("cool-down", 105, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Nuevedejulio_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "avenida-9-de-julio");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 11, 90),
+                new Segment("work", 420, 17, 90),
+                new Segment("recover", 120, 13, 90),
+                new Segment("work", 30, 22, 90),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 60, 20, 90),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 120, 22, 90),
+                new Segment("recover", 120, 15, 90),
+                new Segment("work", 60, 22, 90),
+                new Segment("recover", 120, 13, 90),
+                new Segment("work", 60, 22, 90),
+                new Segment("recover", 120, 13, 90),
+                new Segment("work", 60, 22, 90),
+                new Segment("recover", 90, 16, 90),
+                new Segment("work", 30, 22, 90),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 120, 22, 90),
+                new Segment("recover", 180, 14, 90),
+                new Segment("work", 120, 22, 90),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 60, 22, 90),
+                new Segment("recover", 30, 13, 90),
+                new Segment("cool-down", 120, 14, 90),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Okinawa_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "okinawa-coast-road");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 19, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 120, 14, 80),
+                new Segment("work", 840, 19, 84),
+                new Segment("work", 180, 22, 80),
+                new Segment("work", 60, 24, 110),
+                new Segment("recover", 300, 13, 80),
+                new Segment("work", 60, 24, 110),
+                new Segment("recover", 180, 13, 80),
+                new Segment("work", 60, 24, 110),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 60, 24, 110),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Oktoberfest_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "oktoberfest-munich");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 149, 14, 80),
+                new Segment("work", 153, 18, 85),
+                new Segment("recover", 40, 11, 80),
+                new Segment("work", 197, 19, 90),
+                new Segment("recover", 40, 11, 80),
+                new Segment("work", 199, 20, 90),
+                new Segment("recover", 40, 11, 80),
+                new Segment("work", 196, 21, 90),
+                new Segment("recover", 40, 11, 80),
+                new Segment("work", 209, 22, 90),
+                new Segment("cool-down", 225, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Oregon_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "oregon-coast");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 12, 85),
+                new Segment("work", 600, 21, 95),
+                new Segment("recover", 300, 14, 95),
+                new Segment("work", 600, 21, 95),
+                new Segment("recover", 300, 14, 95),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 14, 95),
+                new Segment("work", 30, 24, 100),
+                new Segment("cool-down", 240, 14, 85),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Outback_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "outback-highway");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 11, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 180, 21, 90),
+                new Segment("cool-down", 180, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Overseas_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "overseas-highway");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 14, 67),
+                new Segment("work", 60, 19, 100),
+                new Segment("recover", 90, 13, 60),
+                new Segment("work", 30, 14, 80),
+                new Segment("recover", 30, 16, 100),
+                new Segment("work", 30, 18, 120),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 30, 14, 60),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 30, 18, 100),
+                new Segment("work", 30, 19, 120),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 30, 16, 60),
+                new Segment("work", 30, 18, 80),
+                new Segment("recover", 30, 19, 100),
+                new Segment("work", 30, 21, 120),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 120, 16, 80),
+                new Segment("recover", 60, 24, 120),
+                new Segment("cool-down", 120, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Paine_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "torres-del-paine");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 10, 80),
+                new Segment("work", 60, 13, 80),
+                new Segment("recover", 60, 16, 85),
+                new Segment("work", 60, 19, 90),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 300, 22, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 120, 22, 100),
+                new Segment("cool-down", 240, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Palouse_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "the-palouse");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 11, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 180, 18, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 180, 18, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 30, 24, 100),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 180, 11, 80),
+                new Segment("work", 180, 18, 80),
+                new Segment("recover", 120, 21, 80),
+                new Segment("work", 180, 18, 80),
+                new Segment("recover", 90, 23, 87),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 180, 11, 80),
+                new Segment("work", 180, 18, 80),
+                new Segment("recover", 120, 21, 80),
+                new Segment("work", 180, 18, 80),
+                new Segment("recover", 60, 22, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 21, 80),
+                new Segment("cool-down", 150, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Pamplona_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "san-fermin-pamplona");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 12, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 60, 18, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 50, 13, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 13, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 150, 13, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 13, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 13, 80),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 110, 13, 80),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 10, 13, 80),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 10, 13, 80),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 10, 13, 80),
+                new Segment("work", 10, 24, 100),
+                new Segment("recover", 10, 13, 80),
+                new Segment("work", 10, 24, 100),
+                new Segment("cool-down", 90, 13, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Penllech_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "ffordd-pen-llech");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 13, 80),
+                new Segment("work", 2400, 19, 60),
+                new Segment("cool-down", 100, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Pikeplace_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "pike-place-at-dawn");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 10, 80),
+                new Segment("work", 90, 13, 80),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 180, 18, 85),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 18, 85),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 18, 85),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 18, 85),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 30, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 30, 21, 90),
+                new Segment("recover", 30, 18, 85),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Playground_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "playground-park-loop");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 13, 80),
+                new Segment("work", 180, 16, 85),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 300, 19, 90),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Prague_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "prague-old-town");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 300, 16, 85),
+                new Segment("work", 180, 19, 90),
+                new Segment("recover", 120, 21, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 180, 11, 80),
+                new Segment("work", 300, 16, 85),
+                new Segment("work", 180, 19, 90),
+                new Segment("recover", 120, 21, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 180, 11, 80),
+                new Segment("work", 300, 16, 85),
+                new Segment("recover", 180, 19, 90),
+                new Segment("work", 120, 21, 90),
+                new Segment("recover", 60, 24, 100),
+                new Segment("cool-down", 180, 12, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Poggio_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "the-poggio");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 12, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 16, 80),
+                new Segment("work", 180, 19, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("recover", 180, 16, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 22, 80),
+                new Segment("recover", 180, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("cool-down", 300, 12, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Prospect_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "prospect-park");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 14, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 150, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 150, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 90, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 90, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("cool-down", 360, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Provence_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "provence-lavender");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 360, 15, 82),
+                new Segment("work", 300, 21, 95),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 180, 21, 95),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 180, 21, 95),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 180, 21, 95),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 180, 21, 95),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 180, 21, 95),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 180, 21, 95),
+                new Segment("cool-down", 360, 13, 82),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Pueblos_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "andalusian-white-villages");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 12, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 180, 14, 80),
+                new Segment("recover", 180, 16, 85),
+                new Segment("work", 180, 18, 85),
+                new Segment("work", 180, 21, 90),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 360, 18, 85),
+                new Segment("work", 360, 19, 90),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 60, 19, 90),
+                new Segment("work", 90, 24, 100),
+                new Segment("cool-down", 154, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Quebec_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "old-quebec");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 16, 85),
+                new Segment("work", 60, 10, 80),
+                new Segment("recover", 15, 24, 100),
+                new Segment("work", 300, 21, 90),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 300, 21, 90),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 300, 21, 90),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 300, 21, 90),
+                new Segment("cool-down", 180, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Redoute_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "la-redoute");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 13, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 21, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("cool-down", 120, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Rome_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "rome-colosseum-loop");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 80),
+                new Segment("work", 15, 18, 120),
+                new Segment("recover", 45, 13, 90),
+                new Segment("work", 15, 18, 120),
+                new Segment("recover", 45, 13, 90),
+                new Segment("work", 15, 18, 120),
+                new Segment("recover", 45, 13, 90),
+                new Segment("work", 15, 18, 120),
+                new Segment("recover", 105, 13, 84),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("work", 40, 19, 90),
+                new Segment("recover", 240, 11, 80),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("work", 40, 19, 90),
+                new Segment("recover", 240, 11, 80),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 20, 22, 110),
+                new Segment("recover", 40, 19, 90),
+                new Segment("work", 40, 24, 100),
+                new Segment("cool-down", 230, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Route66_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "route-66-desert");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 90, 12, 80),
+                new Segment("work", 30, 18, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("work", 30, 22, 80),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("work", 30, 22, 80),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("work", 30, 22, 80),
+                new Segment("recover", 30, 13, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("recover", 120, 19, 80),
+                new Segment("work", 30, 22, 80),
+                new Segment("recover", 120, 19, 80),
+                new Segment("work", 60, 13, 80),
+                new Segment("recover", 120, 19, 80),
+                new Segment("cool-down", 90, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Saguaro_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "saguaro-desert");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 210, 13, 80),
+                new Segment("work", 15, 22, 100),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 15, 22, 100),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 15, 22, 100),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 15, 22, 100),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 15, 22, 100),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 15, 22, 100),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 13, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 13, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 45, 13, 80),
+                new Segment("work", 45, 22, 95),
+                new Segment("recover", 45, 13, 80),
+                new Segment("work", 45, 22, 95),
+                new Segment("recover", 45, 13, 80),
+                new Segment("work", 45, 22, 95),
+                new Segment("recover", 45, 13, 80),
+                new Segment("work", 45, 22, 95),
+                new Segment("recover", 45, 13, 80),
+                new Segment("work", 45, 22, 95),
+                new Segment("recover", 45, 13, 80),
+                new Segment("work", 45, 22, 95),
+                new Segment("recover", 30, 13, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 13, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 13, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("work", 15, 24, 105),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 15, 24, 105),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 15, 24, 105),
+                new Segment("cool-down", 145, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Sambadrome_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "rio-sambadrome");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 11, 90),
+                new Segment("work", 60, 21, 70),
+                new Segment("recover", 60, 18, 90),
+                new Segment("work", 30, 21, 70),
+                new Segment("work", 30, 18, 90),
+                new Segment("recover", 60, 11, 90),
+                new Segment("work", 60, 21, 70),
+                new Segment("recover", 60, 18, 90),
+                new Segment("work", 30, 21, 70),
+                new Segment("work", 30, 18, 90),
+                new Segment("recover", 60, 11, 90),
+                new Segment("work", 60, 21, 70),
+                new Segment("recover", 60, 18, 90),
+                new Segment("work", 30, 21, 70),
+                new Segment("recover", 30, 18, 90),
+                new Segment("cool-down", 120, 11, 90),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Santamonica_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "santa-monica-pier");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 80),
+                new Segment("work", 180, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 30, 24, 100),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Seapoint_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "sea-point-cape-town");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 100, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 20, 24, 100),
+                new Segment("cool-down", 160, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Sella_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "passo-sella");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 210, 13, 90),
+                new Segment("work", 120, 17, 90),
+                new Segment("work", 240, 18, 90),
+                new Segment("work", 120, 19, 90),
+                new Segment("work", 120, 20, 90),
+                new Segment("work", 120, 21, 90),
+                new Segment("work", 240, 22, 90),
+                new Segment("work", 120, 23, 90),
+                new Segment("work", 120, 24, 90),
+                new Segment("cool-down", 150, 11, 85),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Sella_Ronda_preserves_every_class_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "sella-ronda");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 80),
+                new Segment("work", 120, 18, 90),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 140, 18, 80),
+                new Segment("cool-down", 190, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Serpentine_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "serpentine-hyde-park");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 80),
+                new Segment("work", 180, 19, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 16, 85),
+                new Segment("work", 180, 19, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 16, 85),
+                new Segment("work", 180, 19, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 16, 85),
+                new Segment("cool-down", 60, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Sevensisters_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "seven-sisters-cliffs");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 260, 14, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 135, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 90, 11, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("cool-down", 165, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Sfhills_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "san-francisco-hills");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 16, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 120, 19, 80),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Shibuya_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "shibuya-crossing");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 150, 12, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 30, 22, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 30, 22, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 22, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 30, 22, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 22, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 30, 22, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 22, 80),
+                new Segment("cool-down", 120, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Silverstone_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "silverstone-track-day");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 330, 16, 85),
+                new Segment("work", 30, 14, 80),
+                new Segment("recover", 30, 22, 100),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 30, 14, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 14, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 30, 14, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 14, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 30, 14, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 14, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 30, 14, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 30, 14, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("cool-down", 180, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Skye_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "isle-of-skye-fog");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 10, 80),
+                new Segment("work", 60, 13, 80),
+                new Segment("recover", 30, 21, 90),
+                new Segment("work", 180, 16, 85),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 150, 19, 90),
+                new Segment("recover", 90, 13, 80),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 240, 16, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("work", 90, 10, 80),
+                new Segment("recover", 180, 14, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 120, 18, 85),
+                new Segment("cool-down", 180, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Songkran_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "songkran-bangkok");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 13, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 19, 90),
+                new Segment("cool-down", 300, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Southbeach_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "south-beach-sunrise");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 16, 85),
+                new Segment("work", 120, 18, 85),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("cool-down", 120, 15, 85),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Stampede_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "calgary-stampede");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 21, 90),
+                new Segment("recover", 180, 11, 80),
+                new Segment("work", 300, 24, 100),
+                new Segment("work", 60, 10, 80),
+                new Segment("recover", 180, 14, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 180, 11, 80),
+                new Segment("work", 300, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("cool-down", 60, 13, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Stanleypark_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "stanley-park-seawall");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 10, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 16, 85),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 60, 16, 85),
+                new Segment("work", 120, 18, 85),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 16, 85),
+                new Segment("cool-down", 60, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Stbernard_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "great-st-bernard-pass");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 334, 14, 80),
+                new Segment("work", 30, 21, 90),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 30, 21, 90),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 160, 16, 85),
+                new Segment("work", 160, 18, 85),
+                new Segment("work", 160, 19, 90),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 140, 18, 85),
+                new Segment("recover", 140, 19, 90),
+                new Segment("work", 140, 21, 90),
+                new Segment("recover", 80, 11, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("recover", 120, 21, 90),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 86, 11, 80),
+                new Segment("work", 85, 21, 90),
+                new Segment("work", 85, 22, 100),
+                new Segment("recover", 85, 24, 100),
+                new Segment("cool-down", 115, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Stelvio_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "stelvio-pass");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 11, 80),
+                new Segment("work", 60, 16, 85),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("work", 30, 22, 90),
+                new Segment("recover", 60, 18, 80),
+                new Segment("work", 30, 22, 90),
+                new Segment("work", 60, 18, 80),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("work", 30, 22, 90),
+                new Segment("recover", 60, 18, 80),
+                new Segment("work", 30, 22, 90),
+                new Segment("work", 60, 18, 80),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 30, 22, 90),
+                new Segment("recover", 60, 18, 80),
+                new Segment("work", 30, 22, 90),
+                new Segment("recover", 60, 18, 80),
+                new Segment("cool-down", 60, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Steppe_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mongolian-steppe");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 360, 12, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 180, 16, 85),
+                new Segment("work", 30, 21, 90),
+                new Segment("work", 30, 10, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 180, 16, 85),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 240, 10, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 240, 10, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 120, 13, 80),
+                new Segment("recover", 120, 18, 85),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Stpatricks_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "st-patricks-day-dublin");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 18, 85),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 180, 10, 75),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 150, 10, 75),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 150, 10, 75),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 10, 75),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 10, 75),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 90, 10, 75),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 90, 10, 75),
+                new Segment("work", 30, 24, 100),
+                new Segment("cool-down", 361, 10, 75),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Strade_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "strade-bianche");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 30, 21, 90),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("cool-down", 180, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Strasbourg_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "strasbourg-christmas-market");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 120, 18, 80),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 120, 13, 80),
+                new Segment("recover", 90, 19, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("recover", 60, 16, 80),
+                new Segment("work", 90, 19, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 30, 22, 100),
+                new Segment("work", 30, 19, 80),
+                new Segment("recover", 60, 16, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("recover", 120, 16, 80),
+                new Segment("cool-down", 60, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Suburbia_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "suburban-sunrise");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 80),
+                new Segment("work", 60, 16, 90),
+                new Segment("work", 60, 18, 90),
+                new Segment("work", 60, 19, 90),
+                new Segment("work", 60, 21, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 60, 16, 90),
+                new Segment("work", 60, 18, 90),
+                new Segment("recover", 60, 19, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 60, 16, 90),
+                new Segment("work", 30, 19, 90),
+                new Segment("recover", 30, 24, 100),
+                new Segment("cool-down", 60, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Surfers_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "surfers-paradise");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 11, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 19, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 19, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 19, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 19, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 19, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 19, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 120, 19, 80),
+                new Segment("cool-down", 120, 13, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Sydneyharbour_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "sydney-harbour-fireworks");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 10, 80),
+                new Segment("work", 30, 14, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 30, 14, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 150, 19, 84),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 30, 16, 80),
+                new Segment("work", 30, 21, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 180, 19, 80),
+                new Segment("recover", 120, 22, 100),
+                new Segment("work", 120, 13, 80),
+                new Segment("recover", 60, 21, 90),
+                new Segment("work", 60, 19, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 30, 19, 80),
+                new Segment("recover", 30, 22, 100),
+                new Segment("work", 30, 19, 80),
+                new Segment("recover", 30, 22, 100),
+                new Segment("work", 60, 11, 80),
+                new Segment("recover", 30, 24, 100),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Teide_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mount-teide");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 90),
+                new Segment("work", 120, 16, 90),
+                new Segment("work", 60, 24, 90),
+                new Segment("work", 300, 21, 90),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 300, 21, 90),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 300, 21, 90),
+                new Segment("cool-down", 180, 13, 90),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Tamalpais_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mount-tamalpais");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 13, 85),
+                new Segment("work", 225, 19, 80),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 225, 19, 80),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 225, 21, 80),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 285, 21, 80),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 225, 22, 75),
+                new Segment("work", 15, 24, 100),
+                new Segment("recover", 225, 22, 75),
+                new Segment("work", 15, 24, 100),
+                new Segment("cool-down", 73, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Tahoe_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "lake-tahoe");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 13, 80),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 60, 19, 90),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 60, 22, 100),
+                new Segment("recover", 120, 19, 90),
+                new Segment("work", 60, 22, 100),
+                new Segment("recover", 300, 10, 80),
+                new Segment("work", 600, 19, 90),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 300, 19, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 120, 19, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("cool-down", 240, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Telaviv_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "tel-aviv-promenade");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 90),
+                new Segment("work", 30, 24, 110),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 30, 24, 110),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 30, 24, 90),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 30, 24, 80),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 30, 24, 70),
+                new Segment("cool-down", 180, 13, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Tempelhof_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "tempelhof-field");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 14, 90),
+                new Segment("work", 30, 22, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 60, 18, 100),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 30, 19, 71),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 30, 19, 71),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 45, 19, 71),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 35, 21, 88),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 65, 21, 88),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 15, 22, 120),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 15, 22, 120),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 15, 22, 120),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 15, 22, 120),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 45, 21, 75),
+                new Segment("recover", 45, 13, 90),
+                new Segment("work", 45, 21, 75),
+                new Segment("recover", 45, 13, 90),
+                new Segment("work", 45, 21, 75),
+                new Segment("recover", 45, 13, 90),
+                new Segment("work", 45, 21, 75),
+                new Segment("recover", 45, 13, 90),
+                new Segment("work", 45, 21, 75),
+                new Segment("recover", 45, 13, 90),
+                new Segment("work", 30, 22, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 30, 22, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 30, 22, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 30, 22, 110),
+                new Segment("recover", 30, 13, 90),
+                new Segment("work", 30, 22, 110),
+                new Segment("cool-down", 110, 12, 83),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Teotihuacan_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "teotihuacan");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 16, 85),
+                new Segment("work", 60, 10, 80),
+                new Segment("work", 60, 22, 100),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 180, 22, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 240, 22, 100),
+                new Segment("recover", 240, 10, 80),
+                new Segment("work", 300, 22, 100),
+                new Segment("recover", 300, 10, 80),
+                new Segment("work", 360, 22, 100),
+                new Segment("recover", 360, 10, 80),
+                new Segment("work", 30, 24, 100),
+                new Segment("cool-down", 90, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Timessquare_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "times-square-new-years-eve");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 12, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 19, 90),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 19, 90),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 19, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 19, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 60, 22, 100),
+                new Segment("cool-down", 60, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Toronto_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "toronto-waterfront-trail");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 13, 80),
+                new Segment("work", 30, 24, 75),
+                new Segment("recover", 30, 11, 100),
+                new Segment("work", 60, 21, 75),
+                new Segment("recover", 60, 11, 100),
+                new Segment("work", 30, 24, 75),
+                new Segment("recover", 30, 11, 100),
+                new Segment("work", 420, 21, 90),
+                new Segment("recover", 120, 11, 100),
+                new Segment("work", 30, 24, 75),
+                new Segment("recover", 30, 11, 100),
+                new Segment("work", 420, 21, 90),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 30, 24, 75),
+                new Segment("cool-down", 180, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Tremola_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "tremola-gotthard-pass");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 90),
+                new Segment("work", 300, 19, 55),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 300, 19, 55),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 300, 19, 55),
+                new Segment("cool-down", 360, 13, 90),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Tourmalet_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "col-du-tourmalet");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 14, 80),
+                new Segment("work", 120, 19, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("recover", 60, 16, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 22, 80),
+                new Segment("recover", 60, 19, 80),
+                new Segment("work", 60, 22, 80),
+                new Segment("recover", 60, 19, 80),
+                new Segment("work", 120, 10, 80),
+                new Segment("recover", 60, 18, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("work", 60, 21, 80),
+                new Segment("work", 60, 24, 80),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Trollstigen_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "trollstigen");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 18, 80),
+                new Segment("work", 60, 19, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 18, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 18, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 18, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 18, 80),
+                new Segment("work", 120, 21, 80),
+                new Segment("cool-down", 120, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Tulips_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "dutch-tulip-fields");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 12, 80),
+                new Segment("work", 120, 14, 80),
+                new Segment("recover", 120, 18, 90),
+                new Segment("work", 60, 19, 90),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 180, 19, 90),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 120, 19, 55),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 120, 19, 105),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 120, 19, 60),
+                new Segment("cool-down", 180, 13, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Utrecht_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "utrecht-bike-city");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 11, 80),
+                new Segment("work", 300, 14, 60),
+                new Segment("recover", 120, 18, 60),
+                new Segment("work", 60, 21, 110),
+                new Segment("recover", 300, 14, 60),
+                new Segment("work", 120, 18, 60),
+                new Segment("work", 60, 21, 110),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 360, 18, 73),
+                new Segment("recover", 120, 22, 100),
+                new Segment("work", 180, 10, 80),
+                new Segment("recover", 480, 18, 80),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 180, 10, 80),
+                new Segment("work", 180, 16, 60),
+                new Segment("recover", 60, 21, 60),
+                new Segment("work", 60, 24, 60),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 180, 16, 80),
+                new Segment("cool-down", 180, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Valais_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "valais-ski-stations");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 80),
+                new Segment("work", 120, 18, 80),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 240, 18, 80),
+                new Segment("recover", 120, 14, 80),
+                new Segment("work", 240, 18, 80),
+                new Segment("recover", 120, 14, 80),
+                new Segment("work", 240, 18, 80),
+                new Segment("recover", 120, 14, 80),
+                new Segment("work", 240, 18, 80),
+                new Segment("recover", 120, 14, 80),
+                new Segment("cool-down", 60, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Valparaiso_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "valparaiso-stairways");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 10, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 180, 14, 80),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 180, 23, 100),
+                new Segment("recover", 180, 21, 90),
+                new Segment("work", 240, 19, 90),
+                new Segment("recover", 300, 18, 85),
+                new Segment("work", 120, 10, 80),
+                new Segment("recover", 60, 24, 100),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 180, 19, 90),
+                new Segment("work", 120, 22, 100),
+                new Segment("recover", 180, 19, 90),
+                new Segment("work", 60, 18, 85),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 300, 22, 100),
+                new Segment("recover", 240, 21, 90),
+                new Segment("work", 180, 19, 90),
+                new Segment("recover", 180, 17, 85),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Vegas_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "las-vegas-strip");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 90),
+                new Segment("work", 60, 16, 90),
+                new Segment("recover", 30, 19, 90),
+                new Segment("work", 60, 16, 90),
+                new Segment("recover", 120, 13, 90),
+                new Segment("work", 60, 18, 90),
+                new Segment("recover", 60, 21, 90),
+                new Segment("work", 15, 24, 90),
+                new Segment("recover", 60, 18, 90),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 15, 24, 90),
+                new Segment("work", 60, 18, 90),
+                new Segment("recover", 60, 21, 90),
+                new Segment("work", 15, 24, 90),
+                new Segment("recover", 120, 13, 90),
+                new Segment("work", 30, 18, 90),
+                new Segment("recover", 30, 21, 90),
+                new Segment("work", 30, 24, 90),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 30, 18, 90),
+                new Segment("recover", 45, 22, 90),
+                new Segment("cool-down", 60, 13, 90),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Veleta_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "pico-veleta");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 13, 80),
+                new Segment("work", 120, 16, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 240, 18, 95),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 240, 18, 95),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 240, 18, 95),
+                new Segment("work", 60, 21, 90),
+                new Segment("work", 240, 18, 95),
+                new Segment("recover", 300, 11, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 240, 18, 95),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 240, 18, 95),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 240, 18, 95),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 240, 18, 95),
+                new Segment("cool-down", 240, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Velodrome_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "lee-valley-velodrome");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 10, 80),
+                new Segment("work", 60, 13, 80),
+                new Segment("recover", 60, 16, 80),
+                new Segment("work", 60, 19, 90),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 210, 19, 95),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 210, 21, 95),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Venice_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "venice-beach-boardwalk");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 19, 80),
+                new Segment("work", 60, 21, 85),
+                new Segment("recover", 60, 10, 75),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 10, 24, 90),
+                new Segment("cool-down", 140, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Ventoux_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mont-ventoux");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 80),
+                new Segment("work", 120, 16, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 120, 21, 90),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 120, 21, 90),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 180, 21, 93),
+                new Segment("cool-down", 180, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Verona_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "verona-arena-finale");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 80),
+                new Segment("work", 120, 16, 80),
+                new Segment("work", 180, 19, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 180, 24, 80),
+                new Segment("recover", 300, 19, 80),
+                new Segment("work", 180, 21, 80),
+                new Segment("work", 300, 19, 80),
+                new Segment("recover", 300, 10, 80),
+                new Segment("work", 180, 24, 80),
+                new Segment("work", 180, 21, 80),
+                new Segment("recover", 180, 19, 80),
+                new Segment("work", 180, 18, 80),
+                new Segment("recover", 300, 10, 80),
+                new Segment("work", 60, 24, 80),
+                new Segment("recover", 120, 22, 80),
+                new Segment("work", 240, 21, 80),
+                new Segment("recover", 120, 24, 80),
+                new Segment("cool-down", 180, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Victoria_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "victoria-harbour");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 80),
+                new Segment("work", 120, 16, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 60, 24, 100),
+                new Segment("cool-down", 60, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Vienna_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "vienna-ringstrasse");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 80),
+                new Segment("work", 180, 16, 80),
+                new Segment("work", 300, 19, 80),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 300, 19, 80),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 300, 19, 80),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 300, 19, 80),
+                new Segment("cool-down", 180, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Westminster_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "westminster-rush-hour");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 16, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 30, 14, 80),
+                new Segment("work", 10, 21, 90),
+                new Segment("recover", 10, 10, 80),
+                new Segment("work", 20, 21, 90),
+                new Segment("recover", 20, 10, 80),
+                new Segment("work", 30, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 40, 21, 90),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 50, 21, 90),
+                new Segment("recover", 50, 10, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 120, 21, 90),
+                new Segment("work", 60, 24, 100),
+                new Segment("cool-down", 120, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Winnats_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "winnats-pass");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 330, 14, 80),
+                new Segment("work", 60, 19, 90),
+                new Segment("recover", 30, 11, 80),
+                new Segment("work", 30, 20, 90),
+                new Segment("recover", 90, 12, 80),
+                new Segment("work", 300, 19, 75),
+                new Segment("work", 300, 20, 70),
+                new Segment("recover", 60, 12, 80),
+                new Segment("work", 210, 22, 70),
+                new Segment("recover", 90, 13, 80),
+                new Segment("work", 75, 22, 70),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 75, 22, 70),
+                new Segment("recover", 15, 13, 80),
+                new Segment("work", 100, 22, 70),
+                new Segment("cool-down", 348, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Wicklow_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "wicklow-gap");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 12, 90),
+                new Segment("work", 60, 18, 90),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 120, 18, 90),
+                new Segment("recover", 60, 11, 90),
+                new Segment("work", 180, 19, 90),
+                new Segment("recover", 120, 13, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 240, 20, 91),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 11, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 11, 90),
+                new Segment("work", 90, 22, 93),
+                new Segment("recover", 120, 13, 90),
+                new Segment("work", 120, 22, 90),
+                new Segment("recover", 60, 13, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 60, 11, 90),
+                new Segment("work", 60, 22, 90),
+                new Segment("recover", 120, 13, 90),
+                new Segment("work", 30, 24, 90),
+                new Segment("cool-down", 120, 10, 90),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Zoncolan_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "monte-zoncolan");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 12, 80),
+                new Segment("work", 60, 16, 80),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 240, 21, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 180, 21, 80),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 120, 21, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 60, 21, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 30, 21, 100),
+                new Segment("recover", 120, 11, 80),
+                new Segment("work", 15, 21, 100),
+                new Segment("cool-down", 135, 12, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Yosemite_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "yosemite-valley");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 16, 80),
+                new Segment("work", 60, 18, 80),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 24, 90),
+                new Segment("recover", 120, 11, 90),
+                new Segment("work", 120, 24, 90),
+                new Segment("recover", 120, 11, 90),
+                new Segment("work", 120, 24, 90),
+                new Segment("recover", 120, 11, 90),
+                new Segment("work", 120, 24, 90),
+                new Segment("recover", 120, 11, 90),
+                new Segment("work", 120, 24, 90),
+                new Segment("recover", 120, 11, 90),
+                new Segment("work", 120, 24, 90),
+                new Segment("cool-down", 120, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
+    public async Task Winterlude_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "winterlude-ottawa");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 300, 16, 85),
+                new Segment("work", 240, 21, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 240, 21, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 240, 21, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 30, 10, 80),
+                new Segment("work", 240, 21, 90),
+                new Segment("work", 30, 24, 100),
+                new Segment("recover", 330, 10, 80),
+                new Segment("work", 120, 21, 90),
+                new Segment("recover", 60, 16, 85),
+                new Segment("work", 120, 21, 90),
+                new Segment("cool-down", 300, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task Iceland_preserves_every_original_stage()
     {
         var map = Assert.Single(await ReadMaps(), m => m.Id == "iceland-ring-road");
@@ -2003,7 +5067,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Vice City", 24, 60, "Moderate", "Ocean Drive to the Causeway", "A neon beachfront city at a magenta sunset"),
                 new Listed("Col du Granit", 16.1, 1240, "Brutal", null, "A high mountain pass at first light"),
                 new Listed("Ibiza Sunset Strip", 8.4, 159, "Moderate", "Intervals to the Beat", "The waterfront strip of Sant Antoni at sunset"),
-                new Listed("Sella Ronda", 11.7, 357, "Hard", "Over/Under Intervals on the Passo Sella", "Four Dolomite passes circling the Sella massif"),
+                new Listed("Sella Ronda", 11.65, 364, "Hard", "Over/Under Intervals on the Passo Sella", "Four Dolomite passes circling the Sella massif"),
                 new Listed("Cinque Terre", 17.1, 335, "Hard", "3 Mins On, 2 Mins Off", "The corniche above the Ligurian Sea"),
                 new Listed("Haleakalā", 15.8, 923, "Brutal", "Maximum Intensity Hill Climb Efforts", "The summit road from the Pacific coast to the crater rim"),
                 new Listed("Adelaide Hills", 17.11, 265, "Moderate", "The Willunga road", "Summer vineyards and gum trees on the climb to Willunga Hill"),
@@ -2080,6 +5144,114 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Independence Pass", 15.2, 897, "Brutal", "Highway 82", "The Roaring Fork and the Continental Divide, Colorado"),
                 new Listed("Isle of Man Mountain Course", 8.133, 206, "Hard", "The Mountain Course", "The A18, the Bungalow and Creg-ny-Baa"),
                 new Listed("Iten, Kenya", 17.86, 378, "Hard", "The red-dirt road", "Iten and the Kerio Valley, Kenya"),
+                new Listed("Holi in Jaipur", 8.625, 57, "Hard", "Johari Bazaar", "Jaipur, Rajasthan"),
+                new Listed("Trinidad J'Ouvert", 6.275, 42, "Hard", "Frederick Street", "Port of Spain, Trinidad and Tobago"),
+                new Listed("Joshua Tree", 23.625, 272, "Hard", "Park Boulevard", "Joshua Tree National Park, California"),
+                new Listed("Junkanoo, Nassau", 12.591, 47, "Hard", "Bay Street", "Nassau, The Bahamas"),
+                new Listed("Kīlauea Lava Road", 7.696, 89, "Hard", "Crater Rim Drive", "Hawaiʻi Volcanoes National Park, Hawaiʻi"),
+                new Listed("Knicks Championship Parade", 7, 43, "Hard", "Canyon of Heroes", "Lower Broadway, New York City"),
+                new Listed("Kona Ironman", 9.868, 97, "Hard", "the Queen K", "Kailua-Kona and the Kohala Coast, Hawaiʻi"),
+                new Listed("Koppenberg Cobbles", 5.64, 111, "Hard", "the Koppenberg", "Melden, Flemish Ardennes, Belgium"),
+                new Listed("Oude Kwaremont", 16.2, 231, "Hard", "the Kwaremont cobbles", "Kwaremont, Kluisbergen, Belgium"),
+                new Listed("Kyoto Hanami", 10.4, 35, "Moderate", "the Philosopher's Path", "Kyoto, Japan"),
+                new Listed("Chicago Lakefront Trail", 10.525, 8, "Moderate", "the Lakefront Trail", "Chicago, Illinois, United States"),
+                new Listed("Lake Louise", 8, 52, "Easy", "the Lake Louise lakeshore", "Banff National Park, Alberta, Canada"),
+                new Listed("Alto de Letras", 22.15, 1156, "Hard", "the Alto de Letras climb", "Tolima and Caldas, Colombia"),
+                new Listed("Lisbon Tram Hills", 6.3375, 193, "Hard", "the Alfama lanes", "Lisbon, Portugal"),
+                new Listed("Loire Châteaux", 12.2, 19, "Easy", "the Loire river lanes", "Loire Valley, France"),
+                new Listed("Machu Picchu Road", 10.944583333333332, 386, "Hard", "the Hiram Bingham road", "Cusco Region, Peru"),
+                new Listed("Marina Bay Night", 10.665, 14, "Easy", "the bayfront", "Marina Bay, Singapore"),
+                new Listed("Marrakech Medina", 12.808333333333332, 24, "Easy", "Jemaa el-Fnaa", "Marrakech, Morocco"),
+                new Listed("Mardi Gras, New Orleans", 8.3975, 13, "Easy", "St. Charles Avenue", "New Orleans, Louisiana"),
+                new Listed("Mauna Kea", 25.825, 2037, "Hard", "the summit road", "Hawaiʻi Island, Hawaiʻi"),
+                new Listed("La Mercè, Barcelona", 12.816666666666666, 21, "Moderate", "Via Laietana", "Barcelona, Catalonia"),
+                new Listed("Miami Neon Nights", 8.3975, 9, "Moderate", "the neon boulevard", "Miami Beach, Florida"),
+                new Listed("Moab Slickrock", 12.9, 261, "Hard", "the slickrock road", "Moab, Utah"),
+                new Listed("Monaco Street Circuit", 9.845, 43, "Moderate", "the harbour straight", "Monte Carlo, Monaco"),
+                new Listed("Montmartre", 8.4, 552, "Moderate", "the lanes of the butte", "Montmartre, Paris"),
+                new Listed("Montreal Jazz Fest", 9.695, 17, "Easy", "Rue Sainte-Catherine", "Montréal, Québec"),
+                new Listed("Mont Royal", 25.49, 571, "Hard", "the Camillien-Houde climb", "Montréal, Québec"),
+                new Listed("Mount Washington Auto Road", 12.725, 1453, "Hard", "the Auto Road", "Mount Washington, New Hampshire"),
+                new Listed("Día de Muertos Parade", 8, 23, "Easy", "Paseo de la Reforma", "Ciudad de México, México"),
+                new Listed("Mulholland Drive", 17.1, 347, "Moderate", "Mulholland Drive", "Los Angeles, California"),
+                new Listed("Mur de Huy", 11.2, 534, "Hard", "Mur de Huy", "Huy, Belgium"),
+                new Listed("Napa Vineyards", 8.2, 51, "Easy", "Napa Vineyards", "Napa Valley, California"),
+                new Listed("North Shore, Oahu", 8.914, 42, "Easy", "North Shore, Oahu", "Oahu, Hawaii"),
+                new Listed("Notting Hill Carnival", 5.933, 87, "Easy", "Notting Hill Carnival", "London, England"),
+                new Listed("Avenida 9 de Julio", 18, 49, "Moderate", "Avenida 9 de Julio", "Buenos Aires, Argentina"),
+                new Listed("Okinawa Coast Road", 16.88, 56, "Moderate", "Okinawa Coast Road", "Okinawa, Japan"),
+                new Listed("Oktoberfest, Munich", 10.651, 39, "Easy", "Oktoberfest, Munich", "Munich, Germany"),
+                new Listed("Oregon Coast", 19.525, 139, "Moderate", "Highway 101", "Oregon, United States"),
+                new Listed("Outback Highway", 10.775, 25, "Easy", "The Lasseter Highway", "Northern Territory, Australia"),
+                new Listed("Overseas Highway", 8.305, 20, "Easy", "Seven Mile Bridge", "Florida Keys, United States"),
+                new Listed("Torres del Paine", 13.025, 146, "Hard", "The Pehoé gravel", "Patagonia, Chile"),
+                new Listed("The Palouse", 18.1525, 293, "Moderate", "The wheat-hill road", "Washington, United States"),
+                new Listed("San Fermín, Pamplona", 9.133333333333333, 29, "Hard", "Calle Estafeta", "Pamplona, Spain"),
+                new Listed("Ffordd Pen Llech", 14.266666666666666, 180, "Hard", "Ffordd Pen Llech", "Harlech, Wales"),
+                new Listed("Pike Place at Dawn", 10.4375, 65, "Moderate", "The market street", "Seattle, United States"),
+                new Listed("Playground Park Loop", 13.225, 55, "Easy", "The park loop", "City park"),
+                new Listed("Prague Old Town", 21.525, 104, "Moderate", "The Royal Way", "Prague, Czechia"),
+                new Listed("The Poggio", 11.55, 179, "Hard", "The coast road to San Remo", "Sanremo, Italy"),
+                new Listed("Prospect Park", 12.4, 72, "Moderate", "The park drive", "Brooklyn, New York"),
+                new Listed("Provence Lavender", 18.545, 118, "Moderate", "The Valensole road", "Valensole Plateau, France"),
+                new Listed("Andalusian White Villages", 21.377, 382, "Moderate", "The white-village road", "Andalusia, Spain"),
+                new Listed("Old Québec", 13.225, 158, "Moderate", "The Côte de la Montagne", "Québec City, Canada"),
+                new Listed("La Redoute", 16, 249, "Hard", "The Redoute", "Remouchamps, Belgium"),
+                new Listed("Rome Colosseum Loop", 14.981, 48, "Moderate", "Via dei Fori Imperiali", "Rome, Italy"),
+                new Listed("Route 66 Desert", 8, 115, "Moderate", "Route 66", "Arizona, United States"),
+                new Listed("Saguaro Desert", 10.748, 203, "Moderate", "the cactus forest loop", "Tucson, Arizona"),
+                new Listed("Rio Sambadrome", 6.3, 9, "Easy", "the Sambadrome runway", "Rio de Janeiro, Brazil"),
+                new Listed("Santa Monica Pier", 8.85, 4, "Easy", "the beach path", "Santa Monica, California"),
+                new Listed("Sea Point, Cape Town", 8.45, 10, "Easy", "Sea Point Promenade", "Cape Town, South Africa"),
+                new Listed("Passo Sella", 11.6375, 619, "Hard", "The Passo Sella road", "The Dolomites, Italy"),
+                new Listed("Serpentine, Hyde Park", 6.6375, 10, "Easy", "Serpentine Road", "Hyde Park, London"),
+                new Listed("Seven Sisters Cliffs", 12.483333333333, 467, "Hard", "The South Downs road", "East Sussex, England"),
+                new Listed("San Francisco Hills", 8.9, 210, "Hard", "Filbert Street", "San Francisco, California"),
+                new Listed("Shibuya Crossing", 8.15, 48, "Hard", "Dogenzaka", "Shibuya, Tokyo"),
+                new Listed("Silverstone Track Day", 11.0875, 26, "Hard", "The Hangar Straight", "Northamptonshire, England"),
+                new Listed("Isle of Skye Fog", 12.725, 172, "Moderate", "The Glen Brittle road", "Isle of Skye, Scotland"),
+                new Listed("Songkran, Bangkok", 11.75, 12, "Hard", "Khao San Road", "Bangkok, Thailand"),
+                new Listed("South Beach Sunrise", 7.025, 67, "Moderate", "Ocean Drive", "Miami Beach, Florida"),
+                new Listed("Calgary Stampede", 13.2, 145, "Hard", "Stampede Parade", "Calgary, Alberta"),
+                new Listed("Stanley Park Seawall", 6.2, 31, "Easy", "Stanley Park Seawall", "Vancouver, British Columbia"),
+                new Listed("Great St Bernard Pass", 17.4125, 871, "Brutal", "The hospice road", "Swiss–Italian border"),
+                new Listed("Stelvio Pass", 8.175, 630, "Brutal", "Passo dello Stelvio", "South Tyrol, Italy"),
+                new Listed("Mongolian Steppe", 19.15, 131, "Moderate", "The steppe track", "Khentii, Mongolia"),
+                new Listed("St. Patrick's Day, Dublin", 12.01, 11, "Moderate", "O’Connell Street", "Dublin, Ireland"),
+                new Listed("Strade Bianche", 8.25, 132, "Hard", "The white roads", "Siena, Italy"),
+                new Listed("Strasbourg Christmas Market", 10.15, 10, "Moderate", "The Grande Île", "Strasbourg, France"),
+                new Listed("Suburban Sunrise", 6.58, 12, "Easy", "Maple Avenue", "North America"),
+                new Listed("Surfers Paradise", 13.2, 10, "Moderate", "The Esplanade", "Gold Coast, Australia"),
+                new Listed("Sydney Harbour Fireworks", 12.45, 68, "Moderate", "The Harbour Bridge", "Sydney, Australia"),
+                new Listed("Mount Teide", 13.5, 375, "Hard", "The caldera road", "Tenerife, Spain"),
+                new Listed("Mount Tamalpais", 12.149, 634, "Hard", "The Panoramic Highway", "Marin County, California"),
+                new Listed("Lake Tahoe", 19.75, 128, "Moderate", "The shore road", "Lake Tahoe, United States"),
+                new Listed("Tel Aviv Promenade", 10.7, 2, "Easy", "The Tayelet", "Tel Aviv, Israel"),
+                new Listed("Tempelhof Field", 12.909, 5, "Moderate", "The runway", "Berlin, Germany"),
+                new Listed("Teotihuacán", 22.275, 39, "Hard", "The Avenue of the Dead", "State of Mexico, Mexico"),
+                new Listed("Times Square New Year's Eve", 8.7, 3, "Moderate", "Broadway", "New York City, USA"),
+                new Listed("Toronto Waterfront Trail", 13.075, 7, "Moderate", "Queens Quay", "Toronto, Canada"),
+                new Listed("Tremola, Gotthard Pass", 10.875, 654, "Hard", "The Tremola", "Ticino, Switzerland"),
+                new Listed("Col du Tourmalet", 10.4, 652, "Hard", "The road to the col", "Hautes-Pyrénées, France"),
+                new Listed("Trollstigen", 12.0, 800, "Hard", "Trollstigen", "Rauma, Norway"),
+                new Listed("Dutch Tulip Fields", 10.1, 3, "Easy", "The bulb fields", "Bollenstreek, Netherlands"),
+                new Listed("Utrecht Bike City", 22.59, 10, "Moderate", "The canal wharves", "Utrecht, Netherlands"),
+                new Listed("Valais Ski Stations", 12.0, 333, "Moderate", "The station road", "Valais, Switzerland"),
+                new Listed("Valparaíso Stairways", 26.725, 187, "Hard", "The hillside stairways", "Valparaíso, Chile"),
+                new Listed("Las Vegas Strip", 9.0, 5, "Hard", "Las Vegas Boulevard", "Las Vegas, Nevada"),
+                new Listed("Pico Veleta", 25.25, 1258, "Brutal", "The Sierra Nevada road", "Granada, Spain"),
+                new Listed("Lee Valley Velodrome", 8.725, 0, "Hard", "The boards", "London, England"),
+                new Listed("Venice Beach Boardwalk", 6.95, 4, "Hard", "Ocean Front Walk", "Los Angeles, California"),
+                new Listed("Mont Ventoux", 8.395, 615, "Brutal", "Chalet Reynard", "Vaucluse, France"),
+                new Listed("Verona Arena Finale", 24, 197, "Hard", "The arena finale", "Verona, Italy"),
+                new Listed("Victoria Harbour", 9.4, 4, "Hard", "The harbourfront", "Hong Kong"),
+                new Listed("Vienna Ringstrasse", 14, 18, "Hard", "The Ringstrasse", "Vienna, Austria"),
+                new Listed("Westminster Rush Hour", 6.45, 17, "Hard", "Westminster Bridge", "London, England"),
+                new Listed("Winnats Pass", 13.5, 317, "Hard", "The Winnats road", "Derbyshire, England"),
+                new Listed("Wicklow Gap", 15.89, 335, "Hard", "The Wicklow Gap road", "County Wicklow, Ireland"),
+                new Listed("Monte Zoncolan", 12.38, 1290, "Hard", "The Ovaro road", "Friuli, Italy"),
+                new Listed("Yosemite Valley", 13.15, 18, "Hard", "Northside Drive", "California, United States"),
+                new Listed("Winterlude, Ottawa", 17.35, 0, "Hard", "The Rideau Canal", "Ottawa, Canada"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -2176,6 +5348,114 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("independence-pass", null),
                 ("isle-of-man-mountain-course", null),
                 ("iten-kenya", null),
+                ("holi-in-jaipur", null),
+                ("trinidad-jouvert", null),
+                ("joshua-tree", null),
+                ("junkanoo-nassau", null),
+                ("kilauea-lava-road", null),
+                ("knicks-championship-parade", null),
+                ("kona-ironman", null),
+                ("koppenberg-cobbles", null),
+                ("oude-kwaremont", null),
+                ("kyoto-hanami", null),
+                ("chicago-lakefront-trail", null),
+                ("lake-louise", null),
+                ("alto-de-letras", null),
+                ("lisbon-tram-hills", null),
+                ("loire-chateaux", null),
+                ("machu-picchu-road", null),
+                ("marina-bay-night", null),
+                ("marrakech-medina", null),
+                ("mardi-gras-new-orleans", null),
+                ("mauna-kea", null),
+                ("la-merce-barcelona", null),
+                ("miami-neon-nights", null),
+                ("moab-slickrock", null),
+                ("monaco-street-circuit", null),
+                ("montmartre", null),
+                ("montreal-jazz-fest", null),
+                ("mont-royal", null),
+                ("mount-washington-auto-road", null),
+                ("dia-de-muertos-parade", null),
+                ("mulholland-drive", null),
+                ("mur-de-huy", null),
+                ("napa-vineyards", null),
+                ("north-shore-oahu", null),
+                ("notting-hill-carnival", null),
+                ("avenida-9-de-julio", null),
+                ("okinawa-coast-road", null),
+                ("oktoberfest-munich", null),
+                ("oregon-coast", null),
+                ("outback-highway", null),
+                ("overseas-highway", null),
+                ("torres-del-paine", null),
+                ("the-palouse", null),
+                ("san-fermin-pamplona", null),
+                ("ffordd-pen-llech", null),
+                ("pike-place-at-dawn", null),
+                ("playground-park-loop", null),
+                ("prague-old-town", null),
+                ("the-poggio", null),
+                ("prospect-park", null),
+                ("provence-lavender", null),
+                ("andalusian-white-villages", null),
+                ("old-quebec", null),
+                ("la-redoute", null),
+                ("rome-colosseum-loop", null),
+                ("route-66-desert", null),
+                ("saguaro-desert", null),
+                ("rio-sambadrome", null),
+                ("santa-monica-pier", null),
+                ("sea-point-cape-town", null),
+                ("passo-sella", null),
+                ("serpentine-hyde-park", null),
+                ("seven-sisters-cliffs", null),
+                ("san-francisco-hills", null),
+                ("shibuya-crossing", null),
+                ("silverstone-track-day", null),
+                ("isle-of-skye-fog", null),
+                ("songkran-bangkok", null),
+                ("south-beach-sunrise", null),
+                ("calgary-stampede", null),
+                ("stanley-park-seawall", null),
+                ("great-st-bernard-pass", null),
+                ("stelvio-pass", null),
+                ("mongolian-steppe", null),
+                ("st-patricks-day-dublin", null),
+                ("strade-bianche", null),
+                ("strasbourg-christmas-market", null),
+                ("suburban-sunrise", null),
+                ("surfers-paradise", null),
+                ("sydney-harbour-fireworks", null),
+                ("mount-teide", null),
+                ("mount-tamalpais", null),
+                ("lake-tahoe", null),
+                ("tel-aviv-promenade", null),
+                ("tempelhof-field", null),
+                ("teotihuacan", null),
+                ("times-square-new-years-eve", null),
+                ("toronto-waterfront-trail", null),
+                ("tremola-gotthard-pass", null),
+                ("col-du-tourmalet", null),
+                ("trollstigen", null),
+                ("dutch-tulip-fields", null),
+                ("utrecht-bike-city", null),
+                ("valais-ski-stations", null),
+                ("valparaiso-stairways", null),
+                ("las-vegas-strip", null),
+                ("pico-veleta", null),
+                ("lee-valley-velodrome", null),
+                ("venice-beach-boardwalk", null),
+                ("mont-ventoux", null),
+                ("verona-arena-finale", null),
+                ("victoria-harbour", null),
+                ("vienna-ringstrasse", null),
+                ("westminster-rush-hour", null),
+                ("winnats-pass", null),
+                ("wicklow-gap", null),
+                ("monte-zoncolan", null),
+                ("yosemite-valley", null),
+                ("winterlude-ottawa", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -2272,6 +5552,114 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("independence-pass", null),
                 ("isle-of-man-mountain-course", null),
                 ("iten-kenya", null),
+                ("holi-in-jaipur", null),
+                ("trinidad-jouvert", null),
+                ("joshua-tree", null),
+                ("junkanoo-nassau", null),
+                ("kilauea-lava-road", null),
+                ("knicks-championship-parade", null),
+                ("kona-ironman", null),
+                ("koppenberg-cobbles", null),
+                ("oude-kwaremont", null),
+                ("kyoto-hanami", null),
+                ("chicago-lakefront-trail", null),
+                ("lake-louise", null),
+                ("alto-de-letras", null),
+                ("lisbon-tram-hills", null),
+                ("loire-chateaux", null),
+                ("machu-picchu-road", null),
+                ("marina-bay-night", null),
+                ("marrakech-medina", null),
+                ("mardi-gras-new-orleans", null),
+                ("mauna-kea", null),
+                ("la-merce-barcelona", null),
+                ("miami-neon-nights", null),
+                ("moab-slickrock", null),
+                ("monaco-street-circuit", null),
+                ("montmartre", null),
+                ("montreal-jazz-fest", null),
+                ("mont-royal", null),
+                ("mount-washington-auto-road", null),
+                ("dia-de-muertos-parade", null),
+                ("mulholland-drive", null),
+                ("mur-de-huy", null),
+                ("napa-vineyards", null),
+                ("north-shore-oahu", null),
+                ("notting-hill-carnival", null),
+                ("avenida-9-de-julio", null),
+                ("okinawa-coast-road", null),
+                ("oktoberfest-munich", null),
+                ("oregon-coast", null),
+                ("outback-highway", null),
+                ("overseas-highway", null),
+                ("torres-del-paine", null),
+                ("the-palouse", null),
+                ("san-fermin-pamplona", null),
+                ("ffordd-pen-llech", null),
+                ("pike-place-at-dawn", null),
+                ("playground-park-loop", null),
+                ("prague-old-town", null),
+                ("the-poggio", null),
+                ("prospect-park", null),
+                ("provence-lavender", null),
+                ("andalusian-white-villages", null),
+                ("old-quebec", null),
+                ("la-redoute", null),
+                ("rome-colosseum-loop", null),
+                ("route-66-desert", null),
+                ("saguaro-desert", null),
+                ("rio-sambadrome", null),
+                ("santa-monica-pier", null),
+                ("sea-point-cape-town", null),
+                ("passo-sella", null),
+                ("serpentine-hyde-park", null),
+                ("seven-sisters-cliffs", null),
+                ("san-francisco-hills", null),
+                ("shibuya-crossing", null),
+                ("silverstone-track-day", null),
+                ("isle-of-skye-fog", null),
+                ("songkran-bangkok", null),
+                ("south-beach-sunrise", null),
+                ("calgary-stampede", null),
+                ("stanley-park-seawall", null),
+                ("great-st-bernard-pass", null),
+                ("stelvio-pass", null),
+                ("mongolian-steppe", null),
+                ("st-patricks-day-dublin", null),
+                ("strade-bianche", null),
+                ("strasbourg-christmas-market", null),
+                ("suburban-sunrise", null),
+                ("surfers-paradise", null),
+                ("sydney-harbour-fireworks", null),
+                ("mount-teide", null),
+                ("mount-tamalpais", null),
+                ("lake-tahoe", null),
+                ("tel-aviv-promenade", null),
+                ("tempelhof-field", null),
+                ("teotihuacan", null),
+                ("times-square-new-years-eve", null),
+                ("toronto-waterfront-trail", null),
+                ("tremola-gotthard-pass", null),
+                ("col-du-tourmalet", null),
+                ("trollstigen", null),
+                ("dutch-tulip-fields", null),
+                ("utrecht-bike-city", null),
+                ("valais-ski-stations", null),
+                ("valparaiso-stairways", null),
+                ("las-vegas-strip", null),
+                ("pico-veleta", null),
+                ("lee-valley-velodrome", null),
+                ("venice-beach-boardwalk", null),
+                ("mont-ventoux", null),
+                ("verona-arena-finale", null),
+                ("victoria-harbour", null),
+                ("vienna-ringstrasse", null),
+                ("westminster-rush-hour", null),
+                ("winnats-pass", null),
+                ("wicklow-gap", null),
+                ("monte-zoncolan", null),
+                ("yosemite-valley", null),
+                ("winterlude-ottawa", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -2295,7 +5683,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "havana-malecon" => 1200, "hardknott-pass" => 1500, "han-river-parks" => 1240, "great-ocean-road" => 1200, "grand-canyon-south-rim" => 1800, "golden-gate-park" => 900, "glastonbury-fields" => 1500, "glasgow-world-championships" => 1800, "giza-plateau" => 1380, "ghent-six-day" => 600, "passo-gardena" => 1200, "col-du-galibier" => 3600, "furka-pass" => 2700, "mount-fuji-road" => 1800, "fish-hill-cotswolds" => 1800, "fenland-time-trial" => 2100, "mount-etna" => 1800, "engadin-lakes" => 3600, "edinburgh-fringe" => 1200, "dubai-marina" => 1200, "diwali-marine-drive" => 1505, "death-valley" => 1380, "daytona-beach-sand" => 1200, "yorkshire-dales" => 3168, "cypress-mountain" => 2580, "cornish-harbour" => 1020, "copenhagen-cycle-superhighway" => 1920, "copacabana-promenade" => 600, "coney-island-boardwalk" => 1140, "comuna-13-medellin" => 1850, "lake-como" => 1800, "chichen-itza" => 1800, "chicago-loop-crit" => 1200, "champs-elysees-finale" => 1500, "cherry-blossom-festival-dc" => 2400, "central-park-loop" => 900, "caribana-parade" => 900, "cabot-trail" => 3600, "passo-campolongo" => 1310, "sa-calobra-mallorca" => 1830, "the-bund-shanghai" => 1803, "brooklyn-bridge-commute" => 1500, "brighton-pride" => 1800, "bonneville-salt-flats" => 1200, "bondi-to-bronte" => 810, "blue-ridge-parkway" => 3300, "blue-mountains-jamaica" => 2100, "blackpool-illuminations" => 840, "big-sur" => 1800, "bealach-na-ba" => 1320, "beach-road-melbourne" => 2750, "bay-of-islands" => 3680, "bathsheba-barbados" => 1500, "sixth-street-austin" => 2020, "col-aubisque" => 1980, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, "independence-pass" => 2100, "isle-of-man-mountain-course" => 1200, "iten-kenya" => 2400, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "havana-malecon" => 1200, "hardknott-pass" => 1500, "han-river-parks" => 1240, "great-ocean-road" => 1200, "grand-canyon-south-rim" => 1800, "golden-gate-park" => 900, "glastonbury-fields" => 1500, "glasgow-world-championships" => 1800, "giza-plateau" => 1380, "ghent-six-day" => 600, "passo-gardena" => 1200, "col-du-galibier" => 3600, "furka-pass" => 2700, "mount-fuji-road" => 1800, "fish-hill-cotswolds" => 1800, "fenland-time-trial" => 2100, "mount-etna" => 1800, "engadin-lakes" => 3600, "edinburgh-fringe" => 1200, "dubai-marina" => 1200, "diwali-marine-drive" => 1505, "death-valley" => 1380, "daytona-beach-sand" => 1200, "yorkshire-dales" => 3168, "cypress-mountain" => 2580, "cornish-harbour" => 1020, "copenhagen-cycle-superhighway" => 1920, "copacabana-promenade" => 600, "coney-island-boardwalk" => 1140, "comuna-13-medellin" => 1850, "lake-como" => 1800, "chichen-itza" => 1800, "chicago-loop-crit" => 1200, "champs-elysees-finale" => 1500, "cherry-blossom-festival-dc" => 2400, "central-park-loop" => 900, "caribana-parade" => 900, "cabot-trail" => 3600, "passo-campolongo" => 1310, "sa-calobra-mallorca" => 1830, "the-bund-shanghai" => 1803, "brooklyn-bridge-commute" => 1500, "brighton-pride" => 1800, "bonneville-salt-flats" => 1200, "bondi-to-bronte" => 810, "blue-ridge-parkway" => 3300, "blue-mountains-jamaica" => 2100, "blackpool-illuminations" => 840, "big-sur" => 1800, "bealach-na-ba" => 1320, "beach-road-melbourne" => 2750, "bay-of-islands" => 3680, "bathsheba-barbados" => 1500, "sixth-street-austin" => 2020, "col-aubisque" => 1980, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, "independence-pass" => 2100, "isle-of-man-mountain-course" => 1200, "iten-kenya" => 2400, "holi-in-jaipur" => 1200, "trinidad-jouvert" => 900, "joshua-tree" => 3300, "kilauea-lava-road" => 1102, "knicks-championship-parade" => 1020, "kona-ironman" => 1505, "koppenberg-cobbles" => 960, "oude-kwaremont" => 2400, "kyoto-hanami" => 1500, "chicago-lakefront-trail" => 1530, "lake-louise" => 1200, "alto-de-letras" => 2910, "lisbon-tram-hills" => 900, "machu-picchu-road" => 1507, "marina-bay-night" => 1500, "marrakech-medina" => 1790, "mardi-gras-new-orleans" => 1200, "mauna-kea" => 3600, "la-merce-barcelona" => 1795, "miami-neon-nights" => 1200, "monaco-street-circuit" => 1335, "montmartre" => 1200, "montreal-jazz-fest" => 1323, "mont-royal" => 3600, "dia-de-muertos-parade" => 1200, "mulholland-drive" => 2400, "mur-de-huy" => 1560, "napa-vineyards" => 1200, "north-shore-oahu" => 1230, "notting-hill-carnival" => 825, "avenida-9-de-julio" => 2400, "okinawa-coast-road" => 2400, "oktoberfest-munich" => 1488, "oregon-coast" => 2520, "outback-highway" => 1500, "overseas-highway" => 1200, "torres-del-paine" => 1740, "the-palouse" => 2700, "san-fermin-pamplona" => 1320, "ffordd-pen-llech" => 2740, "pike-place-at-dawn" => 1500, "prague-old-town" => 3000, "the-poggio" => 1710, "provence-lavender" => 2460, "andalusian-white-villages" => 3004, "la-redoute" => 2400, "rome-colosseum-loop" => 2010, "route-66-desert" => 1200, "saguaro-desert" => 1480, "rio-sambadrome" => 900, "santa-monica-pier" => 1200, "sea-point-cape-town" => 1200, "passo-sella" => 1560, "serpentine-hyde-park" => 900, "seven-sisters-cliffs" => 1760, "san-francisco-hills" => 1200, "shibuya-crossing" => 1200, "silverstone-track-day" => 1530, "songkran-bangkok" => 1650, "south-beach-sunrise" => 960, "stanley-park-seawall" => 900, "great-st-bernard-pass" => 2400, "stelvio-pass" => 1200, "mongolian-steppe" => 2700, "st-patricks-day-dublin" => 1801, "strade-bianche" => 1200, "strasbourg-christmas-market" => 1500, "suburban-sunrise" => 900, "surfers-paradise" => 1920, "mount-tamalpais" => 1813, "lake-tahoe" => 2700, "tel-aviv-promenade" => 1440, "tempelhof-field" => 1725, "teotihuacan" => 3000, "times-square-new-years-eve" => 1200, "col-du-tourmalet" => 1560, "dutch-tulip-fields" => 1500, "utrecht-bike-city" => 3600, "valparaiso-stairways" => 3600, "las-vegas-strip" => 1200, "pico-veleta" => 3360, "lee-valley-velodrome" => 1200, "venice-beach-boardwalk" => 1020, "mont-ventoux" => 1200, "verona-arena-finale" => 3600, "victoria-harbour" => 1320, "vienna-ringstrasse" => 2100, "westminster-rush-hour" => 900, "winnats-pass" => 2128, "wicklow-gap" => 2100, "winterlude-ottawa" => 2400, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -2314,7 +5702,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten", "jaipur", "jouvert", "joshuatree", "junkanoo", "kilauea", "knicks", "kona", "koppenberg", "kwaremont", "kyoto", "lakefront", "lakelouise", "letras", "lisbon", "loire", "machupicchu", "marinabay", "marrakech", "mardigras", "maunakea", "merce", "miami", "moab", "monaco", "montmartre", "montreal", "montroyal", "mountwashington", "muertos", "mulholland", "murdehuy", "napa", "northshore", "nottinghill", "nuevedejulio", "okinawa", "oktoberfest", "oregon", "outback", "overseas", "paine", "palouse", "pamplona", "penllech", "pikeplace", "playground", "prague", "poggio", "prospect", "provence", "pueblos", "quebec", "redoute", "rome", "route66", "saguaro", "sambadrome", "santamonica", "seapoint", "sella", "serpentine", "sevensisters", "sfhills", "shibuya", "silverstone", "skye", "songkran", "southbeach", "stampede", "stanleypark", "stbernard", "stelvio", "steppe", "stpatricks", "strade", "strasbourg", "suburbia", "surfers", "sydneyharbour", "teide", "tamalpais", "tahoe", "telaviv", "tempelhof", "teotihuacan", "timessquare", "toronto", "tremola", "tourmalet", "trollstigen", "tulips", "utrecht", "valais", "valparaiso", "vegas", "veleta", "velodrome", "venice", "ventoux", "verona", "victoria", "vienna", "westminster", "winnats", "wicklow", "zoncolan", "yosemite", "winterlude"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));

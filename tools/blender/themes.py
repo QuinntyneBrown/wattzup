@@ -736,11 +736,20 @@ def prairie(k: Kit) -> dict:
 def oldtown(k: Kit) -> dict:
     """A cobbled European old town on race day: tall pastel houses door to door, bunting, a cathedral, cafés."""
     B, s, rng = k.B, k.s, k.rng
+    from worldkit import Painted
+    from iten_landmarks import pictured
+    from oldtown_markt import facades,race_day
+    art=Painted(k)
+    frontages=facades(k,art,pictured(k,'TownhouseFronts'))
     front = k.kerb + 3.2  # the pavements' width: houses stand at their back
     houses = 0
     for side in (1, -1):
         i = 2
         while i < k.n - 4:
+            # A clear market square separates each sprint line from the cathedral steps.
+            if any(stage['kind']=='work' and stage['to']-155<s[i]['d']<stage['to']+66 for stage in k.st):
+                i+=2
+                continue
             if not k.straight(i, 2, 1 / 45):
                 i += 2
                 continue
@@ -756,8 +765,7 @@ def oldtown(k: Kit) -> dict:
             B[FACADES[(houses + i) % len(FACADES)]].box(k.P(i, 0, off, base - s[i]["z"]), (width, 10.0, floors * fh + 0.8 - (base - s[i]["z"])), yaw)
             k.gable(B["roof-tile"], k.P(i, 0, off, floors * fh + 0.8), 10.0, width, 3.0, yaw + math.pi / 2)
             wall = off - 5.05 * side
-            k.windows(B["window"], i, 0, wall, width, floors - 1, 3.6, fh, yaw, 2.4)
-            B["dark"].box(k.P(i, rng.uniform(-1.5, 1.5), wall, 0.12), (1.3, 0.2, 2.4), yaw)
+            frontages(i,wall,width,floors*fh,side,houses)
             if rng.random() < 0.25:
                 for c in range(2):
                     ux, uy, uz = k.P(i, -1.5 + c * 3, off - 6.6 * side, 0.12)
@@ -772,26 +780,8 @@ def oldtown(k: Kit) -> dict:
     # Street lamps on the kerbs.
     for i in range(4, k.n - 4, 6):
         k.lamp(i, (k.kerb + 0.6) * (1 if (i // 6) % 2 else -1), "glow-lamp", 5.0)
-    # The cathedral on the square midway: a nave, a crossing and two towers with spires.
-    placed = 0
-    for share in (0.5, 0.42, 0.58, 0.3, 0.7):
-        i = k.road.index(k.length * share)
-        off = -(front + 34.0)
-        if not k.room(i, off, 34.0, 120.0):
-            off = -off
-            if not k.room(i, off, 34.0, 120.0):
-                continue
-        yaw = s[i]["h"]
-        z = s[i]["z"]
-        B["limestone"].box(k.P(i, 0, off, -3), (46, 18, 24), yaw)
-        k.gable(B["roof-slate"], k.P(i, 0, off, 21), 46, 18, 9, yaw)
-        for t in (-7, 7):
-            tx = k.P(i, -26, off + t * 0.0 + t, -3)
-            B["limestone"].box(tx, (8, 8, 52), yaw)
-            k.cone(B["roof-slate"], (tx[0], tx[1], tx[2] + 52), 5.4, 20, 4)
-        B["glow-window"].box(k.P(i, -30.1, off, 26), (0.2, 4.0, 4.0), yaw)
-        placed += 1
-        break
+    race_day(k,art)
+    placed=sum(stage["kind"]=="work" for stage in k.st)
     # Hills of the countryside beyond the walls, with cypresses.
     cx, cy, reach = k.centre()
     for _ in range(int(160 * k.scale)):
@@ -1552,3 +1542,546 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+import jaipur as _jaipur
+
+THEMES['jaipur'] = _jaipur.THEME
+SCENERY['jaipur'] = _jaipur.scenery
+
+import jouvert as _jouvert
+
+THEMES['jouvert'] = _jouvert.THEME
+SCENERY['jouvert'] = _jouvert.scenery
+import joshuatree as _joshuatree
+
+THEMES['joshuatree'] = _joshuatree.THEME
+SCENERY['joshuatree'] = _joshuatree.scenery
+
+import junkanoo
+
+THEMES['junkanoo'] = junkanoo.THEME
+SCENERY['junkanoo'] = junkanoo.scenery
+
+import kilauea
+
+THEMES['kilauea'] = kilauea.THEME
+SCENERY['kilauea'] = kilauea.scenery
+
+import knicks
+
+THEMES['knicks'] = knicks.THEME
+SCENERY['knicks'] = knicks.scenery
+
+import kona
+
+THEMES['kona'] = kona.THEME
+SCENERY['kona'] = kona.scenery
+
+import koppenberg
+
+THEMES['koppenberg'] = koppenberg.THEME
+SCENERY['koppenberg'] = koppenberg.scenery
+
+import kwaremont
+
+THEMES['kwaremont'] = kwaremont.THEME
+SCENERY['kwaremont'] = kwaremont.scenery
+
+import kyoto
+
+THEMES['kyoto'] = kyoto.THEME
+SCENERY['kyoto'] = kyoto.scenery
+
+import lakefront
+
+THEMES['lakefront'] = lakefront.THEME
+SCENERY['lakefront'] = lakefront.scenery
+
+import lakelouise
+
+THEMES['lakelouise'] = lakelouise.THEME
+SCENERY['lakelouise'] = lakelouise.scenery
+
+import letras
+
+THEMES['letras'] = letras.THEME
+SCENERY['letras'] = letras.scenery
+
+import lisbon
+
+THEMES['lisbon'] = lisbon.THEME
+SCENERY['lisbon'] = lisbon.scenery
+
+import loire
+
+THEMES['loire'] = loire.THEME
+SCENERY['loire'] = loire.scenery
+
+import machupicchu as _machupicchu
+
+THEMES['machupicchu'] = _machupicchu.THEME
+SCENERY['machupicchu'] = _machupicchu.scenery
+
+import marinabay as _marinabay
+
+THEMES['marinabay'] = _marinabay.THEME
+SCENERY['marinabay'] = _marinabay.scenery
+
+import marrakech as _marrakech
+
+THEMES['marrakech'] = _marrakech.THEME
+SCENERY['marrakech'] = _marrakech.scenery
+
+import mardigras as _mardigras
+
+THEMES['mardigras'] = _mardigras.THEME
+SCENERY['mardigras'] = _mardigras.scenery
+
+import maunakea as _maunakea
+
+THEMES['maunakea'] = _maunakea.THEME
+SCENERY['maunakea'] = _maunakea.scenery
+
+import merce as _merce
+
+THEMES['merce'] = _merce.THEME
+SCENERY['merce'] = _merce.scenery
+
+import miami as _miami
+
+THEMES['miami'] = _miami.THEME
+SCENERY['miami'] = _miami.scenery
+
+import moab as _moab
+
+THEMES['moab'] = _moab.THEME
+SCENERY['moab'] = _moab.scenery
+
+import monaco as _monaco
+
+THEMES['monaco'] = _monaco.THEME
+SCENERY['monaco'] = _monaco.scenery
+
+import montmartre as _montmartre
+
+THEMES['montmartre'] = _montmartre.THEME
+SCENERY['montmartre'] = _montmartre.scenery
+
+import montreal as _montreal
+
+THEMES['montreal'] = _montreal.THEME
+SCENERY['montreal'] = _montreal.scenery
+
+import montroyal as _montroyal
+
+THEMES['montroyal'] = _montroyal.THEME
+SCENERY['montroyal'] = _montroyal.scenery
+
+import mountwashington as _mountwashington
+
+THEMES['mountwashington'] = _mountwashington.THEME
+SCENERY['mountwashington'] = _mountwashington.scenery
+
+import muertos as _muertos
+
+THEMES['muertos'] = _muertos.THEME
+SCENERY['muertos'] = _muertos.scenery
+
+import mulholland as _mulholland
+
+THEMES['mulholland'] = _mulholland.THEME
+SCENERY['mulholland'] = _mulholland.scenery
+
+import murdehuy as _murdehuy
+
+THEMES['murdehuy'] = _murdehuy.THEME
+SCENERY['murdehuy'] = _murdehuy.scenery
+
+import napa as _napa
+
+THEMES['napa'] = _napa.THEME
+SCENERY['napa'] = _napa.scenery
+
+import northshore as _northshore
+
+THEMES['northshore'] = _northshore.THEME
+SCENERY['northshore'] = _northshore.scenery
+
+import nottinghill as _nottinghill
+
+THEMES['nottinghill'] = _nottinghill.THEME
+SCENERY['nottinghill'] = _nottinghill.scenery
+
+import nuevedejulio as _nueve
+
+THEMES['nuevedejulio'] = _nueve.THEME
+SCENERY['nuevedejulio'] = _nueve.scenery
+
+import okinawa as _okinawa
+
+THEMES['okinawa'] = _okinawa.THEME
+SCENERY['okinawa'] = _okinawa.scenery
+
+import oktoberfest as _oktoberfest
+
+THEMES['oktoberfest'] = _oktoberfest.THEME
+SCENERY['oktoberfest'] = _oktoberfest.scenery
+
+from oldtown_markt import road as _markt_road, route as _markt_route
+
+THEMES['oldtown']['lay'] = _markt_route
+
+THEMES["oldtown"]["road_builder"] = _markt_road
+
+import oregon as _oregon
+
+THEMES['oregon'] = _oregon.THEME
+SCENERY['oregon'] = _oregon.scenery
+
+import outback as _outback
+
+THEMES['outback'] = _outback.THEME
+SCENERY['outback'] = _outback.scenery
+
+import overseas as _overseas
+
+THEMES['overseas'] = _overseas.THEME
+SCENERY['overseas'] = _overseas.scenery
+
+import paine as _paine
+
+THEMES['paine'] = _paine.THEME
+SCENERY['paine'] = _paine.scenery
+
+import palouse as _palouse
+
+THEMES['palouse'] = _palouse.THEME
+SCENERY['palouse'] = _palouse.scenery
+
+import pamplona as _pamplona
+
+THEMES['pamplona'] = _pamplona.THEME
+SCENERY['pamplona'] = _pamplona.scenery
+
+import penllech as _penllech
+
+THEMES['penllech'] = _penllech.THEME
+SCENERY['penllech'] = _penllech.scenery
+
+import pikeplace as _pikeplace
+
+THEMES['pikeplace'] = _pikeplace.THEME
+SCENERY['pikeplace'] = _pikeplace.scenery
+
+import playground as _playground
+
+THEMES['playground'] = _playground.THEME
+SCENERY['playground'] = _playground.scenery
+
+import prague as _prague
+
+THEMES['prague'] = _prague.THEME
+SCENERY['prague'] = _prague.scenery
+
+import poggio as _poggio
+
+THEMES['poggio'] = _poggio.THEME
+SCENERY['poggio'] = _poggio.scenery
+
+import prospect as _prospect
+
+THEMES['prospect'] = _prospect.THEME
+SCENERY['prospect'] = _prospect.scenery
+
+import route_nine as _route_nine
+
+THEMES['prairie'].update(lay=_route_nine.route,road_builder=_route_nine.road,land_builder=_route_nine.land)
+SCENERY['prairie'] = _route_nine.scenery
+
+import provence as _provence
+
+THEMES['provence'] = _provence.THEME
+SCENERY['provence'] = _provence.scenery
+
+import pueblos as _pueblos
+
+THEMES['pueblos'] = _pueblos.THEME
+SCENERY['pueblos'] = _pueblos.scenery
+
+import quebec as _quebec
+
+THEMES['quebec'] = _quebec.THEME
+SCENERY['quebec'] = _quebec.scenery
+
+import redoute as _redoute
+
+THEMES['redoute'] = _redoute.THEME
+SCENERY['redoute'] = _redoute.scenery
+
+import rome as _rome
+
+THEMES['rome'] = _rome.THEME
+SCENERY['rome'] = _rome.scenery
+
+import route66 as _route66
+
+THEMES['route66'] = _route66.THEME
+SCENERY['route66'] = _route66.scenery
+
+import saguaro as _saguaro
+
+THEMES['saguaro'] = _saguaro.THEME
+SCENERY['saguaro'] = _saguaro.scenery
+
+import sambadrome as _sambadrome
+
+THEMES['sambadrome'] = _sambadrome.THEME
+SCENERY['sambadrome'] = _sambadrome.scenery
+
+import santamonica as _santamonica
+THEMES['santamonica']=_santamonica.THEME
+SCENERY['santamonica']=_santamonica.scenery
+
+import seapoint as _seapoint
+THEMES['seapoint']=_seapoint.THEME
+SCENERY['seapoint']=_seapoint.scenery
+
+import sella as _sella
+THEMES['sella']=_sella.THEME
+SCENERY['sella']=_sella.scenery
+
+import serpentine as _serpentine
+THEMES['serpentine'] = _serpentine.THEME
+SCENERY['serpentine'] = _serpentine.scenery
+
+import sevensisters as _sevensisters
+THEMES['sevensisters']=_sevensisters.THEME
+SCENERY['sevensisters']=_sevensisters.scenery
+
+import sfhills as _sfhills
+THEMES['sfhills']=_sfhills.THEME
+SCENERY['sfhills']=_sfhills.scenery
+
+import shibuya as _shibuya
+
+THEMES['shibuya'] = _shibuya.THEME
+SCENERY['shibuya'] = _shibuya.scenery
+
+import silverstone as _silverstone
+
+THEMES['silverstone'] = _silverstone.THEME
+SCENERY['silverstone'] = _silverstone.scenery
+
+import skye as _skye
+
+THEMES['skye'] = _skye.THEME
+SCENERY['skye'] = _skye.scenery
+
+import songkran as _songkran
+
+THEMES['songkran'] = _songkran.THEME
+SCENERY['songkran'] = _songkran.scenery
+
+import southbeach as _southbeach
+
+THEMES['southbeach'] = _southbeach.THEME
+SCENERY['southbeach'] = _southbeach.scenery
+
+import stampede as _stampede
+
+THEMES['stampede'] = _stampede.THEME
+SCENERY['stampede'] = _stampede.scenery
+
+import stanleypark as _stanleypark
+
+THEMES['stanleypark'] = _stanleypark.THEME
+SCENERY['stanleypark'] = _stanleypark.scenery
+
+import stbernard as _stbernard
+
+THEMES['stbernard'] = _stbernard.THEME
+SCENERY['stbernard'] = _stbernard.scenery
+
+import stelvio as _stelvio
+
+THEMES['stelvio'] = _stelvio.THEME
+SCENERY['stelvio'] = _stelvio.scenery
+
+import steppe as _steppe
+
+THEMES['steppe'] = _steppe.THEME
+SCENERY['steppe'] = _steppe.scenery
+
+import stpatricks as _stpatricks
+
+THEMES['stpatricks'] = _stpatricks.THEME
+SCENERY['stpatricks'] = _stpatricks.scenery
+
+import strade as _strade
+
+THEMES['strade'] = _strade.THEME
+SCENERY['strade'] = _strade.scenery
+
+import strasbourg as _strasbourg
+
+THEMES['strasbourg'] = _strasbourg.THEME
+SCENERY['strasbourg'] = _strasbourg.scenery
+
+import suburbia as _suburbia
+
+THEMES['suburbia'] = _suburbia.THEME
+SCENERY['suburbia'] = _suburbia.scenery
+
+import surfers as _surfers
+
+THEMES['surfers'] = _surfers.THEME
+SCENERY['surfers'] = _surfers.scenery
+
+import sydneyharbour as _sydneyharbour
+
+THEMES['sydneyharbour'] = _sydneyharbour.THEME
+SCENERY['sydneyharbour'] = _sydneyharbour.scenery
+
+import teide as _teide
+
+THEMES['teide'] = _teide.THEME
+SCENERY['teide'] = _teide.scenery
+
+import tamalpais as _tamalpais
+
+THEMES['tamalpais'] = _tamalpais.THEME
+SCENERY['tamalpais'] = _tamalpais.scenery
+
+import tahoe as _tahoe
+
+THEMES['tahoe'] = _tahoe.THEME
+SCENERY['tahoe'] = _tahoe.scenery
+
+import telaviv as _telaviv
+
+THEMES['telaviv'] = _telaviv.THEME
+SCENERY['telaviv'] = _telaviv.scenery
+
+import tempelhof as _tempelhof
+
+THEMES['tempelhof'] = _tempelhof.THEME
+SCENERY['tempelhof'] = _tempelhof.scenery
+
+import teotihuacan as _teotihuacan
+
+THEMES['teotihuacan'] = _teotihuacan.THEME
+SCENERY['teotihuacan'] = _teotihuacan.scenery
+
+import timessquare as _timessquare
+
+THEMES['timessquare'] = _timessquare.THEME
+SCENERY['timessquare'] = _timessquare.scenery
+
+import toronto as _toronto
+
+THEMES['toronto'] = _toronto.THEME
+SCENERY['toronto'] = _toronto.scenery
+
+import tremola as _tremola
+
+THEMES['tremola'] = _tremola.THEME
+SCENERY['tremola'] = _tremola.scenery
+
+import tourmalet as _tourmalet
+
+THEMES['tourmalet'] = _tourmalet.THEME
+SCENERY['tourmalet'] = _tourmalet.scenery
+
+import trollstigen as _trollstigen
+
+THEMES['trollstigen'] = _trollstigen.THEME
+SCENERY['trollstigen'] = _trollstigen.scenery
+
+import tulips as _tulips
+
+THEMES['tulips'] = _tulips.THEME
+SCENERY['tulips'] = _tulips.scenery
+
+import utrecht as _utrecht
+
+THEMES['utrecht'] = _utrecht.THEME
+SCENERY['utrecht'] = _utrecht.scenery
+
+import valais as _valais
+
+THEMES['valais'] = _valais.THEME
+SCENERY['valais'] = _valais.scenery
+
+import valparaiso as _valparaiso
+
+THEMES['valparaiso'] = _valparaiso.THEME
+SCENERY['valparaiso'] = _valparaiso.scenery
+
+import vegas as _vegas
+
+THEMES['vegas'] = _vegas.THEME
+SCENERY['vegas'] = _vegas.scenery
+
+import veleta as _veleta
+
+THEMES['veleta'] = _veleta.THEME
+SCENERY['veleta'] = _veleta.scenery
+
+import velodrome as _lee_valley
+
+THEMES['velodrome'] = _lee_valley.THEME
+SCENERY['velodrome'] = _lee_valley.scenery
+
+import venice as _venice
+
+THEMES['venice'] = _venice.THEME
+SCENERY['venice'] = _venice.scenery
+
+import ventoux as _ventoux
+
+THEMES['ventoux'] = _ventoux.THEME
+SCENERY['ventoux'] = _ventoux.scenery
+
+import verona as _verona
+
+THEMES['verona'] = _verona.THEME
+SCENERY['verona'] = _verona.scenery
+
+import victoria as _victoria
+
+THEMES['victoria'] = _victoria.THEME
+SCENERY['victoria'] = _victoria.scenery
+
+import vienna as _vienna
+
+THEMES['vienna'] = _vienna.THEME
+SCENERY['vienna'] = _vienna.scenery
+
+import westminster as _westminster
+
+THEMES['westminster'] = _westminster.THEME
+SCENERY['westminster'] = _westminster.scenery
+
+import winnats as _winnats
+
+THEMES['winnats'] = _winnats.THEME
+SCENERY['winnats'] = _winnats.scenery
+
+import wicklow as _wicklow
+
+THEMES['wicklow'] = _wicklow.THEME
+SCENERY['wicklow'] = _wicklow.scenery
+
+import zoncolan as _zoncolan
+
+THEMES['zoncolan'] = _zoncolan.THEME
+SCENERY['zoncolan'] = _zoncolan.scenery
+
+import yosemite as _yosemite
+
+THEMES['yosemite'] = _yosemite.THEME
+SCENERY['yosemite'] = _yosemite.scenery
+
+import winterlude as _winterlude
+
+THEMES['winterlude'] = _winterlude.THEME
+SCENERY['winterlude'] = _winterlude.scenery

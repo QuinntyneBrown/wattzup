@@ -35,6 +35,16 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
     B["dark"].box((rx - math.sin(yaw) * -(main_d * 0.5 + 0.22), ry + math.cos(yaw) * -(main_d * 0.5 + 0.22), base_z + 3.0 + upper_h), (0.65, 0.12, 0.65), yaw)
     kit.gable(B["roof-slate"], (rx, ry, base_z + 3.2 + upper_h), main_w + 1.4, main_d + 1.4, 3.4, yaw)
     B["steel"].box((rx - math.sin(yaw) * -(main_d * 0.5 + 0.45), ry + math.cos(yaw) * -(main_d * 0.5 + 0.45), base_z + 3.35 + upper_h), (main_w + 0.8, 0.08, 0.18), yaw)
+    # Skin the short gable wall. The native projecting balconies and rooftop stay visible.
+    from iten_landmarks import picture
+    def gable_point(across, h):
+        along = -main_w * 0.5 - 0.23
+        return (rx + math.cos(yaw)*along - math.sin(yaw)*across,
+                ry + math.sin(yaw)*along + math.cos(yaw)*across, base_z + h)
+    half = main_d * 0.5
+    picture(B["RondaInns"], [gable_point(a,h) for a,h in
+            ((half,0.1),(-half,0.1),(-half,3.1+upper_h),(half,3.1+upper_h))],
+            ((0,0),(1,0),(1,0.80),(0,0.80)))
     # Traditional wooden alpine rooftop bell-turret (campaniletto) straddling the ridge
     B["larch-warm"].box((rx, ry, base_z + 3.2 + upper_h + 3.1), (1.05, 1.05, 1.55), yaw)
     kit.gable(B["larch-aged"], (rx, ry, base_z + 3.2 + upper_h + 4.65), 1.35, 1.35, 0.72, yaw)
@@ -134,7 +144,7 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
                 B[sh_mat].box((sh_x, sh_y, base_z + 4.05 + st_i * 3.1), (0.34, 0.06, 1.48), yaw)
 
 
-def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
+def build_rifugi_and_hotels(B, kit, road, height_at, flags) -> None:
     """Builds historic stone-and-timber rifugi and pass hotels across Campolongo, Pordoi, Sella & Gardena."""
     rifugi_sites = (
         (2085.0, -1.0, 16.5, 10.2, 2),  # Passo Campolongo — Hotel Boè
@@ -175,13 +185,12 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
             p_mat = "parasol-red" if (p_k + r_i) % 2 == 0 else "paint"
             kit.gable(B[p_mat], (px_t, py_t, tz + 2.45), 2.85, 2.85, 0.55, yaw + p_k * 0.4)
         # Trio of tall alpine flagpoles (Italian green/red, Ladin blue, Tyrolean red/white)
-        flag_mats = ("foliage", "parasol-red", "ladin-blue")
-        for f_k, f_mat in enumerate(flag_mats):
+        for f_k in range(3):
             fx = tx + math.cos(yaw) * (-w * 0.44 + f_k * 1.6) - math.sin(yaw) * (-1.8 * side)
             fy = ty + math.sin(yaw) * (-w * 0.44 + f_k * 1.6) + math.cos(yaw) * (-1.8 * side)
             B["paint"].box((fx, fy, tz + 0.1), (0.10, 0.10, 6.4), yaw)
             B["gold"].box((fx, fy, tz + 6.50), (0.18, 0.18, 0.18), yaw)
-            B[f_mat].box((fx + math.cos(yaw) * 0.72, fy + math.sin(yaw) * 0.72, tz + 5.15), (1.35, 0.06, 0.88), yaw + 0.18)
+            flags.append({"station": at_m, "position": [round(fx, 3), round(tz + 6.03, 3), round(-fy, 3)], "yaw": yaw, "pattern": f_k})
         # Wooden A-frame Bike Day wheel/saddle rack with parked road bikes beside each rifugio terrace!
         rk_x = tx + math.cos(yaw) * (w * 0.36)
         rk_y = ty + math.sin(yaw) * (w * 0.36)

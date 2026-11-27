@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Kappa Quest” Route Details (Makuri Islands)](https://zwiftinsider.com/route/kappa-quest/) (g0077) | © Zwift |
 | game-04.jpg | Zwift: [“Downtown Titans” Route Details (Watopia)](https://zwiftinsider.com/route/downtown-titans/) (g0034) | © Zwift |
 | game-05.jpg | Zwift: [“Accelerate to Elevate” Route Details (Watopia)](https://zwiftinsider.com/route/accelerate-to-elevate/) (g0003) | © Zwift |
+
+The Sitka spruce, weathered cedar-shingle frontages, Pacific surf and wet basalt are original course artwork. The Highway 101 shield and state scenic viewpoint signs are original drawings. Real 06–07 and 13–14 guided Haystack Rock, its satellite stacks and the high-tide driftwood. Real 08–11 and 15 guided the different lighthouse profiles and the through arch of Yaquina Bay Bridge. The six paired rider views identify their game references.

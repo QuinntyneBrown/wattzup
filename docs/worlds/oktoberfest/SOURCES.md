@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Bon Voyage” Route Details (France)](https://zwiftinsider.com/route/bon-voyage/) (g0007) | © Zwift |
 | game-04.jpg | Zwift: [“Sacré Trois!” Route Details (Paris)](https://zwiftinsider.com/route/sacre-trois/) (g0133) | © Zwift |
 | game-05.jpg | Zwift: [“Outer Scotland” Route Details (Scotland)](https://zwiftinsider.com/route/outer-scotland/) (g0114) | © Zwift |
+
+The painted hall, gingerbread stall, traditional festival guests, Bavaria statue, brass players and draught horse are original course artwork. The brewery signs and Bavarian diamond pattern were drawn for this route. Real 04–07 guided the procession and its proportions, real 08–09 the tent fronts, real 14 the relationship of Bavaria to the colonnade and real 10–13 and 15 the fairground silhouettes. The six matched rider views identify their game references.

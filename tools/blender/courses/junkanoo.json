@@ -1,0 +1,151 @@
+{
+  "id": "junkanoo",
+  "name": "Junkanoo, Nassau",
+  "world": "junkanoo",
+  "theme": "junkanoo",
+  "seed": 2146,
+  "layout": 0,
+  "class": {
+    "id": "the-smash-fest",
+    "title": "The Smash Fest",
+    "channel": "GCN Training",
+    "videoId": "_DfOulVPpdM",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 320,
+        "level": 11,
+        "cadenceAim": 82
+      },
+      {
+        "kind": "work",
+        "duration": 150,
+        "level": 16,
+        "cadenceAim": 89
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 25,
+        "level": 24,
+        "cadenceAim": 105
+      },
+      {
+        "kind": "recover",
+        "duration": 10,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 105
+      },
+      {
+        "kind": "recover",
+        "duration": 50,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 25,
+        "level": 24,
+        "cadenceAim": 105
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 75,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 105
+      },
+      {
+        "kind": "work",
+        "duration": 105,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 165,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

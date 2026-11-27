@@ -45,7 +45,10 @@ export class MapRenderer implements WorldRenderer {
       readWorldRideProbe((globalThis as Record<string, unknown>)[PROBE_KEY])?.tier ??
       options?.tier ??
       startTier();
-    const path = world.id === 'havana' && tier === 'low' ? 'courses/havana' : coursePath(world.id);
+    const path =
+      world.id === 'havana' && tier === 'low'
+        ? 'courses/havana'
+        : coursePath(world.id, options?.catalogueWorld);
     const renderer: WorldRenderer =
       path === null
         ? await import('./world-renderer').then((m) => new m.ThreeWorldRenderer())

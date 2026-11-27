@@ -1,0 +1,169 @@
+{
+  "id": "mardigras",
+  "name": "Mardi Gras, New Orleans",
+  "world": "mardigras",
+  "theme": "mardigras",
+  "seed": 2159,
+  "layout": 0,
+  "class": {
+    "id": "ride-to-the-beat",
+    "title": "Ride to the Beat",
+    "channel": "GCN Training",
+    "videoId": "JP6UzM9sgGI",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 18,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 18,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 18,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 50,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 50,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 50,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 22,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 22,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 22,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 22,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "recover",
+        "duration": 45,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 24,
+        "cadenceAim": 63
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 11,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 24,
+        "cadenceAim": 63
+      },
+      {
+        "kind": "cool-down",
+        "duration": 150,
+        "level": 11,
+        "cadenceAim": 82
+      }
+    ]
+  }
+}
