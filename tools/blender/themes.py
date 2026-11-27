@@ -2005,3 +2005,8 @@ import utrecht as _utrecht
 
 THEMES['utrecht'] = _utrecht.THEME
 SCENERY['utrecht'] = _utrecht.scenery
+
+import valais as _valais
+
+THEMES['valais'] = _valais.THEME
+SCENERY['valais'] = _valais.scenery

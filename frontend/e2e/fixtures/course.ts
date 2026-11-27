@@ -91,6 +91,7 @@ import tourmaletElevation from './tourmalet-elevation.json';
 import trollstigenElevation from './trollstigen-elevation.json';
 import tulipsElevation from './tulips-elevation.json';
 import utrechtElevation from './utrecht-elevation.json';
+import valaisElevation from './valais-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7461,6 +7462,41 @@ export const utrechtCourseMap = {
       seg('recover', 120, 10, 80),
       seg('work', 180, 16, 80),
       seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
+
+export const valaisCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'valais-ski-stations',
+  name: 'Valais Ski Stations',
+  routeName: 'The station road',
+  place: 'Valais, Switzerland',
+  world: 'valais',
+  distanceKm: 12.0,
+  climbingM: 333,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: valaisElevation,
+  },
+  thumbnailUrl: 'maps/valais-ski-stations.jpg',
+  photoUrl: 'maps/valais-ski-stations-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 120, 18, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 240, 18, 80),
+      seg('recover', 120, 14, 80),
+      seg('work', 240, 18, 80),
+      seg('recover', 120, 14, 80),
+      seg('work', 240, 18, 80),
+      seg('recover', 120, 14, 80),
+      seg('work', 240, 18, 80),
+      seg('recover', 120, 14, 80),
+      seg('cool-down', 60, 11, 80),
     ],
   },
 };

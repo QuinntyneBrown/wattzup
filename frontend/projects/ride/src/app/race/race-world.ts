@@ -71,7 +71,7 @@ export class RaceWorld {
     });
     void import('@telo/world').then(({ WorldScene, WorldMusicPlayer }) => {
       if (destroyed) return;
-      if (this.map().world === 'bluemountains' || this.map().world === 'ghent') {
+      if (['bluemountains', 'ghent', 'valais'].includes(this.map().world)) {
         doc.addEventListener('visibilitychange', onVisibility);
         music.set(new WorldMusicPlayer(() => doc.createElement('audio'), doc));
       }
@@ -92,11 +92,15 @@ export class RaceWorld {
         return;
       }
       const metres = this.raceMetres();
-      const distance = Math.min(Math.abs(metres - 1540), Math.abs(metres - 8860));
+      const pasture = this.map().world === 'valais';
+      const distance = pasture
+        ? Math.min(Math.abs(metres - 205), Math.abs(metres - 6730))
+        : Math.min(Math.abs(metres - 1540), Math.abs(metres - 8860));
       const audible = distance < 125 && this.settings().worldMusic && this.running() && visible();
       if (audible) {
         if (!trackLoaded) {
-          player.load('bluemountains');
+          if (pasture) player.load('valais', 'music/valais-cowbells.ogg');
+          else player.load('bluemountains');
           trackLoaded = true;
         }
         player.setVolume(0.65 * (1 - distance / 125) ** 2);
