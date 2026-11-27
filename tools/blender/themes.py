@@ -1791,3 +1791,8 @@ import prospect as _prospect
 
 THEMES['prospect'] = _prospect.THEME
 SCENERY['prospect'] = _prospect.scenery
+
+import route_nine as _route_nine
+
+THEMES['prairie'].update(lay=_route_nine.route,road_builder=_route_nine.road,land_builder=_route_nine.land)
+SCENERY['prairie'] = _route_nine.scenery

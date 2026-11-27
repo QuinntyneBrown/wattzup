@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Canopies and Coastlines” Route Details (Watopia)](https://zwiftinsider.com/route/canopies-and-coastlines/) (g0012) | © Zwift |
 | game-04.jpg | Zwift: [“Pacific Pursuit” Route Details (Watopia)](https://zwiftinsider.com/route/pacific-pursuit/) (g0115) | © Zwift |
 | game-05.jpg | Zwift: [“ZG25 Climb Champs” Route Details (London)](https://zwiftinsider.com/route/zg25-climb-champs/) (g0190) | © Zwift |
+
+The wheat, canola, red siding, roadside grasses and clouds are original artwork made for Prairie Paceline with OpenAI ImageGen. The turbine towers and blades, railway elevator, barn, bins, bales, fences and road markings are original meshes. Route 9 retains the starter course’s measured elevations and workout stages.

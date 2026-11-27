@@ -2046,3 +2046,18 @@ Use two laps of the same 6.2 km park drive. One hill rises toward the plaza each
 Place each landmark once in the physical landscape and revisit it on the second lap. Set the Boathouse across the water behind an unbroken band of reflections. Keep brownstone façades at the edge of the canopy. Instance hardwoods and market figures, and drive the runner, dog and swan from ride time. Dispose of their geometry, textures and materials on exit. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/prospect/SOURCES.md.
 
 Rider feedback in [#920](https://github.com/QuinntyneBrown/wattzup/issues/920) praises the existing Prospect Park look and feel. Preserve its early-autumn morning light, marked lanes, Long Meadow weekend activity, quiet lake and brownstone backdrop. The existing scene in `world-prospect.ts` repeats those props every 380 m. The native race needs a full drive where the same arch and Boathouse return at the same place each lap. Keep the separate World Ride scene available to its current callers.
+
+## Prairie Paceline (#2192)
+
+The starter catalogue entry already loads courses/prairie.glb. Keep the measured elevation and every stage boundary from the existing native course. Replace the winding horizontal alignment with the long, straight Route 9 corridor. Retain its warm farmland palette, barns, round bales and roadside fencing.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Route 9 shoulder, 0.08 km | Real 01, 03–05 and 09. Games 01, 03 and 04. | A dashed yellow centre line converges with the gravel shoulders. Wind-tossed wheat, wooden poles and wire fences slide past in the foreground. |
+| Wind farm service road, 2.48 km | Real 02, 04–07, 11 and 15. Games 01 and 02. | Several rows of three-blade turbines turn above the ridge. A near tower, fenced service track and distant rows show scale and parallax. |
+| Canola quarter section, 5.21 km | Real 05 and 07–10. Games 03 and 04. | Rectangular canola and wheat fields meet along a straight service track. A swath of wind-bent flower stems catches the low sun beside the road. |
+| Farmyard and bales, 8.74 km | Real 01, 03, 09 and 10. Games 01 and 03. | A red barn, corrugated grain bins and straw bales sit beside a shelterbelt. Power wires sag from the double crossarms above the fence. |
+| Railway grain elevator, 12.61 km | Real 12–14. Games 02, 04 and 05. | The square elevator and its headhouse rise above the track, loading annex and hoppers. Weathered timber, a painted place name and the rails show the scale of the town. |
+| Last prairie crest, 17.96 km | Real 04–10 and 15. Games 01, 04 and 05. | A shallow crest reveals turbines behind a second ridge. Cumulus and high cirrus fill the amber sky above fence and field shadows. |
+
+Stage turbine rows at distinct distances along both ridges. Taper each tower and blade. Use one shared rotor geometry, a bounded near-verge cluster and far clouds driven by the ride clock. Bake field rows and the shadow beneath every farm building. Give the roadside elevator a trackside loading wing and grain hoppers. Release geometry, materials and textures on route exit. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/prairie/SOURCES.md.
