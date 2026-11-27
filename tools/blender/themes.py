@@ -1625,3 +1625,8 @@ import loire
 
 THEMES['loire'] = loire.THEME
 SCENERY['loire'] = loire.scenery
+
+import machupicchu as _machupicchu
+
+THEMES['machupicchu'] = _machupicchu.THEME
+SCENERY['machupicchu'] = _machupicchu.scenery

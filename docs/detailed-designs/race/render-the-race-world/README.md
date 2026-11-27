@@ -1519,3 +1519,18 @@ Use the nineteen stages of GCN Training’s Sweet Spot Endurance Training on a 1
 The Saumur photographs (08–10) guide the relationship between cliff, town and river. For Amboise, use the royal château’s documented riding towers and terraced promontory. [Château royal d’Amboise, Les tours cavalières](https://www.chateau-amboise.com/les-tours-cavalieres-du-chateau-royal-damboise/).
 
 Use Caribana’s fixed skyline and bounded moving foreground for the towers, the cyclists and the riverboat. Draw the repeating vine rows and avenues in sections along the lane, with softer detail at the opposite bank. Release course-owned materials, textures and buffers on exit. The Loire issue-title search returned #2157.
+
+## Machu Picchu Road (#2158)
+
+Keep the World Ride bend profile of 60 degrees and 48 m and the existing heading function. Rider feedback #939 explicitly calls out these turns. Transfer the alignment to the native race centreline, sampling heading through each bend. Use the original Step It Up workout clock and distance integration. Compress the real sequence from town to citadel into the ride.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Aguas Calientes bridge, 0.08 km | Real 03, 10 and 12. Games 01 and 02. | The bridge’s cross-bracing frames the town, the railway embankment and the first glimpse of brown water. |
+| Urubamba gorge, 1.74 km | Real 03, 10 and 11. Games 01 and 05. | Fast brown water breaks against granite boulders below the outside verge. Overlapping green ridges enclose the gorge. |
+| Hiram Bingham switchbacks, 3.88 km | Real 01–05. Games 03–05. | A two-tone shuttle rounds a bend above the exposed retaining wall. The narrow outer verge reveals the next cut in the forest. |
+| Cloud forest, 6.22 km | Real 04, 06 and 09. Games 03 and 04. | Ferns and climbing bromeliads frame the patched road as cloud crosses the distant rock faces. |
+| Inca agricultural terraces, 8.40 km | Real 07–09 and 13–15. Games 03 and 05. | Grassed terrace tops step down between dry granite retaining walls. Stone stairs cut diagonally across the rider’s view. |
+| Citadel saddle, 10.37 km | Real 07–09 and 13–15. Games 02 and 05. | Roofless gabled walls and temple courts sit on the saddle in front of the steep asymmetric peak of Huayna Picchu. |
+
+Use Caribana’s fixed skyline for Huayna Picchu and the outer mountains, with separate nearer rock faces and sectioned terraces. Bake shade beneath granite blocks and across the forest floor. Keep original shuttle art separate from shared bus geometry. Move the buses, broken water and drifting cloud on race time. Dispose of course-owned textures, materials and buffers on exit. The photo and game credits are in docs/worlds/machupicchu/SOURCES.md.
