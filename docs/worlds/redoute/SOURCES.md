@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Danger Noodle” Route Details (Watopia)](https://zwiftinsider.com/route/danger-noodle/) (g0029) | © Zwift |
 | game-04.jpg | Zwift: [“Itza Climb Finish” Route Details (Watopia)](https://zwiftinsider.com/route/itza-climb-finish/) (g0071) | © Zwift |
 | game-05.jpg | Zwift: [“Hilltop Hustle” Route Details (Watopia)](https://zwiftinsider.com/route/hilltop-hustle/) (g0063) | © Zwift |
+
+The original spectator and campervan textures use the proportions, dress and spacing in real 01–05 and 11. The distressed road paint, frites stall and roadside race boards follow real 01–05, 08 and 09. The stone village, slate church and old rail arches use real 06–07 and 13–15. The Amblève, pasture fences, livestock, beech and spruce use real 08, 10–12 and 14–15. The motorway deck is a separate concrete structure above the climb. Game 01–05 informed the rider-height framing, road grain, crowd spacing and depth through the bends. All shipped artwork and geometry are original.

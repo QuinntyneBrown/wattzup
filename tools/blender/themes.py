@@ -1811,3 +1811,8 @@ import quebec as _quebec
 
 THEMES['quebec'] = _quebec.THEME
 SCENERY['quebec'] = _quebec.scenery
+
+import redoute as _redoute
+
+THEMES['redoute'] = _redoute.THEME
+SCENERY['redoute'] = _redoute.scenery

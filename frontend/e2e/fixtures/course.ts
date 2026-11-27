@@ -50,6 +50,7 @@ import prospectElevation from './prospect-elevation.json';
 import provenceElevation from './provence-elevation.json';
 import pueblosElevation from './pueblos-elevation.json';
 import quebecElevation from './quebec-elevation.json';
+import redouteElevation from './redoute-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5727,6 +5728,60 @@ export const quebecCourseMap = {
       seg('work', 15, 24, 100),
       seg('recover', 300, 21, 90),
       seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
+
+export const redouteCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'la-redoute',
+  name: 'La Redoute',
+  routeName: 'The Redoute',
+  place: 'Remouchamps, Belgium',
+  world: 'redoute',
+  distanceKm: 16,
+  climbingM: 249,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: redouteElevation,
+  },
+  thumbnailUrl: 'maps/la-redoute.jpg',
+  photoUrl: 'maps/la-redoute-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 13, 80),
+      seg('work', 60, 16, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 21, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 21, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 21, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 21, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 21, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 21, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 21, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 21, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 16, 80),
+      seg('cool-down', 120, 11, 80),
     ],
   },
 };
