@@ -1821,3 +1821,8 @@ import rome as _rome
 
 THEMES['rome'] = _rome.THEME
 SCENERY['rome'] = _rome.scenery
+
+import route66 as _route66
+
+THEMES['route66'] = _route66.THEME
+SCENERY['route66'] = _route66.scenery

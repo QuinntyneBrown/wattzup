@@ -52,6 +52,7 @@ import pueblosElevation from './pueblos-elevation.json';
 import quebecElevation from './quebec-elevation.json';
 import redouteElevation from './redoute-elevation.json';
 import romeElevation from './rome-elevation.json';
+import route66Elevation from './route66-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5847,6 +5848,48 @@ export const romeCourseMap = {
       seg('recover', 40, 19, 90),
       seg('work', 40, 24, 100),
       seg('cool-down', 230, 11, 80),
+    ],
+  },
+};
+
+export const route66CourseMap = {
+  ...haleakalaCourseMap,
+  id: 'route-66-desert',
+  name: 'Route 66 Desert',
+  routeName: 'Route 66',
+  place: 'Arizona, United States',
+  world: 'route66',
+  distanceKm: 8,
+  climbingM: 115,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: route66Elevation,
+  },
+  thumbnailUrl: 'maps/route-66-desert.jpg',
+  photoUrl: 'maps/route-66-desert-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 90, 12, 80),
+      seg('work', 30, 18, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 19, 80),
+      seg('work', 30, 22, 80),
+      seg('recover', 60, 13, 80),
+      seg('work', 60, 19, 80),
+      seg('work', 30, 22, 80),
+      seg('recover', 60, 13, 80),
+      seg('work', 60, 19, 80),
+      seg('work', 30, 22, 80),
+      seg('recover', 30, 13, 80),
+      seg('work', 60, 16, 80),
+      seg('recover', 120, 19, 80),
+      seg('work', 30, 22, 80),
+      seg('recover', 120, 19, 80),
+      seg('work', 60, 13, 80),
+      seg('recover', 120, 19, 80),
+      seg('cool-down', 90, 11, 80),
     ],
   },
 };

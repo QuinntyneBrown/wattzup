@@ -2136,3 +2136,18 @@ Lay the avenue and Palatine return as one closed course under three circuits of 
 | Piazza del Colosseo, 11.15 km | Real 03, 08–10 and 15. Games 01, 03 and 05. | On the third circuit the rider passes the same travertine piers, stacked arches and irregular rim at close range. Tourists and street sellers give the building scale. |
 
 Model the amphitheatre openings through the masonry and vary the surviving outer rim by sector. Bake travertine shadow, brick runoff and fan-pattern basalt at physical scale. The fixed skyline and middle-distance Forum terrace stay visible through turns. Batch pines, architectural repeats and pedestrians by local visibility. Advance the guide, Vespa and taxi on ride time and release their owned resources on exit. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.
+
+## Route 66 Desert (#2199)
+
+Set the Arizona towns in east-to-west order on a condensed 8 km course. The Painted Desert opening runs straight before the later bends of the Black Mountains. Keep the existing highway shields, rhyme boards, two-tone cars, diner neon, poles and tumbleweed in the native race. Align each stage to the original class and sample the road elevation for the HUD.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Painted Desert highway, 0.08 km | Real 01, 02, 04 and 06. Games 01, 04 and 05. | A chipped black-and-white shield and yellow centre line stretch towards banded mesas beneath a wide blue sky. Power poles diminish along the red gravel shoulder. |
+| Holbrook Wigwam Motel, 1.16 km | Real 02, 10 and 11. Games 01 and 05. | White concrete wigwams with red trim stand in a staggered row. Turquoise station wagons and finned coupes sit by their low rectangular doors. |
+| Seligman boardwalk, 2.64 km | Real 06 and 11–14. Games 02 and 03. | Bright western false-fronts and a timber boardwalk frame a pastel pickup and a string of original short rhyme boards. |
+| Hackberry General Store, 3.86 km | Real 06, 09 and 12. Games 02 and 04. | A steel awning shades weathered fuel pumps and vintage signs. A red roadside Pegasus and worn storefront stand above rusting car parts. |
+| Kingman chrome diner, 5.13 km | Real 07, 08 and 11. Games 01, 04 and 05. | A roadside diner has chrome bands, pink and turquoise panels, luminous roof trim and a glass-fronted counter with red stools. A classic car passes outside. |
+| Oatman and Sitgreaves Pass, 7.26 km | Real 03, 05 and 13–15. Games 02, 03 and 05. | A burro walks beside timber boardwalks and rough wooden storefronts below the broken skyline of the Black Mountains. The climbing road turns towards Sitgreaves Pass. |
+
+Keep mesas fixed in world space. Use physical ledges and sediment bands, baked sun and shade, fine cracked asphalt and dusty shoulders. Model the white motel cones, cars, pump globes, diner counter and false-front boardwalks. Batch roadside plants in sections and move the car, tumbleweed and burro on ride time. Release their owned resources on exit. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.

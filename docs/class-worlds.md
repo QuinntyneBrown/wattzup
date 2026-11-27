@@ -139,6 +139,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Old Québec (`quebec`) | 30 Minute Short Sharp Efforts (GCN Training, 30:00) | 13.225 km | 158 m | `public/courses/quebec.glb` ([ride views](screenshots/old-quebec/README.md)) | Built and ridden; open from the start on the map catalogue |
 | La Redoute (`redoute`) | Ramp It Up: Punchy Intervals (GCN Training, 40:00) | 16.000 km | 249 m | `public/courses/redoute.glb` ([ride views](screenshots/la-redoute/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Rome Colosseum Loop (`rome`) | Fast Fitness: High Intensity 35 (GCN, 33:30) | 14.981 km | 48 m | `public/courses/rome.glb` ([ride views](screenshots/rome-colosseum-loop/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Route 66 Desert (`route66`) | High Power Tempo With Short Sprints (GCN Training, 20:00) | 8.000 km | 115 m | `public/courses/route66.glb` ([ride views](screenshots/route-66-desert/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
