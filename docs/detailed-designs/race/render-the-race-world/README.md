@@ -1472,3 +1472,18 @@ The 8 km ride compresses the lakeshore and two nearby mountain roads into thirte
 | Moraine Lake road, 7.52 km | Real 01, 03, 14–15 and games 01 and 05 | The road turns past a signed viewpoint. Mount Temple rises beyond the lower tree-covered slopes. |
 
 Use Caribana’s separate skyline and instanced foreground for the mountain profiles, groups of spruce, visitors and moving boats. The shoreline walls and benches follow the gravel path. Animate canoe paddles, hulls, hikers and cyclists on the race clock. Release the course-owned textures, instance buffers and materials on exit. The Lake Louise issue-title search returned #2154.
+
+## Alto de Letras (#2155)
+
+Use the original twenty-seven stages of GCN Training’s Hank’s Hardest Training Session on a 22.150 km interpretation of Ruta 50. The lower bends cross coffee country before Fresno. Exposed ridges carry wax palms. Padua marks the transition to cloud forest and the final páramo. Model the distant switchbacks in the same elevation system as the rider and keep tall palms, town façades and rising traffic legible from a moving bike.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Coffee slopes, 0.08 km | Real 09–10 and games 01 and 04 | Low rows of glossy coffee bushes and broad plantain leaves climb above the first switchback in warm sunlight. |
+| Fresno, 3.62 km | Real 06–08 and game 03 | A painted chiva passes timber balconies, a bakery and a stall selling fruit and arepas. Its roof luggage and open rows of seats stay visible around the bend. |
+| Wax palm ridge, 7.68 km | Real 01, 10–12 and games 01 and 05 | Slender wax palms rise above an exposed green ridge. The road folds back below the rider and local cyclists climb alongside. |
+| Padua, 11.84 km | Real 04, 06–08 and games 02–03 | A loaded lorry climbs past painted shopfronts and an aguapanela stall as the first cloud crosses the road. |
+| Cloud forest, 16.92 km | Real 01, 04–05 and 14–15 and games 02 and 04 | Tree canopies frame switchbacks that disappear into a moving band of mist. Patches of cloud fill the valley beneath the asphalt. |
+| Páramo de Letras, 21.49 km | Real 02–03, 05 and 13–14 and games 02 and 05 | Silver-leaved frailejones, ochre tussocks and moss replace forest near the signed 3,679 m summit under cool grey light. |
+
+The Caldas chivas and Murillo façades in the credited photographs supply construction and paint references for the modelled towns. The Cocora photographs establish wax palm proportions. Use the game views for riding-scale framing and contrast in the fog. Adapt Caribana’s moving traffic and layered skyline to the valley switchbacks, use shared assets for plantings and release route-owned buffers on exit. The issue-title search returned #2155.

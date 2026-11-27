@@ -161,6 +161,7 @@ import type { KwaremontVillage } from './kwaremont-village';
 import type { KyotoHanami } from './kyoto-hanami';
 import type { ChicagoLakefront } from './chicago-lakefront';
 import type { LakeLouise } from './lake-louise';
+import type { AltoDeLetras } from './alto-de-letras';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -377,6 +378,7 @@ export class CourseRenderer implements WorldRenderer {
   private hanami: KyotoHanami | null = null;
   private chicagoShore: ChicagoLakefront | null = null;
   private lakeLouise: LakeLouise | null = null;
+  private letras: AltoDeLetras | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1090,6 +1092,21 @@ export class CourseRenderer implements WorldRenderer {
         this.lakeLouise = valley;
         this.scene.add(valley.root);
         this.disposables.push(valley);
+      }
+      if (this.course.file.id === 'letras') {
+        const { AltoDeLetras } = await import('./alto-de-letras');
+        if (this.disposed) return false;
+        const andes = await AltoDeLetras.load(this.course, body);
+        if (this.disposed) {
+          andes.dispose();
+          return false;
+        }
+        this.camera.far = 38000;
+        this.camera.setViewOffset(1, 1, 0, 0.038, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.letras = andes;
+        this.scene.add(andes.root);
+        this.disposables.push(andes);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -2066,6 +2083,7 @@ export class CourseRenderer implements WorldRenderer {
     this.hanami?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.chicagoShore?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.lakeLouise?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.letras?.update(metres, frame.reducedMotion ? 0 : frame.time, this.sun, this.scene.fog);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2239,6 +2257,7 @@ export class CourseRenderer implements WorldRenderer {
     this.hanami = null;
     this.chicagoShore = null;
     this.lakeLouise = null;
+    this.letras = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2500,6 +2519,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.hanami) Object.assign(materials, this.hanami.materials);
     if (this.chicagoShore) Object.assign(materials, this.chicagoShore.materials);
     if (this.lakeLouise) Object.assign(materials, this.lakeLouise.materials);
+    if (this.letras) Object.assign(materials, this.letras.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3086,6 +3106,7 @@ export class CourseRenderer implements WorldRenderer {
     this.hanami?.sightline(metres, this.camera.position, ahead);
     this.chicagoShore?.sightline(metres, this.camera.position, ahead);
     this.lakeLouise?.sightline(metres, this.camera.position, ahead);
+    this.letras?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -3630,6 +3651,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.hanami) Object.assign(drawn, this.hanami.report());
     if (this.chicagoShore) Object.assign(drawn, this.chicagoShore.report());
     if (this.lakeLouise) Object.assign(drawn, this.lakeLouise.report());
+    if (this.letras) Object.assign(drawn, this.letras.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

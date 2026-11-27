@@ -1610,3 +1610,8 @@ import lakelouise
 
 THEMES['lakelouise'] = lakelouise.THEME
 SCENERY['lakelouise'] = lakelouise.scenery
+
+import letras
+
+THEMES['letras'] = letras.THEME
+SCENERY['letras'] = letras.scenery
