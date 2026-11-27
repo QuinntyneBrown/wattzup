@@ -1725,3 +1725,8 @@ import nuevedejulio as _nueve
 
 THEMES['nuevedejulio'] = _nueve.THEME
 SCENERY['nuevedejulio'] = _nueve.scenery
+
+import okinawa as _okinawa
+
+THEMES['okinawa'] = _okinawa.THEME
+SCENERY['okinawa'] = _okinawa.scenery

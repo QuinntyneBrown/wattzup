@@ -1819,3 +1819,18 @@ The 18 km class course adapts the avenue to its 24 stages, with the original two
 | Plaza de la República, 17.53 km | Real 01, 03, 05–07, 11 and 15. Games 01, 02 and 04. | The four-sided Obelisco rises 67 metres over the plaza, tapering toward the pyramidal tip. Evening lights gather along its base and the surrounding avenues. |
 
 Use a four-sided tapered shaft and distinct cap, the opera house’s architectural bays and the Ministry’s steel portrait. The crossing markings and traffic lanes must meet across each island. Give the colectivo, taxis and waiting or walking pedestrians bounded movement on race time. Share roadside materials and release loaded artwork on exit. Compare the opening and dusk plaza with Caribana. Credits are in docs/worlds/nuevedejulio/SOURCES.md.
+
+## Okinawa Coast Road (#2178)
+
+The island course retains the original twenty-degree bends over 120 metres outside the long Kouri Bridge crossing. Give the narrow road low seawalls so the rider can see the shift from white sand through clear lagoon to dark offshore reef.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Route 58, 0.08 km | Real 01, 05, 06 and 15. Games 01 and 03. | An orange centre line curves between the coral seawall and subtropical greenery. A Japanese route shield stands at the edge of the village. |
+| Shisa village, 2.76 km | Real 01, 05 and 06. Games 01–03. | A pair of shisa guard the red-tiled house and coral-stone gate. Pandanus and cycads break up the roofline against Yanbaru’s green hills. |
+| Kouri Bridge, 5.47 km | Real 02–04, 07 and 14. Games 01 and 04. | The bridge carries the road on a long low deck above clear shallows. Repeated piers and the distant island reveal the full crossing. |
+| Mushroom islets, 8.91 km | Real 09, 12 and 13. Games 02 and 05. | Limestone islets with narrow eroded feet stand in pale aqua water. Dark reef patches remain visible in the lagoon around their bases. |
+| Coral beach, 11.83 km | Real 08, 11–13 and 15. Games 03–05. | Fine white sand slopes into the lagoon. Parasols and swimmers sit below the road and the water deepens from pale aqua to blue. |
+| Cape Manzamo, 16.19 km | Real 05, 09, 10 and 15. Games 02 and 05. | The grass-covered headland ends in a limestone elephant trunk. Deep water and pale foam show through the opening beneath its arch. |
+
+Build the bridge deck, parapet, pier caps and regularly spaced supports in metres. The two eroded limestone landmarks need distinct silhouettes. Keep the opening in Cape Manzamo’s trunk visible to the riding camera. Give the village greenery, swimming figures and cresting foam bounded movement on race time. Compare the village and bridge with Caribana. Credits are in docs/worlds/okinawa/SOURCES.md.
