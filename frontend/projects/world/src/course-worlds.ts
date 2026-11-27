@@ -57,6 +57,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   oktoberfest: 'courses/oktoberfest',
   oregon: 'courses/oregon',
   outback: 'courses/outback',
+  overseas: 'courses/overseas',
   iten: 'courses/iten',
   jaipur: 'courses/jaipur',
   joshuatree: 'courses/joshuatree',

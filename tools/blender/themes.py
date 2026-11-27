@@ -1741,3 +1741,8 @@ import outback as _outback
 
 THEMES['outback'] = _outback.THEME
 SCENERY['outback'] = _outback.scenery
+
+import overseas as _overseas
+
+THEMES['overseas'] = _overseas.THEME
+SCENERY['overseas'] = _overseas.scenery

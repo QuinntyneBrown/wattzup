@@ -37,6 +37,7 @@ import okinawaElevation from './okinawa-elevation.json';
 import oktoberfestElevation from './oktoberfest-elevation.json';
 import oregonElevation from './oregon-elevation.json';
 import outbackElevation from './outback-elevation.json';
+import overseasElevation from './overseas-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5200,6 +5201,49 @@ export const outbackCourseMap = {
       seg('recover', 60, 18, 85),
       seg('work', 180, 21, 90),
       seg('cool-down', 180, 11, 80),
+    ],
+  },
+};
+
+export const overseasCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'overseas-highway',
+  name: 'Overseas Highway',
+  routeName: 'Seven Mile Bridge',
+  place: 'Florida Keys, United States',
+  world: 'overseas',
+  distanceKm: 8.305,
+  climbingM: 20,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: overseasElevation,
+  },
+  thumbnailUrl: 'maps/overseas-highway.jpg',
+  photoUrl: 'maps/overseas-highway-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 14, 67),
+      seg('work', 60, 19, 100),
+      seg('recover', 90, 13, 60),
+      seg('work', 30, 14, 80),
+      seg('recover', 30, 16, 100),
+      seg('work', 30, 18, 120),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 14, 60),
+      seg('recover', 30, 16, 80),
+      seg('work', 30, 18, 100),
+      seg('work', 30, 19, 120),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 16, 60),
+      seg('work', 30, 18, 80),
+      seg('recover', 30, 19, 100),
+      seg('work', 30, 21, 120),
+      seg('recover', 120, 13, 80),
+      seg('work', 120, 16, 80),
+      seg('recover', 60, 24, 120),
+      seg('cool-down', 120, 11, 80),
     ],
   },
 };
