@@ -1935,3 +1935,8 @@ import surfers as _surfers
 
 THEMES['surfers'] = _surfers.THEME
 SCENERY['surfers'] = _surfers.scenery
+
+import sydneyharbour as _sydneyharbour
+
+THEMES['sydneyharbour'] = _sydneyharbour.THEME
+SCENERY['sydneyharbour'] = _sydneyharbour.scenery

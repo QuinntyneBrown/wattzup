@@ -77,6 +77,7 @@ import stradeElevation from './strade-elevation.json';
 import strasbourgElevation from './strasbourg-elevation.json';
 import suburbiaElevation from './suburbia-elevation.json';
 import surfersElevation from './surfers-elevation.json';
+import sydneyharbourElevation from './sydneyharbour-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6877,6 +6878,53 @@ export const surfersCourseMap = {
       seg('work', 30, 24, 100),
       seg('recover', 120, 19, 80),
       seg('cool-down', 120, 13, 80),
+    ],
+  },
+};
+
+export const sydneyHarbourCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'sydney-harbour-fireworks',
+  name: 'Sydney Harbour Fireworks',
+  routeName: 'The Harbour Bridge',
+  place: 'Sydney, Australia',
+  world: 'sydneyharbour',
+  distanceKm: 12.45,
+  climbingM: 68,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: sydneyharbourElevation,
+  },
+  thumbnailUrl: 'maps/sydney-harbour-fireworks.jpg',
+  photoUrl: 'maps/sydney-harbour-fireworks-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 10, 80),
+      seg('work', 30, 14, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 14, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 150, 19, 84),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 21, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 30, 21, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 180, 19, 80),
+      seg('recover', 120, 22, 100),
+      seg('work', 120, 13, 80),
+      seg('recover', 60, 21, 90),
+      seg('work', 60, 19, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 30, 19, 80),
+      seg('recover', 30, 22, 100),
+      seg('work', 30, 19, 80),
+      seg('recover', 30, 22, 100),
+      seg('work', 60, 11, 80),
+      seg('recover', 30, 24, 100),
+      seg('cool-down', 120, 10, 80),
     ],
   },
 };

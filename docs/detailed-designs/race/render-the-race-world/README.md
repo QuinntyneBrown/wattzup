@@ -2511,3 +2511,18 @@ Extend the beachfront itinerary and its inland tram section to the 13.2 km class
 | Cavill Avenue station, 12.88 km | Real 08, 14 and 15. Games 01 and 03. | A yellow and blue G:link tram passes the station platform. Glazed doors, articulations, paved track and overhead wire distinguish the tram corridor from the beachfront road. |
 
 Merge repeated tower floors and palms, with taller skyline forms visible beyond the street. Model Q1’s wedge crown and mast, the entrance arch and the tram articulations. Move bounded surf bands, cloth and tram doors or carriage bodies on ride time. Keep water and flags readable in low detail and dispose of course textures and geometry on exit. Capture the six viewpoints and measure both tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Sydney Harbour Fireworks (#2224)
+
+The class fixes the itinerary at 12.45 km. Keep the paired steel arches and pylons fixed to the bridge deck while the waterfront approach opens views of the Opera House and CBD. Boats, foreshore crowds and fireworks occupy distinct depth layers. Reference photographs establish the colour, shape and spacing; game views set legibility above the rider.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Circular Quay, 0.12 km | Real 06, 08, 09 and 14. Games 01 and 04. | Lit towers frame the quay. Yellow-green ferries and spectator boats sit on dark water, with the bridge arch beyond the wharf lights. |
+| Bennelong Point, 2.36 km | Real 01, 04, 08 and 10. Games 03 and 05. | Distinct ribbed Opera House sails rise from Bennelong Point. Their pale surfaces catch colour above the spectator-lined steps. |
+| Granite pylons, 4.58 km | Real 07, 09 and 12–15. Games 01 and 03. | The granite portals flank the wide Bradfield Highway deck. Riveted steel, lane paint and suspended lamps frame the climb onto the bridge. |
+| Midnight over the span, 6.77 km | Real 01–06 and 11. Games 01 and 04. | Shell-shaped trails expand over the arch and over barges. Smoke drifts between the bursts and red, white and gold streaks shimmer on the water. |
+| Bridge waterfall, 9.23 km | Real 02, 04, 07 and 11. Games 02 and 05. | A falling curtain of golden light follows the outside of the span. The opposite steelwork changes colour and remains visible through the glow. |
+| Milsons Point, 12.13 km | Real 03, 06, 08 and 15. Games 02 and 04. | The route descends toward Luna Park’s illuminated entrance face and towers. Moored boats and the skyline remain visible across the harbour. |
+
+Model the bridge from paired curved trusses, intermediate hangers, cross-bracing and four pylons. Render bounded batches of sparks and falling lights on ride time. Smoke and harbour highlights take their colour from the same display. Keep the Opera House shells distinct behind the foreshore, and provide an open sightline to the Luna Park entrance. Release all geometry, textures and instance buffers with the course. Capture six fixed rider views and measure both tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
