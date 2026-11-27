@@ -88,6 +88,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Holi in Jaipur (`jaipur`) | Short 20 Minute Sprint Blitz (GCN Training, 20:00) | 8.625 km | 57 m | `public/courses/jaipur.glb` ([ride views](screenshots/holi-in-jaipur/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Trinidad J'Ouvert (`jouvert`) | Quick But Brutal HIIT (GCN Training, 15:00) | 6.275 km | 42 m | `public/courses/jouvert.glb` ([ride views](screenshots/trinidad-jouvert/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Joshua Tree (`joshuatree`) | Ramp Session: Dialling In Your Training Zones (GCN Training, 55:00) | 23.625 km | 272 m | `public/courses/joshuatree.glb` ([ride views](screenshots/joshua-tree/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Junkanoo, Nassau (`junkanoo`) | The Smash Fest (GCN Training, 30:00) | 12.591 km | 47 m | `public/courses/junkanoo.glb` ([ride views](screenshots/junkanoo-nassau/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

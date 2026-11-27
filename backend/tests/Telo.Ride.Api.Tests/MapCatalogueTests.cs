@@ -97,6 +97,38 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     }
 
     [Fact]
+    public async Task Junkanoo_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "junkanoo-nassau");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 320, 11, 82),
+                new Segment("work", 150, 16, 89),
+                new Segment("recover", 40, 10, 80),
+                new Segment("work", 30, 16, 85),
+                new Segment("recover", 120, 10, 80),
+                new Segment("work", 25, 24, 105),
+                new Segment("recover", 10, 10, 80),
+                new Segment("work", 10, 24, 105),
+                new Segment("recover", 50, 10, 80),
+                new Segment("work", 25, 24, 105),
+                new Segment("recover", 300, 10, 80),
+                new Segment("work", 45, 24, 100),
+                new Segment("recover", 75, 16, 85),
+                new Segment("work", 120, 10, 80),
+                new Segment("recover", 30, 24, 100),
+                new Segment("work", 90, 10, 80),
+                new Segment("recover", 15, 24, 105),
+                new Segment("work", 105, 10, 80),
+                new Segment("recover", 30, 24, 100),
+                new Segment("work", 15, 10, 80),
+                new Segment("recover", 30, 24, 100),
+                new Segment("cool-down", 165, 10, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task Iceland_preserves_every_original_stage()
     {
         var map = Assert.Single(await ReadMaps(), m => m.Id == "iceland-ring-road");
@@ -2168,6 +2200,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Holi in Jaipur", 8.625, 57, "Hard", "Johari Bazaar", "Jaipur, Rajasthan"),
                 new Listed("Trinidad J'Ouvert", 6.275, 42, "Hard", "Frederick Street", "Port of Spain, Trinidad and Tobago"),
                 new Listed("Joshua Tree", 23.625, 272, "Hard", "Park Boulevard", "Joshua Tree National Park, California"),
+                new Listed("Junkanoo, Nassau", 12.591, 47, "Hard", "Bay Street", "Nassau, The Bahamas"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -2267,6 +2300,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("holi-in-jaipur", null),
                 ("trinidad-jouvert", null),
                 ("joshua-tree", null),
+                ("junkanoo-nassau", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -2366,6 +2400,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("holi-in-jaipur", null),
                 ("trinidad-jouvert", null),
                 ("joshua-tree", null),
+                ("junkanoo-nassau", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -2408,7 +2443,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten", "jaipur", "jouvert", "joshuatree"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten", "jaipur", "jouvert", "joshuatree", "junkanoo"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));

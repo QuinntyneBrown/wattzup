@@ -1565,3 +1565,8 @@ import joshuatree as _joshuatree
 
 THEMES['joshuatree'] = _joshuatree.THEME
 SCENERY['joshuatree'] = _joshuatree.scenery
+
+import junkanoo
+
+THEMES['junkanoo'] = junkanoo.THEME
+SCENERY['junkanoo'] = junkanoo.scenery

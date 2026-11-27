@@ -1,6 +1,7 @@
 import jaipurElevation from './jaipur-elevation.json';
 import jouvertElevation from './jouvert-elevation.json';
 import joshuatreeElevation from './joshuatree-elevation.json';
+import junkanooElevation from './junkanoo-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3712,6 +3713,51 @@ export const joshuaTreeCourseMap = {
       seg('recover', 120, 10, 80),
       seg('work', 30, 24, 100),
       seg('cool-down', 270, 10, 80),
+    ],
+  },
+};
+
+export const junkanooCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'junkanoo-nassau',
+  name: 'Junkanoo, Nassau',
+  routeName: 'Bay Street',
+  place: 'Nassau, The Bahamas',
+  world: 'junkanoo',
+  distanceKm: 12.591,
+  climbingM: 47,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: junkanooElevation,
+  },
+  thumbnailUrl: 'maps/junkanoo-nassau.jpg',
+  photoUrl: 'maps/junkanoo-nassau-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 320, 11, 82),
+      seg('work', 150, 16, 89),
+      seg('recover', 40, 10, 80),
+      seg('work', 30, 16, 85),
+      seg('recover', 120, 10, 80),
+      seg('work', 25, 24, 105),
+      seg('recover', 10, 10, 80),
+      seg('work', 10, 24, 105),
+      seg('recover', 50, 10, 80),
+      seg('work', 25, 24, 105),
+      seg('recover', 300, 10, 80),
+      seg('work', 45, 24, 100),
+      seg('recover', 75, 16, 85),
+      seg('work', 120, 10, 80),
+      seg('recover', 30, 24, 100),
+      seg('work', 90, 10, 80),
+      seg('recover', 15, 24, 105),
+      seg('work', 105, 10, 80),
+      seg('recover', 30, 24, 100),
+      seg('work', 15, 10, 80),
+      seg('recover', 30, 24, 100),
+      seg('cool-down', 165, 10, 80),
     ],
   },
 };
