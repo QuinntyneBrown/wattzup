@@ -100,6 +100,7 @@ import veniceElevation from './venice-elevation.json';
 import ventouxElevation from './ventoux-elevation.json';
 import veronaElevation from './verona-elevation.json';
 import victoriaElevation from './victoria-elevation.json';
+import viennaElevation from './vienna-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7850,6 +7851,39 @@ export const victoriaHarbourCourseMap = {
       seg('recover', 120, 10, 80),
       seg('work', 60, 24, 100),
       seg('cool-down', 60, 10, 80),
+    ],
+  },
+};
+
+export const viennaRingCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'vienna-ringstrasse',
+  name: 'Vienna Ringstrasse',
+  routeName: 'The Ringstrasse',
+  place: 'Vienna, Austria',
+  world: 'vienna',
+  distanceKm: 14,
+  climbingM: 18,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: viennaElevation,
+  },
+  thumbnailUrl: 'maps/vienna-ringstrasse.jpg',
+  photoUrl: 'maps/vienna-ringstrasse-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 180, 16, 80),
+      seg('work', 300, 19, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 19, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 19, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 19, 80),
+      seg('cool-down', 180, 11, 80),
     ],
   },
 };

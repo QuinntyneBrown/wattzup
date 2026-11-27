@@ -2846,3 +2846,16 @@ The originals and credits were restored in commit a3b75bcdf. Use all fifteen pho
 | Red-sailed junk, 5.16 km | Real 08, 10, 13 and game 04 | A timber junk crosses below its three red battened sails, with a tug and freighter farther out. |
 | Central skyline, 7.18 km | Real 06, 07, 13, 14 and games 01, 04 | The IFC crown, Bank of China diagonals and Central Plaza light stand ahead of Victoria Peak. The lights reflect across the water. |
 | Symphony of Lights, 9.18 km | Real 01, 04, 05, 06, 07, 14 and games 02, 05 | Coloured laser fans sweep from the island towers as photographers gather on the Kowloon railing. |
+
+### Vienna Ringstrasse (#2247)
+
+Lay a single 5.3 km closed ring with cumulative distance for the 14 km class. Share the boulevard mesh across laps. Keep the trams on their own rails with overhead wire, leaving the cycle path open. Use near summer tree crowns and park fences, middle-distance moving trams and fixed monumental facades. Compose the stepped Parliament portico, Athena pedestal, museum domes, Rathaus spire and Votivkirche towers in geometry. Reuse the original Staatsoper and palace elevations as facade material. Animate the tram, fountain and park rider from the ride clock. Release each local resource on leaving.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Wiener Staatsoper, 0.14 km | Real 01, 08, 13, 14 and games 01, 05 | The opera loggia and copper roof rise across the tram rails. A red and ivory tram runs beside the rider. |
+| Maria-Theresien-Platz, 1.19 km | Real 03, 04, 05, 14 and games 02, 04 | The twin museum domes flank the bronze Maria Theresa monument beyond a tree-lined forecourt. |
+| Parliament and Athena, 2.02 km | Real 02, 11, 12, 15 and games 02, 04 | The white Greek portico stands above broad steps. The Athena fountain plays beneath a gilded figure. |
+| Rathaus and Burgtheater, 2.55 km | Real 02, 09, 10 and games 01, 05 | The pointed Rathaus tower and smaller pinnacles face the projecting Burgtheater facade across the Ring. |
+| Votivkirche approach, 3.12 km | Real 03, 05, 09, 10 and games 01, 04 | Two narrow openwork spires rise beyond the trees and overhead tram wires. |
+| Stadtpark boulevard, 4.71 km | Real 03-07 and games 03, 05 | The path follows mature trees and the park fence. A commuter rolls past as trams continue around the Ring. |

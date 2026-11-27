@@ -2050,3 +2050,8 @@ import victoria as _victoria
 
 THEMES['victoria'] = _victoria.THEME
 SCENERY['victoria'] = _victoria.scenery
+
+import vienna as _vienna
+
+THEMES['vienna'] = _vienna.THEME
+SCENERY['vienna'] = _vienna.scenery

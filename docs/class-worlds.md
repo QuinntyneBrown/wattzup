@@ -186,6 +186,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Mont Ventoux (`ventoux`) | In & Out of the Saddle Hill Climb Reps (GCN Training, 20:00) | 8.395 km | 615 m | `public/courses/ventoux.glb` ([ride views](screenshots/mont-ventoux/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Verona Arena Finale (`verona`) | Reverse HIIT Race Winning Intervals (GCN Training, 60:00) | 24.000 km | 197 m | `public/courses/verona.glb` ([ride views](screenshots/verona-arena-finale/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Victoria Harbour (`victoria`) | High Cadence Sprints (GCN Training, 22:00) | 9.400 km | 4 m | `public/courses/victoria.glb` ([ride views](screenshots/victoria-harbour/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Vienna Ringstrasse (`vienna`) | 35 Minute Threshold HIIT (GCN Training, 35:00) | 14.000 km | 18 m | `public/courses/vienna.glb` ([ride views](screenshots/vienna-ringstrasse/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
