@@ -86,6 +86,7 @@ import tempelhofElevation from './tempelhof-elevation.json';
 import teotihuacanElevation from './teotihuacan-elevation.json';
 import timessquareElevation from './timessquare-elevation.json';
 import torontoElevation from './toronto-elevation.json';
+import tremolaElevation from './tremola-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7265,6 +7266,36 @@ export const torontoCourseMap = {
       seg('recover', 30, 11, 80),
       seg('work', 30, 24, 75),
       seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
+
+export const tremolaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'tremola-gotthard-pass',
+  name: 'Tremola, Gotthard Pass',
+  routeName: 'The Tremola',
+  place: 'Ticino, Switzerland',
+  world: 'tremola',
+  distanceKm: 10.875,
+  climbingM: 654,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: tremolaElevation,
+  },
+  thumbnailUrl: 'maps/tremola-gotthard-pass.jpg',
+  photoUrl: 'maps/tremola-gotthard-pass-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 90),
+      seg('work', 300, 19, 55),
+      seg('recover', 180, 13, 90),
+      seg('work', 300, 19, 55),
+      seg('recover', 180, 13, 90),
+      seg('work', 300, 19, 55),
+      seg('cool-down', 360, 13, 90),
     ],
   },
 };

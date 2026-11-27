@@ -1980,3 +1980,8 @@ import toronto as _toronto
 
 THEMES['toronto'] = _toronto.THEME
 SCENERY['toronto'] = _toronto.scenery
+
+import tremola as _tremola
+
+THEMES['tremola'] = _tremola.THEME
+SCENERY['tremola'] = _tremola.scenery

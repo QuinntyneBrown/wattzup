@@ -2499,6 +2499,23 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     }
 
     [Fact]
+    public async Task Tremola_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "tremola-gotthard-pass");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 13, 90),
+                new Segment("work", 300, 19, 55),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 300, 19, 55),
+                new Segment("recover", 180, 13, 90),
+                new Segment("work", 300, 19, 55),
+                new Segment("cool-down", 360, 13, 90),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task Iceland_preserves_every_original_stage()
     {
         var map = Assert.Single(await ReadMaps(), m => m.Id == "iceland-ring-road");
@@ -4654,6 +4671,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Teotihuacán", 22.275, 39, "Hard", "The Avenue of the Dead", "State of Mexico, Mexico"),
                 new Listed("Times Square New Year's Eve", 8.7, 3, "Moderate", "Broadway", "New York City, USA"),
                 new Listed("Toronto Waterfront Trail", 13.075, 7, "Moderate", "Queens Quay", "Toronto, Canada"),
+                new Listed("Tremola, Gotthard Pass", 10.875, 654, "Hard", "The Tremola", "Ticino, Switzerland"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -4837,6 +4855,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("teotihuacan", null),
                 ("times-square-new-years-eve", null),
                 ("toronto-waterfront-trail", null),
+                ("tremola-gotthard-pass", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -5020,6 +5039,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("teotihuacan", null),
                 ("times-square-new-years-eve", null),
                 ("toronto-waterfront-trail", null),
+                ("tremola-gotthard-pass", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -5062,7 +5082,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten", "jaipur", "jouvert", "joshuatree", "junkanoo", "kilauea", "knicks", "kona", "koppenberg", "kwaremont", "kyoto", "lakefront", "lakelouise", "letras", "lisbon", "loire", "machupicchu", "marinabay", "marrakech", "mardigras", "maunakea", "merce", "miami", "moab", "monaco", "montmartre", "montreal", "montroyal", "mountwashington", "muertos", "mulholland", "murdehuy", "napa", "northshore", "nottinghill", "nuevedejulio", "okinawa", "oktoberfest", "oregon", "outback", "overseas", "paine", "palouse", "pamplona", "penllech", "pikeplace", "playground", "prague", "poggio", "prospect", "provence", "pueblos", "quebec", "redoute", "rome", "route66", "saguaro", "sambadrome", "santamonica", "seapoint", "sella", "serpentine", "sevensisters", "sfhills", "shibuya", "silverstone", "skye", "songkran", "southbeach", "stampede", "stanleypark", "stbernard", "stelvio", "steppe", "stpatricks", "strade", "strasbourg", "suburbia", "surfers", "sydneyharbour", "teide", "tamalpais", "tahoe", "telaviv", "tempelhof", "teotihuacan", "timessquare", "toronto"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten", "jaipur", "jouvert", "joshuatree", "junkanoo", "kilauea", "knicks", "kona", "koppenberg", "kwaremont", "kyoto", "lakefront", "lakelouise", "letras", "lisbon", "loire", "machupicchu", "marinabay", "marrakech", "mardigras", "maunakea", "merce", "miami", "moab", "monaco", "montmartre", "montreal", "montroyal", "mountwashington", "muertos", "mulholland", "murdehuy", "napa", "northshore", "nottinghill", "nuevedejulio", "okinawa", "oktoberfest", "oregon", "outback", "overseas", "paine", "palouse", "pamplona", "penllech", "pikeplace", "playground", "prague", "poggio", "prospect", "provence", "pueblos", "quebec", "redoute", "rome", "route66", "saguaro", "sambadrome", "santamonica", "seapoint", "sella", "serpentine", "sevensisters", "sfhills", "shibuya", "silverstone", "skye", "songkran", "southbeach", "stampede", "stanleypark", "stbernard", "stelvio", "steppe", "stpatricks", "strade", "strasbourg", "suburbia", "surfers", "sydneyharbour", "teide", "tamalpais", "tahoe", "telaviv", "tempelhof", "teotihuacan", "timessquare", "toronto", "tremola"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));

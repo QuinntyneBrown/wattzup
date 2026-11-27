@@ -1,0 +1,61 @@
+{
+  "id": "tremola",
+  "name": "Tremola, Gotthard Pass",
+  "world": "tremola",
+  "theme": "tremola",
+  "seed": 2234,
+  "layout": 0,
+  "class": {
+    "id": "low-cadence-workout",
+    "title": "Low Cadence Workout",
+    "channel": "GCN Training",
+    "videoId": "MvO2LRlVsyI",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 19,
+        "cadenceAim": 55
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 19,
+        "cadenceAim": 55
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 19,
+        "cadenceAim": 55
+      },
+      {
+        "kind": "cool-down",
+        "duration": 360,
+        "level": 13,
+        "cadenceAim": 90
+      }
+    ]
+  }
+}
