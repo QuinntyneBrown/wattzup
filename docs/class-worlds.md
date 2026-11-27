@@ -160,6 +160,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Mongolian Steppe (`steppe`) | Un-Paced Efforts (GCN Training, 45:00) | 19.150 km | 131 m | `public/courses/steppe.glb` ([ride views](screenshots/mongolian-steppe/README.md)) | Built and ridden; open from the start on the map catalogue |
 | St. Patrick’s Day, Dublin (`stpatricks`) | 30 Second Sprints (GCN Training, 30:01) | 12.006 km | 11 m | `public/courses/stpatricks.glb` ([ride views](screenshots/st-patricks-day-dublin/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Strade Bianche (`strade`) | 20 Minutes to Work on Your Cadence (GCN Training, 20:00) | 8.250 km | 132 m | `public/courses/strade.glb` ([ride views](screenshots/strade-bianche/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Strasbourg Christmas Market (`strasbourg`) | Festive Spin With Surprise Sprints (GCN Training, 25:00) | 10.150 km | 10 m | `public/courses/strasbourg.glb` ([ride views](screenshots/strasbourg-christmas-market/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

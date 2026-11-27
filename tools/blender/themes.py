@@ -1920,3 +1920,8 @@ import strade as _strade
 
 THEMES['strade'] = _strade.THEME
 SCENERY['strade'] = _strade.scenery
+
+import strasbourg as _strasbourg
+
+THEMES['strasbourg'] = _strasbourg.THEME
+SCENERY['strasbourg'] = _strasbourg.scenery

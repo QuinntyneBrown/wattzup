@@ -227,6 +227,7 @@ import type { KhaoSanRoad } from './khao-san-road';
 import type { KhentiiSteppe } from './khentii-steppe';
 import type { LiffeyParade } from './liffey-parade';
 import type { SenesiSectors } from './senesi-sectors';
+import type { GrandeIle } from './grande-ile';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -548,6 +549,7 @@ export class CourseRenderer implements WorldRenderer {
   private steppe: KhentiiSteppe | null = null;
   private dublin: LiffeyParade | null = null;
   private strade: SenesiSectors | null = null;
+  private strasbourg: GrandeIle | null = null;
   private mountain: ManxMountain | null = null;
   private rush: JunkanooRush | null = null;
   private vents: KilaueaVents | null = null;
@@ -2259,6 +2261,18 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(sectors.root);
         this.disposables.push(sectors);
       }
+      if (this.course.file.id === 'strasbourg') {
+        const { GrandeIle } = await import('./grande-ile');
+        if (this.disposed) return false;
+        const market = await GrandeIle.load(this.course);
+        if (this.disposed) {
+          market.dispose();
+          return false;
+        }
+        this.strasbourg = market;
+        this.scene.add(market.root);
+        this.disposables.push(market);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -3322,6 +3336,7 @@ export class CourseRenderer implements WorldRenderer {
     this.steppe?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.dublin?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.strade?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.strasbourg?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -3503,6 +3518,7 @@ export class CourseRenderer implements WorldRenderer {
     this.steppe = null;
     this.dublin = null;
     this.strade = null;
+    this.strasbourg = null;
     this.mountain = null;
     this.rush = null;
     this.vents = null;
@@ -3822,6 +3838,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.steppe) Object.assign(materials, this.steppe.materials);
     if (this.dublin) Object.assign(materials, this.dublin.materials);
     if (this.strade) Object.assign(materials, this.strade.materials);
+    if (this.strasbourg) Object.assign(materials, this.strasbourg.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.rush) Object.assign(materials, this.rush.materials);
     if (this.caldera) Object.assign(materials, this.caldera.materials);
@@ -3966,7 +3983,7 @@ export class CourseRenderer implements WorldRenderer {
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
-      if ((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) && group === 'Sun') mesh.visible = false;
+      if (((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) && group === 'Sun') mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
           ...glow,
@@ -4486,6 +4503,7 @@ export class CourseRenderer implements WorldRenderer {
     this.steppe?.frameView(metres, this.camera.position, ahead);
     this.dublin?.frameView(metres, this.camera.position, ahead);
     this.strade?.frameView(metres, this.camera.position, ahead);
+    this.strasbourg?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -5098,6 +5116,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.steppe) Object.assign(drawn, this.steppe.report());
     if (this.dublin) Object.assign(drawn, this.dublin.report());
     if (this.strade) Object.assign(drawn, this.strade.report());
+    if (this.strasbourg) Object.assign(drawn, this.strasbourg.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.rush) Object.assign(drawn, this.rush.report());
     if (this.vents) Object.assign(drawn, this.vents.report());

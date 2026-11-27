@@ -110,6 +110,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   steppe: 'courses/steppe',
   stpatricks: 'courses/stpatricks',
   strade: 'courses/strade',
+  strasbourg: 'courses/strasbourg',
   alpe: 'courses/alpe',
   dubai: 'courses/dubai',
   edinburgh: 'courses/edinburgh',

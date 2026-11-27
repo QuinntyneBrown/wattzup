@@ -2466,3 +2466,18 @@ The class fixes the grade and the 8.25 km length. The course compresses the grav
 | Piazza del Campo, 8.05 km | Real 12–15. Games 03 and 05. | The brick pavement opens into the Campo beneath the narrow Torre del Mangia. The striped Duomo bell tower and pale dome rise on their own ridge. Finish barriers guide the rider into the square. |
 
 Build the Torre del Mangia with its brick shaft, projecting pale crown and bell opening. Give the Duomo its striped campanile and separate dome. Merge repeated cypresses, roof geometry and sector signs. Animate a bounded number of riders, fans and translucent dust patches on ride time. Release shared textures, geometry and instance buffers on exit. Capture the six rider views and measure the opening and dust sections on the simulated tablet. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Strasbourg Christmas Market (#2221)
+
+Extend the market itinerary to the original 10.15 km class distance. Keep the cathedral’s single spire fixed above the lanes, open the square around the Christmas tree, and lower the river below the quays. Full-height shop fronts read at rider scale, while rooflines and the distant towers sit behind the chalets.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Garland lane, 0.12 km | Real 01, 02, 07 and 09. Games 01, 03 and 04. | Golden star garlands cross a narrow sandstone lane. The damp cobbles carry short broken highlights between the coloured timber frames. |
+| Cathedral square, 1.83 km | Real 03, 06, 08 and 12. Games 01 and 03. | The asymmetrical pink sandstone west front rises above the market roofs. One tall openwork spire, its rose window and recessed portals stand in warm floodlight against the deep blue sky. |
+| Market chalets, 3.57 km | Real 03, 04, 07, 10 and 11. Games 02 and 05. | Low wooden chalets display gingerbread hearts, bredele and painted ornaments beneath pine garlands. Steam lifts from a hot-drink stall beside winter shoppers. |
+| Rue Mercière, 5.32 km | Real 01, 08, 09 and 15. Games 01 and 02. | Large teddy bears and wrapped gifts cling to projecting half-timbered upper floors. Illuminated blue-and-gold angel motifs cross above the cyclists. |
+| Place Kléber, 7.21 km | Real 05, 10 and 13. Games 03 and 05. | The square opens to the enormous fir. Warm bulbs, baubles and the star brighten the branches; shoppers in hats and scarves gather at its foot. |
+| Ponts Couverts, 9.87 km | Real 09 and 14. Games 04 and 05. | The route follows the Ill to the stone bridge. The defensive towers break the low skyline, and reflections of the towers and amber lamps ripple in the dark water. |
+
+Use baked highlights on wet cobbles and lit facade recesses. Share materials across repeated roof timbers, market roofs and overhead lights. Tie cup steam, tree bulbs and rippling canal highlights to the ride clock. Bound translucent layers and release their textures and geometry on exit. Capture six rider views and measure the opening and Place Kléber on the simulated tablet. See ADRs 0021, 0023, 0030, 0034 and 0035.

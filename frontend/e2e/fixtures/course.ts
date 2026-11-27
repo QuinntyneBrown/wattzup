@@ -74,6 +74,7 @@ import stelvioElevation from './stelvio-elevation.json';
 import steppeElevation from './steppe-elevation.json';
 import stpatricksElevation from './stpatricks-elevation.json';
 import stradeElevation from './strade-elevation.json';
+import strasbourgElevation from './strasbourg-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6743,6 +6744,51 @@ export const stradeCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 60, 18, 85),
       seg('cool-down', 180, 11, 80),
+    ],
+  },
+};
+
+export const strasbourgCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'strasbourg-christmas-market',
+  name: 'Strasbourg Christmas Market',
+  routeName: 'The Grande Île',
+  place: 'Strasbourg, France',
+  world: 'strasbourg',
+  distanceKm: 10.15,
+  climbingM: 10,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: strasbourgElevation,
+  },
+  thumbnailUrl: 'maps/strasbourg-christmas-market.jpg',
+  photoUrl: 'maps/strasbourg-christmas-market-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 120, 18, 80),
+      seg('recover', 60, 13, 80),
+      seg('work', 60, 19, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 60, 19, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 120, 13, 80),
+      seg('recover', 90, 19, 80),
+      seg('work', 60, 16, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 120, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 16, 80),
+      seg('work', 90, 19, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('work', 30, 19, 80),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 19, 80),
+      seg('recover', 120, 16, 80),
+      seg('cool-down', 60, 11, 80),
     ],
   },
 };
