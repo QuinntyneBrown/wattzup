@@ -1801,3 +1801,8 @@ import provence as _provence
 
 THEMES['provence'] = _provence.THEME
 SCENERY['provence'] = _provence.scenery
+
+import pueblos as _pueblos
+
+THEMES['pueblos'] = _pueblos.THEME
+SCENERY['pueblos'] = _pueblos.scenery

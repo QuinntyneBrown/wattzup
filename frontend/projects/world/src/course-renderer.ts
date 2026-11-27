@@ -201,6 +201,7 @@ import type { RivieraRace } from './riviera-race';
 import type { BrooklynPark } from './brooklyn-park';
 import type { PrairieWind } from './prairie-wind';
 import type { ValensoleFields } from './valensole-fields';
+import type { AndalusianRoad } from './andalusian-road';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -457,6 +458,7 @@ export class CourseRenderer implements WorldRenderer {
   private brooklynPark: BrooklynPark | null = null;
   private prairieWind: PrairieWind | null = null;
   private valensoleFields: ValensoleFields | null = null;
+  private andalusianRoad: AndalusianRoad | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1768,6 +1770,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(fields.root);
         this.disposables.push(fields);
       }
+      if (this.course.file.id === 'pueblos') {
+        const { AndalusianRoad } = await import('./andalusian-road');
+        if (this.disposed) return false;
+        const villages = await AndalusianRoad.load(this.course);
+        if (this.disposed) {
+          villages.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.andalusianRoad = villages;
+        this.scene.add(villages.root);
+        this.disposables.push(villages);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2798,6 +2815,7 @@ export class CourseRenderer implements WorldRenderer {
     this.brooklynPark?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.prairieWind?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.valensoleFields?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.andalusianRoad?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -3011,6 +3029,7 @@ export class CourseRenderer implements WorldRenderer {
     this.brooklynPark = null;
     this.prairieWind = null;
     this.valensoleFields = null;
+    this.andalusianRoad = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -3313,6 +3332,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.brooklynPark) Object.assign(materials, this.brooklynPark.materials);
     if (this.prairieWind) Object.assign(materials, this.prairieWind.materials);
     if (this.valensoleFields) Object.assign(materials, this.valensoleFields.materials);
+    if (this.andalusianRoad) Object.assign(materials, this.andalusianRoad.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3943,6 +3963,7 @@ export class CourseRenderer implements WorldRenderer {
     this.brooklynPark?.sightline(metres, this.camera.position, ahead);
     this.prairieWind?.sightline(metres, this.camera.position, ahead);
     this.valensoleFields?.sightline(metres, this.camera.position, ahead);
+    this.andalusianRoad?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4527,6 +4548,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.brooklynPark) Object.assign(drawn, this.brooklynPark.report());
     if (this.prairieWind) Object.assign(drawn, this.prairieWind.report());
     if (this.valensoleFields) Object.assign(drawn, this.valensoleFields.report());
+    if (this.andalusianRoad) Object.assign(drawn, this.andalusianRoad.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

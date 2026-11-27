@@ -122,6 +122,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   coast: 'courses/coast',
   prospect: 'courses/prospect',
   provence: 'courses/provence',
+  pueblos: 'courses/pueblos',
   como: 'courses/como',
   comuna13: 'courses/comuna13',
   cornwall: 'courses/cornwall',

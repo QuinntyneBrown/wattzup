@@ -48,6 +48,7 @@ import pragueElevation from './prague-elevation.json';
 import poggioElevation from './poggio-elevation.json';
 import prospectElevation from './prospect-elevation.json';
 import provenceElevation from './provence-elevation.json';
+import pueblosElevation from './pueblos-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5646,6 +5647,51 @@ export const provenceCourseMap = {
       seg('recover', 60, 13, 90),
       seg('work', 180, 21, 95),
       seg('cool-down', 360, 13, 82),
+    ],
+  },
+};
+
+export const pueblosCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'andalusian-white-villages',
+  name: 'Andalusian White Villages',
+  routeName: 'The white-village road',
+  place: 'Andalusia, Spain',
+  world: 'pueblos',
+  distanceKm: 21.377,
+  climbingM: 382,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: pueblosElevation,
+  },
+  thumbnailUrl: 'maps/andalusian-white-villages.jpg',
+  photoUrl: 'maps/andalusian-white-villages-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 12, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 180, 14, 80),
+      seg('recover', 180, 16, 85),
+      seg('work', 180, 18, 85),
+      seg('work', 180, 21, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 360, 18, 85),
+      seg('work', 360, 19, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 180, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 180, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 19, 90),
+      seg('work', 90, 24, 100),
+      seg('cool-down', 154, 10, 80),
     ],
   },
 };
