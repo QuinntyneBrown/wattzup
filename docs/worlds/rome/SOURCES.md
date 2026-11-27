@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [image_5_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/08/image_5_optimized.png) (g0693) | © MyWhoosh |
 | game-04.jpg | MyWhoosh: [MicrosoftTeams-image (4)](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2022/12/MicrosoftTeams-image-4.png) (g0897) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Glasgow Crit Circuit” Route Details (Scotland)](https://zwiftinsider.com/route/glasgow-crit-circuit/) (g0053) | © Zwift |
+
+The original travertine and basalt fan textures follow the surface and weathering in real 01–03, 08 and 10. The open amphitheatre arcades and broken outer ring follow real 03 and 08–10. Real 11–13 informed the market hemicycle, columns, marble portico and triumphal reliefs. The original tree and tourist atlases use the silhouettes in real 01–07 and 15. Real 14 informed the original red Vespa. Games 01–05 informed rider-height framing and distance legibility. The walking groups, sellers, architecture, scooter and taxi are original course assets.
+
+The palazzo frontage, Vittoriano elevation, bronze equestrian figure and Trajan’s Market shop bays are original generated elevations based on real 01–05 and 11–13. They sit on the three-dimensional staircase, market hemicycle and city buildings. The Colosseum’s arcades remain open geometry through both rings.

@@ -1816,3 +1816,8 @@ import redoute as _redoute
 
 THEMES['redoute'] = _redoute.THEME
 SCENERY['redoute'] = _redoute.scenery
+
+import rome as _rome
+
+THEMES['rome'] = _rome.THEME
+SCENERY['rome'] = _rome.scenery

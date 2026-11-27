@@ -51,6 +51,7 @@ import provenceElevation from './provence-elevation.json';
 import pueblosElevation from './pueblos-elevation.json';
 import quebecElevation from './quebec-elevation.json';
 import redouteElevation from './redoute-elevation.json';
+import romeElevation from './rome-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5782,6 +5783,70 @@ export const redouteCourseMap = {
       seg('recover', 120, 11, 80),
       seg('work', 60, 16, 80),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const romeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'rome-colosseum-loop',
+  name: 'Rome Colosseum Loop',
+  routeName: 'Via dei Fori Imperiali',
+  place: 'Rome, Italy',
+  world: 'rome',
+  distanceKm: 14.981,
+  climbingM: 48,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: romeElevation,
+  },
+  thumbnailUrl: 'maps/rome-colosseum-loop.jpg',
+  photoUrl: 'maps/rome-colosseum-loop-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 15, 18, 120),
+      seg('recover', 45, 13, 90),
+      seg('work', 15, 18, 120),
+      seg('recover', 45, 13, 90),
+      seg('work', 15, 18, 120),
+      seg('recover', 45, 13, 90),
+      seg('work', 15, 18, 120),
+      seg('recover', 105, 13, 84),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('work', 40, 19, 90),
+      seg('recover', 240, 11, 80),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('work', 40, 19, 90),
+      seg('recover', 240, 11, 80),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 20, 22, 110),
+      seg('recover', 40, 19, 90),
+      seg('work', 40, 24, 100),
+      seg('cool-down', 230, 11, 80),
     ],
   },
 };
