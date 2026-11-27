@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Cobbled Crown” Route Details (Richmond)](https://zwiftinsider.com/route/cobbled-crown/) (g0023) | © Zwift |
 | game-04.jpg | Zwift: [“Double Espresso” Route Details (Paris)](https://zwiftinsider.com/route/double-espresso/) (g0031) | © Zwift |
 | game-05.jpg | MyWhoosh: [image_5_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/08/image_5_optimized.png) (g0693) | © MyWhoosh |
+
+The three stepped gables, Gothic west portal, rounded sett pattern and cheering family are original artwork for the Cathedral Circuit. The sponsor banners are original signs. Real 01–05 and 13–14 guided the cathedral proportions, real 06–12 and 15 the street and shopfront scale. Game 01–03 guided the cobbles, barriers and riding line, and game 04–05 the scale of skyline landmarks from the bicycle.

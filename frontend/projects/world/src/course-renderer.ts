@@ -150,6 +150,7 @@ import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
+import type { MarktSquare } from './markt-square';
 import type { ManxMountain } from './manx-mountain';
 import type { JunkanooRush } from './junkanoo-rush';
 import type { KilaueaVents } from './kilauea-vents';
@@ -391,6 +392,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
+  private marktSquare: MarktSquare | null = null;
   private mountain: ManxMountain | null = null;
   private rush: JunkanooRush | null = null;
   private vents: KilaueaVents | null = null;
@@ -1516,6 +1518,18 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(festival.root);
         this.disposables.push(festival);
       }
+      if (this.course.file.id === 'oldtown') {
+        const { MarktSquare } = await import('./markt-square');
+        if (this.disposed) return false;
+        const square = await MarktSquare.load(this.course);
+        if (this.disposed) {
+          square.dispose();
+          return false;
+        }
+        this.marktSquare = square;
+        this.scene.add(square.root);
+        this.disposables.push(square);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2529,6 +2543,7 @@ export class CourseRenderer implements WorldRenderer {
     this.buenosAiresTraffic?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.kouriLagoon?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.wiesnParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.marktSquare?.furniture.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2727,6 +2742,7 @@ export class CourseRenderer implements WorldRenderer {
     this.buenosAiresTraffic = null;
     this.kouriLagoon = null;
     this.wiesnParade = null;
+    this.marktSquare = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2979,6 +2995,7 @@ export class CourseRenderer implements WorldRenderer {
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
+    if (this.marktSquare) Object.assign(materials, this.marktSquare.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.rush) Object.assign(materials, this.rush.materials);
     if (this.caldera) Object.assign(materials, this.caldera.materials);
@@ -3594,6 +3611,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
     }
     this.stCharlesParade?.sightline(metres, this.camera.position, ahead);
+    this.marktSquare?.furniture.sightline(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -4162,6 +4180,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.strip) Object.assign(drawn, this.strip.report());
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
+    if (this.marktSquare) Object.assign(drawn, this.marktSquare.furniture.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.rush) Object.assign(drawn, this.rush.report());
     if (this.vents) Object.assign(drawn, this.vents.report());

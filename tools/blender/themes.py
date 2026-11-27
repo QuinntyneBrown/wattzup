@@ -736,11 +736,20 @@ def prairie(k: Kit) -> dict:
 def oldtown(k: Kit) -> dict:
     """A cobbled European old town on race day: tall pastel houses door to door, bunting, a cathedral, cafés."""
     B, s, rng = k.B, k.s, k.rng
+    from worldkit import Painted
+    from iten_landmarks import pictured
+    from oldtown_markt import facades,race_day
+    art=Painted(k)
+    frontages=facades(k,art,pictured(k,'TownhouseFronts'))
     front = k.kerb + 3.2  # the pavements' width: houses stand at their back
     houses = 0
     for side in (1, -1):
         i = 2
         while i < k.n - 4:
+            # A clear market square separates each sprint line from the cathedral steps.
+            if any(stage['kind']=='work' and stage['to']-155<s[i]['d']<stage['to']+66 for stage in k.st):
+                i+=2
+                continue
             if not k.straight(i, 2, 1 / 45):
                 i += 2
                 continue
@@ -756,8 +765,7 @@ def oldtown(k: Kit) -> dict:
             B[FACADES[(houses + i) % len(FACADES)]].box(k.P(i, 0, off, base - s[i]["z"]), (width, 10.0, floors * fh + 0.8 - (base - s[i]["z"])), yaw)
             k.gable(B["roof-tile"], k.P(i, 0, off, floors * fh + 0.8), 10.0, width, 3.0, yaw + math.pi / 2)
             wall = off - 5.05 * side
-            k.windows(B["window"], i, 0, wall, width, floors - 1, 3.6, fh, yaw, 2.4)
-            B["dark"].box(k.P(i, rng.uniform(-1.5, 1.5), wall, 0.12), (1.3, 0.2, 2.4), yaw)
+            frontages(i,wall,width,floors*fh,side,houses)
             if rng.random() < 0.25:
                 for c in range(2):
                     ux, uy, uz = k.P(i, -1.5 + c * 3, off - 6.6 * side, 0.12)
@@ -772,26 +780,8 @@ def oldtown(k: Kit) -> dict:
     # Street lamps on the kerbs.
     for i in range(4, k.n - 4, 6):
         k.lamp(i, (k.kerb + 0.6) * (1 if (i // 6) % 2 else -1), "glow-lamp", 5.0)
-    # The cathedral on the square midway: a nave, a crossing and two towers with spires.
-    placed = 0
-    for share in (0.5, 0.42, 0.58, 0.3, 0.7):
-        i = k.road.index(k.length * share)
-        off = -(front + 34.0)
-        if not k.room(i, off, 34.0, 120.0):
-            off = -off
-            if not k.room(i, off, 34.0, 120.0):
-                continue
-        yaw = s[i]["h"]
-        z = s[i]["z"]
-        B["limestone"].box(k.P(i, 0, off, -3), (46, 18, 24), yaw)
-        k.gable(B["roof-slate"], k.P(i, 0, off, 21), 46, 18, 9, yaw)
-        for t in (-7, 7):
-            tx = k.P(i, -26, off + t * 0.0 + t, -3)
-            B["limestone"].box(tx, (8, 8, 52), yaw)
-            k.cone(B["roof-slate"], (tx[0], tx[1], tx[2] + 52), 5.4, 20, 4)
-        B["glow-window"].box(k.P(i, -30.1, off, 26), (0.2, 4.0, 4.0), yaw)
-        placed += 1
-        break
+    race_day(k,art)
+    placed=sum(stage["kind"]=="work" for stage in k.st)
     # Hills of the countryside beyond the walls, with cypresses.
     cx, cy, reach = k.centre()
     for _ in range(int(160 * k.scale)):
@@ -1735,3 +1725,9 @@ import oktoberfest as _oktoberfest
 
 THEMES['oktoberfest'] = _oktoberfest.THEME
 SCENERY['oktoberfest'] = _oktoberfest.scenery
+
+from oldtown_markt import road as _markt_road, route as _markt_route
+
+THEMES['oldtown']['lay'] = _markt_route
+
+THEMES["oldtown"]["road_builder"] = _markt_road

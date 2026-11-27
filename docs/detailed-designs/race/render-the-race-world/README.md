@@ -1849,3 +1849,18 @@ The course follows the original eight-degree bends over 150 metres. Keep enough 
 | Fairground at night, 10.19 km | Real 02, 10–13 and 15. Games 03 and 05. | Gondolas hang beneath the turning Ferris wheel. The five Olympia Looping rings and carousel canopy stand above the glowing tent roofs. |
 
 Use the painted entry gables, Bavaria’s raised wreath, the Ferris wheel spokes and the five coloured coaster loops as distinct silhouettes. Keep the horse team and dray together on the changing grade. Anchor crowd feet to the street and share stall geometry and band materials. Use the ride clock for each moving landmark and release all course assets on exit. Compare the crowded avenue and evening fairground to Caribana. Credits are in docs/worlds/oktoberfest/SOURCES.md.
+
+## Old Town Criterium (#2180)
+
+Retain the existing elevation samples, stage distances, advertised climb and starter unlock. Redistribute the heading through the townhouse corner over a 20 m arc, with a straight entry and exit. Open the frontage beside the seventh sprint so the west portal is visible across the square. Model the visible faces of the spire, portal and gables in silhouette, match the size of the setts to the bicycle tyres and keep the street furniture outside the riding line. The bannered rails and the three crowd rows overlap at different depths. Keep objects anchored to the local grade.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Steenstraat, 0.08 km | Real 06–09, 11 and 15. Games 01 and 03. | Shuttered townhouses crowd the narrow street. The changing sun picks out the rounded blue-grey setts and their dark joints. |
+| Cathedral kick, 2.53 km | Real 01–05 and 13. Games 01–03. | Bannered steel crowd barriers narrow the uphill sprint. Fans three deep cheer beneath the west tower on the skyline. |
+| Townhouse turn, 4.31 km | Real 06–09, 11 and 12. Games 01 and 04. | Bollards draw a line around the kerb of the right-angle corner. Closely spaced shutters, gables and overhead pennants turn with the bunch. |
+| Café terraces, 6.98 km | Real 01, 02, 10, 12 and 13. Games 02 and 04. | Striped parasols shade café tables, chairs and shopfronts behind the barriers. Warm plaster faces the hard midday shadows. |
+| Cathedral square, 10.45 km | Real 01–05, 13 and 14. Games 01 and 05. | Buttresses, pointed windows and a layered west portal resolve below the distant spire as the rider climbs into the square. |
+| Finish straight, 14.05 km | Real 01, 03, 05 and 13. Games 02 and 05. | The truss gantry spans the setts beside the lap board. The bell and waving flags stand against sunlight on the cathedral stone. |
+
+Bake the cathedral stone, window tracery, contact shadows and shop fronts. Share the spectator atlas and street furniture. Give each bounded group of moving supporters a deterministic phase. Use the existing race clock for the bell and pennants. Compare both tablet captures against the submitted-frame and draw-call evidence for Caribana. Original references and licences are in docs/worlds/oldtown/SOURCES.md.
