@@ -133,6 +133,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Playground Park Loop (`playground`) | HIIT for Time-Crunched Parents (GCN Training, 30:00) | 13.225 km | 55 m | `public/courses/playground.glb` ([ride views](screenshots/playground-park-loop/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Prague Old Town (`prague`) | Ramp It Up: 50 Minute HIIT (GCN Training, 50:00) | 21.525 km | 104 m | `public/courses/prague.glb` ([ride views](screenshots/prague-old-town/README.md)) | Built and ridden; open from the start on the map catalogue |
 | The Poggio (`poggio`) | Tempo Efforts With Sprint Finishes (GCN Training, 28:30) | 11.550 km | 179 m | `public/courses/poggio.glb` ([ride views](screenshots/the-poggio/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Prospect Park (`prospect`) | 30 Minute Intervals: Fitness Training (GCN, 30:00) | 12.400 km | 72 m | `public/courses/prospect.glb` ([ride views](screenshots/prospect-park/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

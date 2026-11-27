@@ -2029,3 +2029,20 @@ Along the opening Aurelia the Ligurian Sea is on the rider’s left. Climb away 
 | Via Roma sprint, 11.41 km | Real 03, 08–10 and 15. Games 02–04. | The final straight narrows between barriers and shuttered shops. Dense spectators and flags line the finish gantry, with painted finish markings under the arch. |
 
 Keep the headlands fixed in world space and show gaps between ridges. Break up the glasshouse roofs with repeated ribs and rows of flowers. Use a local mesh for the campanile and individual rows of shops on Via Roma. Animate whitewash, a summit tricolore and finish pennants on the ride clock. Share materials and release the course resources on exit. Compare both sampling locations with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/poggio/SOURCES.md.
+
+## Prospect Park (#2193)
+
+Use two laps of the same 6.2 km park drive. One hill rises toward the plaza each lap, with the lake and Lullwater at the low end of the loop. The individual workout stages keep the historical class timing across the lap line. Reuse the autumn scene’s lane paint, runners, green benches and cast-iron lamps as visual cues.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| East Drive beneath the canopy, 0.08 km | Real 01–04 and 12. Games 01 and 04. | Lane markings separate runners from the weekend pace line. Trees cast broken shadows across the asphalt. Iron park lamps mark the curve ahead. |
+| Long Meadow, 1.24 km | Real 02, 03, 06 and 12. Games 02 and 03. | The near canopy opens onto a broad lawn. A dog chases a ball past picnic blankets while a runner passes the line of green benches. |
+| Grand Army Plaza, 2.86 km | Real 01 and 10. Games 01 and 05. | The arch has one deep opening, paired pillars, bronze reliefs and a crowning quadriga. Brownstone stoops and apartment roofs mark the Brooklyn edge. |
+| Weekend market, 4.06 km | Real 01, 13 and 14. Games 03 and 05. | People queue between rows of canvas tents and food trucks. The stall counters, hanging signs and stacked crates sit below the riders’ sightline. |
+| Prospect Park Lake, 5.13 km | Real 05–07 and 11. Games 02 and 04. | Willows bend over the shore. Swans leave wakes across the lake and the green iron bridge spans the narrow end of the water. |
+| Boathouse on the Lullwater, 11.92 km | Real 07–09 and 15. Games 01 and 04. | Two storeys of white terracotta stand above their reflection. A red roof, repeated round arches and the waterside balustrade frame the Audubon Center. |
+
+Place each landmark once in the physical landscape and revisit it on the second lap. Set the Boathouse across the water behind an unbroken band of reflections. Keep brownstone façades at the edge of the canopy. Instance hardwoods and market figures, and drive the runner, dog and swan from ride time. Dispose of their geometry, textures and materials on exit. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/prospect/SOURCES.md.
+
+Rider feedback in [#920](https://github.com/QuinntyneBrown/wattzup/issues/920) praises the existing Prospect Park look and feel. Preserve its early-autumn morning light, marked lanes, Long Meadow weekend activity, quiet lake and brownstone backdrop. The existing scene in `world-prospect.ts` repeats those props every 380 m. The native race needs a full drive where the same arch and Boathouse return at the same place each lap. Keep the separate World Ride scene available to its current callers.

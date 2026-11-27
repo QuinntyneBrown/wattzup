@@ -46,6 +46,7 @@ import pikeplaceElevation from './pikeplace-elevation.json';
 import playgroundElevation from './playground-elevation.json';
 import pragueElevation from './prague-elevation.json';
 import poggioElevation from './poggio-elevation.json';
+import prospectElevation from './prospect-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5566,6 +5567,46 @@ export const poggioCourseMap = {
       seg('recover', 180, 18, 80),
       seg('work', 30, 22, 100),
       seg('cool-down', 300, 12, 80),
+    ],
+  },
+};
+
+export const prospectCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'prospect-park',
+  name: 'Prospect Park',
+  routeName: 'The park drive',
+  place: 'Brooklyn, New York',
+  world: 'prospect',
+  distanceKm: 12.4,
+  climbingM: 72,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: prospectElevation,
+  },
+  thumbnailUrl: 'maps/prospect-park.jpg',
+  photoUrl: 'maps/prospect-park-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 14, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 150, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 150, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 90, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 90, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 360, 11, 80),
     ],
   },
 };

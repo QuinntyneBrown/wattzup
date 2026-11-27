@@ -1786,3 +1786,8 @@ import poggio as _poggio
 
 THEMES['poggio'] = _poggio.THEME
 SCENERY['poggio'] = _poggio.scenery
+
+import prospect as _prospect
+
+THEMES['prospect'] = _prospect.THEME
+SCENERY['prospect'] = _prospect.scenery
