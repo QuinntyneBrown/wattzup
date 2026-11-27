@@ -207,6 +207,7 @@ import type { ArdennesRoadside } from './ardennes-roadside';
 import type { ForumProcession } from './forum-procession';
 import type { ArizonaRoadside } from './arizona-roadside';
 import type { CactusForest } from './cactus-forest';
+import type { RioParade } from './rio-parade';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -469,6 +470,7 @@ export class CourseRenderer implements WorldRenderer {
   private forumProcession: ForumProcession | null = null;
   private arizonaRoadside: ArizonaRoadside | null = null;
   private cactusForest: CactusForest | null = null;
+  private rioParade: RioParade | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1870,6 +1872,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(detail.root);
         this.disposables.push(detail);
       }
+      if (this.course.file.id === 'sambadrome') {
+        const { RioParade } = await import('./rio-parade');
+        if (this.disposed) return false;
+        const detail = await RioParade.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.rioParade = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2906,6 +2923,7 @@ export class CourseRenderer implements WorldRenderer {
     this.forumProcession?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.arizonaRoadside?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.cactusForest?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.rioParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -3125,6 +3143,7 @@ export class CourseRenderer implements WorldRenderer {
     this.forumProcession = null;
     this.arizonaRoadside = null;
     this.cactusForest = null;
+    this.rioParade = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -3433,6 +3452,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.forumProcession) Object.assign(materials, this.forumProcession.materials);
     if (this.arizonaRoadside) Object.assign(materials, this.arizonaRoadside.materials);
     if (this.cactusForest) Object.assign(materials, this.cactusForest.materials);
+    if (this.rioParade) Object.assign(materials, this.rioParade.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -4071,6 +4091,7 @@ export class CourseRenderer implements WorldRenderer {
     this.forumProcession?.sightline(metres, this.camera.position, ahead);
     this.arizonaRoadside?.sightline(metres, this.camera.position, ahead);
     this.cactusForest?.sightline(metres, this.camera.position, ahead);
+    this.rioParade?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4661,6 +4682,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.forumProcession) Object.assign(drawn, this.forumProcession.report());
     if (this.arizonaRoadside) Object.assign(drawn, this.arizonaRoadside.report());
     if (this.cactusForest) Object.assign(drawn, this.cactusForest.report());
+    if (this.rioParade) Object.assign(drawn, this.rioParade.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

@@ -1831,3 +1831,8 @@ import saguaro as _saguaro
 
 THEMES['saguaro'] = _saguaro.THEME
 SCENERY['saguaro'] = _saguaro.scenery
+
+import sambadrome as _sambadrome
+
+THEMES['sambadrome'] = _sambadrome.THEME
+SCENERY['sambadrome'] = _sambadrome.scenery

@@ -54,6 +54,7 @@ import redouteElevation from './redoute-elevation.json';
 import romeElevation from './rome-elevation.json';
 import route66Elevation from './route66-elevation.json';
 import saguaroElevation from './saguaro-elevation.json';
+import sambadromeElevation from './sambadrome-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5956,6 +5957,45 @@ export const saguaroCourseMap = {
       seg('recover', 15, 13, 80),
       seg('work', 15, 24, 105),
       seg('cool-down', 145, 11, 80),
+    ],
+  },
+};
+
+export const sambadromeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'rio-sambadrome',
+  name: 'Rio Sambadrome',
+  routeName: 'the Sambadrome runway',
+  place: 'Rio de Janeiro, Brazil',
+  world: 'sambadrome',
+  distanceKm: 6.3,
+  climbingM: 9,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: sambadromeElevation,
+  },
+  thumbnailUrl: 'maps/rio-sambadrome.jpg',
+  photoUrl: 'maps/rio-sambadrome-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 90),
+      seg('work', 60, 21, 70),
+      seg('recover', 60, 18, 90),
+      seg('work', 30, 21, 70),
+      seg('work', 30, 18, 90),
+      seg('recover', 60, 11, 90),
+      seg('work', 60, 21, 70),
+      seg('recover', 60, 18, 90),
+      seg('work', 30, 21, 70),
+      seg('work', 30, 18, 90),
+      seg('recover', 60, 11, 90),
+      seg('work', 60, 21, 70),
+      seg('recover', 60, 18, 90),
+      seg('work', 30, 21, 70),
+      seg('recover', 30, 18, 90),
+      seg('cool-down', 120, 11, 90),
     ],
   },
 };
