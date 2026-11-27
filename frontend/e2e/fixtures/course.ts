@@ -1,5 +1,6 @@
 import jaipurElevation from './jaipur-elevation.json';
 import jouvertElevation from './jouvert-elevation.json';
+import joshuatreeElevation from './joshuatree-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3675,6 +3676,42 @@ export const jouvertCourseMap = {
       seg('recover', 30, 11, 80),
       seg('work', 60, 24, 90),
       seg('cool-down', 90, 11, 80),
+    ],
+  },
+};
+
+export const joshuaTreeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'joshua-tree',
+  name: 'Joshua Tree',
+  routeName: 'Park Boulevard',
+  place: 'Joshua Tree National Park, California',
+  world: 'joshuatree',
+  distanceKm: 23.625,
+  climbingM: 272,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: joshuatreeElevation,
+  },
+  thumbnailUrl: 'maps/joshua-tree.jpg',
+  photoUrl: 'maps/joshua-tree-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 13, 80),
+      seg('work', 900, 18, 85),
+      seg('recover', 120, 10, 80),
+      seg('work', 600, 19, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 360, 21, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 270, 10, 80),
     ],
   },
 };

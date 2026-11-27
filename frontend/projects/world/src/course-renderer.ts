@@ -171,6 +171,7 @@ import type { BigSurCoast } from './bigsur-coast';
 import type { BlackpoolTrams } from './blackpool-trams';
 import type { JaipurFestival } from './jaipur-festival';
 import type { JouvertBands } from './jouvert-bands';
+import type { MojaveClimbers } from './mojave-climbers';
 import type { BlueMountainsYard } from './blue-mountains-yard';
 import type { MabryMill } from './mabry-mill';
 import type { BondiSurf } from './bondi-surf';
@@ -536,6 +537,8 @@ export class CourseRenderer implements WorldRenderer {
     panMallet: null as number | null,
     speakerTruck: null as number | null,
     crowdClearance: null as number | null,
+    handHeight: null as number | null,
+    belayHand: null as number | null,
     mistPosition: null as number | null,
     speakerDepth: null as number | null,
     valleyMist: null as number | null,
@@ -610,6 +613,8 @@ export class CourseRenderer implements WorldRenderer {
   private jouvert: JouvertBands | null = null;
   private jouvertAprons: MeshBasicMaterial | null = null;
   private frederick: MeshBasicMaterial | null = null;
+  private climbers: MojaveClimbers | null = null;
+  private mojaveFlora: MeshBasicMaterial | null = null;
   private yard: BlueMountainsYard | null = null;
   private mill: MabryMill | null = null;
   private surf: BondiSurf | null = null;
@@ -830,6 +835,32 @@ export class CourseRenderer implements WorldRenderer {
           color: 0xd9c9bc,
         });
         this.disposables.push(aprons, this.jouvertAprons);
+        this.camera.clearViewOffset();
+        this.camera.fov = 62;
+        this.camera.updateProjectionMatrix();
+      }
+      if (this.course.file.id === 'joshuatree') {
+        const { MojaveClimbers } = await import('./mojave-climbers');
+        if (this.disposed) return false;
+        const climbers = await MojaveClimbers.load(this.course);
+        if (this.disposed) {
+          climbers.dispose();
+          return false;
+        }
+        this.climbers = climbers;
+        this.scene.add(climbers.group, climbers.range);
+        this.camera.far = 55000;
+        this.disposables.push(climbers);
+        const atlas = await new TextureLoader().loadAsync('courses/joshuatree-yuccas.webp');
+        if (this.disposed) {
+          atlas.dispose();
+          return false;
+        }
+        atlas.colorSpace = SRGBColorSpace;
+        atlas.flipY = false;
+        atlas.anisotropy = 4;
+        this.mojaveFlora = new MeshBasicMaterial({ map: atlas, side: DoubleSide, alphaTest: 0.46 });
+        this.disposables.push(atlas, this.mojaveFlora);
         this.camera.clearViewOffset();
         this.camera.fov = 62;
         this.camera.updateProjectionMatrix();
@@ -1892,6 +1923,7 @@ export class CourseRenderer implements WorldRenderer {
     this.trams?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.holi?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.jouvert?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.climbers?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.yard?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mill?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.surf?.update(metres, frame.reducedMotion ? 0 : frame.time);
@@ -2039,6 +2071,8 @@ export class CourseRenderer implements WorldRenderer {
     this.jouvert = null;
     this.jouvertAprons = null;
     this.frederick = null;
+    this.climbers = null;
+    this.mojaveFlora = null;
     this.yard = null;
     this.mill = null;
     this.surf = null;
@@ -2269,6 +2303,11 @@ export class CourseRenderer implements WorldRenderer {
       this.seafrontSurface?.(detail) ??
       this.deckSurface ??
       coursePavement;
+    if (this.climbers) {
+      materials['MojaveGranite'] = this.climbers.granite;
+      materials['MojaveSand'] = this.climbers.sand;
+    }
+    if (this.mojaveFlora) materials['MojavePlants'] = this.mojaveFlora;
     if (this.jouvertAprons) materials['JouvertAprons'] = this.jouvertAprons;
     if (this.frederick) materials['FrederickFronts'] = this.frederick;
     materials['Ground'] = this.holi?.tarmac ?? this.jouvert?.road ?? pavement ?? ground.material;
@@ -2869,6 +2908,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.y += 1.65 * zoom;
     }
     this.jouvert?.aim(metres, this.camera.position, ahead);
+    this.climbers?.aim(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
       ahead.y +
@@ -3247,6 +3287,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.panMallet = this.jouvert?.panMallet ?? null;
     drawn.speakerTruck = this.jouvert?.speakerTruck ?? null;
     drawn.crowdClearance = this.jouvert?.crowdClearance ?? null;
+    drawn.handHeight = this.climbers?.handHeight ?? null;
+    drawn.belayHand = this.climbers?.belayHand ?? null;
     drawn.mistPosition = this.yard?.mistPosition ?? null;
     drawn.speakerDepth = this.yard?.speakerDepth ?? null;
     drawn.valleyMist = this.mill?.valleyMist ?? null;

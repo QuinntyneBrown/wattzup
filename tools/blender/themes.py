@@ -1561,3 +1561,7 @@ import jouvert as _jouvert
 
 THEMES['jouvert'] = _jouvert.THEME
 SCENERY['jouvert'] = _jouvert.scenery
+import joshuatree as _joshuatree
+
+THEMES['joshuatree'] = _joshuatree.THEME
+SCENERY['joshuatree'] = _joshuatree.scenery

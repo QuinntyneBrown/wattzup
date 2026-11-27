@@ -1320,3 +1320,18 @@ Keep the existing J’Ouvert soundtrack, Frederick Street identity and GCN sprin
 | Dawn, 5.93 km | Real 01, 07, 09–11 and 13–15, games 01 and 03 | Lift the eastern sky to blue while lit signs and lamps remain visible. Royal palms, almond and flamboyant crowns frame flags and splashed plaster above cups, rags and dirty asphalt. |
 
 Use the local Port of Spain photos for buildings and geography. Real 04–06 depict celebrations in Aruba and Jamaica and inform only crowd density, light and paint. Real 03 informs band spacing; the Trinidad pans in real 08 supply the instrument details. Caribana’s speaker silhouettes, bounded crowd batches and fixed skyline provide comparisons for the original models. Keep the truck, dancers, pan players and powder on race time. Reuse the world music player and its volume control. Release shared geometry, textures and materials on exit. Record six matched rider views and report actual submissions, p95, worst interval, draw calls and advancing distance for both tablet runs.
+
+## Joshua Tree (#2144)
+
+The legacy Park Boulevard ride uses a generic class world. Retain its 13-stage ramp session, cadence and target resistance. Map Select and Race Setup open the native course through the lazy race-world renderer, which reads the same-origin GLB and the stage-based centre line. No other Joshua Tree rider feedback appeared in the issue-title search.
+
+| Position | References | Rider view on Low |
+| --- | --- | --- |
+| Park Boulevard, 0.08 km | Real 03–05, 07, 10–12 and games 02 and 05 | The yellow centre lines sweep between gravel banks. Short broken trunks and forks support uneven shaggy crowns. Sparse creosote and sage leave visible gaps between the trees. |
+| Hidden Valley, 4.25 km | Real 02, 08, 13 and games 01 and 03 | Warm light picks out separate weathered blocks and cracks. A climber changes holds above a belayer, with parked cars at the turnout below. |
+| Skull Rock, 9.78 km | Real 02, 06 and 13 and game 03 | Deep shadow inside two eye sockets and a nasal opening gives the weathered boulder its silhouette, with other jointed granite behind. |
+| Jumbo Rocks, 12.37 km | Real 01, 08 and 13 and games 03–04 | Separate tent pitches, tables and pulled-in cars fill gaps among rounded boulders at the foot of the climbing wall. |
+| Cholla Cactus Garden, 17.63 km | Real 09 and 15 and games 02 and 04 | Low branch clusters with pale tips catch the sun against a darker foothill. The gravel between the plants remains visible. |
+| Mountain outlook, 22.31 km | Real 04, 05, 10, 14 and 15 and game 05 | The road crosses open scrub beneath a fixed Little San Bernardino skyline. Long warm shadows identify the direction of the low sun throughout the bend. |
+
+Use Caribana’s fixed distant skyline and independently culled near detail. Bake rock seams and ground wear, batch roadside plants, and retain the limbs, spines and rock recesses at low detail. Animate climbers from the ride clock with shared geometry. Stop updating distant actors and release buffers and textures when leaving the race. Compare six matched rider-height views with the HUD visible. Measure actual submissions, p95, longest frame time, draw calls and advancing distance through both moving samples.
