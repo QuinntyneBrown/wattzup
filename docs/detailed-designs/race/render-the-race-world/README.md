@@ -2316,3 +2316,18 @@ The existing silverstone world palette supplies soft cloud and damp pavement. Th
 | Club and the pit entrance, 5.48 km | Real 01, 04, 07 and 09. Games 02 and 04. | The white pit-entry divider leads back to the Wing. A marshal waves beside the orange shelter while the second lap begins beneath the start gantry. |
 
 The asphalt carries the worn rubber line and edge paint. Batch fence posts, seat rows and garage doors into local native sections. Draw the Wing’s folded roof and long grandstand silhouettes from further away than the gravel and wire mesh. Sample track-day car, trolley and marshal poses on ride time and release the geometry and materials on route exit. Verify Low/WebGL 2 from map selection, followed by separate 60-second performance samples through Hamilton Straight and the esses (ADRs 0021, 0023, 0030, 0034 and 0035).
+
+## Isle of Skye Fog (#2211)
+
+Retain the muted light and moist single-track road of the existing world palette. The rider enters via the catalogue and the course registry loads the original 12.725 km course with the GCN class. Use distinct relief for the dark gabbro ridge and the rounded rusty hills. Ground the pools, bridges, houses and animals against the measured road.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Carbost crofts, 0.10 km | Real 02, 03 and 14. Games 01 and 02. | White harled houses, a chapel bellcote and dark slate roofs step down to Loch Harport. A white diamond marks a passing place on the narrow damp road. |
+| Loch Harport, 1.78 km | Real 03, 12 and 14. Games 01 and 05. | Grey water and a handful of moorings lie below the grassy bank. The road leaves the coastal strip for rough heather, with rounded red granite ahead. |
+| Red Cuillin shoulder, 3.98 km | Real 06, 11 and 15. Games 03 and 05. | The Red Cuillin rises in smooth russet screes. A horned Highland cow turns its head beside the passing bay while sheep crop the unfenced verge. |
+| Fairy Pools burn, 6.32 km | Real 04, 05 and 07. Games 03 and 04. | Under the footbridge a short white cascade drops into a clear blue-green rock pool. The dark gabbro skyline rises behind the boulders. |
+| Black Cuillin mist, 8.84 km | Real 01, 05, 08, 09 and 13. Games 02 and 04. | A ragged gabbro ridge appears through moving low cloud. The white passing-place diamond and near sheep stay readable against the heather. |
+| Glen Brittle shore, 12.14 km | Real 01, 04, 10 and 11. Games 01 and 05. | The glen opens onto grey sea water below the crofts. A shaft of light touches the last grassy shoulder; the dark ridge stays fixed on the horizon. |
+
+The ridge is fixed beyond the travelling bike. Place low moving fog in the glen between rider and peaks, keeping nearby signs and the HUD clear. A separate water surface carries the falls over the lip of the rock cut. Keep the two lochs in their own valleys. Batch bracken, stones and roadside clumps, use one reusable rig for grazing cattle, and release the glen materials and moving groups on exit. Use the budgets and backends in ADRs 0021, 0023, 0030, 0034 and 0035.

@@ -217,6 +217,7 @@ import type { CactusForest } from './cactus-forest';
 import type { RioParade } from './rio-parade';
 import type { ShibuyaCrossing } from './shibuya-crossing';
 import type { SilverstoneTrack } from './silverstone-track';
+import type { SkyeGlen } from './skye-glen';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -321,6 +322,15 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   PaddockAtlas: 900,
   CircuitBoards: 420,
   CircuitAsphalt: 580,
+  SkyeRoad: 680,
+  SkyeHeather: 165,
+  HarportRelief: 3500,
+  SkyeMoor: 4500,
+  BlackCuillin: 7000,
+  RedCuillin: 6600,
+  FairyPools: 520,
+  SeaLochs: 4200,
+  PassingPlaces: 320,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -469,6 +479,7 @@ export class CourseRenderer implements WorldRenderer {
   private sanFrancisco: SanFranciscoHills | null = null;
   private tokyo: ShibuyaCrossing | null = null;
   private silverstone: SilverstoneTrack | null = null;
+  private skye: SkyeGlen | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -2065,6 +2076,18 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(track.root);
         this.disposables.push(track);
       }
+      if (this.course.file.id === 'skye') {
+        const { SkyeGlen } = await import('./skye-glen');
+        if (this.disposed) return false;
+        const glen = await SkyeGlen.load(this.course);
+        if (this.disposed) {
+          glen.dispose();
+          return false;
+        }
+        this.skye = glen;
+        this.scene.add(glen.root);
+        this.disposables.push(glen);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -3019,6 +3042,7 @@ export class CourseRenderer implements WorldRenderer {
     this.sanFrancisco?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.tokyo?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.silverstone?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.skye?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
@@ -3230,6 +3254,7 @@ export class CourseRenderer implements WorldRenderer {
     this.sanFrancisco = null;
     this.tokyo = null;
     this.silverstone = null;
+    this.skye = null;
     this.boardwalk = null;
     this.pacificPark = null;
     this.seaPoint = null;
@@ -3658,6 +3683,7 @@ export class CourseRenderer implements WorldRenderer {
     Object.assign(materials, this.sanFrancisco?.materials);
     Object.assign(materials, this.tokyo?.materials);
     Object.assign(materials, this.silverstone?.materials);
+    Object.assign(materials, this.skye?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -4303,6 +4329,7 @@ export class CourseRenderer implements WorldRenderer {
     this.rioParade?.sightline(metres, this.camera.position, ahead);
     this.tokyo?.frameView(metres, this.camera.position, ahead);
     this.silverstone?.frameView(metres, this.camera.position, ahead);
+    this.skye?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4906,6 +4933,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.rioParade) Object.assign(drawn, this.rioParade.report());
     if (this.tokyo) Object.assign(drawn, this.tokyo.report());
     if (this.silverstone) Object.assign(drawn, this.silverstone.report());
+    if (this.skye) Object.assign(drawn, this.skye.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

@@ -1870,3 +1870,8 @@ import silverstone as _silverstone
 
 THEMES['silverstone'] = _silverstone.THEME
 SCENERY['silverstone'] = _silverstone.scenery
+
+import skye as _skye
+
+THEMES['skye'] = _skye.THEME
+SCENERY['skye'] = _skye.scenery

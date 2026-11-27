@@ -64,6 +64,7 @@ import sevensistersElevation from './sevensisters-elevation.json';
 import sfhillsElevation from './sfhills-elevation.json';
 import shibuyaElevation from './shibuya-elevation.json';
 import silverstoneElevation from './silverstone-elevation.json';
+import skyeElevation from './skye-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6337,6 +6338,47 @@ export const silverstoneCourseMap = {
       seg('recover', 30, 14, 80),
       seg('work', 120, 19, 90),
       seg('cool-down', 180, 11, 80),
+    ],
+  },
+};
+
+export const skyeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'isle-of-skye-fog',
+  name: 'Isle of Skye Fog',
+  routeName: 'The Glen Brittle road',
+  place: 'Isle of Skye, Scotland',
+  world: 'skye',
+  distanceKm: 12.725,
+  climbingM: 172,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: skyeElevation,
+  },
+  thumbnailUrl: 'maps/isle-of-skye-fog.jpg',
+  photoUrl: 'maps/isle-of-skye-fog-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 10, 80),
+      seg('work', 60, 13, 80),
+      seg('recover', 30, 21, 90),
+      seg('work', 180, 16, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 150, 19, 90),
+      seg('recover', 90, 13, 80),
+      seg('work', 120, 22, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 240, 16, 85),
+      seg('work', 30, 24, 100),
+      seg('work', 90, 10, 80),
+      seg('recover', 180, 14, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 120, 18, 85),
+      seg('cool-down', 180, 10, 80),
     ],
   },
 };
