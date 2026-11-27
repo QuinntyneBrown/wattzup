@@ -1736,3 +1736,8 @@ import oregon as _oregon
 
 THEMES['oregon'] = _oregon.THEME
 SCENERY['oregon'] = _oregon.scenery
+
+import outback as _outback
+
+THEMES['outback'] = _outback.THEME
+SCENERY['outback'] = _outback.scenery

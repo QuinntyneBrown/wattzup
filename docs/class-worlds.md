@@ -123,6 +123,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Okinawa Coast Road (`okinawa`) | Spin Those Legs (GCN Training, 40:00) | 16.880 km | 56 m | `public/courses/okinawa.glb` ([ride views](screenshots/okinawa-coast-road/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Oktoberfest, Munich (`oktoberfest`) | Calorie Crush (GCN Training, 24:48) | 10.651 km | 39 m | `public/courses/oktoberfest.glb` ([ride views](screenshots/oktoberfest-munich/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Oregon Coast (`oregon`) | FTP Builder (GCN Training, 42:00) | 19.525 km | 139 m | `public/courses/oregon.glb` ([ride views](screenshots/oregon-coast/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Outback Highway (`outback`) | Running on Empty (GCN Training, 25:00) | 10.775 km | 25 m | `public/courses/outback.glb` ([ride views](screenshots/outback-highway/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

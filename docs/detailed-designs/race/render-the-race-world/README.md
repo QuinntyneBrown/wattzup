@@ -1879,3 +1879,18 @@ Condense the north-to-south Highway 101 landmarks into the historical FTP Builde
 | Boardman headlands, 18.86 km | Real 02, 05, 12–14. Games 01, 03 and 05. | Water shows through a dark basalt arch. White breakers curl in front of it and wind-shaped spruce bracket the distant stacks. |
 
 Use merged native meshes for the rock, truss, roadway and keeper buildings. Vary the silhouette and spacing of spruce clumps. Place beach logs, pale breakers and distant headlands at different depths. Sample wind, beacon and breaker movement from the ride clock. Compare the submitted frames on the forest and lighthouse stretches to Caribana. Credits are in docs/worlds/oregon/SOURCES.md.
+
+## Outback Highway (#2182)
+
+Condense the Lasseter Highway into the historical Running on Empty stages. Use the driving side of the Australian highway for the rider and keep the road train in the opposite lane. Use separate silhouettes and distances for the long flat table of Mount Conner, rounded Kata Tjuta domes and the grooved west face of Uluru.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Erldunda turnoff, 0.08 km | Real 01, 06–08 and 15. Games 02 and 03. | Green direction boards lead onto straight bitumen. White edge lines separate the riding surface from red wheel ruts and golden spinifex. |
+| Road train, 1.71 km | Real 01, 05 and 15. Games 02, 03 and 05. | A long-bonneted prime mover and three articulated trailers pass in the opposing lane. Dust trails off the outer wheels and the apparent wind shifts as the vehicle passes. |
+| Curtin Springs, 3.62 km | Real 07, 08, 11 and 14. Games 02 and 03. | Fuel bowsers stand on a red-sand apron below the corrugated roadhouse veranda. The next-fuel sign, desert oaks and timber fencing stand apart from its frontage. |
+| Mount Conner lookout, 5.41 km | Real 06, 10, 13 and 14. Games 02 and 05. | The distant mesa has a long level summit and sloping shoulders. A wedge-tailed eagle circles above roadside scrub and the yellow wildlife-warning signs. |
+| Kata Tjuta, 7.88 km | Real 03, 04, 09 and 15. Games 02–04. | A cluster of rounded rock domes rises beyond the desert oaks. Sunset begins to catch the shoulders of the domes. |
+| Uluru at dusk, 10.21 km | Real 02, 09 and 12. Games 01, 03 and 04. | Uluru rises as a broad single monolith, warm orange-red across a dark spinifex plain. Erosion channels mark its face under a pink and purple sky. |
+
+Grade the red verge down from the seal and stretch the wheel ruts along the road. Build the three trailers, couplings and wheels at their own physical lengths. Dust and eagle flight follow the ride clock. Use a bounded set of native scrub clusters and warm the rock faces as the sky cools near the finish. Compare the busiest passing sequence with the Caribana tablet evidence. Credits are in docs/worlds/outback/SOURCES.md.
