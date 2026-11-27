@@ -116,6 +116,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Día de Muertos Parade (`muertos`) | Spicy Maximum Minute Efforts (GCN Training, 20:00) | 8.000 km | 23 m | `public/courses/muertos.glb` ([ride views](screenshots/dia-de-muertos-parade/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Mulholland Drive (`mulholland`) | Repeat Your Max (GCN Training, 40:00) | 17.100 km | 347 m | `public/courses/mulholland.glb` ([ride views](screenshots/mulholland-drive/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Mur de Huy (`murdehuy`) | Sprints for Climbing (GCN Training, 26:00) | 11.200 km | 534 m | `public/courses/murdehuy.glb` ([ride views](screenshots/mur-de-huy/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Napa Vineyards (`napa`) | Easy Riding (GCN Training, 20:00) | 8.200 km | 51 m | `public/courses/napa.glb` ([ride views](screenshots/napa-vineyards/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

@@ -1705,3 +1705,8 @@ import murdehuy as _murdehuy
 
 THEMES['murdehuy'] = _murdehuy.THEME
 SCENERY['murdehuy'] = _murdehuy.scenery
+
+import napa as _napa
+
+THEMES['napa'] = _napa.THEME
+SCENERY['napa'] = _napa.scenery

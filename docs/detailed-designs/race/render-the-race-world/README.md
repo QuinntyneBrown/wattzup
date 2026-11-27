@@ -1759,3 +1759,18 @@ The 26-minute class returns to the climb over successive efforts. Fit each ascen
 | Notre-Dame de la Sarte, 10.82 km | Real 01, 04 and 11. Games 02 and 05. | The summit finish arch frames the lane beside the church. Flags and spectators line the approach. |
 
 Keep the citadel fixed above the river and give nearby chapels dimensional roofs, plinths and niches. Repeat the barrier pickets and share crowd geometry. Drive the cyclists, flags and spectators from elapsed race time. Release all course-owned geometry and materials on exit. Reference credits are in docs/worlds/murdehuy/SOURCES.md.
+
+## Napa Vineyards (#2174)
+
+Rider feedback in #915 singles out the existing world’s look and feel. Keep the low rolling Silverado Trail, warm afternoon and sightline to the winery tower, and capture the original ride at each position before changing it. Preserve the existing 18-degree bends over 130 metres and the cadence and resistance of Easy Riding.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Silverado Trail, 0.08 km | Real 01–03 and 06. Games 02 and 04. | A broad paved shoulder follows the yellow centre lines between the first trellises. Long oak shadows cross the tarmac. |
+| Mustard between trellises, 1.46 km | Real 04, 05, 09–11. Games 01–03. | Sunlit mustard and orange poppies edge weathered vineyard posts. Parallel vine rows run across the valley floor to the dry hills. |
+| Stone winery terrace, 3.12 km | Real 06, 08, 09 and 14. Games 02 and 03. | A gravel turnoff climbs to the fieldstone cellar. Low walls, shaded tables, wine barrels and parasols line its tasting terrace. |
+| Oak-shaded gate, 4.63 km | Real 02, 07, 13 and 15. Games 03 and 05. | A carved winery sign hangs between masonry piers. Iron gate leaves open under a spreading live oak. |
+| Vaca and Mayacamas ranges, 6.18 km | Real 01, 03, 06, 10 and 12. Games 01 and 04. | A rise reveals both belts of tawny hills behind the vineyards. A convertible follows the bends and another rider pedals along the shoulder. |
+| Mission winery, 7.84 km | Real 07, 08 and 15. Games 02 and 05. | A red-tiled arcade meets the white stucco bell tower. The road rises toward its bell opening and the courtyard beyond. |
+
+Build the arcade, bell opening and stone terrace at rider scale. Vary the vineyard row direction and spacing across fields, retain clear driveway openings and use the distant hills to orient riders. Use repeatable geometry for vines, posts and gates. Share moving actors and release loaded images and meshes on exit. Compare the opening and busy winery approach with Caribana. Credits are in docs/worlds/napa/SOURCES.md.

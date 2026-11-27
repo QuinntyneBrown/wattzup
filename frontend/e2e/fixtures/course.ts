@@ -29,6 +29,7 @@ import mountwashingtonElevation from './mountwashington-elevation.json';
 import muertosElevation from './muertos-elevation.json';
 import mulhollandElevation from './mulholland-elevation.json';
 import murdehuyElevation from './murdehuy-elevation.json';
+import napaElevation from './napa-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4873,6 +4874,48 @@ export const murDeHuyCourseMap = {
       seg('work', 10, 24, 100),
       seg('recover', 40, 22, 100),
       seg('work', 10, 24, 100),
+      seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const napaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'napa-vineyards',
+  name: 'Napa Vineyards',
+  routeName: 'Napa Vineyards',
+  place: 'Napa Valley, California',
+  world: 'napa',
+  distanceKm: 8.2,
+  climbingM: 51,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: napaElevation,
+  },
+  thumbnailUrl: 'maps/napa-vineyards.jpg',
+  photoUrl: 'maps/napa-vineyards-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 12, 80),
+      seg('work', 30, 16, 80),
+      seg('recover', 30, 13, 100),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 16, 60),
+      seg('work', 15, 18, 80),
+      seg('recover', 45, 13, 100),
+      seg('work', 15, 18, 80),
+      seg('work', 45, 13, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 18, 60),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 18, 100),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 16, 100),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 16, 100),
+      seg('work', 120, 18, 80),
       seg('cool-down', 120, 11, 80),
     ],
   },
