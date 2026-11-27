@@ -1685,3 +1685,8 @@ import montroyal as _montroyal
 
 THEMES['montroyal'] = _montroyal.THEME
 SCENERY['montroyal'] = _montroyal.scenery
+
+import mountwashington as _mountwashington
+
+THEMES['mountwashington'] = _mountwashington.THEME
+SCENERY['mountwashington'] = _mountwashington.scenery

@@ -752,6 +752,33 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     }
 
     [Fact]
+    public async Task Mountwashington_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "mount-washington-auto-road");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 60, 11, 80),
+                new Segment("work", 60, 14, 80),
+                new Segment("recover", 60, 18, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 120, 16, 85),
+                new Segment("work", 60, 18, 85),
+                new Segment("work", 60, 21, 90),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 16, 85),
+                new Segment("work", 120, 18, 85),
+                new Segment("work", 120, 21, 90),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 180, 16, 85),
+                new Segment("work", 180, 18, 85),
+                new Segment("recover", 180, 21, 90),
+                new Segment("cool-down", 180, 11, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task Iceland_preserves_every_original_stage()
     {
         var map = Assert.Single(await ReadMaps(), m => m.Id == "iceland-ring-road");
@@ -2847,6 +2874,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Montmartre", 8.4, 552, "Moderate", "the lanes of the butte", "Montmartre, Paris"),
                 new Listed("Montreal Jazz Fest", 9.695, 17, "Easy", "Rue Sainte-Catherine", "Montréal, Québec"),
                 new Listed("Mont Royal", 25.49, 571, "Hard", "the Camillien-Houde climb", "Montréal, Québec"),
+                new Listed("Mount Washington Auto Road", 12.725, 1453, "Hard", "the Auto Road", "Mount Washington, New Hampshire"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -2970,6 +2998,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("montmartre", null),
                 ("montreal-jazz-fest", null),
                 ("mont-royal", null),
+                ("mount-washington-auto-road", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -3093,6 +3122,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("montmartre", null),
                 ("montreal-jazz-fest", null),
                 ("mont-royal", null),
+                ("mount-washington-auto-road", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -3135,7 +3165,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten", "jaipur", "jouvert", "joshuatree", "junkanoo", "kilauea", "knicks", "kona", "koppenberg", "kwaremont", "kyoto", "lakefront", "lakelouise", "letras", "lisbon", "loire", "machupicchu", "marinabay", "marrakech", "mardigras", "maunakea", "merce", "miami", "moab", "monaco", "montmartre", "montreal", "montroyal"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten", "jaipur", "jouvert", "joshuatree", "junkanoo", "kilauea", "knicks", "kona", "koppenberg", "kwaremont", "kyoto", "lakefront", "lakelouise", "letras", "lisbon", "loire", "machupicchu", "marinabay", "marrakech", "mardigras", "maunakea", "merce", "miami", "moab", "monaco", "montmartre", "montreal", "montroyal", "mountwashington"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));

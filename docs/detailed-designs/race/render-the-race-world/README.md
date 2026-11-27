@@ -1699,3 +1699,18 @@ The existing class supplies the workout and forty-degree bends, while the shared
 | Belvédère Kondiaronk, 24.56 km | Real 10–11 and 15. Games 02 and 05. | Stone balustrades frame the chalet terrace, the towers of downtown Montréal and the distant St. Lawrence and bridges. |
 
 Construct the hairpin, bike-lane edges, rail posts and rock cuts against the road samples. Use distinct maple, oak and birch silhouettes. Leave openings through the trees at the lake, the steel cross and the lookout. Fix the skyline, river and bridge behind the stone terrace. Club riders, park runners and water movement share the ride clock. Section and reuse foliage and rail geometry, keep the distant skyline inexpensive and dispose of all resources on exit. Compare the club climb and the lookout approach to Caribana. Credits are in docs/worlds/montroyal/SOURCES.md. The Mont Royal title search returned #2169.
+
+## Mount Washington Auto Road (#2170)
+
+The class supplies the original workout, 45-degree bends and resistance-driven climbs. Its shared roadside scene lacks a grade-aligned rack railway and the changes in vegetation and exposure that make this ascent identifiable. Fit the physical climb to the class distance, leaving the outer drops open and steepening the final wall.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Auto Road forest gate, 0.08 km | Real 03–04, 07 and 11. Games 01 and 05. | Mile posts and a timber entrance sign frame a narrow patched road. Autumn hardwoods give way to dense spruce up the climb. |
+| Gravel shoulder and krummholz, 3.62 km | Real 03–07. Games 01–02 and 05. | Worn asphalt breaks into gravel along an exposed bend. Wind-stunted firs lean beside the unguarded drop. |
+| Great Gulf treeline break, 6.37 km | Real 01, 03–04, 08 and 12. Games 02–04. | Low shrubs give way to lichen-covered talus. The Great Gulf falls away beneath the long silhouettes of Adams and Madison. |
+| Cog Railway trestle, 8.49 km | Real 08, 11 and 13–14. Games 03 and 05. | The steam locomotive pushes a red passenger coach up an inclined rack railway. The plume drifts across the timber trestle. |
+| Cloud bank above treeline, 10.32 km | Real 02, 08–10, 12 and 15. Games 01 and 04. | Wind drives broken cloud over the road. Roadside cairns and rime pick out the edge at the entrance to the fog. |
+| Sherman Adams summit, 12.31 km | Real 01–02 and 08–10. Games 02–05. | Spectators ring cowbells at the final steep wall below the visitor centre. The cylindrical observatory tower and low stone Tip-Top House stand above the boulder field. |
+
+Anchor the Presidential Range behind a steep Great Gulf. Keep the road free of guardrails, weather the shoulder, step from deciduous canopies to spruce to krummholz and end with low talus. Align the cog locomotive, coach and trestle to the same inclined track. Shape the Sherman Adams building, instrument tower and Tip-Top House separately. Bound steam, cloud and spectator motion by visibility and drive it with race time. Section static detail and release course resources on exit. Compare the forest and summit to Caribana. Credits are in docs/worlds/mountwashington/SOURCES.md. The title search returned #2170.
