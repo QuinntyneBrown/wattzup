@@ -1930,6 +1930,31 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     }
 
     [Fact]
+    public async Task Southbeach_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "south-beach-sunrise");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 180, 16, 85),
+                new Segment("work", 120, 18, 85),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("recover", 45, 16, 85),
+                new Segment("work", 45, 21, 95),
+                new Segment("cool-down", 120, 15, 85),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task Iceland_preserves_every_original_stage()
     {
         var map = Assert.Single(await ReadMaps(), m => m.Id == "iceland-ring-road");
@@ -4065,6 +4090,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Silverstone Track Day", 11.0875, 26, "Hard", "The Hangar Straight", "Northamptonshire, England"),
                 new Listed("Isle of Skye Fog", 12.725, 172, "Moderate", "The Glen Brittle road", "Isle of Skye, Scotland"),
                 new Listed("Songkran, Bangkok", 11.75, 12, "Hard", "Khao San Road", "Bangkok, Thailand"),
+                new Listed("South Beach Sunrise", 7.025, 67, "Moderate", "Ocean Drive", "Miami Beach, Florida"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -4228,6 +4254,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("silverstone-track-day", null),
                 ("isle-of-skye-fog", null),
                 ("songkran-bangkok", null),
+                ("south-beach-sunrise", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -4391,6 +4418,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("silverstone-track-day", null),
                 ("isle-of-skye-fog", null),
                 ("songkran-bangkok", null),
+                ("south-beach-sunrise", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -4414,7 +4442,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "havana-malecon" => 1200, "hardknott-pass" => 1500, "han-river-parks" => 1240, "great-ocean-road" => 1200, "grand-canyon-south-rim" => 1800, "golden-gate-park" => 900, "glastonbury-fields" => 1500, "glasgow-world-championships" => 1800, "giza-plateau" => 1380, "ghent-six-day" => 600, "passo-gardena" => 1200, "col-du-galibier" => 3600, "furka-pass" => 2700, "mount-fuji-road" => 1800, "fish-hill-cotswolds" => 1800, "fenland-time-trial" => 2100, "mount-etna" => 1800, "engadin-lakes" => 3600, "edinburgh-fringe" => 1200, "dubai-marina" => 1200, "diwali-marine-drive" => 1505, "death-valley" => 1380, "daytona-beach-sand" => 1200, "yorkshire-dales" => 3168, "cypress-mountain" => 2580, "cornish-harbour" => 1020, "copenhagen-cycle-superhighway" => 1920, "copacabana-promenade" => 600, "coney-island-boardwalk" => 1140, "comuna-13-medellin" => 1850, "lake-como" => 1800, "chichen-itza" => 1800, "chicago-loop-crit" => 1200, "champs-elysees-finale" => 1500, "cherry-blossom-festival-dc" => 2400, "central-park-loop" => 900, "caribana-parade" => 900, "cabot-trail" => 3600, "passo-campolongo" => 1310, "sa-calobra-mallorca" => 1830, "the-bund-shanghai" => 1803, "brooklyn-bridge-commute" => 1500, "brighton-pride" => 1800, "bonneville-salt-flats" => 1200, "bondi-to-bronte" => 810, "blue-ridge-parkway" => 3300, "blue-mountains-jamaica" => 2100, "blackpool-illuminations" => 840, "big-sur" => 1800, "bealach-na-ba" => 1320, "beach-road-melbourne" => 2750, "bay-of-islands" => 3680, "bathsheba-barbados" => 1500, "sixth-street-austin" => 2020, "col-aubisque" => 1980, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, "independence-pass" => 2100, "isle-of-man-mountain-course" => 1200, "iten-kenya" => 2400, "holi-in-jaipur" => 1200, "trinidad-jouvert" => 900, "joshua-tree" => 3300, "kilauea-lava-road" => 1102, "knicks-championship-parade" => 1020, "kona-ironman" => 1505, "koppenberg-cobbles" => 960, "oude-kwaremont" => 2400, "kyoto-hanami" => 1500, "chicago-lakefront-trail" => 1530, "lake-louise" => 1200, "alto-de-letras" => 2910, "lisbon-tram-hills" => 900, "machu-picchu-road" => 1507, "marina-bay-night" => 1500, "marrakech-medina" => 1790, "mardi-gras-new-orleans" => 1200, "mauna-kea" => 3600, "la-merce-barcelona" => 1795, "miami-neon-nights" => 1200, "monaco-street-circuit" => 1335, "montmartre" => 1200, "montreal-jazz-fest" => 1323, "mont-royal" => 3600, "dia-de-muertos-parade" => 1200, "mulholland-drive" => 2400, "mur-de-huy" => 1560, "napa-vineyards" => 1200, "north-shore-oahu" => 1230, "notting-hill-carnival" => 825, "avenida-9-de-julio" => 2400, "okinawa-coast-road" => 2400, "oktoberfest-munich" => 1488, "oregon-coast" => 2520, "outback-highway" => 1500, "overseas-highway" => 1200, "torres-del-paine" => 1740, "the-palouse" => 2700, "san-fermin-pamplona" => 1320, "ffordd-pen-llech" => 2740, "pike-place-at-dawn" => 1500, "prague-old-town" => 3000, "the-poggio" => 1710, "provence-lavender" => 2460, "andalusian-white-villages" => 3004, "la-redoute" => 2400, "rome-colosseum-loop" => 2010, "route-66-desert" => 1200, "saguaro-desert" => 1480, "rio-sambadrome" => 900, "santa-monica-pier" => 1200, "sea-point-cape-town" => 1200, "passo-sella" => 1560, "serpentine-hyde-park" => 900, "seven-sisters-cliffs" => 1760, "san-francisco-hills" => 1200, "shibuya-crossing" => 1200, "silverstone-track-day" => 1530, "songkran-bangkok" => 1650, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "havana-malecon" => 1200, "hardknott-pass" => 1500, "han-river-parks" => 1240, "great-ocean-road" => 1200, "grand-canyon-south-rim" => 1800, "golden-gate-park" => 900, "glastonbury-fields" => 1500, "glasgow-world-championships" => 1800, "giza-plateau" => 1380, "ghent-six-day" => 600, "passo-gardena" => 1200, "col-du-galibier" => 3600, "furka-pass" => 2700, "mount-fuji-road" => 1800, "fish-hill-cotswolds" => 1800, "fenland-time-trial" => 2100, "mount-etna" => 1800, "engadin-lakes" => 3600, "edinburgh-fringe" => 1200, "dubai-marina" => 1200, "diwali-marine-drive" => 1505, "death-valley" => 1380, "daytona-beach-sand" => 1200, "yorkshire-dales" => 3168, "cypress-mountain" => 2580, "cornish-harbour" => 1020, "copenhagen-cycle-superhighway" => 1920, "copacabana-promenade" => 600, "coney-island-boardwalk" => 1140, "comuna-13-medellin" => 1850, "lake-como" => 1800, "chichen-itza" => 1800, "chicago-loop-crit" => 1200, "champs-elysees-finale" => 1500, "cherry-blossom-festival-dc" => 2400, "central-park-loop" => 900, "caribana-parade" => 900, "cabot-trail" => 3600, "passo-campolongo" => 1310, "sa-calobra-mallorca" => 1830, "the-bund-shanghai" => 1803, "brooklyn-bridge-commute" => 1500, "brighton-pride" => 1800, "bonneville-salt-flats" => 1200, "bondi-to-bronte" => 810, "blue-ridge-parkway" => 3300, "blue-mountains-jamaica" => 2100, "blackpool-illuminations" => 840, "big-sur" => 1800, "bealach-na-ba" => 1320, "beach-road-melbourne" => 2750, "bay-of-islands" => 3680, "bathsheba-barbados" => 1500, "sixth-street-austin" => 2020, "col-aubisque" => 1980, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, "independence-pass" => 2100, "isle-of-man-mountain-course" => 1200, "iten-kenya" => 2400, "holi-in-jaipur" => 1200, "trinidad-jouvert" => 900, "joshua-tree" => 3300, "kilauea-lava-road" => 1102, "knicks-championship-parade" => 1020, "kona-ironman" => 1505, "koppenberg-cobbles" => 960, "oude-kwaremont" => 2400, "kyoto-hanami" => 1500, "chicago-lakefront-trail" => 1530, "lake-louise" => 1200, "alto-de-letras" => 2910, "lisbon-tram-hills" => 900, "machu-picchu-road" => 1507, "marina-bay-night" => 1500, "marrakech-medina" => 1790, "mardi-gras-new-orleans" => 1200, "mauna-kea" => 3600, "la-merce-barcelona" => 1795, "miami-neon-nights" => 1200, "monaco-street-circuit" => 1335, "montmartre" => 1200, "montreal-jazz-fest" => 1323, "mont-royal" => 3600, "dia-de-muertos-parade" => 1200, "mulholland-drive" => 2400, "mur-de-huy" => 1560, "napa-vineyards" => 1200, "north-shore-oahu" => 1230, "notting-hill-carnival" => 825, "avenida-9-de-julio" => 2400, "okinawa-coast-road" => 2400, "oktoberfest-munich" => 1488, "oregon-coast" => 2520, "outback-highway" => 1500, "overseas-highway" => 1200, "torres-del-paine" => 1740, "the-palouse" => 2700, "san-fermin-pamplona" => 1320, "ffordd-pen-llech" => 2740, "pike-place-at-dawn" => 1500, "prague-old-town" => 3000, "the-poggio" => 1710, "provence-lavender" => 2460, "andalusian-white-villages" => 3004, "la-redoute" => 2400, "rome-colosseum-loop" => 2010, "route-66-desert" => 1200, "saguaro-desert" => 1480, "rio-sambadrome" => 900, "santa-monica-pier" => 1200, "sea-point-cape-town" => 1200, "passo-sella" => 1560, "serpentine-hyde-park" => 900, "seven-sisters-cliffs" => 1760, "san-francisco-hills" => 1200, "shibuya-crossing" => 1200, "silverstone-track-day" => 1530, "songkran-bangkok" => 1650, "south-beach-sunrise" => 960, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -4433,7 +4461,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten", "jaipur", "jouvert", "joshuatree", "junkanoo", "kilauea", "knicks", "kona", "koppenberg", "kwaremont", "kyoto", "lakefront", "lakelouise", "letras", "lisbon", "loire", "machupicchu", "marinabay", "marrakech", "mardigras", "maunakea", "merce", "miami", "moab", "monaco", "montmartre", "montreal", "montroyal", "mountwashington", "muertos", "mulholland", "murdehuy", "napa", "northshore", "nottinghill", "nuevedejulio", "okinawa", "oktoberfest", "oregon", "outback", "overseas", "paine", "palouse", "pamplona", "penllech", "pikeplace", "playground", "prague", "poggio", "prospect", "provence", "pueblos", "quebec", "redoute", "rome", "route66", "saguaro", "sambadrome", "santamonica", "seapoint", "sella", "serpentine", "sevensisters", "sfhills", "shibuya", "silverstone", "skye", "songkran"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama", "atlanticroad", "aubisque", "austin", "bathsheba", "bayofislands", "beachroad", "bealach", "bigsur", "blackpool", "bluemountains", "blueridge", "bondi", "bonneville", "brickyard", "brighton", "brooklyn", "bund", "calobra", "campolongo", "cabot", "caribana", "centralpark", "cherryblossom", "champs", "chicago", "chichen", "como", "comuna13", "coney", "copacabana", "copenhagen", "cornwall", "cypress", "dales", "daytona", "deathvalley", "diwali", "dubai", "edinburgh", "engadin", "etna", "fens", "fishhill", "fuji", "furka", "galibier", "gardena", "ghent", "giza", "glasgow", "glastonbury", "goldengate", "grandcanyon", "greatocean", "hanriver", "hardknott", "havana", "hoover", "iceland", "independence", "isleofman", "iten", "jaipur", "jouvert", "joshuatree", "junkanoo", "kilauea", "knicks", "kona", "koppenberg", "kwaremont", "kyoto", "lakefront", "lakelouise", "letras", "lisbon", "loire", "machupicchu", "marinabay", "marrakech", "mardigras", "maunakea", "merce", "miami", "moab", "monaco", "montmartre", "montreal", "montroyal", "mountwashington", "muertos", "mulholland", "murdehuy", "napa", "northshore", "nottinghill", "nuevedejulio", "okinawa", "oktoberfest", "oregon", "outback", "overseas", "paine", "palouse", "pamplona", "penllech", "pikeplace", "playground", "prague", "poggio", "prospect", "provence", "pueblos", "quebec", "redoute", "rome", "route66", "saguaro", "sambadrome", "santamonica", "seapoint", "sella", "serpentine", "sevensisters", "sfhills", "shibuya", "silverstone", "skye", "songkran", "southbeach"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));

@@ -407,6 +407,7 @@ export class WorldLoadStore {
         this.canvas = canvas;
         const drawing = this.drawing();
         return renderer.start(canvas, drawn, () => this.nextFrame(), segments, {
+          catalogueWorld: dto.world,
           tier,
           stepDown: drawing.stepDown,
           forceWebGL: drawing.forceWebGL,

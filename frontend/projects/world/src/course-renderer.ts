@@ -158,6 +158,7 @@ import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
 import type { MarktSquare } from './markt-square';
+import type { SouthBeachDrive } from './south-beach-drive';
 import type { ManxMountain } from './manx-mountain';
 import type { JunkanooRush } from './junkanoo-rush';
 import type { KilaueaVents } from './kilauea-vents';
@@ -338,6 +339,11 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   ThaiTemple: 520,
   KhaoSanSigns: 290,
   SongkranRoad: 260,
+  DecoHotels: 460,
+  RoyalPalms: 350,
+  LifeguardTowers: 400,
+  SprintPaint: 180,
+  AtlanticDawn: 12000,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -497,6 +503,7 @@ export class CourseRenderer implements WorldRenderer {
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
   private marktSquare: MarktSquare | null = null;
+  private southBeachDrive: SouthBeachDrive | null = null;
   private mountain: ManxMountain | null = null;
   private rush: JunkanooRush | null = null;
   private vents: KilaueaVents | null = null;
@@ -2108,6 +2115,18 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(street.root);
         this.disposables.push(street);
       }
+      if (this.course.file.id === 'southbeach') {
+        const { SouthBeachDrive } = await import('./south-beach-drive');
+        if (this.disposed) return false;
+        const ocean = await SouthBeachDrive.load(this.course);
+        if (this.disposed) {
+          ocean.dispose();
+          return false;
+        }
+        this.southBeachDrive = ocean;
+        this.scene.add(ocean.root);
+        this.disposables.push(ocean);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -3098,6 +3117,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.khaoSan?.update(metres, frame.reducedMotion ? 0 : frame.time, this.evening?.value ?? 0);
     this.aim(metres, frame.reducedMotion);
+    this.southBeachDrive?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mountain?.update(
       metres,
       frame.reducedMotion ? 0 : frame.time,
@@ -3334,6 +3354,7 @@ export class CourseRenderer implements WorldRenderer {
     this.bigSurCoast = null;
     this.icelandCoast = null;
     this.divide = null;
+    this.southBeachDrive = null;
     this.mountain = null;
     this.rush = null;
     this.vents = null;
@@ -3645,6 +3666,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.marktSquare) Object.assign(materials, this.marktSquare.materials);
+    Object.assign(materials, this.southBeachDrive?.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.rush) Object.assign(materials, this.rush.materials);
     if (this.caldera) Object.assign(materials, this.caldera.materials);
@@ -3789,7 +3811,7 @@ export class CourseRenderer implements WorldRenderer {
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
-      if ((this.mountain || this.caldera) && group === 'Sun') mesh.visible = false;
+      if (((this.mountain || this.caldera) || this.southBeachDrive) && group === 'Sun') mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
           ...glow,
@@ -3873,7 +3895,8 @@ export class CourseRenderer implements WorldRenderer {
             y: middle.y,
             z: middle.z,
             reach:
-              (DRAW_DISTANCE[group] ?? 700) + sphere.radius * mesh.matrixWorld.getMaxScaleOnAxis(),
+              ((group === 'OceanDrive' && this.southBeachDrive ? 330 : DRAW_DISTANCE[group]) ?? 700) +
+              sphere.radius * mesh.matrixWorld.getMaxScaleOnAxis(),
           });
         }
       }
@@ -4300,6 +4323,7 @@ export class CourseRenderer implements WorldRenderer {
     this.serpentine?.frameView(metres, this.camera.position, ahead);
     this.downs?.frameView(metres, this.camera.position, ahead);
     this.sanFrancisco?.frameView(metres, this.camera.position, ahead);
+    this.southBeachDrive?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -4904,6 +4928,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
     if (this.marktSquare) Object.assign(drawn, this.marktSquare.furniture.report());
+    if (this.southBeachDrive) Object.assign(drawn, this.southBeachDrive.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.rush) Object.assign(drawn, this.rush.report());
     if (this.vents) Object.assign(drawn, this.vents.report());

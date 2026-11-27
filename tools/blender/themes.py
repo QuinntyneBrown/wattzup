@@ -1880,3 +1880,8 @@ import songkran as _songkran
 
 THEMES['songkran'] = _songkran.THEME
 SCENERY['songkran'] = _songkran.scenery
+
+import southbeach as _southbeach
+
+THEMES['southbeach'] = _southbeach.THEME
+SCENERY['southbeach'] = _southbeach.scenery

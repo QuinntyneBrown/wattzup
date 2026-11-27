@@ -62,6 +62,8 @@ export type WorldStartProgress =
 
 /** What World loading asks of `start`: the level to start at (L2-155 AC3, L2-156 AC3) and its progress. */
 export interface WorldStartOptions {
+  /** Catalogue world before resolving a shared rendering palette. */
+  readonly catalogueWorld?: string;
   readonly sunrise?: boolean;
   readonly tier?: WorldTier;
   /** False keeps the level for the whole ride however slow the frames (L2-160 AC2); true by default. */
