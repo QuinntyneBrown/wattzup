@@ -1,0 +1,61 @@
+{
+  "id": "marinabay",
+  "name": "Marina Bay Night",
+  "world": "marinabay",
+  "theme": "marinabay",
+  "seed": 2160,
+  "layout": 0,
+  "class": {
+    "id": "fast-paced-cadence-variations",
+    "title": "Fast Paced Cadence Variations",
+    "channel": "GCN Training",
+    "videoId": "xAUkHJOAdLY",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 480,
+        "level": 18,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 480,
+        "level": 18,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "cool-down",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

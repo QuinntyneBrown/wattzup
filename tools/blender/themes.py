@@ -1630,3 +1630,8 @@ import machupicchu as _machupicchu
 
 THEMES['machupicchu'] = _machupicchu.THEME
 SCENERY['machupicchu'] = _machupicchu.scenery
+
+import marinabay as _marinabay
+
+THEMES['marinabay'] = _marinabay.THEME
+SCENERY['marinabay'] = _marinabay.scenery

@@ -101,6 +101,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Lisbon Tram Hills (`lisbon`) | 15 Minute Strength Workout (GCN Training, 15:00) | 6.338 km | 193 m | `public/courses/lisbon.glb` ([ride views](screenshots/lisbon-tram-hills/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Loire Châteaux (`loire`) | Sweet Spot Endurance Training (GCN Training, 30:00) | 12.200 km | 19 m | `public/courses/loire.glb` ([ride views](screenshots/loire-chateaux/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Machu Picchu Road (`machupicchu`) | Step It Up (GCN Training, 25:07) | 10.945 km | 386 m | `public/courses/machupicchu.glb` ([ride views](screenshots/machu-picchu-road/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Marina Bay Night (`marinabay`) | Fast Paced Cadence Variations (GCN Training, 25:00) | 10.665 km | 14 m | `public/courses/marinabay.glb` ([ride views](screenshots/marina-bay-night/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

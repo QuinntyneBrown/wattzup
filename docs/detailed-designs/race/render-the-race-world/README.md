@@ -1534,3 +1534,18 @@ Keep the World Ride bend profile of 60 degrees and 48 m and the existing heading
 | Citadel saddle, 10.37 km | Real 07–09 and 13–15. Games 02 and 05. | Roofless gabled walls and temple courts sit on the saddle in front of the steep asymmetric peak of Huayna Picchu. |
 
 Use Caribana’s fixed skyline for Huayna Picchu and the outer mountains, with separate nearer rock faces and sectioned terraces. Bake shade beneath granite blocks and across the forest floor. Keep original shuttle art separate from shared bus geometry. Move the buses, broken water and drifting cloud on race time. Dispose of course-owned textures, materials and buffers on exit. The photo and game credits are in docs/worlds/machupicchu/SOURCES.md.
+
+## Marina Bay Night (#2160)
+
+Rider feedback #913 praises the original night world. Its class street module already has a lit skyline, three leaning hotel towers and the SkyPark. Retain that palette and the open view across the water. The race route places its landmarks at fixed positions around the bay. The original seven-stage GCN class is Fast Paced Cadence Variations.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Bayfront promenade, 0.08 km | Real 01, 06, 10 and 14. Games 01 and 02. | Three inclined towers support the cantilevered SkyPark across open water. Lamps and palm trunks pass the rider while the hotel stays fixed on the skyline. |
+| Merlion Park, 1.84 km | Real 06, 07 and 11. Games 02 and 05. | The white lion and scaled tail rise on a wave plinth. Its water jet curves into the bay in front of the reflected CBD towers. |
+| Esplanade shore, 3.62 km | Real 03, 06, 07 and 12. Games 01 and 04. | Twin spiked theatre domes catch gold light behind the promenade. Strollers and joggers pass the rail by the dark water. The spherical Apple pavilion in real 12 is a separate south-bank landmark. |
+| Helix Bridge and lotus, 5.36 km | Real 02, 04, 05 and 14. Games 03–05. | Two illuminated spirals twist over the bridge deck. The ArtScience lotus petals open beyond the structure. |
+| Supertree Grove, 7.58 km | Real 08–09. Games 03–05. | Violet and cyan branches spread above a narrow suspended OCBC Skyway. The crowns change colour on the ride clock. |
+| Flyer and light show, 10.12 km | Real 01, 03, 10, 13 and 15. Games 01–02 and 04. | Upright white capsules follow the illuminated Singapore Flyer rim. Narrow beams cross the bay above the reflections. |
+
+Use Caribana’s fixed skyline and merged window strips for the CBD, and tint their broken reflections on the water plane. Keep the Helix Bridge spirals and lotus geometry separate from the skyline. Batch railings, palm crowns and garden branches along the route. Animate the wheel, tree light and joggers directly from race time. Release course textures and draw buffers when leaving the route. Image credits are in docs/worlds/marinabay/SOURCES.md.

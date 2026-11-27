@@ -14,6 +14,7 @@ import letrasElevation from './letras-elevation.json';
 import lisbonElevation from './lisbon-elevation.json';
 import loireElevation from './loire-elevation.json';
 import machupicchuElevation from './machupicchu-elevation.json';
+import marinabayElevation from './marinabay-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4219,6 +4220,36 @@ export const machupicchuCourseMap = {
       seg('work', 60, 24, 100),
       seg('recover', 60, 19, 90),
       seg('cool-down', 117, 11, 80),
+    ],
+  },
+};
+
+export const marinabayCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'marina-bay-night',
+  name: 'Marina Bay Night',
+  routeName: 'the bayfront',
+  place: 'Marina Bay, Singapore',
+  world: 'marinabay',
+  distanceKm: 10.665,
+  climbingM: 14,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: marinabayElevation,
+  },
+  thumbnailUrl: 'maps/marina-bay-night.jpg',
+  photoUrl: 'maps/marina-bay-night-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 14, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 14, 80),
+      seg('work', 480, 18, 88),
+      seg('recover', 120, 11, 80),
+      seg('work', 480, 18, 88),
+      seg('cool-down', 120, 11, 80),
     ],
   },
 };
