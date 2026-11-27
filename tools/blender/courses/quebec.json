@@ -1,0 +1,85 @@
+{
+  "id": "quebec",
+  "name": "Old Québec",
+  "world": "quebec",
+  "theme": "quebec",
+  "seed": 2196,
+  "layout": 0,
+  "class": {
+    "id": "30-minute-short-sharp-efforts",
+    "title": "30 Minute Short Sharp Efforts",
+    "channel": "GCN Training",
+    "videoId": "1rRTSKqViTw",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 15,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

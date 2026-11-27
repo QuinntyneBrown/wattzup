@@ -1806,3 +1806,8 @@ import pueblos as _pueblos
 
 THEMES['pueblos'] = _pueblos.THEME
 SCENERY['pueblos'] = _pueblos.scenery
+
+import quebec as _quebec
+
+THEMES['quebec'] = _quebec.THEME
+SCENERY['quebec'] = _quebec.scenery

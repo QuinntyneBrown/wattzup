@@ -49,6 +49,7 @@ import poggioElevation from './poggio-elevation.json';
 import prospectElevation from './prospect-elevation.json';
 import provenceElevation from './provence-elevation.json';
 import pueblosElevation from './pueblos-elevation.json';
+import quebecElevation from './quebec-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5692,6 +5693,40 @@ export const pueblosCourseMap = {
       seg('work', 60, 19, 90),
       seg('work', 90, 24, 100),
       seg('cool-down', 154, 10, 80),
+    ],
+  },
+};
+
+export const quebecCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'old-quebec',
+  name: 'Old Québec',
+  routeName: 'The Côte de la Montagne',
+  place: 'Québec City, Canada',
+  world: 'quebec',
+  distanceKm: 13.225,
+  climbingM: 158,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: quebecElevation,
+  },
+  thumbnailUrl: 'maps/old-quebec.jpg',
+  photoUrl: 'maps/old-quebec-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 16, 85),
+      seg('work', 60, 10, 80),
+      seg('recover', 15, 24, 100),
+      seg('work', 300, 21, 90),
+      seg('work', 15, 24, 100),
+      seg('recover', 300, 21, 90),
+      seg('work', 15, 24, 100),
+      seg('recover', 300, 21, 90),
+      seg('work', 15, 24, 100),
+      seg('recover', 300, 21, 90),
+      seg('cool-down', 180, 10, 80),
     ],
   },
 };

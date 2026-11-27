@@ -136,6 +136,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Prospect Park (`prospect`) | 30 Minute Intervals: Fitness Training (GCN, 30:00) | 12.400 km | 72 m | `public/courses/prospect.glb` ([ride views](screenshots/prospect-park/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Provence Lavender (`provence`) | Get Fit Fast: 40 Minute Sweet Spot (GCN Training, 41:00) | 18.545 km | 118 m | `public/courses/provence.glb` ([ride views](screenshots/provence-lavender/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Andalusian White Villages (`pueblos`) | Aerobic Efforts: Drop Ollie Like a Boss (GCN Training, 50:04) | 21.377 km | 382 m | `public/courses/pueblos.glb` ([ride views](screenshots/andalusian-white-villages/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Old Québec (`quebec`) | 30 Minute Short Sharp Efforts (GCN Training, 30:00) | 13.225 km | 158 m | `public/courses/quebec.glb` ([ride views](screenshots/old-quebec/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
