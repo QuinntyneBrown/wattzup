@@ -87,6 +87,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   victoria: 'courses/victoria',
   vienna: 'courses/vienna',
   westminster: 'courses/westminster',
+  winnats: 'courses/winnats',
   iten: 'courses/iten',
   jaipur: 'courses/jaipur',
   joshuatree: 'courses/joshuatree',

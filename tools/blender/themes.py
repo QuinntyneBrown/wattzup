@@ -2060,3 +2060,8 @@ import westminster as _westminster
 
 THEMES['westminster'] = _westminster.THEME
 SCENERY['westminster'] = _westminster.scenery
+
+import winnats as _winnats
+
+THEMES['winnats'] = _winnats.THEME
+SCENERY['winnats'] = _winnats.scenery

@@ -2872,3 +2872,16 @@ Keep the rider on the left. Place the bus lane, approach zigzags and parapet lam
 | Whitehall, 2.38 km | Real 02, 09, 10, 13 and games 02, 03 | Black cabs and red buses pass lit stone buildings, phone boxes and a zebra crossing. |
 | County Hall and London Eye, 4.62 km | Real 07, 08, 11, 12 and game 04 | The Eye rotates above the South Bank and County Hall reflects its blue-hour light in the Thames. |
 | Westminster riverside, 6.12 km | Real 03–06, 10, 15 and games 01, 05 | The Houses of Parliament extend along the river. The green bridge arches stand out against the lit stone. |
+
+### Winnats Pass (#2250)
+
+Follow the existing race catalogue into a Blender-built course and its own lazily loaded scene. The 13.5 km class includes the approach and high moor around the short climb. Rise 88 m in 440 m across the upper ramp. Share sampled elevation between the camera, bikes, cattle grids and road. Model limestone faces and grass shelves at distinct depths. Scatter small scree and tuft clumps around the bases. Frame Mam Tor from the upper road and the Castleton patchwork from the overlook. Use original grass, rock, walkers and distant valley art. Keep moving limbs near the rider and release textures, geometry and rider resources on exit.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Castleton approach, 0.14 km | Real 09, 13–15 and game 05 | A farm wall, stone cottages and Castleton’s ridge give way to the moorland approach. |
+| Lower cattle grid, 4.82 km | Real 01, 05, 06 and games 01, 05 | A steel cattle grid spans the unmarked lane between dry-stone wall ends at the gorge entrance. |
+| Crag narrows, 6.38 km | Real 02, 03, 06–10 and games 01, 02 | Grey limestone teeth and loose scree interrupt steep green walls on either side of the kink. |
+| Twenty-percent ramp, 7.06 km | Real 01, 04, 07, 10 and games 03, 04 | The road tilts sharply between walkers and climbing cyclists, with sheep on the grassy bank. |
+| Mam Tor shoulder, 9.86 km | Real 07, 11, 12, 14 and game 04 | The broken face of Mam Tor stands above a long, exposed green ridge under shifting cloud. |
+| Hope Valley overlook, 12.98 km | Real 02, 09, 13–15 and games 02, 05 | Past a low stone wall, the view opens back over Castleton and the small fields of Hope Valley. |

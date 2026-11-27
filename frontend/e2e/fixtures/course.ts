@@ -102,6 +102,7 @@ import veronaElevation from './verona-elevation.json';
 import victoriaElevation from './victoria-elevation.json';
 import viennaElevation from './vienna-elevation.json';
 import westminsterElevation from './westminster-elevation.json';
+import winnatsElevation from './winnats-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7927,6 +7928,45 @@ export const westminsterRushCourseMap = {
       seg('work', 120, 21, 90),
       seg('work', 60, 24, 100),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const winnatsPassCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'winnats-pass',
+  name: 'Winnats Pass',
+  routeName: 'The Winnats road',
+  place: 'Derbyshire, England',
+  world: 'winnats',
+  distanceKm: 13.5,
+  climbingM: 317,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: winnatsElevation,
+  },
+  thumbnailUrl: 'maps/winnats-pass.jpg',
+  photoUrl: 'maps/winnats-pass-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 330, 14, 80),
+      seg('work', 60, 19, 90),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 20, 90),
+      seg('recover', 90, 12, 80),
+      seg('work', 300, 19, 75),
+      seg('work', 300, 20, 70),
+      seg('recover', 60, 12, 80),
+      seg('work', 210, 22, 70),
+      seg('recover', 90, 13, 80),
+      seg('work', 75, 22, 70),
+      seg('recover', 15, 13, 80),
+      seg('work', 75, 22, 70),
+      seg('recover', 15, 13, 80),
+      seg('work', 100, 22, 70),
+      seg('cool-down', 348, 11, 80),
     ],
   },
 };
