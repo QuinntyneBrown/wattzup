@@ -1,0 +1,133 @@
+{
+  "id": "tahoe",
+  "name": "Lake Tahoe",
+  "world": "tahoe",
+  "theme": "tahoe",
+  "seed": 2225,
+  "layout": 0,
+  "class": {
+    "id": "sandwich-max-efforts",
+    "title": "Sandwich Max Efforts",
+    "channel": "GCN Training",
+    "videoId": "2KuIUUW4CbI",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 600,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 240,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

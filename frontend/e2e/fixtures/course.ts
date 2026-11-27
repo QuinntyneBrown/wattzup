@@ -80,6 +80,7 @@ import surfersElevation from './surfers-elevation.json';
 import sydneyharbourElevation from './sydneyharbour-elevation.json';
 import teideElevation from './teide-elevation.json';
 import tamalpaisElevation from './tamalpais-elevation.json';
+import tahoeElevation from './tahoe-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6996,6 +6997,48 @@ export const tamalpaisCourseMap = {
       seg('recover', 225, 22, 75),
       seg('work', 15, 24, 100),
       seg('cool-down', 73, 11, 80),
+    ],
+  },
+};
+
+export const tahoeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'lake-tahoe',
+  name: 'Lake Tahoe',
+  routeName: 'The shore road',
+  place: 'Lake Tahoe, United States',
+  world: 'tahoe',
+  distanceKm: 19.75,
+  climbingM: 128,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: tahoeElevation,
+  },
+  thumbnailUrl: 'maps/lake-tahoe.jpg',
+  photoUrl: 'maps/lake-tahoe-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 13, 80),
+      seg('work', 120, 22, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 120, 22, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 22, 100),
+      seg('recover', 120, 19, 90),
+      seg('work', 60, 22, 100),
+      seg('recover', 300, 10, 80),
+      seg('work', 600, 19, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 240, 10, 80),
     ],
   },
 };

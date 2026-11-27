@@ -2556,3 +2556,18 @@ The existing world supplies wet asphalt and a fog palette. Race needs a selectab
 | East Peak, 11.92 km | Real 04, 12–14. Games 02 and 03. | A glass-walled fire lookout and its railed walkway stand on the East Peak rocks above a gravel turnout and trailhead sign. |
 
 Caribana keeps its landmark skyline fixed and its near participants dimensional. Here the far Pacific and bay stay fixed while the trees, gravel turnouts, bridge towers and fire lookout have separate geometry. Local rider joints share the ride clock with the fog and surf. Merge the static trunks and rail sections, bound the club group, and release every course allocation on exit. Compare six rider views on low detail and count frames submitted during sixty seconds of moving tablet footage in both benchmark sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Lake Tahoe (#2225)
+
+The original TahoeStreet repeats 360 m of shoreline. Retain its clear summer light, paddleboarders, granite and snow while placing the coves, island and marina at distinct distances along the 19.75 km class. The Race catalogue resolves lake-tahoe to tahoe. The world library loads courses/tahoe.course.json and courses/tahoe.glb only on entering the course.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The shore highway, 0.12 km | Real 01–05 and 15. Games 01–04. | Paired yellow lines and an edge stripe lead around a granite cut. Jeffrey pine trunks interrupt the lake view beyond a low guard rail. |
+| Sand Harbor, 3.82 km | Real 06, 08, 09 and 11. Games 02 and 05. | Pale rounded boulders sit partly below the surface. The sand bed and dark underwater stones show through turquoise shallows that deepen to sapphire. |
+| Zephyr Cove, 7.18 km | Real 08, 10 and 12. Games 02 and 04. | A paddler dips a blade beside the sandy beach and timber pier. Swimmers and the pine-covered headland give scale to the cove. |
+| Emerald Bay overlook, 11.24 km | Real 04, 05, 07 and 14. Games 01 and 05. | Guard rails open a view down to Fannette Island with its tiny stone tea house. Dark green slopes enclose the bay and a snowy Sierra ridge stands beyond. |
+| Tahoe City marina, 15.63 km | Real 03, 10, 12 and 13. Games 03 and 05. | Moored boats bob at finger piers below the highway. A green-roofed timber lodge faces the slips while light catches the windows and hulls. |
+| East Shore pines, 19.38 km | Real 01, 02, 06 and 15. Games 01, 03 and 04. | Tall Jeffrey and sugar pines shade a needle-covered shoulder. A yellow curve sign stands against the forest and the lake opens between branches. |
+
+Use the Caribana skyline technique for the fixed Sierra rim. Place dimensional boulders at the waterline and vary pine trunks and crowns along the road. Grade the water from clear shallow sand to deep blue according to distance from the shore. Batch the static roadside objects, keep the paddle, water and hull animations bounded and release the assets on exit. Compare six rider views, then measure submitted frames for sixty seconds on low/WebGL2 at the highway and marina. See ADRs 0021, 0023, 0030, 0034 and 0035.

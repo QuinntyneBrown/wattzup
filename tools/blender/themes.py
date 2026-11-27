@@ -1950,3 +1950,8 @@ import tamalpais as _tamalpais
 
 THEMES['tamalpais'] = _tamalpais.THEME
 SCENERY['tamalpais'] = _tamalpais.scenery
+
+import tahoe as _tahoe
+
+THEMES['tahoe'] = _tahoe.THEME
+SCENERY['tahoe'] = _tahoe.scenery
