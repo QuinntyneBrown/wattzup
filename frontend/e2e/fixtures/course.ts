@@ -96,6 +96,7 @@ import valparaisoElevation from './valparaiso-elevation.json';
 import vegasElevation from './vegas-elevation.json';
 import veletaElevation from './veleta-elevation.json';
 import velodromeElevation from './velodrome-elevation.json';
+import veniceElevation from './venice-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7671,6 +7672,70 @@ export const leeValleyCourseMap = {
       seg('recover', 120, 10, 80),
       seg('work', 60, 24, 100),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const veniceBeachCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'venice-beach-boardwalk',
+  name: 'Venice Beach Boardwalk',
+  routeName: 'Ocean Front Walk',
+  place: 'Los Angeles, California',
+  world: 'venice',
+  distanceKm: 6.95,
+  climbingM: 4,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: veniceElevation,
+  },
+  thumbnailUrl: 'maps/venice-beach-boardwalk.jpg',
+  photoUrl: 'maps/venice-beach-boardwalk-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 19, 80),
+      seg('work', 60, 21, 85),
+      seg('recover', 60, 10, 75),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 10, 24, 90),
+      seg('cool-down', 140, 10, 80),
     ],
   },
 };

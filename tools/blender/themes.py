@@ -2030,3 +2030,8 @@ import velodrome as _lee_valley
 
 THEMES['velodrome'] = _lee_valley.THEME
 SCENERY['velodrome'] = _lee_valley.scenery
+
+import venice as _venice
+
+THEMES['venice'] = _venice.THEME
+SCENERY['venice'] = _venice.scenery

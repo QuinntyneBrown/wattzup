@@ -2794,3 +2794,16 @@ The 8.725 km session covers 34 full 250 m laps and a final 225 m. Use the same p
 | Roof lattice, 4.69 km | Real 02, 04–05, 11, 15 and game 05 | Arched timber and roof cables cross above the far stands. Floodlights follow the straights. |
 | Back straight stands, 6.30 km | Real 07–10 and games 01, 04 | Spectators rise behind clear safety panels. The lit arena screen stays legible across the track. |
 | Lap board, 8.51 km | Real 03, 06–08, 12 and game 01 | An official rings the bell beside the start line. The lap board changes as the rider crosses. |
+
+### Venice Beach Boardwalk (#2243)
+
+Keep the pier rooted in the coast and the bike path independent of the wider pedestrian promenade. Rise and fall by four metres of cumulative climb across 6.95 km. Use concrete joint strips, sand and dune variation, palm silhouettes at three depths, and merged shop fronts. Model the Muscle Beach exercise rigs, skatepark bowl profiles, lifeguard tower ramp and the pier on piles in Blender. Animate skaters along the bowl contours, the busker's strumming arm and the gondolas using the ride clock. Dispose of moving meshes and textures on leaving. Benchmark the market and bowls on the normal race route.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Muscle Beach, 0.14 km | Real 01, 04–05 and games 01, 03 | The lifting platforms and steel exercise frames sit inside the open gym fence. Ocean Front Walk runs beside the bike path. |
+| Ocean Front Walk, 1.32 km | Real 02–03, 05–07, 09 and game 03 | Painted arcades, souvenir racks and awnings alternate behind a separate pedestrian promenade. Palm trunks frame the sprints. |
+| Venice Skatepark, 2.64 km | Real 10–11 and games 02, 05 | Skaters carve through connected concrete bowls below metal coping. Roller skaters pass on the promenade. |
+| Venice Art Walls, 3.81 km | Real 08–09, 12 and games 01, 04 | Original painted concrete walls step down to the sand. Buskers play beside benches and strolling spectators. |
+| Lifeguard tower, 5.11 km | Real 02, 10, 14–15 and game 02 | A raised blue lifeguard tower faces breaking Pacific surf beyond broad sand. The mountains recede into summer haze. |
+| Santa Monica Pier, 6.77 km | Real 13–15 and games 02, 04 | The Pacific Park wheel turns above the timber pier, with the coaster rails and the wooden piles visible along the waterline. |
