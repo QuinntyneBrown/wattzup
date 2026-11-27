@@ -2766,3 +2766,18 @@ The existing VegasStreet class scene supplies the Welcome sign, cruising traffic
 | The northern skyline, 8.81 km | Real 01, 04, 12–14 and games 01–03 | The High Roller turns above the hotel terraces while the narrow Strat shaft and its observation pod mark the next light. |
 
 Use Caribana’s fixed skyline and moving detail for the Strat, Eiffel lattice, High Roller, fountain rows and traffic. Group emissive surfaces and bake reflected colours into road materials on low. Draw nearby jets and vehicles from shared geometry, keep distant architecture in broad sections and release all local resources on exit. Compare six rider-height views and measure two moving sixty-second samples. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Pico Veleta (#2241)
+
+Restore the historical class to the Race catalogue and register a native 25.25 km climb. The stage-weighted profile climbs 1,258 m from Pradollano to 3,398 m. The historical class title says 55 minutes; its stages sum to 56 minutes and the ride uses their actual durations. Keep the Granada basin, observatories and Mulhacén as fixed landmarks on the ascent.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Pradollano approach, 0.14 km | Real 02, 05, 12–14 and games 02–03 | A maintained A-395 lane passes the ski village, lift terminal and lower pines. The bare summit rises beyond the roofs. |
+| The long switchbacks, 5.47 km | Real 01, 03–05, 08 and games 01–02 | A return bend cuts through slate and broom. The carriageway above the rider shows the next switchback. |
+| The Granada overlook, 10.62 km | Real 03, 06, 11–12, 14 and games 02, 04 | The Vega and Granada lie far below the edge of the road. Brown foothills recede into blue haze. |
+| The observatory ridge, 15.26 km | Real 05, 07, 10, 13 and games 02–03 | The IRAM dish tilts above its pedestal beside the observatory domes. Snow gullies run below the crest. |
+| The upper barrier, 20.61 km | Real 01, 04, 07–09, 13 and games 01, 05 | The surface narrows and breaks up. A red-white barrier stands open beside scree and the last roadside snow. |
+| The summit ridge, 24.98 km | Real 04, 07–09, 11, 15 and games 03–05 | From Veleta, Mulhacén and a glacial lake fill the open ridge beyond the summit post. No trees reach this elevation. |
+
+Adapt Caribana’s landmark geometry, surface wear and depth separation to the dish pedestal, village and battered upper tarmac. Share the existing animated course cyclist and simplify the distant ski machinery and snowfields at low tier. Release the local scene on exit. Match six locations and measure the two busiest moving sections. See ADRs 0021, 0023, 0030, 0034 and 0035.

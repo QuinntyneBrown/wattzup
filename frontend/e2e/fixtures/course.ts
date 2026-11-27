@@ -94,6 +94,7 @@ import utrechtElevation from './utrecht-elevation.json';
 import valaisElevation from './valais-elevation.json';
 import valparaisoElevation from './valparaiso-elevation.json';
 import vegasElevation from './vegas-elevation.json';
+import veletaElevation from './veleta-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7591,6 +7592,49 @@ export const vegasCourseMap = {
       seg('work', 30, 18, 90),
       seg('recover', 45, 22, 90),
       seg('cool-down', 60, 13, 90),
+    ],
+  },
+};
+
+export const veletaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'pico-veleta',
+  name: 'Pico Veleta',
+  routeName: 'The Sierra Nevada road',
+  place: 'Granada, Spain',
+  world: 'veleta',
+  distanceKm: 25.25,
+  climbingM: 1258,
+  rating: 'Brutal',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: veletaElevation,
+  },
+  thumbnailUrl: 'maps/pico-veleta.jpg',
+  photoUrl: 'maps/pico-veleta-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 13, 80),
+      seg('work', 120, 16, 85),
+      seg('work', 60, 21, 90),
+      seg('recover', 240, 18, 95),
+      seg('work', 60, 21, 90),
+      seg('recover', 240, 18, 95),
+      seg('work', 60, 21, 90),
+      seg('recover', 240, 18, 95),
+      seg('work', 60, 21, 90),
+      seg('work', 240, 18, 95),
+      seg('recover', 300, 11, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 240, 18, 95),
+      seg('work', 60, 21, 90),
+      seg('recover', 240, 18, 95),
+      seg('work', 60, 21, 90),
+      seg('recover', 240, 18, 95),
+      seg('work', 60, 21, 90),
+      seg('recover', 240, 18, 95),
+      seg('cool-down', 240, 11, 80),
     ],
   },
 };

@@ -2020,3 +2020,8 @@ import vegas as _vegas
 
 THEMES['vegas'] = _vegas.THEME
 SCENERY['vegas'] = _vegas.scenery
+
+import veleta as _veleta
+
+THEMES['veleta'] = _veleta.THEME
+SCENERY['veleta'] = _veleta.scenery

@@ -1,0 +1,139 @@
+{
+  "id": "veleta",
+  "name": "Pico Veleta",
+  "world": "veleta",
+  "theme": "veleta",
+  "seed": 2241,
+  "layout": 0,
+  "class": {
+    "id": "55-minute-ftp-threshold-intervals",
+    "title": "55 Minute FTP Threshold Intervals",
+    "channel": "GCN",
+    "videoId": "IfR1l3a3uNA",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 18,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "cool-down",
+        "duration": 240,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
