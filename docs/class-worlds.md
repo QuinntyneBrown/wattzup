@@ -127,6 +127,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Overseas Highway (`overseas`) | Time to Spin Out (GCN Training, 20:00) | 8.305 km | 20 m | `public/courses/overseas.glb` ([ride views](screenshots/overseas-highway/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Torres del Paine (`paine`) | 30 Minute VO2 Max Session (GCN Training, 29:00) | 13.025 km | 146 m | `public/courses/paine.glb` ([ride views](screenshots/torres-del-paine/README.md)) | Built and ridden; open from the start on the map catalogue |
 | The Palouse (`palouse`) | Rolling With the Hills (GCN Training, 45:00) | 18.152 km | 293 m | `public/courses/palouse.glb` ([ride views](screenshots/the-palouse/README.md)) | Built and ridden; open from the start on the map catalogue |
+| San Fermín, Pamplona (`pamplona`) | Sprint Sprint Sprint (GCN Training, 22:00) | 9.133 km | 29 m | `public/courses/pamplona.glb` ([ride views](screenshots/san-fermin-pamplona/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

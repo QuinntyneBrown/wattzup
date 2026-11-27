@@ -1756,3 +1756,8 @@ import palouse as _palouse
 
 THEMES['palouse'] = _palouse.THEME
 SCENERY['palouse'] = _palouse.scenery
+
+import pamplona as _pamplona
+
+THEMES['pamplona'] = _pamplona.THEME
+SCENERY['pamplona'] = _pamplona.scenery

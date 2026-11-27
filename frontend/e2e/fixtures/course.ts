@@ -40,6 +40,7 @@ import outbackElevation from './outback-elevation.json';
 import overseasElevation from './overseas-elevation.json';
 import paineElevation from './paine-elevation.json';
 import palouseElevation from './palouse-elevation.json';
+import pamplonaElevation from './pamplona-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5329,6 +5330,56 @@ export const palouseCourseMap = {
       seg('work', 30, 24, 100),
       seg('recover', 60, 21, 80),
       seg('cool-down', 150, 11, 80),
+    ],
+  },
+};
+
+export const pamplonaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'san-fermin-pamplona',
+  name: 'San Fermín, Pamplona',
+  routeName: 'Calle Estafeta',
+  place: 'Pamplona, Spain',
+  world: 'pamplona',
+  distanceKm: 9.133333333333333,
+  climbingM: 29,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: pamplonaElevation,
+  },
+  thumbnailUrl: 'maps/san-fermin-pamplona.jpg',
+  photoUrl: 'maps/san-fermin-pamplona-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 60, 18, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 120, 13, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 13, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 13, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 150, 13, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 13, 80),
+      seg('work', 20, 24, 100),
+      seg('recover', 40, 13, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 110, 13, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 10, 13, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 10, 13, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 10, 13, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 10, 13, 80),
+      seg('work', 10, 24, 100),
+      seg('cool-down', 90, 13, 80),
     ],
   },
 };

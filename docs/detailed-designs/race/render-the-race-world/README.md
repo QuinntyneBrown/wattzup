@@ -1939,3 +1939,18 @@ Map Select and Race Setup load the historical class into the authored-course ren
 | Golden-hour overlook, 17.62 km | Real 03–04, 06, 11 and 14. Games 01, 03 and 05. | The last crest reveals green lentils, yellow barley and brown stubble in curved strips across the folds. Sunlit shoulders alternate with long blue-brown shadows. |
 
 Give farmstead and railroad buildings separate silhouettes. Alternate crop colours across broad plots and run the finer harvest lines along their contours. Bake relief and long field shadows into vertex colours. Use the ride clock for near-field wheat, the reel and grain hoppers. Bound the active actors by distance and release their shared geometry and textures on exit. Compare submitted frames at the opening and grain siding with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/palouse/SOURCES.md.
+
+## San Fermín, Pamplona (#2186)
+
+Map Select and Race Setup bind the original class to the local authored-course renderer. Extend the real encierro sequence to the workout distance. Rebuild Mercaderes as an actual right-angle turn, widen Plaza Consistorial and align the final tunnel with the road. Keep the crowds behind the double barriers and the racing lane open.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Santo Domingo approach, 0.08 km | Real 01, 07–08 and 10. Games 01 and 02. | Double rows of timber barricades enclose the first sprint. Red pañuelos stand out against white shirts behind the rails. A medic and police officer occupy a fence opening. |
+| Plaza Consistorial, 1.54 km | Real 05–06 and 09–10. Games 04 and 05. | The narrow approach opens onto the baroque Ayuntamiento. A layered stone pediment, balconies and hanging flags stand above the crowd. |
+| Mercaderes turn, 3.16 km | Real 03–04, 07 and 15. Games 02–03. | The marked right-angle turn into Calle Estafeta follows the wall and its two street plaques. Timber barriers protect the outside of the corner. |
+| Calle Estafeta, 5.02 km | Real 02–04, 08 and 09. Games 01 and 03. | Four- and five-storey houses close around the wet stone street. Their iron balconies are packed with spectators and red scarves, with warm light reaching only the upper floors. |
+| Telefónica barriers, 7.17 km | Real 01, 07–08 and 12. Games 01 and 04. | Sashed runners pass waving spectators at the double fence. Damp setts and scattered fiesta confetti lead toward the bullring. |
+| Callejón entrance, 8.92 km | Real 10–11 and 14. Games 02 and 05. | The open entrance tunnel disappears beneath the brick and stone bullring. A glimpse of the ochre arena and the rings of red-and-white spectators draws the rider forward. |
+
+Model the urban canyon, cross-street openings, balconies, town hall and the bullring portal in three dimensions. Bake the contrast between blue street shade and sunlit cornices into the building materials. Render the repeated crowds and timber sections in bounded sections. Update runner, hanging scarf and light confetti from ride time, and dispose of their textures, geometries and materials with the route. Compare the opening and packed street with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/pamplona/SOURCES.md.
