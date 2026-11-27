@@ -2025,3 +2025,8 @@ import veleta as _veleta
 
 THEMES['veleta'] = _veleta.THEME
 SCENERY['veleta'] = _veleta.scenery
+
+import velodrome as _lee_valley
+
+THEMES['velodrome'] = _lee_valley.THEME
+SCENERY['velodrome'] = _lee_valley.scenery

@@ -2781,3 +2781,16 @@ Restore the historical class to the Race catalogue and register a native 25.25 k
 | The summit ridge, 24.98 km | Real 04, 07–09, 11, 15 and games 03–05 | From Veleta, Mulhacén and a glacial lake fill the open ridge beyond the summit post. No trees reach this elevation. |
 
 Adapt Caribana’s landmark geometry, surface wear and depth separation to the dish pedestal, village and battered upper tarmac. Share the existing animated course cyclist and simplify the distant ski machinery and snowfields at low tier. Release the local scene on exit. Match six locations and measure the two busiest moving sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+### Lee Valley Velodrome (#2242)
+
+The 8.725 km session covers 34 full 250 m laps and a final 225 m. Use the same physical oval on every lap. Store cumulative distance for the workout and race rankings. Place timber seams along the direction of travel and vary the bank continuously from the straights to the bends. Keep the shared track surface and arena in memory once. Place the crowd behind the glass, with the lower infield visible from the boards. Reuse the shared cyclist kit for close pursuit riders, adding track wheels and aero helmets. Scope the riders, scoreboard, audio and textures to the race. The app's sound preference and ride clock govern the bell and crowd.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Home straight, 0.51 km | Real 02, 05, 06 and game 01 | Pale pine strips run along the riding line. A blue apron separates the boards from the pens. |
+| Pursuit bend, 1.58 km | Real 01, 03, 12–13 and game 04 | The outer boards climb to 42 degrees. Three pursuit riders lean together above the red sprinter line. |
+| Team pens, 3.14 km | Real 07, 09, 14 and games 02–03 | A coach watches a rider warm up on rollers among spare wheels and the low pen dividers. |
+| Roof lattice, 4.69 km | Real 02, 04–05, 11, 15 and game 05 | Arched timber and roof cables cross above the far stands. Floodlights follow the straights. |
+| Back straight stands, 6.30 km | Real 07–10 and games 01, 04 | Spectators rise behind clear safety panels. The lit arena screen stays legible across the track. |
+| Lap board, 8.51 km | Real 03, 06–08, 12 and game 01 | An official rings the bell beside the start line. The lap board changes as the rider crosses. |
