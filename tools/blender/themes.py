@@ -1965,3 +1965,8 @@ import tempelhof as _tempelhof
 
 THEMES['tempelhof'] = _tempelhof.THEME
 SCENERY['tempelhof'] = _tempelhof.scenery
+
+import teotihuacan as _teotihuacan
+
+THEMES['teotihuacan'] = _teotihuacan.THEME
+SCENERY['teotihuacan'] = _teotihuacan.scenery

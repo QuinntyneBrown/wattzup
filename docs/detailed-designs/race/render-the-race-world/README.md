@@ -2601,3 +2601,18 @@ The legacy Tempelhof street already depicts the broad runway, kites and radar to
 | The windsock taxiway, 12.64 km | Real 01–05, 09 and 14. Games 03 and 05. | Taxiway arrows and yellow signs guide the return to concrete. A striped windsock turns beside the old airfield lights while skaters cross the apron. |
 
 Use Caribana’s fixed skyline, occupied middle distance and moving foreground to set the scale of the open field. Keep the concrete slab pattern continuous through the threshold, use real geometry for the canopy and terminal arc, and merge fence posts, beds and hangar details by course section. Share a bounded set of actors, kite lines and park furniture, animate on ride time and release all resources on exit. Compare six rider views and collect sixty seconds of submitted-frame timings for each tablet section. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Teotihuacán (#2230)
+
+Use the historic Threshold Pyramid plan to space out the ceremonial axis over 22.275 km. Keep the Sun pyramid on the east side and the Moon pyramid beyond the finishing plaza. Stretch the distances between monuments to follow the class while retaining each building’s proportions. The map catalogue selects the authored centre line and a lazily loaded scene on Race entry.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| La Ciudadela, 0.14 km | Real 10, 12–14 and game 01 | Serpent heads project from the sloped masonry of the southern enclosure. The first platform leaves an open sightline north. |
+| Calzada de los Muertos, 4.20 km | Real 01–05, 14–15 and games 03 and 05 | Parallel platforms frame a straight strip of packed earth. Low agave and nopal grow in the verges below the distant ridge. |
+| Pirámide del Sol, 8.48 km | Real 06, 08–10 and game 02 | Five broad levels rise around the central stair on the east side. Recessed masonry and small chinking stones catch the morning light. |
+| Morning balloons, 12.78 km | Real 03, 06, 11 and games 02 and 03 | Striped balloons drift across the mountain silhouette, well above the low terraces. Their envelopes, ropes and baskets read against the clouds. |
+| The vendors’ court, 17.45 km | Real 07, 10–13 and game 04 | A hat seller and visitors animate the edge of the avenue beside craft blankets, shaded tables and a pepper tree. |
+| Plaza de la Luna, 22.05 km | Real 01, 05, 12, 14–15 and games 01 and 05 | The spreading staircase and nested platforms of the Moon pyramid close the avenue below Cerro Gordo. |
+
+As in Caribana, separate the fixed distant ridge, middle-distance landmark geometry and close moving figures. Model the terraces, central stairs and serpent relief in depth. Share textured walls and baked masonry shadows across all levels. Merge low platforms by course section, keep landmark silhouettes at distance and release all actor geometry and materials on exit. Compare six riding positions and measure the southern enclosure and Sun pyramid over separate sixty-second windows. See ADRs 0021, 0023, 0030, 0034 and 0035.

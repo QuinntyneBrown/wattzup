@@ -169,6 +169,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Lake Tahoe (`tahoe`) | Sandwich Max Efforts (GCN Training, 45:00) | 19.750 km | 128 m | `public/courses/tahoe.glb` ([ride views](screenshots/lake-tahoe/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Tel Aviv Promenade (`telaviv`) | 30 Second Sprint Intervals (GCN Training, 24:00) | 10.700 km | 2 m | `public/courses/telaviv.glb` ([ride views](screenshots/tel-aviv-promenade/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Tempelhof Field (`tempelhof`) | Intense High Tempo Bike Workout (GCN Training, 28:45) | 12.909 km | 5 m | `public/courses/tempelhof.glb` ([ride views](screenshots/tempelhof-field/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Teotihuacán (`teotihuacan`) | Threshold Pyramid (GCN Training, 50:00) | 22.275 km | 39 m | `public/courses/teotihuacan.glb` ([ride views](screenshots/teotihuacan/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

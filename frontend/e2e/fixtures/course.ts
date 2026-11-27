@@ -83,6 +83,7 @@ import tamalpaisElevation from './tamalpais-elevation.json';
 import tahoeElevation from './tahoe-elevation.json';
 import telavivElevation from './telaviv-elevation.json';
 import tempelhofElevation from './tempelhof-elevation.json';
+import teotihuacanElevation from './teotihuacan-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7143,6 +7144,45 @@ export const tempelhofCourseMap = {
       seg('recover', 30, 13, 90),
       seg('work', 30, 22, 110),
       seg('cool-down', 110, 12, 83),
+    ],
+  },
+};
+
+export const teotihuacanCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'teotihuacan',
+  name: 'Teotihuacán',
+  routeName: 'The Avenue of the Dead',
+  place: 'State of Mexico, Mexico',
+  world: 'teotihuacan',
+  distanceKm: 22.275,
+  climbingM: 39,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: teotihuacanElevation,
+  },
+  thumbnailUrl: 'maps/teotihuacan.jpg',
+  photoUrl: 'maps/teotihuacan-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 16, 85),
+      seg('work', 60, 10, 80),
+      seg('work', 60, 22, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 22, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 180, 22, 100),
+      seg('recover', 180, 10, 80),
+      seg('work', 240, 22, 100),
+      seg('recover', 240, 10, 80),
+      seg('work', 300, 22, 100),
+      seg('recover', 300, 10, 80),
+      seg('work', 360, 22, 100),
+      seg('recover', 360, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 90, 10, 80),
     ],
   },
 };
