@@ -178,6 +178,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Dutch Tulip Fields (`tulips`) | Easy Cadence Workout (GCN Training, 25:00) | 10.100 km | 3 m | `public/courses/tulips.glb` ([ride views](screenshots/dutch-tulip-fields/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Utrecht Bike City (`utrecht`) | Cadence Drills for Strength & Speed (GCN Training, 60:00) | 22.590 km | 10 m | `public/courses/utrecht.glb` ([ride views](screenshots/utrecht-bike-city/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Valais Ski Stations (`valais`) | Ollie's Zone 2 Tour des Stations Training (GCN Training, 30:00) | 12.000 km | 333 m | `public/courses/valais.glb` ([ride views](screenshots/valais-ski-stations/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Valparaíso Stairways (`valparaiso`) | Reverse Steps (GCN Training, 60:00) | 26.725 km | 187 m | `public/courses/valparaiso.glb` ([ride views](screenshots/valparaiso-stairways/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

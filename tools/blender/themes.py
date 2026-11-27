@@ -2010,3 +2010,8 @@ import valais as _valais
 
 THEMES['valais'] = _valais.THEME
 SCENERY['valais'] = _valais.scenery
+
+import valparaiso as _valparaiso
+
+THEMES['valparaiso'] = _valparaiso.THEME
+SCENERY['valparaiso'] = _valparaiso.scenery

@@ -245,6 +245,7 @@ import type { TrollstigenPass } from './trollstigen-pass';
 import type { BulbCountry } from './bulb-country';
 import type { UtrechtWharves } from './utrecht-wharves';
 import type { ValaisStations } from './valais-stations';
+import type { ValparaisoCerros } from './valparaiso-cerros';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -612,6 +613,7 @@ export class CourseRenderer implements WorldRenderer {
   private tulips: BulbCountry | null = null;
   private utrecht: UtrechtWharves | null = null;
   private valais: ValaisStations | null = null;
+  private valparaiso: ValparaisoCerros | null = null;
   private mountain: ManxMountain | null = null;
   private rush: JunkanooRush | null = null;
   private vents: KilaueaVents | null = null;
@@ -2573,6 +2575,20 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(valley.root);
         this.disposables.push(valley);
       }
+      if (this.course.file.id === 'valparaiso') {
+        const { ValparaisoCerros } = await import('./valparaiso-cerros');
+        if (this.disposed) return false;
+        const valley = await ValparaisoCerros.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.valparaiso = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -3655,6 +3671,7 @@ export class CourseRenderer implements WorldRenderer {
     this.tulips?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.utrecht?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.valais?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.valparaiso?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -3854,6 +3871,7 @@ export class CourseRenderer implements WorldRenderer {
     this.tulips = null;
     this.utrecht = null;
     this.valais = null;
+    this.valparaiso = null;
     this.mountain = null;
     this.rush = null;
     this.vents = null;
@@ -4010,7 +4028,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal' || this.northShoreSurf || this.buenosAiresTraffic || this.wiesnParade || this.lasseterRoadTrain || this.course!.file.id === 'songkran')
       this.evening = eveningUniform();
-    const clearValley = ['engadin', 'tempelhof'].includes(['engadin', 'teotihuacan'].includes(['engadin', 'timessquare'].includes(['engadin', 'toronto'].includes(['engadin', 'tremola'].includes(['engadin', 'tourmalet'].includes(['engadin', 'trollstigen'].includes(['engadin', 'tulips'].includes(['engadin', 'utrecht'].includes(['engadin', 'valais'].includes(this.course!.file.id) || this.course!.file.id === 'teide' || this.course!.file.id === 'tamalpais';
+    const clearValley = ['engadin', 'tempelhof'].includes(['engadin', 'teotihuacan'].includes(['engadin', 'timessquare'].includes(['engadin', 'toronto'].includes(['engadin', 'tremola'].includes(['engadin', 'tourmalet'].includes(['engadin', 'trollstigen'].includes(['engadin', 'tulips'].includes(['engadin', 'utrecht'].includes(['engadin', 'valais'].includes(['engadin', 'valparaiso'].includes(this.course!.file.id) || this.course!.file.id === 'teide' || this.course!.file.id === 'tamalpais';
     const fogRange = this.dam
       ? ([450, 4200] as const)
       : this.course!.file.id === 'calobra'
@@ -4191,6 +4209,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.tulips) Object.assign(materials, this.tulips.materials);
     if (this.utrecht) Object.assign(materials, this.utrecht.materials);
     if (this.valais) Object.assign(materials, this.valais.materials);
+    if (this.valparaiso) Object.assign(materials, this.valparaiso.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.rush) Object.assign(materials, this.rush.materials);
     if (this.caldera) Object.assign(materials, this.caldera.materials);
@@ -4336,8 +4355,8 @@ export class CourseRenderer implements WorldRenderer {
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
       if ((((((((((((((((((
-        ((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) || this.surfers) || this.sydneyharbour) || this.teide) || this.tamalpais) || this.tahoe) || this.telaviv) || this.tempelhof) || this.teotihuacan) || this.timessquare) &&
-        (group === 'Sun' || (this.timessquare || this.toronto) || this.tremola) || this.tourmalet) || this.trollstigen) || this.tulips) || this.utrecht) || this.valais) && group === 'Moon'))
+        (((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) || this.surfers) || this.sydneyharbour) || this.teide) || this.tamalpais) || this.tahoe) || this.telaviv) || this.tempelhof) || this.teotihuacan) || this.timessquare) &&
+        (group === 'Sun' || (this.timessquare || this.toronto) || this.tremola) || this.tourmalet) || this.trollstigen) || this.tulips) || this.utrecht) || this.valais) || this.valparaiso) && group === 'Moon'))
       )
         mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
@@ -4877,6 +4896,7 @@ export class CourseRenderer implements WorldRenderer {
     this.tulips?.frameView(metres, this.camera.position, ahead);
     this.utrecht?.frameView(metres, this.camera.position, ahead);
     this.valais?.frameView(metres, this.camera.position, ahead);
+    this.valparaiso?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -5507,6 +5527,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.tulips) Object.assign(drawn, this.tulips.report());
     if (this.utrecht) Object.assign(drawn, this.utrecht.report());
     if (this.valais) Object.assign(drawn, this.valais.report());
+    if (this.valparaiso) Object.assign(drawn, this.valparaiso.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.rush) Object.assign(drawn, this.rush.report());
     if (this.vents) Object.assign(drawn, this.vents.report());

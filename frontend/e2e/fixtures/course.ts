@@ -92,6 +92,7 @@ import trollstigenElevation from './trollstigen-elevation.json';
 import tulipsElevation from './tulips-elevation.json';
 import utrechtElevation from './utrecht-elevation.json';
 import valaisElevation from './valais-elevation.json';
+import valparaisoElevation from './valparaiso-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7497,6 +7498,53 @@ export const valaisCourseMap = {
       seg('work', 240, 18, 80),
       seg('recover', 120, 14, 80),
       seg('cool-down', 60, 11, 80),
+    ],
+  },
+};
+
+export const valparaisoCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'valparaiso-stairways',
+  name: 'Valparaíso Stairways',
+  routeName: 'The hillside stairways',
+  place: 'Valparaíso, Chile',
+  world: 'valparaiso',
+  distanceKm: 26.725,
+  climbingM: 187,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: valparaisoElevation,
+  },
+  thumbnailUrl: 'maps/valparaiso-stairways.jpg',
+  photoUrl: 'maps/valparaiso-stairways-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 10, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 180, 14, 80),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 23, 100),
+      seg('recover', 180, 21, 90),
+      seg('work', 240, 19, 90),
+      seg('recover', 300, 18, 85),
+      seg('work', 120, 10, 80),
+      seg('recover', 60, 24, 100),
+      seg('work', 120, 22, 100),
+      seg('recover', 60, 13, 80),
+      seg('work', 120, 22, 100),
+      seg('recover', 180, 19, 90),
+      seg('work', 120, 22, 100),
+      seg('recover', 180, 19, 90),
+      seg('work', 60, 18, 85),
+      seg('recover', 120, 10, 80),
+      seg('work', 300, 22, 100),
+      seg('recover', 240, 21, 90),
+      seg('work', 180, 19, 90),
+      seg('recover', 180, 17, 85),
+      seg('cool-down', 120, 10, 80),
     ],
   },
 };

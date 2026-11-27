@@ -1,0 +1,163 @@
+{
+  "id": "valparaiso",
+  "name": "Valparaíso Stairways",
+  "world": "valparaiso",
+  "theme": "valparaiso",
+  "seed": 2239,
+  "layout": 0,
+  "class": {
+    "id": "reverse-steps",
+    "title": "Reverse Steps",
+    "channel": "GCN Training",
+    "videoId": "uZOBOsNKi7E",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 17,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "cool-down",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
