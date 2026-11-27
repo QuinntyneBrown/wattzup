@@ -82,6 +82,7 @@ import teideElevation from './teide-elevation.json';
 import tamalpaisElevation from './tamalpais-elevation.json';
 import tahoeElevation from './tahoe-elevation.json';
 import telavivElevation from './telaviv-elevation.json';
+import tempelhofElevation from './tempelhof-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7076,6 +7077,72 @@ export const telAvivCourseMap = {
       seg('recover', 180, 13, 90),
       seg('work', 30, 24, 70),
       seg('cool-down', 180, 13, 80),
+    ],
+  },
+};
+
+export const tempelhofCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'tempelhof-field',
+  name: 'Tempelhof Field',
+  routeName: 'The runway',
+  place: 'Berlin, Germany',
+  world: 'tempelhof',
+  distanceKm: 12.909,
+  climbingM: 5,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: tempelhofElevation,
+  },
+  thumbnailUrl: 'maps/tempelhof-field.jpg',
+  photoUrl: 'maps/tempelhof-field-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 14, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 60, 18, 100),
+      seg('recover', 60, 13, 90),
+      seg('work', 30, 19, 71),
+      seg('recover', 30, 13, 90),
+      seg('work', 30, 19, 71),
+      seg('recover', 30, 13, 90),
+      seg('work', 45, 19, 71),
+      seg('recover', 60, 13, 90),
+      seg('work', 35, 21, 88),
+      seg('recover', 30, 13, 90),
+      seg('work', 65, 21, 88),
+      seg('recover', 60, 13, 90),
+      seg('work', 15, 22, 120),
+      seg('recover', 30, 13, 90),
+      seg('work', 15, 22, 120),
+      seg('recover', 30, 13, 90),
+      seg('work', 15, 22, 120),
+      seg('recover', 30, 13, 90),
+      seg('work', 15, 22, 120),
+      seg('recover', 30, 13, 90),
+      seg('work', 45, 21, 75),
+      seg('recover', 45, 13, 90),
+      seg('work', 45, 21, 75),
+      seg('recover', 45, 13, 90),
+      seg('work', 45, 21, 75),
+      seg('recover', 45, 13, 90),
+      seg('work', 45, 21, 75),
+      seg('recover', 45, 13, 90),
+      seg('work', 45, 21, 75),
+      seg('recover', 45, 13, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 30, 13, 90),
+      seg('work', 30, 22, 110),
+      seg('cool-down', 110, 12, 83),
     ],
   },
 };

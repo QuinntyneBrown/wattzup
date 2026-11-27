@@ -2586,3 +2586,18 @@ The existing seafront preset supplies the warm light. The Race catalogue resolve
 | Old Jaffa, 10.41 km | Real 10–13. Games 02 and 05. | The clock tower, St Peter’s bell tower and stepped sandstone buildings stand above the beach ahead, behind benches and promenade lamps. |
 
 Keep Caribana’s fixed skyline and animate a small group in the near field. Tile the stone circles at walking scale, keep the shore and breakwaters continuous and layer the coastal town behind the beach. Group the hotel elevations, palms and shade shelters by course section. Share the court, sailboat and foam materials, animate from ride time and release every course resource on exit. Compare six reference positions. Count submitted frames and advancing distance in both sixty-second benchmarks. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Tempelhof Field (#2229)
+
+The legacy Tempelhof street already depicts the broad runway, kites and radar tower. Carry those into the 12.909 km Race course, with distinct apron, community garden and taxiway sections. The catalogue resolves tempelhof-field to tempelhof; Race loads its Blender geometry and matching centre line, then the low-tier scenery on entry.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Runway threshold, 0.12 km | Real 01–05, 14 and 15. Games 01 and 03. | Worn threshold bars, slab joints, tyre marks and inset centreline lights lead across the broad runway under a moving Berlin sky. |
+| The terminal apron, 2.48 km | Real 06–09, 14 and 15. Games 02 and 03. | The curved limestone terminal, glazed hangar doors and projecting apron canopy stretch along the field. The old radar tower rises above the roof. |
+| The kite runway, 4.91 km | Real 01–04, 11 and 14. Games 01 and 04. | A kite-skater follows the wind under a swept canopy and taut lines. More colourful kites move beyond the mown runway edge. |
+| Allmende-Kontor gardens, 7.16 km | Real 10–13. Games 01 and 05. | The ring road passes raised timber beds, garden sheds, picnic tables, a red information container and people tending or using the park. |
+| Skylark meadow, 9.52 km | Real 05–07 and 11–15. Games 01, 02 and 04. | Tall meadow grass behind a wire fence gives way to Neukölln apartments and church spires, with the Fernsehturm sphere on its slender mast. |
+| The windsock taxiway, 12.64 km | Real 01–05, 09 and 14. Games 03 and 05. | Taxiway arrows and yellow signs guide the return to concrete. A striped windsock turns beside the old airfield lights while skaters cross the apron. |
+
+Use Caribana’s fixed skyline, occupied middle distance and moving foreground to set the scale of the open field. Keep the concrete slab pattern continuous through the threshold, use real geometry for the canopy and terminal arc, and merge fence posts, beds and hangar details by course section. Share a bounded set of actors, kite lines and park furniture, animate on ride time and release all resources on exit. Compare six rider views and collect sixty seconds of submitted-frame timings for each tablet section. See ADRs 0021, 0023, 0030, 0034 and 0035.

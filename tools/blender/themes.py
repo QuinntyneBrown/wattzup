@@ -1960,3 +1960,8 @@ import telaviv as _telaviv
 
 THEMES['telaviv'] = _telaviv.THEME
 SCENERY['telaviv'] = _telaviv.scenery
+
+import tempelhof as _tempelhof
+
+THEMES['tempelhof'] = _tempelhof.THEME
+SCENERY['tempelhof'] = _tempelhof.scenery
