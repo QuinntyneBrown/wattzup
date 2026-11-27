@@ -93,6 +93,7 @@ import tulipsElevation from './tulips-elevation.json';
 import utrechtElevation from './utrecht-elevation.json';
 import valaisElevation from './valais-elevation.json';
 import valparaisoElevation from './valparaiso-elevation.json';
+import vegasElevation from './vegas-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7545,6 +7546,51 @@ export const valparaisoCourseMap = {
       seg('work', 180, 19, 90),
       seg('recover', 180, 17, 85),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const vegasCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'las-vegas-strip',
+  name: 'Las Vegas Strip',
+  routeName: 'Las Vegas Boulevard',
+  place: 'Las Vegas, Nevada',
+  world: 'vegas',
+  distanceKm: 9.0,
+  climbingM: 5,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: vegasElevation,
+  },
+  thumbnailUrl: 'maps/las-vegas-strip.jpg',
+  photoUrl: 'maps/las-vegas-strip-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 90),
+      seg('work', 60, 16, 90),
+      seg('recover', 30, 19, 90),
+      seg('work', 60, 16, 90),
+      seg('recover', 120, 13, 90),
+      seg('work', 60, 18, 90),
+      seg('recover', 60, 21, 90),
+      seg('work', 15, 24, 90),
+      seg('recover', 60, 18, 90),
+      seg('work', 60, 21, 90),
+      seg('recover', 15, 24, 90),
+      seg('work', 60, 18, 90),
+      seg('recover', 60, 21, 90),
+      seg('work', 15, 24, 90),
+      seg('recover', 120, 13, 90),
+      seg('work', 30, 18, 90),
+      seg('recover', 30, 21, 90),
+      seg('work', 30, 24, 90),
+      seg('recover', 60, 13, 90),
+      seg('work', 30, 18, 90),
+      seg('recover', 45, 22, 90),
+      seg('cool-down', 60, 13, 90),
     ],
   },
 };

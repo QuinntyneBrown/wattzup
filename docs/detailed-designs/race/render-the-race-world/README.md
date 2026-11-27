@@ -2751,3 +2751,18 @@ Restore the historical Reverse Steps class to the Race catalogue and register a 
 | Paseo Gervasoni, 26.41 km | Real 02, 05, 11–15 and games 01–02, 05 | Iron mirador railings overlook hillside roofs, working harbour cranes and a container ship under the pink Pacific haze. |
 
 Use Caribana’s fixed landmarks, worn street surfaces and ride-clock motion for the mirador, layered street scenes, two ascensor cars and trolleybus. Give the stepped risers and murals their own UVs. Share geometry across houses and wires; release the course art, geometry and materials on exit. Match all six locations and measure the opening and busy funicular sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Las Vegas Strip (#2240)
+
+The existing VegasStreet class scene supplies the Welcome sign, cruising traffic, signals and lit fountains on a repeating street. Race currently lacks a persistent Las Vegas Boulevard course in its catalogue and renderer. Restore Quick HIIT Sprint Workout, reuse the sign artwork and place the named landmarks in order along nine kilometres.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The Welcome sign, 0.14 km | Real 01, 06, 08–09 and games 02–03 | The white diamond and starburst stand on a planted median. Palm crowns frame the first stretch of broad boulevard beneath the Luxor beam. |
+| New York-New York, 1.86 km | Real 01–04, 06–08 and games 01–03 | Art Deco towers rise beyond red and yellow marquees. Taxis and a stretch limousine cruise in the neighbouring lanes. |
+| Bellagio fountain lake, 3.84 km | Real 02, 10–11, 14–15 and games 03–05 | Rows of white jets rise at different heights in front of the illuminated hotel and reflect in the lake. |
+| Paris and Caesars, 4.78 km | Real 02, 04–06, 12 and games 01, 03–04 | The Eiffel lattice and blue globe rise across the road from classical colonnades. Light from LED boards shifts across the asphalt. |
+| The Venetian footbridge, 6.33 km | Real 03, 05–08, 12 and games 03–05 | The campanile and gilded arcades stand behind a pedestrian bridge, lit palms, crowds and a party bus. |
+| The northern skyline, 8.81 km | Real 01, 04, 12–14 and games 01–03 | The High Roller turns above the hotel terraces while the narrow Strat shaft and its observation pod mark the next light. |
+
+Use Caribana’s fixed skyline and moving detail for the Strat, Eiffel lattice, High Roller, fountain rows and traffic. Group emissive surfaces and bake reflected colours into road materials on low. Draw nearby jets and vehicles from shared geometry, keep distant architecture in broad sections and release all local resources on exit. Compare six rider-height views and measure two moving sixty-second samples. See ADRs 0021, 0023, 0030, 0034 and 0035.

@@ -2015,3 +2015,8 @@ import valparaiso as _valparaiso
 
 THEMES['valparaiso'] = _valparaiso.THEME
 SCENERY['valparaiso'] = _valparaiso.scenery
+
+import vegas as _vegas
+
+THEMES['vegas'] = _vegas.THEME
+SCENERY['vegas'] = _vegas.scenery
