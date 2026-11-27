@@ -1910,3 +1910,8 @@ import steppe as _steppe
 
 THEMES['steppe'] = _steppe.THEME
 SCENERY['steppe'] = _steppe.scenery
+
+import stpatricks as _stpatricks
+
+THEMES['stpatricks'] = _stpatricks.THEME
+SCENERY['stpatricks'] = _stpatricks.scenery

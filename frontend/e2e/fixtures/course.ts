@@ -72,6 +72,7 @@ import stanleyparkElevation from './stanleypark-elevation.json';
 import stbernardElevation from './stbernard-elevation.json';
 import stelvioElevation from './stelvio-elevation.json';
 import steppeElevation from './steppe-elevation.json';
+import stpatricksElevation from './stpatricks-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6660,6 +6661,46 @@ export const steppeCourseMap = {
       seg('work', 120, 13, 80),
       seg('recover', 120, 18, 85),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const stpatricksCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'st-patricks-day-dublin',
+  name: "St. Patrick's Day, Dublin",
+  routeName: 'O’Connell Street',
+  place: 'Dublin, Ireland',
+  world: 'stpatricks',
+  distanceKm: 12.01,
+  climbingM: 11,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: stpatricksElevation,
+  },
+  thumbnailUrl: 'maps/st-patricks-day-dublin.jpg',
+  photoUrl: 'maps/st-patricks-day-dublin-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 18, 85),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 10, 75),
+      seg('work', 30, 24, 100),
+      seg('recover', 150, 10, 75),
+      seg('work', 30, 24, 100),
+      seg('recover', 150, 10, 75),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 10, 75),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 10, 75),
+      seg('work', 30, 24, 100),
+      seg('recover', 90, 10, 75),
+      seg('work', 30, 24, 100),
+      seg('recover', 90, 10, 75),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 361, 10, 75),
     ],
   },
 };
