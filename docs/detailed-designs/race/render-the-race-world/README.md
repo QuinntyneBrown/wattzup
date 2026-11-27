@@ -1909,3 +1909,18 @@ Fit the Florida Keys crossing to the original Time to Spin Out stages. Keep both
 | Lower Keys landfall, 8.02 km | Real 02, 05, 09, 13–15. Games 02, 03 and 05. | A low key and leaning palms rise ahead of the rails. Sunlit cumulus, dark seagrass patches and white wind chop extend to the horizon. |
 
 Distinguish the old concrete arches from the modern girder deck, and leave the missing span physically open. Use the water depth bands, near rails, island porches and fixed cloud towers for parallax. Animate the fishing launch and birds on the ride clock. Compare opening and Pigeon Key tablet frame submissions with Caribana. Credits are in docs/worlds/overseas/SOURCES.md.
+
+## Torres del Paine (#2184)
+
+Map Select and Race Setup load the original GCN class and its local authored course. Centreline elevations drive the rider and HUD. The Cuernos have a dark sedimentary cap above pale granite, while the slender Torres form a separate skyline farther along the course. Both occupy fixed coordinates. Bake shade into the rocky shore and use the lightest sky values for the snowfields.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Pehoé gravel, 0.08 km | Real 01–02 and 11. Games 02 and 04. | Two wheel ruts and pale loose stone frame wind-bent tussocks on the golden steppe. Low shrubs and a layered lenticular cloud show the direction of the wind. |
+| Cuernos shore, 2.24 km | Real 03–05, 10 and 14. Games 01 and 03. | Across a blue-green bay, almost black Cuernos caps top lighter granite buttresses. Glacier ice and windblown snow collect in the cleft. |
+| Guanaco grazing ground, 4.57 km | Real 06, 09 and 12. Games 01–02. | Several tawny guanacos graze beside the gravel, one upright with alert ears. Their slender legs and cream undersides stand out above the bent grass. |
+| Salto Grande, 7.22 km | Real 07–08 and 15. Games 03–04. | A rocky lip carries turquoise upper water over a broken white curtain into the lower lake. Spray crosses the lip while the road follows the bank. |
+| Torres overlook, 9.82 km | Real 04, 11 and 13–14. Games 03 and 05. | Three steep granite towers stand separately above moraine benches. A hanging glacier and snow apron occupy the shaded basin beneath them. |
+| Lake Pehoé return, 12.54 km | Real 03, 05, 07, 10 and 15. Games 04–05. | Whitecaps cross turquoise Pehoé in streaks under layered cloud. The long slant of the tussocks and the dark foothill cast shadows across the gravel. |
+
+Merge the gravel, wheel ruts and tussocks into local sections. Keep both lake levels tied to the waterfall lip and banks. Animate the near guanacos, wind and spray from ride time. Dispose of shared geometry, textures and water materials on exit. Use the Caribana submitted-frame measurement in the opening and at Salto Grande. See ADRs 0021, 0023, 0030, 0034 and 0035, the performance-budget design and docs/worlds/paine/SOURCES.md.

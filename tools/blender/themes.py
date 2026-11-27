@@ -1746,3 +1746,8 @@ import overseas as _overseas
 
 THEMES['overseas'] = _overseas.THEME
 SCENERY['overseas'] = _overseas.scenery
+
+import paine as _paine
+
+THEMES['paine'] = _paine.THEME
+SCENERY['paine'] = _paine.scenery

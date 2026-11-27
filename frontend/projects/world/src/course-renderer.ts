@@ -190,6 +190,7 @@ import type { WiesnParade } from './wiesn-parade';
 import type { PacificHeadlands } from './pacific-headlands';
 import type { LasseterRoadTrain } from './lasseter-road-train';
 import type { SevenMileChannel } from './seven-mile-channel';
+import type { PehoeWind } from './pehoe-wind';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -435,6 +436,7 @@ export class CourseRenderer implements WorldRenderer {
   private pacificHeadlands: PacificHeadlands | null = null;
   private lasseterRoadTrain: LasseterRoadTrain | null = null;
   private sevenMileChannel: SevenMileChannel | null = null;
+  private pehoeWind: PehoeWind | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1581,6 +1583,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(channel.root);
         this.disposables.push(channel);
       }
+      if (this.course.file.id === 'paine') {
+        const { PehoeWind } = await import('./pehoe-wind');
+        if (this.disposed) return false;
+        const wind = await PehoeWind.load(this.course);
+        if (this.disposed) {
+          wind.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.pehoeWind = wind;
+        this.scene.add(wind.root);
+        this.disposables.push(wind);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2600,6 +2617,7 @@ export class CourseRenderer implements WorldRenderer {
     this.pacificHeadlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.lasseterRoadTrain?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.sevenMileChannel?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.pehoeWind?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2802,6 +2820,7 @@ export class CourseRenderer implements WorldRenderer {
     this.pacificHeadlands = null;
     this.lasseterRoadTrain = null;
     this.sevenMileChannel = null;
+    this.pehoeWind = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -3093,6 +3112,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.pacificHeadlands) Object.assign(materials, this.pacificHeadlands.materials);
     if (this.lasseterRoadTrain) Object.assign(materials, this.lasseterRoadTrain.materials);
     if (this.sevenMileChannel) Object.assign(materials, this.sevenMileChannel.materials);
+    if (this.pehoeWind) Object.assign(materials, this.pehoeWind.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3712,6 +3732,7 @@ export class CourseRenderer implements WorldRenderer {
     this.pacificHeadlands?.sightline(metres, this.camera.position, ahead);
     this.lasseterRoadTrain?.sightline(metres, this.camera.position, ahead);
     this.sevenMileChannel?.sightline(metres, this.camera.position, ahead);
+    this.pehoeWind?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4285,6 +4306,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.pacificHeadlands) Object.assign(drawn, this.pacificHeadlands.report());
     if (this.lasseterRoadTrain) Object.assign(drawn, this.lasseterRoadTrain.report());
     if (this.sevenMileChannel) Object.assign(drawn, this.sevenMileChannel.report());
+    if (this.pehoeWind) Object.assign(drawn, this.pehoeWind.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

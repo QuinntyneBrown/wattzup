@@ -125,6 +125,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Oregon Coast (`oregon`) | FTP Builder (GCN Training, 42:00) | 19.525 km | 139 m | `public/courses/oregon.glb` ([ride views](screenshots/oregon-coast/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Outback Highway (`outback`) | Running on Empty (GCN Training, 25:00) | 10.775 km | 25 m | `public/courses/outback.glb` ([ride views](screenshots/outback-highway/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Overseas Highway (`overseas`) | Time to Spin Out (GCN Training, 20:00) | 8.305 km | 20 m | `public/courses/overseas.glb` ([ride views](screenshots/overseas-highway/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Torres del Paine (`paine`) | 30 Minute VO2 Max Session (GCN Training, 29:00) | 13.025 km | 146 m | `public/courses/paine.glb` ([ride views](screenshots/torres-del-paine/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
