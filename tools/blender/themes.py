@@ -1605,3 +1605,8 @@ import lakefront
 
 THEMES['lakefront'] = lakefront.THEME
 SCENERY['lakefront'] = lakefront.scenery
+
+import lakelouise
+
+THEMES['lakelouise'] = lakelouise.THEME
+SCENERY['lakelouise'] = lakelouise.scenery
