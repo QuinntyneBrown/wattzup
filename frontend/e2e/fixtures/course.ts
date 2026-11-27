@@ -35,6 +35,7 @@ import nottinghillElevation from './nottinghill-elevation.json';
 import nuevedejulioElevation from './nuevedejulio-elevation.json';
 import okinawaElevation from './okinawa-elevation.json';
 import oktoberfestElevation from './oktoberfest-elevation.json';
+import oregonElevation from './oregon-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5127,6 +5128,38 @@ export const oktoberfestCourseMap = {
       seg('recover', 40, 11, 80),
       seg('work', 209, 22, 90),
       seg('cool-down', 225, 11, 80),
+    ],
+  },
+};
+
+export const oregonCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'oregon-coast',
+  name: 'Oregon Coast',
+  routeName: 'Highway 101',
+  place: 'Oregon, United States',
+  world: 'oregon',
+  distanceKm: 19.525,
+  climbingM: 139,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: oregonElevation,
+  },
+  thumbnailUrl: 'maps/oregon-coast.jpg',
+  photoUrl: 'maps/oregon-coast-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 12, 85),
+      seg('work', 600, 21, 95),
+      seg('recover', 300, 14, 95),
+      seg('work', 600, 21, 95),
+      seg('recover', 300, 14, 95),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 14, 95),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 240, 14, 85),
     ],
   },
 };

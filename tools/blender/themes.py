@@ -1731,3 +1731,8 @@ from oldtown_markt import road as _markt_road, route as _markt_route
 THEMES['oldtown']['lay'] = _markt_route
 
 THEMES["oldtown"]["road_builder"] = _markt_road
+
+import oregon as _oregon
+
+THEMES['oregon'] = _oregon.THEME
+SCENERY['oregon'] = _oregon.scenery

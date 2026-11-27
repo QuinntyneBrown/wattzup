@@ -1,0 +1,73 @@
+{
+  "id": "oregon",
+  "name": "Oregon Coast",
+  "world": "oregon",
+  "theme": "oregon",
+  "seed": 2181,
+  "layout": 0,
+  "class": {
+    "id": "ftp-builder",
+    "title": "FTP Builder",
+    "channel": "GCN Training",
+    "videoId": "lUqhsi_D4l4",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 12,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 600,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 14,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 600,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 14,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 14,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 240,
+        "level": 14,
+        "cadenceAim": 85
+      }
+    ]
+  }
+}

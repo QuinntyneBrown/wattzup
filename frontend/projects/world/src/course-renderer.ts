@@ -187,6 +187,7 @@ import type { LondonCarnival } from './london-carnival';
 import type { BuenosAiresTraffic } from './buenos-aires-traffic';
 import type { KouriLagoon } from './kouri-lagoon';
 import type { WiesnParade } from './wiesn-parade';
+import type { PacificHeadlands } from './pacific-headlands';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -429,6 +430,7 @@ export class CourseRenderer implements WorldRenderer {
   private buenosAiresTraffic: BuenosAiresTraffic | null = null;
   private kouriLagoon: KouriLagoon | null = null;
   private wiesnParade: WiesnParade | null = null;
+  private pacificHeadlands: PacificHeadlands | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1530,6 +1532,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(square.root);
         this.disposables.push(square);
       }
+      if (this.course.file.id === 'oregon') {
+        const { PacificHeadlands } = await import('./pacific-headlands');
+        if (this.disposed) return false;
+        const headlands = await PacificHeadlands.load(this.course);
+        if (this.disposed) {
+          headlands.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.pacificHeadlands = headlands;
+        this.scene.add(headlands.root);
+        this.disposables.push(headlands);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2544,6 +2561,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kouriLagoon?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.wiesnParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.marktSquare?.furniture.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.pacificHeadlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2743,6 +2761,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kouriLagoon = null;
     this.wiesnParade = null;
     this.marktSquare = null;
+    this.pacificHeadlands = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -3031,6 +3050,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.buenosAiresTraffic) Object.assign(materials, this.buenosAiresTraffic.materials);
     if (this.kouriLagoon) Object.assign(materials, this.kouriLagoon.materials);
     if (this.wiesnParade) Object.assign(materials, this.wiesnParade.materials);
+    if (this.pacificHeadlands) Object.assign(materials, this.pacificHeadlands.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3646,6 +3666,7 @@ export class CourseRenderer implements WorldRenderer {
     this.buenosAiresTraffic?.sightline(metres, this.camera.position, ahead);
     this.kouriLagoon?.sightline(metres, this.camera.position, ahead);
     this.wiesnParade?.sightline(metres, this.camera.position, ahead);
+    this.pacificHeadlands?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4216,6 +4237,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.buenosAiresTraffic) Object.assign(drawn, this.buenosAiresTraffic.report());
     if (this.kouriLagoon) Object.assign(drawn, this.kouriLagoon.report());
     if (this.wiesnParade) Object.assign(drawn, this.wiesnParade.report());
+    if (this.pacificHeadlands) Object.assign(drawn, this.pacificHeadlands.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }
