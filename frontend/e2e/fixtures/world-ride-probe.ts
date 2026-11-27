@@ -1655,4 +1655,12 @@ export class WorldRideProbe {
       return typeof pose === 'number' ? pose : null;
     }, part);
   }
+  async coursePose(part: string): Promise<number | null> {
+    return this.page.evaluate((key) => {
+      const course = (window as unknown as { __wzWorldRide: { course?: Record<string, unknown> } })
+        .__wzWorldRide.course;
+      const pose = course?.[key];
+      return typeof pose === 'number' ? pose : null;
+    }, part);
+  }
 }

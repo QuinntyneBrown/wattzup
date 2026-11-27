@@ -2676,3 +2676,18 @@ Map the Four Minute Devils class to 10.400 km of climbing above La Mongie. Set t
 | Le Géant du Tourmalet, 10.22 km | Real 05–08 and 14 and games 02 and 05 | The silver cyclist stands above the 2,115 m pass sign. The rim of the saddle frames the crowd, downhill road and high peaks. |
 
 Use the Caribana tablet crowd batching and landmark silhouettes for the finish. Separate the close trident, flags and yellow bornes from grazed slopes and distant mist. Sculpt the cyclist and bicycle in three dimensions, texture the concrete resort and weathered road, and share crowd cutouts by section. Animate chairs, flags and the devil on ride time. Release textures and geometry on exit. Compare six rider views and time both tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Trollstigen (#2235)
+
+The map catalogue and course renderer currently have no Trollstigen entry. Restore its historical class plan, expose the climb through Race and load its assets only after selection. Trace 12 km from Isterdalen to the summit. Lay eleven direction reversals into the route itself so riders encounter the same bridge, peaks and valley from different angles.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The Isterdalen approach, 0.14 km | Real 01–03 and game 01 | A narrow wet road climbs out of green Isterdalen between the dark walls of the U-shaped valley. |
+| The lower switchbacks, 2.45 km | Real 02–07 and games 02–04 | The next return bend cuts across the grey wall above the rider. Individual stone parapet blocks mark the exposed edge. |
+| Stigfossen bridge, 4.98 km | Real 07–09, 12 and game 03 | Water drops in white ribbons from the cliff above the stone bridge and rejoins the torrent below the arch. |
+| Tourist traffic, 7.28 km | Real 04, 09–11 and games 01–02 | A camper van leads a car and touring motorbike around the narrow upper bend. |
+| The upper skyline, 9.45 km | Real 01, 07, 12–15 and games 03–05 | Separate Kongen, Dronninga and Bispen silhouettes rise through moving cloud, with summer snow caught on ledges. |
+| The summit overlook, 11.78 km | Real 05, 07, 12–15 and games 04–05 | Visitors stand on a rusted steel cantilever over Isterdalen. The low visitor centre follows the line of the upper stream. |
+
+Use Caribana’s fixed skyline and merged static detail for the named peaks, retaining walls and platform. Map original granite and heath textures across terrain in world coordinates. Keep water and cloud motion tied to elapsed ride time and share geometry across the three traffic vehicles. A tier change or route exit releases the meshes, materials and textures. Capture the six positions through Race on low and measure sixty seconds each on the approach and traffic bend. See ADRs 0021, 0023, 0030, 0034 and 0035.

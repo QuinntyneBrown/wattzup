@@ -73,6 +73,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   silverstone: 'courses/silverstone',
   skye: 'courses/skye',
   songkran: 'courses/songkran',
+  trollstigen: 'courses/trollstigen',
   iten: 'courses/iten',
   jaipur: 'courses/jaipur',
   joshuatree: 'courses/joshuatree',

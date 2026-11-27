@@ -1990,3 +1990,8 @@ import tourmalet as _tourmalet
 
 THEMES['tourmalet'] = _tourmalet.THEME
 SCENERY['tourmalet'] = _tourmalet.scenery
+
+import trollstigen as _trollstigen
+
+THEMES['trollstigen'] = _trollstigen.THEME
+SCENERY['trollstigen'] = _trollstigen.scenery

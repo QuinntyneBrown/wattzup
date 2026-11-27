@@ -174,6 +174,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Toronto Waterfront Trail (`toronto`) | 30 Minute Sprint and Threshold HIIT (GCN Training, 30:00) | 13.075 km | 7 m | `public/courses/toronto.glb` ([ride views](screenshots/toronto-waterfront-trail/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Tremola, Gotthard Pass (`tremola`) | Low Cadence Workout (GCN Training, 30:00) | 10.875 km | 654 m | `public/courses/tremola.glb` ([ride views](screenshots/tremola-gotthard-pass/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Col du Tourmalet (`tourmalet`) | Four Minute Devils (GCN Training, 26:00) | 10.400 km | 652 m | `public/courses/tourmalet.glb` ([ride views](screenshots/col-du-tourmalet/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Trollstigen (`trollstigen`) | Gradual Threshold Effort Builds (GCN Training, 30:00) | 12.000 km | 800 m | `public/courses/trollstigen.glb` ([ride views](screenshots/trollstigen/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
