@@ -1730,3 +1730,8 @@ import okinawa as _okinawa
 
 THEMES['okinawa'] = _okinawa.THEME
 SCENERY['okinawa'] = _okinawa.scenery
+
+import oktoberfest as _oktoberfest
+
+THEMES['oktoberfest'] = _oktoberfest.THEME
+SCENERY['oktoberfest'] = _oktoberfest.scenery

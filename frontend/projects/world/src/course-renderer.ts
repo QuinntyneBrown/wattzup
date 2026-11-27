@@ -185,6 +185,7 @@ import type { NorthShoreSurf } from './north-shore-surf';
 import type { LondonCarnival } from './london-carnival';
 import type { BuenosAiresTraffic } from './buenos-aires-traffic';
 import type { KouriLagoon } from './kouri-lagoon';
+import type { WiesnParade } from './wiesn-parade';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -425,6 +426,7 @@ export class CourseRenderer implements WorldRenderer {
   private londonCarnival: LondonCarnival | null = null;
   private buenosAiresTraffic: BuenosAiresTraffic | null = null;
   private kouriLagoon: KouriLagoon | null = null;
+  private wiesnParade: WiesnParade | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1499,6 +1501,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(lagoon.root);
         this.disposables.push(lagoon);
       }
+      if (this.course.file.id === 'oktoberfest') {
+        const { WiesnParade } = await import('./wiesn-parade');
+        if (this.disposed) return false;
+        const festival = await WiesnParade.load(this.course);
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.wiesnParade = festival;
+        this.scene.add(festival.root);
+        this.disposables.push(festival);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2461,6 +2478,8 @@ export class CourseRenderer implements WorldRenderer {
         : bay
           ? [19500, 7900]
           : [14300, 5050];
+      const onset = this.wiesnParade ? 3900 : bay ? 19_500 : 14_300;
+      const span = this.wiesnParade ? 5900 : bay ? 7900 : 5050;
       const progress = Math.max(0, Math.min(1, (metres - sunsetStart) / sunsetLength));
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
@@ -2509,6 +2528,7 @@ export class CourseRenderer implements WorldRenderer {
     this.londonCarnival?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.buenosAiresTraffic?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.kouriLagoon?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.wiesnParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2706,6 +2726,7 @@ export class CourseRenderer implements WorldRenderer {
     this.londonCarnival = null;
     this.buenosAiresTraffic = null;
     this.kouriLagoon = null;
+    this.wiesnParade = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2802,7 +2823,7 @@ export class CourseRenderer implements WorldRenderer {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
-    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal' || this.northShoreSurf || this.buenosAiresTraffic)
+    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal' || this.northShoreSurf || this.buenosAiresTraffic || this.wiesnParade)
       this.evening = eveningUniform();
     const clearValley = this.course!.file.id === 'engadin';
     const fogRange = this.dam
@@ -2992,6 +3013,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.londonCarnival) Object.assign(materials, this.londonCarnival.materials);
     if (this.buenosAiresTraffic) Object.assign(materials, this.buenosAiresTraffic.materials);
     if (this.kouriLagoon) Object.assign(materials, this.kouriLagoon.materials);
+    if (this.wiesnParade) Object.assign(materials, this.wiesnParade.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3259,6 +3281,7 @@ export class CourseRenderer implements WorldRenderer {
           this.evening,
           this.bayfrontNight ? 0.085 : 1,
           this.muertosParade?.night,
+          Boolean(this.wiesnParade),
         );
       this.skyClock = sky.at;
       this.sky = new Mesh(dome, sky.material);
@@ -3604,6 +3627,7 @@ export class CourseRenderer implements WorldRenderer {
     this.londonCarnival?.sightline(metres, this.camera.position, ahead);
     this.buenosAiresTraffic?.sightline(metres, this.camera.position, ahead);
     this.kouriLagoon?.sightline(metres, this.camera.position, ahead);
+    this.wiesnParade?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4172,6 +4196,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.londonCarnival) Object.assign(drawn, this.londonCarnival.report());
     if (this.buenosAiresTraffic) Object.assign(drawn, this.buenosAiresTraffic.report());
     if (this.kouriLagoon) Object.assign(drawn, this.kouriLagoon.report());
+    if (this.wiesnParade) Object.assign(drawn, this.wiesnParade.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

@@ -1,0 +1,85 @@
+{
+  "id": "oktoberfest",
+  "name": "Oktoberfest, Munich",
+  "world": "oktoberfest",
+  "theme": "oktoberfest",
+  "seed": 2179,
+  "layout": 0,
+  "class": {
+    "id": "calorie-crush",
+    "title": "Calorie Crush",
+    "channel": "GCN Training",
+    "videoId": "ORh0C8U5UpY",
+    "syncOffsetSeconds": 26
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 149,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 153,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 197,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 199,
+        "level": 20,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 196,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 209,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 225,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

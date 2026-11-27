@@ -34,6 +34,7 @@ import northshoreElevation from './northshore-elevation.json';
 import nottinghillElevation from './nottinghill-elevation.json';
 import nuevedejulioElevation from './nuevedejulio-elevation.json';
 import okinawaElevation from './okinawa-elevation.json';
+import oktoberfestElevation from './oktoberfest-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5092,6 +5093,40 @@ export const okinawaCourseMap = {
       seg('recover', 60, 13, 80),
       seg('work', 60, 24, 110),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const oktoberfestCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'oktoberfest-munich',
+  name: 'Oktoberfest, Munich',
+  routeName: 'Oktoberfest, Munich',
+  place: 'Munich, Germany',
+  world: 'oktoberfest',
+  distanceKm: 10.651,
+  climbingM: 39,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: oktoberfestElevation,
+  },
+  thumbnailUrl: 'maps/oktoberfest-munich.jpg',
+  photoUrl: 'maps/oktoberfest-munich-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 149, 14, 80),
+      seg('work', 153, 18, 85),
+      seg('recover', 40, 11, 80),
+      seg('work', 197, 19, 90),
+      seg('recover', 40, 11, 80),
+      seg('work', 199, 20, 90),
+      seg('recover', 40, 11, 80),
+      seg('work', 196, 21, 90),
+      seg('recover', 40, 11, 80),
+      seg('work', 209, 22, 90),
+      seg('cool-down', 225, 11, 80),
     ],
   },
 };

@@ -121,6 +121,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Notting Hill Carnival (`nottinghill`) | Quick HIIT Workout (GCN, 13:45) | 5.933 km | 87 m | `public/courses/nottinghill.glb` ([ride views](screenshots/notting-hill-carnival/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Avenida 9 de Julio (`nuevedejulio`) | High Power Anaerobic Sprints (GCN Training, 40:00) | 18.000 km | 49 m | `public/courses/nuevedejulio.glb` ([ride views](screenshots/avenida-9-de-julio/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Okinawa Coast Road (`okinawa`) | Spin Those Legs (GCN Training, 40:00) | 16.880 km | 56 m | `public/courses/okinawa.glb` ([ride views](screenshots/okinawa-coast-road/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Oktoberfest, Munich (`oktoberfest`) | Calorie Crush (GCN Training, 24:48) | 10.651 km | 39 m | `public/courses/oktoberfest.glb` ([ride views](screenshots/oktoberfest-munich/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
