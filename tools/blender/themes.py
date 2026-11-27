@@ -1575,3 +1575,8 @@ import kilauea
 
 THEMES['kilauea'] = kilauea.THEME
 SCENERY['kilauea'] = kilauea.scenery
+
+import knicks
+
+THEMES['knicks'] = knicks.THEME
+SCENERY['knicks'] = knicks.scenery

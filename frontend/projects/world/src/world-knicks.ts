@@ -372,6 +372,29 @@ export class KnicksStreet implements SceneStreet {
     this.addWoolworth();
   }
 
+  /** The first float and a visible piece of paper in the submitted instance buffer. */
+  paradePose(
+    metres: number,
+    into: { paradeFloatStation: number | null; tickerHeight: number | null },
+  ) {
+    const float = this.floats[0]?.group;
+    into.paradeFloatStation = float?.visible ? metres - float.position.z : null;
+    into.tickerHeight = null;
+    if (!this.tape) return;
+    const values = this.tape.instanceMatrix.array;
+    for (let i = 0; i < this.tape.count; i++) {
+      const j = i * 16;
+      if (
+        values[j + 14]! < -4 &&
+        values[j + 14]! > -68 &&
+        values[j + 13]! < 10 &&
+        values[j + 13]! > 0.35
+      ) {
+        into.tickerHeight = values[j + 13]!;
+        return;
+      }
+    }
+  }
   /** The street's clock, in seconds; held at 0 for reduced motion. */
   setTime(seconds: number): void {
     this.time = seconds;
@@ -383,11 +406,17 @@ export class KnicksStreet implements SceneStreet {
   }
 
   /** Moves the street with the rider: `heightAt` gives the road's height `metres` ahead. */
-  place(s: number, heightAt: (metres: number) => number): void {
+  place(
+    s: number,
+    heightAt: (metres: number) => number,
+    crownAhead?: number,
+    courtyard?: (station: number) => boolean,
+  ): void {
     const along = (offset: number, every: number) => loopMetres(offset, s, every, BEHIND);
     for (const block of this.canyonBlocks) {
       const metres = loopMetres(block.center, s, LOOP, BLOCK_BEHIND);
-      const visible = metres > BLOCK_BEHIND_CULL && metres <= PROP_HORIZON_CULL;
+      const visible =
+        metres > BLOCK_BEHIND_CULL && metres <= PROP_HORIZON_CULL && !courtyard?.(s + metres);
       const cast = visible && metres > BLOCK_SHADOW_NEAR && metres < BLOCK_SHADOW_FAR;
       const clamped = metres > 0 ? metres : 0;
       const ty = visible ? heightAt(clamped) : 0;
@@ -430,7 +459,11 @@ export class KnicksStreet implements SceneStreet {
     this.crowd.place(this.time, heightAt, along, KERB);
     this.placeLampsAndBunting(heightAt, along);
     const far = heightAt(1e6);
-    this.woolworth.position.set(0, far - 4, -WOOLWORTH_AHEAD);
+    this.woolworth.position.set(
+      0,
+      (crownAhead === undefined ? far : heightAt(crownAhead)) - 4,
+      -(crownAhead ?? WOOLWORTH_AHEAD),
+    );
     this.skyline.position.set(0, far - 4, 0);
     this.placeFloats(along, heightAt);
     this.placeTape(s, heightAt);

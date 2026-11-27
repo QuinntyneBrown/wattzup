@@ -1365,3 +1365,18 @@ The route compresses Crater Rim Drive, the vent fields and Nāhuku into the orig
 | Dusk, 7.24 km | Real 03–05, 11 and 15 and games 01–03 | The low orange reflection concentrates under the crater cloud. The shield and violet dusk remain visible around it. |
 
 Keep near rock, ferns and fissures anchored to the grade; draw the distant shield once. Adapt Caribana’s bounded foreground batches to steam, tree ferns and clinker. Across the street references, Real 01, 02, 07 and 11 show neighbouring Chain of Craters Road and inform surface and vegetation. Real 12 supplies Crater Rim Drive itself. Use the game images for light contrast and approaching silhouettes. Keep the source photographs in their credited reference directory. Release all textures and instance buffers on exit.
+
+## Knicks Championship Parade (#2148)
+
+Keep the existing championship parade, New York morning light, street banners, moving floats and original soundtrack. The native course anchors the class grade and public landmarks to the race distance. Load Broadway’s existing street model and crowd only when entering this course. The rider advances through the map via Map Select and Race Setup. Sprintavals keeps its eighteen original stages, cadence, resistance and video timing.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Bowling Green, 0.08 km | Real 07, 08, 10 and 13–14 and games 01 and 05 | The bull has a lowered head, curved horns, a humped shoulder and bronze highlights against the park fence. |
+| Float, 1.42 km | Real 01–04 and games 02 and 03 | Rails and team figures ride above the flatbed. Orange and blue fans crowd the blue barriers. Paper tumbles past open windows and accumulates on the road. |
+| Trinity Church, 2.65 km | Real 05, 09 and 15 and games 01–02 | The narrow Gothic spire, churchyard fence and trees break the wall of commercial buildings. |
+| Open bus, 3.88 km | Real 01–06 and 12 and games 03 and 04 | A moving double-decker has an open roof, visible passenger rail and two rows of windows. The lower Broadway street name and signals hang above its lane. |
+| St. Paul’s Chapel, 5.27 km | Real 05, 07, 12 and 15 and games 04 and 05 | A columned porch and pale steeple are seen at the churchyard. Bronze route plaques occupy the granite pavement. Tower shadows leave distinct sunlit bands. |
+| City Hall, 6.69 km | Real 05, 11–12 and 15 and games 01 and 05 | Terra-cotta setbacks and the green copper crown stay at the far end of Broadway and approach the rider. |
+
+Real 01–04 show the US women’s national soccer team parade and supply proportions of floats, fan barriers and viewing distance. Real 06 shows a transit bus and supplies vehicle scale. All Knicks colours and designs come from original game assets. Feedback #900 requires continuous float, crowd and ticker motion. Keep wrapped objects outside the visible interval, fade a paper fragment at each end and use the ride clock for pause and reduced motion. Use bounded buffers and release all native course textures and batches.

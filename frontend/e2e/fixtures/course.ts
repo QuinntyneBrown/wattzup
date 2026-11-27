@@ -3,6 +3,7 @@ import jouvertElevation from './jouvert-elevation.json';
 import joshuatreeElevation from './joshuatree-elevation.json';
 import junkanooElevation from './junkanoo-elevation.json';
 import kilaueaElevation from './kilauea-elevation.json';
+import knicksElevation from './knicks-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3788,6 +3789,47 @@ export const kilaueaCourseMap = {
       seg('work', 356, 18, 85),
       seg('work', 150, 20, 90),
       seg('cool-down', 74, 11, 80),
+    ],
+  },
+};
+
+export const knicksCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'knicks-championship-parade',
+  name: 'Knicks Championship Parade',
+  routeName: 'Canyon of Heroes',
+  place: 'Lower Broadway, New York City',
+  world: 'knicks',
+  distanceKm: 7,
+  climbingM: 43,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: knicksElevation,
+  },
+  thumbnailUrl: 'maps/knicks-championship-parade.jpg',
+  photoUrl: 'maps/knicks-championship-parade-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 80),
+      seg('work', 120, 16, 80),
+      seg('work', 120, 19, 80),
+      seg('work', 60, 21, 80),
+      seg('work', 60, 22, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 10, 24, 110),
+      seg('recover', 50, 11, 80),
+      seg('work', 10, 24, 110),
+      seg('recover', 50, 11, 80),
+      seg('work', 10, 24, 110),
+      seg('recover', 50, 11, 80),
+      seg('work', 10, 24, 110),
+      seg('recover', 50, 11, 80),
+      seg('work', 10, 24, 110),
+      seg('recover', 50, 11, 80),
+      seg('work', 30, 22, 110),
+      seg('cool-down', 90, 11, 80),
     ],
   },
 };
