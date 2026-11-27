@@ -190,6 +190,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Westminster Rush Hour (`westminster`) | Time Is of the Essence (GCN Training, 15:00) | 6.450 km | 17 m | `public/courses/westminster.glb` ([ride views](screenshots/westminster-rush-hour/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Winnats Pass (`winnats`) | 35 Minute Hill Training (GCN, 35:28) | 13.503 km | 317 m | `public/courses/winnats.glb` ([ride views](screenshots/winnats-pass/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Wicklow Gap (`wicklow`) | Conor's Racing Bonanza (GCN Training, 35:00) | 15.893 km | 335 m | `public/courses/wicklow.glb` ([ride views](screenshots/wicklow-gap/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Monte Zoncolan (`zoncolan`) | Strength Builder & Quad Burner (GCN Training, 30:00) | 12.375 km | 1290 m | `public/courses/zoncolan.glb` ([ride views](screenshots/monte-zoncolan/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

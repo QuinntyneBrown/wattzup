@@ -2070,3 +2070,8 @@ import wicklow as _wicklow
 
 THEMES['wicklow'] = _wicklow.THEME
 SCENERY['wicklow'] = _wicklow.scenery
+
+import zoncolan as _zoncolan
+
+THEMES['zoncolan'] = _zoncolan.THEME
+SCENERY['zoncolan'] = _zoncolan.scenery

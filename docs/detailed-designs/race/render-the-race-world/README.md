@@ -2898,3 +2898,16 @@ The older street module establishes the race chalk, granite, tricolour, flowers 
 | Turlough Hill turn, 8.68 km | Real 02, 05, 10–12 and games 01, 04 | A service road climbs away from the saddle to the stone embankment and pumped-storage reservoir. |
 | Tonelagee and Camaderry, 10.15 km | Real 02, 10, 11, 14 and games 01, 03 | Low cloud drifts across rounded summits while a roadside tricolour strains in the wind. |
 | Glendalough descent, 14.87 km | Real 06–09, 13–15 and games 04, 05 | The road drops through spruce toward the upper lake, with the round monastic tower below. |
+
+### Monte Zoncolan (#2253)
+
+Trace the normal Race entry to its catalogue profile and lazily loaded GLB. Model village architecture, church towers, balconies, guardrails and each gallery portal against the same rising centreline. Use original portraits and text for cycling murals. Open the terrain at the summit so the rider can see other cut road benches and the distant mountains. Preserve the tightly enclosed beech and spruce lower ramp. Keep moving cyclists, cattle heads and flag cloth bounded and release meshes, map textures and rider resources on exit. Real 01–02 guide crowd density, while 03–07 guide the exposed cuts, pasture and guardrail shapes. Use the game references for climbing sightlines, overtake spacing and crowd legibility.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Ovaro approach, 0.14 km | Real 08–12 and games 01, 05 | The street passes pale village houses with timber balconies and a Carnic bell tower. |
+| Liariis forest gate, 2.15 km | Real 08, 10, 11, 15 and games 02, 04 | Past the last village walls, beech and spruce close around the narrow patched ramp. |
+| Forest wall, 4.91 km | Real 03–06, 13 and games 02–04 | Painted riders’ names climb away on asphalt steeper than twenty percent, tight between trees. |
+| Painted galleries, 9.70 km | Real 01, 03–06 and games 02, 03 | Three short galleries interrupt the road. Light falls across original cycling murals and the open exits. |
+| Carnic high pasture, 10.91 km | Real 03–07, 13, 14 and games 01, 04 | Cows graze above a guardrail. Switchbacks cut across grassy pasture under the jagged Carnic skyline. |
+| Summit race crowd, 12.18 km | Real 01–04, 13–15 and games 03, 05 | Fans and flags fill grassy banks around tents at the finish, leaving the racing line clear. |
