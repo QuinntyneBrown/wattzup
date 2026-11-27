@@ -15,6 +15,7 @@ import lisbonElevation from './lisbon-elevation.json';
 import loireElevation from './loire-elevation.json';
 import machupicchuElevation from './machupicchu-elevation.json';
 import marinabayElevation from './marinabay-elevation.json';
+import marrakechElevation from './marrakech-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4250,6 +4251,50 @@ export const marinabayCourseMap = {
       seg('recover', 120, 11, 80),
       seg('work', 480, 18, 88),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const marrakechCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'marrakech-medina',
+  name: 'Marrakech Medina',
+  routeName: 'Jemaa el-Fnaa',
+  place: 'Marrakech, Morocco',
+  world: 'marrakech',
+  distanceKm: 12.808333333333332,
+  climbingM: 24,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: marrakechElevation,
+  },
+  thumbnailUrl: 'maps/marrakech-medina.jpg',
+  photoUrl: 'maps/marrakech-medina-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 150, 13, 80),
+      seg('work', 180, 19, 65),
+      seg('recover', 120, 18, 103),
+      seg('work', 120, 19, 103),
+      seg('work', 20, 22, 110),
+      seg('recover', 20, 14, 95),
+      seg('work', 20, 22, 110),
+      seg('recover', 20, 14, 95),
+      seg('work', 20, 22, 110),
+      seg('recover', 20, 14, 95),
+      seg('work', 120, 16, 100),
+      seg('work', 60, 21, 95),
+      seg('recover', 60, 18, 95),
+      seg('work', 60, 21, 95),
+      seg('recover', 60, 18, 95),
+      seg('work', 60, 21, 95),
+      seg('work', 240, 19, 90),
+      seg('recover', 60, 13, 80),
+      seg('work', 30, 18, 64),
+      seg('work', 240, 22, 64),
+      seg('cool-down', 110, 11, 80),
     ],
   },
 };

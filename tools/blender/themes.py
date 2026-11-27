@@ -1635,3 +1635,8 @@ import marinabay as _marinabay
 
 THEMES['marinabay'] = _marinabay.THEME
 SCENERY['marinabay'] = _marinabay.scenery
+
+import marrakech as _marrakech
+
+THEMES['marrakech'] = _marrakech.THEME
+SCENERY['marrakech'] = _marrakech.scenery
