@@ -155,6 +155,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | South Beach Sunrise (`southbeach`) | Calorie Burning Workout (GCN Training, 16:00) | 7.025 km | 67 m | `public/courses/southbeach.glb` ([ride views](screenshots/south-beach-sunrise/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Calgary Stampede (`stampede`) | Start Hard, Finish Hard (GCN Training, 30:00) | 13.200 km | 145 m | `public/courses/stampede.glb` ([ride views](screenshots/calgary-stampede/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Stanley Park Seawall (`stanleypark`) | 15 Minute Beginner Session (GCN Training, 15:00) | 6.200 km | 31 m | `public/courses/stanleypark.glb` ([ride views](screenshots/stanley-park-seawall/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Great St Bernard Pass (`stbernard`) | Climb Time: Boost Your Climbing Power (GCN Training, 40:00) | 17.413 km | 871 m | `public/courses/stbernard.glb` ([ride views](screenshots/great-st-bernard-pass/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

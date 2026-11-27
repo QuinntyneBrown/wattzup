@@ -2391,3 +2391,18 @@ Preserve the earlier graded pavement lettering, sea to the right and sequence of
 | Lions Gate Bridge, 5.91 km | Real 02, 04–06, 10, 11, 13 and 15. Games 02, 03 and 05. | The green lattice suspension towers, stiffening truss and vertical hangers grow over the rider on the closing sprint; mountains show through the open steelwork. |
 
 Give the suspension deck depth, carry its cable down to the anchored ends and brace both tower legs. Use paired crossed cutouts for the red cedars and original cliff surface artwork. Batch rocks and rough stone coping in culled road sections. Update the boom, ship and tidal wash from ride time and release all textures, meshes and animation state on exit. Retain the existing bend comparison alongside six matched views. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Great St Bernard Pass (#2216)
+
+Keep the grade tied to the GCN climbing efforts. Above the gallery the route turns back across the valley and then enters the rocky saddle around the lake. Place the hospice, customs and statue on the same summit approach so they grow in the view as the rider climbs. Real 10 documents the scale and setting of a different memorial; use it for the knoll and bronze silhouette.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Avalanche gallery, 0.12 km | Real 01, 04 and 06. Games 01 and 03. | Heavy concrete piers and a thick roof shelter the road. Spaced openings reveal a rising granite wall, roadside snow poles and the cold light at the gallery mouth. |
+| Granite switchbacks, 4.12 km | Real 01, 03–06, 13 and 15. Games 02 and 05. | The narrow road doubles back across scree and rough tundra. Hairpins remain visible on the opposing slope; roadside posts and granite blocks mark the outside of the bend. |
+| Snow cutting, 8.24 km | Real 02, 04 and 14. Games 01–04. | A tall cut bank stands just outside the tarmac. Dirty melt layers, wind scallops and shallow runoff interrupt the pale face; high cloud moves past jagged peaks. |
+| Summit lake, 12.75 km | Real 08, 09, 12 and 14. Games 01 and 05. | The cold lake fills its rocky basin beside the road. Wind shifts patches of exposed water between irregular sheets of shore ice. The roof of the hospice rises at the far end. |
+| Hospice and kennels, 15.51 km | Real 07, 09 and 11. Games 01 and 03. | The steep grey roofs, many rows of small windows and contrasting granite wings form the hospice court. A heavy-coated Saint Bernard turns its head by the kennel rail. |
+| Swiss–Italian border, 17.09 km | Real 07, 10 and 11. Games 02 and 04. | Customs huts and flags mark the road across the col. A bronze figure stands on a rocky knoll beyond the border signs while the flags move in the wind. |
+
+Model the snow gallery roof and piers, the hospice wings and their slate roof planes. Use original granite, compacted snow and pale stone surface textures. Batch scree and snow poles by section; use a fixed far ridge. The lake ripples through gaps in the ice, a dog turns in the kennel and border flags move with ride time. Release the scene resources on exit. Compare six matched rider captures and measure actual submissions through the gallery and hospice. See ADRs 0021, 0023, 0030, 0034 and 0035.

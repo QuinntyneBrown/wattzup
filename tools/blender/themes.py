@@ -1895,3 +1895,8 @@ import stanleypark as _stanleypark
 
 THEMES['stanleypark'] = _stanleypark.THEME
 SCENERY['stanleypark'] = _stanleypark.scenery
+
+import stbernard as _stbernard
+
+THEMES['stbernard'] = _stbernard.THEME
+SCENERY['stbernard'] = _stbernard.scenery
