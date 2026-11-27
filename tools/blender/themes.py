@@ -1985,3 +1985,8 @@ import tremola as _tremola
 
 THEMES['tremola'] = _tremola.THEME
 SCENERY['tremola'] = _tremola.scenery
+
+import tourmalet as _tourmalet
+
+THEMES['tourmalet'] = _tourmalet.THEME
+SCENERY['tourmalet'] = _tourmalet.scenery

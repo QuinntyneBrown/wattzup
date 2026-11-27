@@ -2661,3 +2661,18 @@ Climb from the Leventina side to 2,106 m in 10.875 km. Carry the historic Low Ca
 | The summit hospice, 10.69 km | Real 08, 13–15 and games 03–05 | The pink hospice and stone museum overlook a small summit lake at 2,106 m. A yellow sign gives the pass name. |
 
 Adapt Caribana’s separation of fixed landmarks, moving middle distance and textured foreground. Lay the setts by distance along the road and across its width to keep the fans aligned through each bend. Model the curved wall, edge stones, arch and viaduct in depth. Share a small fleet and cyclist geometry and animate from the ride clock. Use original artwork for stone, vehicles and the hospice with the world folder retaining source attribution. Release resources on exit and measure sixty seconds in each tablet section. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Col du Tourmalet (#2233)
+
+Map the Four Minute Devils class to 10.400 km of climbing above La Mongie. Set the upper end of the climbing profile to 2,115 m. Use the stage resistance to shape each ramp and recovery. Keep the meadow, observatory ridge and summit sculpture in distinct depth layers as the road reverses on the upper slope.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| La Mongie, 0.14 km | Real 04, 11 and 15 and games 01 and 04 | The road climbs between concrete ski apartments and a lift station. Empty summer chairs run toward the first bare-green ramp. |
+| The devil’s ramp, 2.17 km | Real 01–03, 09 and 13 and games 02 and 05 | The red-horned devil jogs beside the rider with his trident raised. Chalk names and orange Basque flags mark the steep lane. |
+| The grazing slopes, 4.32 km | Real 03, 06, 10–12 and 14 and games 01 and 04 | A flock grazes below grey scree, with a cow and pony at the verge. A yellow-and-white borne gives the kilometres to the summit. |
+| Pic du Midi, 6.65 km | Real 06, 09–11 and 14 and games 01–02 | White observatory domes and the mast break the upper ridge. The climb leaves a shallow layer of mist below the next bend. |
+| The painted hairpin, 8.64 km | Real 01–03, 06–09 and 13 and games 03 and 05 | Polka-dot and orange jerseys line a chalk-covered corner. Basque and French flags ripple at the roadside above the valley. |
+| Le Géant du Tourmalet, 10.22 km | Real 05–08 and 14 and games 02 and 05 | The silver cyclist stands above the 2,115 m pass sign. The rim of the saddle frames the crowd, downhill road and high peaks. |
+
+Use the Caribana tablet crowd batching and landmark silhouettes for the finish. Separate the close trident, flags and yellow bornes from grazed slopes and distant mist. Sculpt the cyclist and bicycle in three dimensions, texture the concrete resort and weathered road, and share crowd cutouts by section. Animate chairs, flags and the devil on ride time. Release textures and geometry on exit. Compare six rider views and time both tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.

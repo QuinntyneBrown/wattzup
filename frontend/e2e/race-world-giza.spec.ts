@@ -40,6 +40,14 @@ for (const [actor, metres, part] of [
     await expect.poll(() => worldRide.gizaMotion(part)).not.toBe(first);
     await race.pause.click();
     await expect(race.resume).toBeVisible();
+    // The pause dialog and the dynamically mounted scene render on separate frames.
+    // Sample after the browser presents the frame already submitted when Pause was clicked.
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+        ),
+    );
     const held = await worldRide.gizaMotion(part);
     await page.evaluate(
       () =>

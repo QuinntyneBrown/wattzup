@@ -87,6 +87,7 @@ import teotihuacanElevation from './teotihuacan-elevation.json';
 import timessquareElevation from './timessquare-elevation.json';
 import torontoElevation from './toronto-elevation.json';
 import tremolaElevation from './tremola-elevation.json';
+import tourmaletElevation from './tourmalet-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7296,6 +7297,48 @@ export const tremolaCourseMap = {
       seg('recover', 180, 13, 90),
       seg('work', 300, 19, 55),
       seg('cool-down', 360, 13, 90),
+    ],
+  },
+};
+
+export const tourmaletCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'col-du-tourmalet',
+  name: 'Col du Tourmalet',
+  routeName: 'The road to the col',
+  place: 'Hautes-Pyrénées, France',
+  world: 'tourmalet',
+  distanceKm: 10.4,
+  climbingM: 652,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: tourmaletElevation,
+  },
+  thumbnailUrl: 'maps/col-du-tourmalet.jpg',
+  photoUrl: 'maps/col-du-tourmalet-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 14, 80),
+      seg('work', 120, 19, 80),
+      seg('work', 60, 21, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 16, 80),
+      seg('work', 60, 19, 80),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 19, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 22, 80),
+      seg('recover', 60, 19, 80),
+      seg('work', 60, 22, 80),
+      seg('recover', 60, 19, 80),
+      seg('work', 120, 10, 80),
+      seg('recover', 60, 18, 80),
+      seg('work', 60, 19, 80),
+      seg('work', 60, 21, 80),
+      seg('work', 60, 24, 80),
+      seg('cool-down', 120, 10, 80),
     ],
   },
 };
