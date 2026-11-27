@@ -1556,3 +1556,8 @@ import jaipur as _jaipur
 
 THEMES['jaipur'] = _jaipur.THEME
 SCENERY['jaipur'] = _jaipur.scenery
+
+import jouvert as _jouvert
+
+THEMES['jouvert'] = _jouvert.THEME
+SCENERY['jouvert'] = _jouvert.scenery

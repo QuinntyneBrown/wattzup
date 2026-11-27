@@ -1305,3 +1305,18 @@ The legacy race follows the sprint class through the shared road renderer. Prese
 | Chandpole, 8.12 km | Real 01, 05, 11–13 and games 04–05 | Chhatris stand clear of the shop parapets. Behind the second city gate the fort follows a fixed ridge in the spring haze. |
 
 Batch the arcades and road wear by distance and bake shadow into recesses. Use shared actor geometry, a bounded pool of powder puffs and a single race clock. Release the pool, its materials and any generated textures on exit. Match Caribana’s fixed skyline and animate only where the rider can see the result. Compare six HUD-visible views at matched distances. Measure submitted frames, p95, worst interval, peak calls and advancing distance on the opening and the busiest market stretch after nine seconds of warm-up.
+
+## Trinidad J’Ouvert (#2145)
+
+Keep the existing J’Ouvert soundtrack, Frederick Street identity and GCN sprint plan. Map Select supplies the class to Race Setup. The lazy course renderer loads the same-origin GLB and stage-based road profile, and the existing race engine owns resistance, cadence, pause and progression. No additional rider feedback appeared in the issue-title search.
+
+| Rider position | References | How the feature reads on Low |
+| --- | --- | --- |
+| Frederick Street, 0.08 km | Real 01, 07, 11 and 15, games 02 and 03 | Deep balconies, projecting signs and overhead cables enclose the narrow street. Small pools of lamplight leave the hills dark behind its vanishing point. |
+| Blue devils, 1.43 km | Real 02 and 06, games 01 and 05 | Curving horns and loose chains distinguish the blue-painted masqueraders from the mud and paint band. Staggered dancing bodies move towards the verges for each sprint. |
+| Soca truck, 2.68 km | Real 04–06, games 02 and 05 | A rolling truck carries banks of speaker cones below a high rail. Coloured light catches powder above the crowd and pools beneath the rear lamps. |
+| Pan side, 3.67 km | Real 03 and 08, games 03 and 04 | Players in matching shirts strike shallow metal pans; double pans and deep bass drums sit on wheeled frames. Keep mallets and polished rims visible from rider height. |
+| Red House, 4.82 km | Real 09–12 and 14, games 03 and 04 | Model the long red wings, white pilasters and central projecting pavilion beside the square’s fence. Reserve a sightline across the grass between the trees. |
+| Dawn, 5.93 km | Real 01, 07, 09–11 and 13–15, games 01 and 03 | Lift the eastern sky to blue while lit signs and lamps remain visible. Royal palms, almond and flamboyant crowns frame flags and splashed plaster above cups, rags and dirty asphalt. |
+
+Use the local Port of Spain photos for buildings and geography. Real 04–06 depict celebrations in Aruba and Jamaica and inform only crowd density, light and paint. Real 03 informs band spacing; the Trinidad pans in real 08 supply the instrument details. Caribana’s speaker silhouettes, bounded crowd batches and fixed skyline provide comparisons for the original models. Keep the truck, dancers, pan players and powder on race time. Reuse the world music player and its volume control. Release shared geometry, textures and materials on exit. Record six matched rider views and report actual submissions, p95, worst interval, draw calls and advancing distance for both tablet runs.

@@ -443,6 +443,10 @@ export class WorldRideProbe {
   }
 
   async coursePose(part: string): Promise<number | null> {
+    return this.coursePose(part);
+  }
+
+  async coursePose(part: string): Promise<number | null> {
     return this.page.evaluate((key) => {
       const course = (window as unknown as { __wzWorldRide: { course?: Record<string, unknown> } })
         .__wzWorldRide.course;

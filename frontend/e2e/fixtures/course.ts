@@ -1,4 +1,5 @@
 import jaipurElevation from './jaipur-elevation.json';
+import jouvertElevation from './jouvert-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3634,6 +3635,46 @@ export const jaipurCourseMap = {
       seg('recover', 105, 10, 80),
       seg('work', 30, 24, 100),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const jouvertCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'trinidad-jouvert',
+  name: "Trinidad J'Ouvert",
+  routeName: 'Frederick Street',
+  place: 'Port of Spain, Trinidad and Tobago',
+  world: 'jouvert',
+  distanceKm: 6.275,
+  climbingM: 42,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: jouvertElevation,
+  },
+  thumbnailUrl: 'maps/trinidad-jouvert.jpg',
+  photoUrl: 'maps/trinidad-jouvert-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 14, 80),
+      seg('work', 60, 18, 80),
+      seg('recover', 60, 14, 80),
+      seg('work', 60, 24, 90),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 24, 90),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 24, 90),
+      seg('recover', 30, 11, 80),
+      seg('work', 60, 24, 90),
+      seg('recover', 30, 11, 80),
+      seg('work', 60, 24, 90),
+      seg('recover', 30, 11, 80),
+      seg('work', 30, 24, 90),
+      seg('recover', 30, 11, 80),
+      seg('work', 60, 24, 90),
+      seg('cool-down', 90, 11, 80),
     ],
   },
 };

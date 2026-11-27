@@ -86,6 +86,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Isle of Man Mountain Course (`isleofman`) | Full Gas Sprints (GCN Training, 20:00) | 8.133 km | 206 m | `public/courses/isleofman.glb` ([ride views](screenshots/isle-of-man-mountain-course/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Iten, Kenya (`iten`) | 40 Minute HIIT (GCN Training, 40:00) | 17.860 km | 378 m | `public/courses/iten.glb` ([ride views](screenshots/iten-kenya/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Holi in Jaipur (`jaipur`) | Short 20 Minute Sprint Blitz (GCN Training, 20:00) | 8.625 km | 57 m | `public/courses/jaipur.glb` ([ride views](screenshots/holi-in-jaipur/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Trinidad J'Ouvert (`jouvert`) | Quick But Brutal HIIT (GCN Training, 15:00) | 6.275 km | 42 m | `public/courses/jouvert.glb` ([ride views](screenshots/trinidad-jouvert/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

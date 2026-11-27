@@ -170,6 +170,7 @@ import type { HighlandLivestock } from './bealach-livestock';
 import type { BigSurCoast } from './bigsur-coast';
 import type { BlackpoolTrams } from './blackpool-trams';
 import type { JaipurFestival } from './jaipur-festival';
+import type { JouvertBands } from './jouvert-bands';
 import type { BlueMountainsYard } from './blue-mountains-yard';
 import type { MabryMill } from './mabry-mill';
 import type { BondiSurf } from './bondi-surf';
@@ -531,6 +532,10 @@ export class CourseRenderer implements WorldRenderer {
     throwHeight: null as number | null,
     powderRise: null as number | null,
     rickshawPosition: null as number | null,
+    chainSwing: null as number | null,
+    panMallet: null as number | null,
+    speakerTruck: null as number | null,
+    crowdClearance: null as number | null,
     mistPosition: null as number | null,
     speakerDepth: null as number | null,
     valleyMist: null as number | null,
@@ -602,6 +607,9 @@ export class CourseRenderer implements WorldRenderer {
   private bigSurCoast: BigSurCoast | null = null;
   private trams: BlackpoolTrams | null = null;
   private holi: JaipurFestival | null = null;
+  private jouvert: JouvertBands | null = null;
+  private jouvertAprons: MeshBasicMaterial | null = null;
+  private frederick: MeshBasicMaterial | null = null;
   private yard: BlueMountainsYard | null = null;
   private mill: MabryMill | null = null;
   private surf: BondiSurf | null = null;
@@ -784,6 +792,47 @@ export class CourseRenderer implements WorldRenderer {
           image.anisotropy = 4;
           image.flipY = false;
         }
+      }
+      if (this.course.file.id === 'jouvert') {
+        const { JouvertBands } = await import('./jouvert-bands');
+        if (this.disposed) return false;
+        const bands = await JouvertBands.load(this.course);
+        if (this.disposed) {
+          bands.dispose();
+          return false;
+        }
+        this.jouvert = bands;
+        this.scene.add(bands.group, bands.horizon);
+        this.disposables.push(bands);
+        this.camera.far = 23000;
+        const atlas = await new TextureLoader().loadAsync('courses/jouvert-frederick.webp');
+        if (this.disposed) {
+          atlas.dispose();
+          return false;
+        }
+        atlas.flipY = false;
+        atlas.colorSpace = SRGBColorSpace;
+        atlas.anisotropy = 4;
+        this.frederick = new MeshBasicMaterial({ map: atlas, side: DoubleSide, color: 0xb7afbe });
+        this.disposables.push(atlas, this.frederick);
+        const aprons = await new TextureLoader().loadAsync('courses/jouvert-aprons.webp');
+        if (this.disposed) {
+          aprons.dispose();
+          return false;
+        }
+        aprons.flipY = false;
+        aprons.colorSpace = SRGBColorSpace;
+        aprons.anisotropy = 4;
+        this.jouvertAprons = new MeshBasicMaterial({
+          map: aprons,
+          alphaTest: 0.46,
+          side: DoubleSide,
+          color: 0xd9c9bc,
+        });
+        this.disposables.push(aprons, this.jouvertAprons);
+        this.camera.clearViewOffset();
+        this.camera.fov = 62;
+        this.camera.updateProjectionMatrix();
       }
       if (this.course.file.id === 'arenberg') {
         const { arenbergPave } = await import('./arenberg-pave');
@@ -1842,6 +1891,7 @@ export class CourseRenderer implements WorldRenderer {
     this.bigSurCoast?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trams?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.holi?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.jouvert?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.yard?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mill?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.surf?.update(metres, frame.reducedMotion ? 0 : frame.time);
@@ -1986,6 +2036,9 @@ export class CourseRenderer implements WorldRenderer {
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
+    this.jouvert = null;
+    this.jouvertAprons = null;
+    this.frederick = null;
     this.yard = null;
     this.mill = null;
     this.surf = null;
@@ -2216,7 +2269,9 @@ export class CourseRenderer implements WorldRenderer {
       this.seafrontSurface?.(detail) ??
       this.deckSurface ??
       coursePavement;
-    materials['Ground'] = this.holi?.tarmac ?? pavement ?? ground.material;
+    if (this.jouvertAprons) materials['JouvertAprons'] = this.jouvertAprons;
+    if (this.frederick) materials['FrederickFronts'] = this.frederick;
+    materials['Ground'] = this.holi?.tarmac ?? this.jouvert?.road ?? pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
@@ -2252,7 +2307,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Windows'] = windowMaterial(detail, new Color(look.haze), made);
     this.disposables.push(
       detail,
-      this.holi ? ground.material : materials['Ground'],
+      this.holi ? ground.material : this.jouvert ? ground.material : materials['Ground'],
       materials['Walls'],
       materials['Skyline'],
       materials['Windows'],
@@ -2813,6 +2868,7 @@ export class CourseRenderer implements WorldRenderer {
       ahead.z += (rider.z + (14 * dz) / distance - ahead.z) * zoom;
       ahead.y += 1.65 * zoom;
     }
+    this.jouvert?.aim(metres, this.camera.position, ahead);
     this.camera.lookAt(
       ahead.x,
       ahead.y +
@@ -3187,6 +3243,10 @@ export class CourseRenderer implements WorldRenderer {
     drawn.throwHeight = this.holi?.throwHeight ?? null;
     drawn.powderRise = this.holi?.powderRise ?? null;
     drawn.rickshawPosition = this.holi?.rickshawPosition ?? null;
+    drawn.chainSwing = this.jouvert?.chainSwing ?? null;
+    drawn.panMallet = this.jouvert?.panMallet ?? null;
+    drawn.speakerTruck = this.jouvert?.speakerTruck ?? null;
+    drawn.crowdClearance = this.jouvert?.crowdClearance ?? null;
     drawn.mistPosition = this.yard?.mistPosition ?? null;
     drawn.speakerDepth = this.yard?.speakerDepth ?? null;
     drawn.valleyMist = this.mill?.valleyMist ?? null;
