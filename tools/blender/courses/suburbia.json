@@ -1,0 +1,115 @@
+{
+  "id": "suburbia",
+  "name": "Suburban Sunrise",
+  "world": "suburbia",
+  "theme": "suburbia",
+  "seed": 2222,
+  "layout": 0,
+  "class": {
+    "id": "15-minute-cardio-workout-at-home",
+    "title": "15 Minute Cardio Workout at Home",
+    "channel": "GCN Training",
+    "videoId": "ZxJZzxAN3EY",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

@@ -1925,3 +1925,8 @@ import strasbourg as _strasbourg
 
 THEMES['strasbourg'] = _strasbourg.THEME
 SCENERY['strasbourg'] = _strasbourg.scenery
+
+import suburbia as _suburbia
+
+THEMES['suburbia'] = _suburbia.THEME
+SCENERY['suburbia'] = _suburbia.scenery

@@ -2481,3 +2481,18 @@ Extend the market itinerary to the original 10.15 km class distance. Keep the ca
 | Ponts Couverts, 9.87 km | Real 09 and 14. Games 04 and 05. | The route follows the Ill to the stone bridge. The defensive towers break the low skyline, and reflections of the towers and amber lamps ripple in the dark water. |
 
 Use baked highlights on wet cobbles and lit facade recesses. Share materials across repeated roof timbers, market roofs and overhead lights. Tie cup steam, tree bulbs and rippling canal highlights to the ride clock. Bound translucent layers and release their textures and geometry on exit. Capture six rider views and measure the opening and Place Kléber on the simulated tablet. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Suburban Sunrise (#2222)
+
+The register of the street changes from a straight tree tunnel to gently curved residential blocks and a broad cul-de-sac. Use the Quebec, Connecticut and Wisconsin imagery for maple and porch proportions. It is a composite residential avenue. Class resistance supplies the grade across the original 6.575 km distance.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Maple canopy, 0.12 km | Real 01–04 and 10. Games 01 and 04. | Warm dawn light catches mature maple leaves above the narrow lane. Parked family cars, long tree shadows and overhead wires frame the rider. |
+| Porch row, 1.19 km | Real 05–08 and 12. Games 02 and 03. | Two-storey clapboard houses sit back from the curb behind mown lawns. Three wooden steps lead to each columned porch; a mailbox stands at a driveway. |
+| Lawn sprinklers, 2.46 km | Real 04, 07, 13 and 14. Games 01 and 03. | Small sprinklers sweep glittering arcs of droplets across a dewy lawn and adjoining concrete sidewalk. The grass strip breaks at a driveway. |
+| Newspaper delivery, 3.73 km | Real 01, 03, 06 and 12. Games 02 and 04. | A delivery cyclist follows the curb with a stack of folded papers. One rolled paper arcs from the moving rider toward a porch lawn. |
+| The waking block, 4.91 km | Real 05, 08, 11 and 12. Games 03 and 05. | A neighbour raises a coffee cup and waves from a porch. A jogger and dog walker pass a fire hydrant and a basketball hoop farther along the sidewalk. |
+| Cul-de-sac loop, 6.35 km | Real 08–10, 14 and 15. Games 01 and 05. | The pavement widens and the course bends around the end of the cul-de-sac. Cars, stop signs and wooden poles outline the return under a pink-orange sky. |
+
+Keep distant trees stationary behind the near maple branches and the delivery cyclist. Cast long dawn shadows along the road and grass strips. Set porch steps, driveways and moving actors on the course grade. Share geometry for cars and street furniture and bound the moving water droplets and paper. Dispose of their meshes and textures on exit. Capture six rider views and measure the opening and delivery scenes. See ADRs 0021, 0023, 0030, 0034 and 0035.
