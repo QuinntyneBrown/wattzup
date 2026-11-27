@@ -1650,3 +1650,8 @@ import maunakea as _maunakea
 
 THEMES['maunakea'] = _maunakea.THEME
 SCENERY['maunakea'] = _maunakea.scenery
+
+import merce as _merce
+
+THEMES['merce'] = _merce.THEME
+SCENERY['merce'] = _merce.scenery

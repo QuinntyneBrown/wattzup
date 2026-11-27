@@ -169,6 +169,7 @@ import type { BayfrontNight } from './bayfront-night';
 import type { JemaaSquare } from './jemaa-square';
 import type { StCharlesParade } from './st-charles-parade';
 import type { MaunaKeaSummit } from './mauna-kea-summit';
+import type { MerceFestival } from './merce-festival';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -393,6 +394,7 @@ export class CourseRenderer implements WorldRenderer {
   private jemaaSquare: JemaaSquare | null = null;
   private stCharlesParade: StCharlesParade | null = null;
   private maunaKeaSummit: MaunaKeaSummit | null = null;
+  private merceFestival: MerceFestival | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1226,6 +1228,21 @@ export class CourseRenderer implements WorldRenderer {
         this.maunaKeaSummit = summit;
         this.scene.add(summit.root);
         this.disposables.push(summit);
+      }
+      if (this.course.file.id === 'merce') {
+        const { MerceFestival } = await import('./merce-festival');
+        if (this.disposed) return false;
+        const festival = await MerceFestival.load(this.course);
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.merceFestival = festival;
+        this.scene.add(festival.root);
+        this.disposables.push(festival);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -2210,6 +2227,7 @@ export class CourseRenderer implements WorldRenderer {
     this.jemaaSquare?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.stCharlesParade?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.maunaKeaSummit?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.merceFestival?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2391,6 +2409,7 @@ export class CourseRenderer implements WorldRenderer {
     this.jemaaSquare = null;
     this.stCharlesParade = null;
     this.maunaKeaSummit = null;
+    this.merceFestival = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2661,6 +2680,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.jemaaSquare) Object.assign(materials, this.jemaaSquare.materials);
     if (this.stCharlesParade) Object.assign(materials, this.stCharlesParade.materials);
     if (this.maunaKeaSummit) Object.assign(materials, this.maunaKeaSummit.materials);
+    if (this.merceFestival) Object.assign(materials, this.merceFestival.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3256,6 +3276,7 @@ export class CourseRenderer implements WorldRenderer {
     this.bayfrontNight?.sightline(metres, this.camera.position, ahead);
     this.jemaaSquare?.sightline(metres, this.camera.position, ahead);
     this.maunaKeaSummit?.sightline(metres, this.camera.position, ahead);
+    this.merceFestival?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -3808,6 +3829,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.jemaaSquare) Object.assign(drawn, this.jemaaSquare.report());
     if (this.stCharlesParade) Object.assign(drawn, this.stCharlesParade.report());
     if (this.maunaKeaSummit) Object.assign(drawn, this.maunaKeaSummit.report());
+    if (this.merceFestival) Object.assign(drawn, this.merceFestival.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

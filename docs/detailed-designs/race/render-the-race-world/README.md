@@ -1594,3 +1594,18 @@ The original 60 Minutes of Brutal Power intervals set the distance of each stage
 | Summit at sunset, 25.24 km | Real 09–15. Games 01 and 03. | The high paved road passes a summit altitude marker. Orange light crosses the domes and catches the cloud tops below the ridge. |
 
 Keep the observatories at fixed ridge positions like Caribana’s CN Tower. Use stepped volcanic material bands, baked underside shade and a layered cloud horizon. Separate moving enclosures from their fixed telescope buildings. The vehicle, enclosure and cloud drift use race time, and their geometry and materials belong to the course renderer. The photographic and game credits are in docs/worlds/maunakea/SOURCES.md. The issue-title search returned #2162.
+
+## La Mercè, Barcelona (#2163)
+
+The legacy renderer already supplies a violet dusk and a rideable street. The catalogue lacks a native La Mercè race. Restore the original class intervals through the maps API, use the same physical course distance in the HUD and renderer, and lazy-load the native mesh and festival materials on race entry. Preserve the warm violet sky over the stone avenue.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Via Laietana, 0.08 km | Real 01, 05–07. Games 01 and 03. | Rows of five- to seven-storey stone office blocks frame the broad striped avenue. Low sodium pools, striped senyeres and spectators at the barriers guide the riding line. |
+| Gegants and capgrossos, 2.24 km | Real 09–12. Games 01 and 04. | A giant in a red barretina and a tall skirted partner turn above their handlers. The big-headed dancers weave below them at the edge of the avenue. |
+| Correfoc, 4.58 km | Real 02–04 and 14–15. Games 02 and 05. | Hooded devils flank a blue horned fire beast. Airborne sparks arc through street smoke, lighting the paving and the faces behind the barriers. |
+| Plaça Sant Jaume, 6.76 km | Real 08–09. Games 01 and 04. | The castellers form a broad pinya under narrowing rows of red shirts, white trousers and dark waist sashes. The Ajuntament and Palau de la Generalitat face each other across the plaza. |
+| Cathedral and Gothic Quarter, 9.32 km | Real 06–07 and 13. Games 02–03. | Narrow limestone lanes open onto the Cathedral’s pointed windows and central spire. Warm light grazes projecting stonework and balconies. |
+| Piromusical finale, 12.26 km | Real 02, 05 and 14–15. Games 03 and 05. | Coloured projection light washes across the avenue façades. Fireworks break above the distant Montjuïc ridge behind lit festival bunting. |
+
+Keep the Cathedral, civic buildings and the Montjuïc ridge fixed in course coordinates. Batch the barriers, spectators and balconies into visibility sections. Paint recess shade, joints and worn gutters into the local stone and tarmac. Vary seated children, raised phones, clothing and flag placement along the barriers. Animate the giants and bounded pools of sparks and fireworks on race time. The renderer owns and releases the textures, materials, geometry and buffers. Measure the moving rider after assets load on both stretches recorded above. Credits are in docs/worlds/merce/SOURCES.md. A GitHub title search for La Mercè returned #2163.
