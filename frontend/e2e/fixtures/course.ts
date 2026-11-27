@@ -98,6 +98,7 @@ import veletaElevation from './veleta-elevation.json';
 import velodromeElevation from './velodrome-elevation.json';
 import veniceElevation from './venice-elevation.json';
 import ventouxElevation from './ventoux-elevation.json';
+import veronaElevation from './verona-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7768,6 +7769,48 @@ export const ventouxCourseMap = {
       seg('work', 120, 21, 90),
       seg('recover', 120, 10, 80),
       seg('work', 180, 21, 93),
+      seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
+
+export const veronaArenaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'verona-arena-finale',
+  name: 'Verona Arena Finale',
+  routeName: 'The arena finale',
+  place: 'Verona, Italy',
+  world: 'verona',
+  distanceKm: 24,
+  climbingM: 197,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: veronaElevation,
+  },
+  thumbnailUrl: 'maps/verona-arena-finale.jpg',
+  photoUrl: 'maps/verona-arena-finale-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 120, 16, 80),
+      seg('work', 180, 19, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 180, 24, 80),
+      seg('recover', 300, 19, 80),
+      seg('work', 180, 21, 80),
+      seg('work', 300, 19, 80),
+      seg('recover', 300, 10, 80),
+      seg('work', 180, 24, 80),
+      seg('work', 180, 21, 80),
+      seg('recover', 180, 19, 80),
+      seg('work', 180, 18, 80),
+      seg('recover', 300, 10, 80),
+      seg('work', 60, 24, 80),
+      seg('recover', 120, 22, 80),
+      seg('work', 240, 21, 80),
+      seg('recover', 120, 24, 80),
       seg('cool-down', 180, 10, 80),
     ],
   },

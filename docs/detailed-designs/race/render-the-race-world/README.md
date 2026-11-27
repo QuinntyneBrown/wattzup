@@ -2820,3 +2820,16 @@ Fit the climb from the forest below Chalet Reynard to the 1,910 m crest to the c
 | Mistral shelter, 4.94 km | Real 04, 10, 13, 15 and games 02–03 | A flag snaps behind a low wall. Beyond the winding road, Provence fields, the Vaucluse hills and distant Alps fill the view. |
 | Tom Simpson memorial, 6.83 km | Real 03, 06, 14 and games 01, 04 | The granite stele rises above its stone steps with a portrait plaque, bottles and caps at the foot. Passing riders stand on their pedals. |
 | Summit observatory, 8.22 km | Real 01–02, 05, 10–12, 15 and games 04–05 | The cream weather station and red-white mast stand on the ridge behind the summit sign. Supporters applaud the final turn. |
+
+### Verona Arena Finale (#2245)
+
+The 24 km race starts on the Torricelle, reaches 273 m, then descends to the Adige and the historic streets. Cross a modelled Ponte Pietra above the water. Give Portoni della Bra two open arches and a clock between them. Align an entrance in the arena's two-tier arcade with the racing line. Place the finish inside the ellipse with sightlines across the stepped seating. Real 09 depicts Bucharest and supplies no evidence of Veronese architecture. The ride clock controls the lead riders, river ripples and scarves. Release each scene resource when the rider leaves.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Torricelle climb, 0.14 km | Real 07, 10, 13, 15 and games 01, 05 | Cypresses and vineyard rows open onto red roofs below the climbing riders. |
+| Adige overlook, 6.31 km | Real 07, 08, 10 and games 03, 05 | The river curls beneath the terracotta riverfront and the stone and brick bridge. |
+| Ponte Pietra, 11.43 km | Real 07, 08, 10, 14 and game 04 | Ride between the stone parapets over the moving Adige, toward the bridge tower. |
+| Piazza delle Erbe, 16.72 km | Real 01, 10, 14 and games 03, 04 | The brick Lamberti tower and octagonal belfry rise above market parasols and pink paving. |
+| Portoni della Bra, 21.85 km | Real 01, 06, 11, 15 and games 02, 04 | The twin arches and clock lead to the cafes of the Liston behind pink crowd barriers. |
+| Arena finish, 23.97 km | Real 02-05, 12, 13 and games 01, 02 | Enter the pink limestone arcade and finish inside the seating bowl under waving pink scarves. |

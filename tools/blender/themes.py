@@ -2040,3 +2040,8 @@ import ventoux as _ventoux
 
 THEMES['ventoux'] = _ventoux.THEME
 SCENERY['ventoux'] = _ventoux.scenery
+
+import verona as _verona
+
+THEMES['verona'] = _verona.THEME
+SCENERY['verona'] = _verona.scenery
