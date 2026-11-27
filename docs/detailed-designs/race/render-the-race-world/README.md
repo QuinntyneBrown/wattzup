@@ -2271,3 +2271,18 @@ The previous world used rolling road defaults. Restore the historical GCN class 
 | Return over the downs, 9.61 km | Real 01, 05, 06 and 07. Games 01 and 03. | The white-edged road pitches over open sheep-grazed downs. Flowering gorse, a National Trust waymarker and split timber fences frame the next crest. |
 
 Cut flutes into the chalk, tint flint bands in the surface and round the turf over the lip. A stepped shingle beach takes the tide beneath the brows. Use foreground gates and hedges for parallax and draw the distant profile as a continuous silhouette on Low. The lighthouse is the squat clifftop Belle Tout shown in real-04, 06 and 14. Cuckmere is a river with cut-off oxbows in a flat floodplain. Drive near sheep necks, gull wings and breakers from ride time. Dispose geometry, textures and buffers on exit. Measure the two busiest moving sections as in the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## San Francisco Hills (#2208)
+
+The earlier procedural world combines generic city props and a rolling road. Restore the GCN class to the catalogue and use one measured centre line for the camera, grade, vehicles and intersection flats. The 120 m Filbert pitch gains 37.8 m between 2.740 and 2.860 km. Keep railway tracks off the crooked, brick-paved Lombard block.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Russian Hill row houses, 0.10 km | Real 01, 03, 04, 10 and 13. Games 02 and 03. | Stepped, painted bay windows and raised stoops mark each lot. Overhead wires, ficus crowns, a flat zebra crossing and a cast manhole mark the first block. |
+| Powell–Hyde line, 1.38 km | Real 02, 07 and 08. Games 02 and 04. | A red-and-cream cable car moves along the steel running rails and central grip slot. Its clerestory and open riding platform remain distinct at rider height. |
+| Filbert wall, 2.82 km | Real 01, 11, 12 and 13. Games 02 and 05. | A 31.5 percent concrete pitch rises between stepped sidewalks. Parked cars lean with the road, with their wheels turned toward the curb. A level landing breaks the steep block. |
+| Telegraph Hill crest, 4.22 km | Real 03, 04, 09 and 14. Games 01 and 04. | Coit Tower’s pale fluted shaft and arched crown rise above Telegraph Hill. Alcatraz and the Bay Bridge appear beyond the sudden drop in the street. |
+| Lombard switchbacks, 6.72 km | Real 05 and 06. Games 03 and 04. | Eight tight bends wind down a continuous red-brick street. Hydrangea beds fill the inside of each turn. A local car threads the bends below the rider. |
+| Bay overlook, 8.36 km | Real 02, 07, 11 and 15. Games 01 and 05. | A fog bank slides over the water beyond the foreground wires. The island and bridge stay fixed while warm light picks out projecting bay windows on the last descent. |
+
+Model the bays, dentilled cornices, cable-car roof and Coit Tower’s top openings in silhouette. Reuse original facade elevations over stepped geometry and batch wires and window frames by block. Keep Alcatraz, the bridge and Telegraph Hill fixed across the route; a translucent marine layer moves independently of the landmarks. Measure submitted frames with the whole HUD and loaded meshes, and dispose textures, geometry and scene-local actors on exit. See the performance design and ADRs 0021, 0023, 0030, 0034 and 0035.

@@ -1856,3 +1856,7 @@ SCENERY['serpentine'] = _serpentine.scenery
 import sevensisters as _sevensisters
 THEMES['sevensisters']=_sevensisters.THEME
 SCENERY['sevensisters']=_sevensisters.scenery
+
+import sfhills as _sfhills
+THEMES['sfhills']=_sfhills.THEME
+SCENERY['sfhills']=_sfhills.scenery

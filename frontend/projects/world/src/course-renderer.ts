@@ -45,6 +45,7 @@ import type { SellaClimb } from './sella-climb';
 import type { SellaRondaRide } from './sella-ronda-ride';
 import type { SerpentineLake } from './serpentine-lake';
 import type { SevenSistersDowns } from './seven-sisters-downs';
+import type { SanFranciscoHills } from './san-francisco-hills';
 import type { ConeyBoardwalk } from './coney-boardwalk';
 import type { copacabanaPromenade } from './copacabana-promenade';
 import type { CopacabanaBeach } from './copacabana-beach';
@@ -305,6 +306,12 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   DownlandGorse: 315,
   CoastguardWhitewash: 1350,
   BelleToutGlass: 1300,
+  SFBay: 5200,
+  RussianHillBays: 970,
+  FilbertConcrete: 820,
+  LombardBrick: 670,
+  LombardFlowers: 340,
+  HillStreetSigns: 415,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -450,6 +457,7 @@ export class CourseRenderer implements WorldRenderer {
   private sellaRonda: SellaRondaRide | null = null;
   private serpentine: SerpentineLake | null = null;
   private downs: SevenSistersDowns | null = null;
+  private sanFrancisco: SanFranciscoHills | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -2010,6 +2018,18 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(downs.root);
         this.disposables.push(downs);
       }
+      if (this.course.file.id === 'sfhills') {
+        const { SanFranciscoHills } = await import('./san-francisco-hills');
+        if (this.disposed) return false;
+        const city = await SanFranciscoHills.load(this.course);
+        if (this.disposed) {
+          city.dispose();
+          return false;
+        }
+        this.sanFrancisco = city;
+        this.scene.add(city.root);
+        this.disposables.push(city);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2961,6 +2981,7 @@ export class CourseRenderer implements WorldRenderer {
     this.sellaRonda?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.serpentine?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.downs?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.sanFrancisco?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
@@ -3169,6 +3190,7 @@ export class CourseRenderer implements WorldRenderer {
     this.sellaRonda = null;
     this.serpentine = null;
     this.downs = null;
+    this.sanFrancisco = null;
     this.boardwalk = null;
     this.pacificPark = null;
     this.seaPoint = null;
@@ -3594,6 +3616,7 @@ export class CourseRenderer implements WorldRenderer {
     Object.assign(materials, this.sellaRonda?.materials);
     Object.assign(materials, this.serpentine?.materials);
     Object.assign(materials, this.downs?.materials);
+    Object.assign(materials, this.sanFrancisco?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -4181,6 +4204,7 @@ export class CourseRenderer implements WorldRenderer {
     this.sellaRonda?.frameView(metres, this.camera.position, ahead);
     this.serpentine?.frameView(metres, this.camera.position, ahead);
     this.downs?.frameView(metres, this.camera.position, ahead);
+    this.sanFrancisco?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -4731,6 +4755,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.sellaRonda) Object.assign(drawn, this.sellaRonda.report());
     if (this.serpentine) Object.assign(drawn, this.serpentine.report());
     if (this.downs) Object.assign(drawn, this.downs.report());
+    if (this.sanFrancisco) Object.assign(drawn, this.sanFrancisco.report());
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
     if (this.pacificPark) Object.assign(drawn, this.pacificPark.report());
     if (this.seaPoint) Object.assign(drawn, this.seaPoint.report());

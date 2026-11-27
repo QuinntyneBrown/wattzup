@@ -147,6 +147,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Passo Sella (`sella`) | Fat Burning Climb: Passo Sella (GCN, 26:00) | 11.637 km | 619 m | `public/courses/sella.glb` ([ride views](screenshots/passo-sella/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Serpentine, Hyde Park (`serpentine`) | 15 Minute HIIT Cardio (GCN Training, 15:00) | 6.638 km | 10 m | `public/courses/serpentine.glb` ([ride views](screenshots/serpentine-hyde-park/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Seven Sisters Cliffs (`sevensisters`) | Sevens: Build Your VO2 Max (GCN Training, 29:20) | 12.483 km | 467 m | `public/courses/sevensisters.glb` ([ride views](screenshots/seven-sisters-cliffs/README.md)) | Built and ridden; open from the start on the map catalogue |
+| San Francisco Hills (`sfhills`) | Max Effort Up & Overs (GCN Training, 20:00) | 8.900 km | 210 m | `public/courses/sfhills.glb` ([ride views](screenshots/san-francisco-hills/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
