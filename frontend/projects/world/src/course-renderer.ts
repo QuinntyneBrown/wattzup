@@ -229,6 +229,7 @@ import type { LiffeyParade } from './liffey-parade';
 import type { SenesiSectors } from './senesi-sectors';
 import type { GrandeIle } from './grande-ile';
 import type { MapleMorning } from './maple-morning';
+import type { GoldCoast } from './gold-coast';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -384,6 +385,8 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   KhentiiSky: 65000,
   CreteRidge: 45000,
   MapleDawn: 43000,
+  PacificRim: 62000,
+  GoldBalconies: 1800,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -553,6 +556,7 @@ export class CourseRenderer implements WorldRenderer {
   private strade: SenesiSectors | null = null;
   private strasbourg: GrandeIle | null = null;
   private maple: MapleMorning | null = null;
+  private surfers: GoldCoast | null = null;
   private mountain: ManxMountain | null = null;
   private rush: JunkanooRush | null = null;
   private vents: KilaueaVents | null = null;
@@ -2290,6 +2294,20 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(morning.root);
         this.disposables.push(morning);
       }
+      if (this.course.file.id === 'surfers') {
+        const { GoldCoast } = await import('./gold-coast');
+        if (this.disposed) return false;
+        const coast = await GoldCoast.load(this.course);
+        if (this.disposed) {
+          coast.dispose();
+          return false;
+        }
+        this.surfers = coast;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(coast.root);
+        this.disposables.push(coast);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -3356,6 +3374,7 @@ export class CourseRenderer implements WorldRenderer {
     this.strade?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.strasbourg?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.maple?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.surfers?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -3539,6 +3558,7 @@ export class CourseRenderer implements WorldRenderer {
     this.strade = null;
     this.strasbourg = null;
     this.maple = null;
+    this.surfers = null;
     this.mountain = null;
     this.rush = null;
     this.vents = null;
@@ -3860,6 +3880,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.strade) Object.assign(materials, this.strade.materials);
     if (this.strasbourg) Object.assign(materials, this.strasbourg.materials);
     if (this.maple) Object.assign(materials, this.maple.materials);
+    if (this.surfers) Object.assign(materials, this.surfers.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.rush) Object.assign(materials, this.rush.materials);
     if (this.caldera) Object.assign(materials, this.caldera.materials);
@@ -4004,7 +4025,7 @@ export class CourseRenderer implements WorldRenderer {
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
-      if ((((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) && group === 'Sun') mesh.visible = false;
+      if (((((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) || this.surfers) && group === 'Sun') mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
           ...glow,
@@ -4526,6 +4547,7 @@ export class CourseRenderer implements WorldRenderer {
     this.strade?.frameView(metres, this.camera.position, ahead);
     this.strasbourg?.frameView(metres, this.camera.position, ahead);
     this.maple?.frameView(metres, this.camera.position, ahead);
+    this.surfers?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -5140,6 +5162,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.strade) Object.assign(drawn, this.strade.report());
     if (this.strasbourg) Object.assign(drawn, this.strasbourg.report());
     if (this.maple) Object.assign(drawn, this.maple.report());
+    if (this.surfers) Object.assign(drawn, this.surfers.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.rush) Object.assign(drawn, this.rush.report());
     if (this.vents) Object.assign(drawn, this.vents.report());

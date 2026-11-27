@@ -162,6 +162,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Strade Bianche (`strade`) | 20 Minutes to Work on Your Cadence (GCN Training, 20:00) | 8.250 km | 132 m | `public/courses/strade.glb` ([ride views](screenshots/strade-bianche/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Strasbourg Christmas Market (`strasbourg`) | Festive Spin With Surprise Sprints (GCN Training, 25:00) | 10.150 km | 10 m | `public/courses/strasbourg.glb` ([ride views](screenshots/strasbourg-christmas-market/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Suburban Sunrise (`suburbia`) | 15 Minute Cardio Workout at Home (GCN Training, 15:00) | 6.575 km | 12 m | `public/courses/suburbia.glb` ([ride views](screenshots/suburban-sunrise/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Surfers Paradise (`surfers`) | Sprint Surges (GCN Training, 32:00) | 13.200 km | 10 m | `public/courses/surfers.glb` ([ride views](screenshots/surfers-paradise/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

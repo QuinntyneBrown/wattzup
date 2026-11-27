@@ -2496,3 +2496,18 @@ The register of the street changes from a straight tree tunnel to gently curved 
 | Cul-de-sac loop, 6.35 km | Real 08–10, 14 and 15. Games 01 and 05. | The pavement widens and the course bends around the end of the cul-de-sac. Cars, stop signs and wooden poles outline the return under a pink-orange sky. |
 
 Keep distant trees stationary behind the near maple branches and the delivery cyclist. Cast long dawn shadows along the road and grass strips. Set porch steps, driveways and moving actors on the course grade. Share geometry for cars and street furniture and bound the moving water droplets and paper. Dispose of their meshes and textures on exit. Capture six rider views and measure the opening and delivery scenes. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Surfers Paradise (#2223)
+
+Extend the beachfront itinerary and its inland tram section to the 13.2 km class distance. Keep Q1 fixed behind the moving foreground and leave the wide ocean visible between palms. The photos establish building profiles, reflective beach width and tram livery. The game views establish the clearance around the cyclist and the legibility of the next landmark.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| The Esplanade, 0.12 km | Real 01, 04, 09 and 12. Games 01 and 03. | The rider follows a two-lane road between apartment balconies and the foreshore path. Parked cars, pandanus and tall palms break up the near edge of the sand. |
+| Q1 above the foreshore, 2.23 km | Real 03, 05, 06 and 07. Games 01 and 03. | Q1 rises above its neighbouring towers, with a sloping glass crown and a single long gold-tipped mast. White balcony slabs and turquoise glass separate the surrounding high-rises. |
+| Breakers and surfers, 4.42 km | Real 07 and 09–12. Games 02 and 04. | Long Pacific breakers advance across bands of wet sand. A board and surfer lift over a swell, with swimmers and cumulus beyond. |
+| Cavill Avenue arch, 6.63 km | Real 01, 02 and 04. Games 01 and 05. | The curved steel Surfers Paradise arch spans the pedestrian entrance at Cavill Avenue. Its lettering reads above the path and the ocean shows through the opening. |
+| Patrolled beach, 9.05 km | Real 05, 07, 09 and 13. Games 04 and 05. | Paired red-and-yellow flags mark the swimming area beside a raised lookout and warning signs. The cloth bends in the sea breeze above the reflective shore. |
+| Cavill Avenue station, 12.88 km | Real 08, 14 and 15. Games 01 and 03. | A yellow and blue G:link tram passes the station platform. Glazed doors, articulations, paved track and overhead wire distinguish the tram corridor from the beachfront road. |
+
+Merge repeated tower floors and palms, with taller skyline forms visible beyond the street. Model Q1’s wedge crown and mast, the entrance arch and the tram articulations. Move bounded surf bands, cloth and tram doors or carriage bodies on ride time. Keep water and flags readable in low detail and dispose of course textures and geometry on exit. Capture the six viewpoints and measure both tablet sections. See ADRs 0021, 0023, 0030, 0034 and 0035.

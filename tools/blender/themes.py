@@ -1930,3 +1930,8 @@ import suburbia as _suburbia
 
 THEMES['suburbia'] = _suburbia.THEME
 SCENERY['suburbia'] = _suburbia.scenery
+
+import surfers as _surfers
+
+THEMES['surfers'] = _surfers.THEME
+SCENERY['surfers'] = _surfers.scenery
