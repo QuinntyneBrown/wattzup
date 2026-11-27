@@ -176,6 +176,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Col du Tourmalet (`tourmalet`) | Four Minute Devils (GCN Training, 26:00) | 10.400 km | 652 m | `public/courses/tourmalet.glb` ([ride views](screenshots/col-du-tourmalet/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Trollstigen (`trollstigen`) | Gradual Threshold Effort Builds (GCN Training, 30:00) | 12.000 km | 800 m | `public/courses/trollstigen.glb` ([ride views](screenshots/trollstigen/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Dutch Tulip Fields (`tulips`) | Easy Cadence Workout (GCN Training, 25:00) | 10.100 km | 3 m | `public/courses/tulips.glb` ([ride views](screenshots/dutch-tulip-fields/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Utrecht Bike City (`utrecht`) | Cadence Drills for Strength & Speed (GCN Training, 60:00) | 22.590 km | 10 m | `public/courses/utrecht.glb` ([ride views](screenshots/utrecht-bike-city/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

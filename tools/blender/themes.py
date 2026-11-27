@@ -2000,3 +2000,8 @@ import tulips as _tulips
 
 THEMES['tulips'] = _tulips.THEME
 SCENERY['tulips'] = _tulips.scenery
+
+import utrecht as _utrecht
+
+THEMES['utrecht'] = _utrecht.THEME
+SCENERY['utrecht'] = _utrecht.scenery

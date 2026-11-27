@@ -90,6 +90,7 @@ import tremolaElevation from './tremola-elevation.json';
 import tourmaletElevation from './tourmalet-elevation.json';
 import trollstigenElevation from './trollstigen-elevation.json';
 import tulipsElevation from './tulips-elevation.json';
+import utrechtElevation from './utrecht-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7417,6 +7418,49 @@ export const tulipsCourseMap = {
       seg('recover', 60, 13, 80),
       seg('work', 120, 19, 60),
       seg('cool-down', 180, 13, 80),
+    ],
+  },
+};
+
+export const utrechtCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'utrecht-bike-city',
+  name: 'Utrecht Bike City',
+  routeName: 'The canal wharves',
+  place: 'Utrecht, Netherlands',
+  world: 'utrecht',
+  distanceKm: 22.59,
+  climbingM: 10,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: utrechtElevation,
+  },
+  thumbnailUrl: 'maps/utrecht-bike-city.jpg',
+  photoUrl: 'maps/utrecht-bike-city-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 11, 80),
+      seg('work', 300, 14, 60),
+      seg('recover', 120, 18, 60),
+      seg('work', 60, 21, 110),
+      seg('recover', 300, 14, 60),
+      seg('work', 120, 18, 60),
+      seg('work', 60, 21, 110),
+      seg('recover', 120, 10, 80),
+      seg('work', 360, 18, 73),
+      seg('recover', 120, 22, 100),
+      seg('work', 180, 10, 80),
+      seg('recover', 480, 18, 80),
+      seg('work', 120, 22, 100),
+      seg('recover', 180, 10, 80),
+      seg('work', 180, 16, 60),
+      seg('recover', 60, 21, 60),
+      seg('work', 60, 24, 60),
+      seg('recover', 120, 10, 80),
+      seg('work', 180, 16, 80),
+      seg('cool-down', 180, 10, 80),
     ],
   },
 };
