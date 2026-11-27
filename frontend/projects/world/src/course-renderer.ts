@@ -169,6 +169,7 @@ import type { HighlandWeather } from './bealach-weather';
 import type { HighlandLivestock } from './bealach-livestock';
 import type { BigSurCoast } from './bigsur-coast';
 import type { BlackpoolTrams } from './blackpool-trams';
+import type { JaipurFestival } from './jaipur-festival';
 import type { BlueMountainsYard } from './blue-mountains-yard';
 import type { MabryMill } from './mabry-mill';
 import type { BondiSurf } from './bondi-surf';
@@ -527,6 +528,9 @@ export class CourseRenderer implements WorldRenderer {
     fallingWater: null as number | null,
     tramMetres: null as number | null,
     illumination: null as number | null,
+    throwHeight: null as number | null,
+    powderRise: null as number | null,
+    rickshawPosition: null as number | null,
     mistPosition: null as number | null,
     speakerDepth: null as number | null,
     valleyMist: null as number | null,
@@ -597,6 +601,7 @@ export class CourseRenderer implements WorldRenderer {
   private highlandLivestock: HighlandLivestock | null = null;
   private bigSurCoast: BigSurCoast | null = null;
   private trams: BlackpoolTrams | null = null;
+  private holi: JaipurFestival | null = null;
   private yard: BlueMountainsYard | null = null;
   private mill: MabryMill | null = null;
   private surf: BondiSurf | null = null;
@@ -1076,6 +1081,21 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.updateProjectionMatrix();
         this.dam = blackCanyon(this.course);
         this.disposables.push(this.dam);
+      }
+      if (this.course.file.id === 'jaipur') {
+        const { JaipurFestival } = await import('./jaipur-festival');
+        if (this.disposed) return false;
+        const festival = await JaipurFestival.load(this.course);
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.camera.clearViewOffset();
+        this.camera.fov = 65;
+        this.camera.updateProjectionMatrix();
+        this.holi = festival;
+        this.scene.add(festival.group);
+        this.disposables.push(festival);
       }
       this.build(
         gltf.scene,
@@ -1821,6 +1841,7 @@ export class CourseRenderer implements WorldRenderer {
     this.highlandLivestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.bigSurCoast?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trams?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.holi?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.yard?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.mill?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.surf?.update(metres, frame.reducedMotion ? 0 : frame.time);
@@ -1964,6 +1985,7 @@ export class CourseRenderer implements WorldRenderer {
     this.mountain = null;
     this.trainingHighlands = null;
     this.trams = null;
+    this.holi = null;
     this.yard = null;
     this.mill = null;
     this.surf = null;
@@ -2194,7 +2216,7 @@ export class CourseRenderer implements WorldRenderer {
       this.seafrontSurface?.(detail) ??
       this.deckSurface ??
       coursePavement;
-    materials['Ground'] = pavement ?? ground.material;
+    materials['Ground'] = this.holi?.tarmac ?? pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
@@ -2230,7 +2252,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Windows'] = windowMaterial(detail, new Color(look.haze), made);
     this.disposables.push(
       detail,
-      materials['Ground'],
+      this.holi ? ground.material : materials['Ground'],
       materials['Walls'],
       materials['Skyline'],
       materials['Windows'],
@@ -2776,6 +2798,21 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
+    if (this.holi && Math.abs(metres - 2920) < 100) {
+      const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
+      const facade = course.place(2992, -38);
+      const rider = course.place(metres);
+      const dx = facade.x - rider.x,
+        dz = facade.z - rider.z,
+        distance = Math.max(1, Math.hypot(dx, dz));
+      const zoom = Math.min(1, palace * 2);
+      this.camera.position.x += (rider.x - (6 * dx) / distance - this.camera.position.x) * zoom;
+      this.camera.position.z += (rider.z - (6 * dz) / distance - this.camera.position.z) * zoom;
+      this.camera.position.y += 0.5 * zoom;
+      ahead.x += (rider.x + (14 * dx) / distance - ahead.x) * zoom;
+      ahead.z += (rider.z + (14 * dz) / distance - ahead.z) * zoom;
+      ahead.y += 1.65 * zoom;
+    }
     this.camera.lookAt(
       ahead.x,
       ahead.y +
@@ -3147,6 +3184,9 @@ export class CourseRenderer implements WorldRenderer {
     drawn.surfCrest = this.bigSurCoast?.crest ?? null;
     drawn.illumination = this.trams?.illumination ?? null;
     drawn.tramMetres = this.trams?.nearestMetres ?? null;
+    drawn.throwHeight = this.holi?.throwHeight ?? null;
+    drawn.powderRise = this.holi?.powderRise ?? null;
+    drawn.rickshawPosition = this.holi?.rickshawPosition ?? null;
     drawn.mistPosition = this.yard?.mistPosition ?? null;
     drawn.speakerDepth = this.yard?.speakerDepth ?? null;
     drawn.valleyMist = this.mill?.valleyMist ?? null;

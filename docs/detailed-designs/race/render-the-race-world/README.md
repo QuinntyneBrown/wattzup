@@ -1290,3 +1290,18 @@ The existing world registry entry describes the red-dirt training road. Map Sele
 As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
 
 The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
+
+## Holi in Jaipur (#2143)
+
+The legacy race follows the sprint class through the shared road renderer. Preserve its workout and progression while giving the gates, festival and palace a position along the course. Map Select supplies the original GCN plan to Race Setup. The lazy authored-course renderer loads the same-origin Jaipur GLB and its arc-length profile. Race time owns the dancers, throws and traffic on both rendering backends.
+
+| Rider position | Real and game references | What reads at riding speed |
+| --- | --- | --- |
+| Sanganeri Gate, 0.08 km | Real 01, 05, 11 and game 01 | Recess the arched opening and keep daylight visible through it. Place the first pavement stains and low shop roofs ahead. |
+| Johari Bazaar, 1.36 km | Real 03, 10, 12–14 and game 05 | A repeating pink arcade follows the bend. Broken white linework, fabric awnings and goods distinguish shops while their undersides stay in shadow. |
+| Hawa Mahal, 2.92 km | Real 06, 12–13 and game 04 | Five narrowing tiers of projecting windows read across the street. Deeper oriels and domes break the silhouette above the roofline. |
+| Festival crowd, 4.58 km | Real 02, 04, 07–09, 15 and games 02–03 | Give revellers staggered throws and visible arm movement. Overlapping translucent powder grows above the throw, drifts and clears, leaving the centre line visible. |
+| Market traffic, 6.21 km | Real 03, 07, 10, 14 and game 01 | An auto-rickshaw has a small front wheel, open sides and canopy. Keep moving traffic, parked scooters and resting cattle at distinct depths. |
+| Chandpole, 8.12 km | Real 01, 05, 11–13 and games 04–05 | Chhatris stand clear of the shop parapets. Behind the second city gate the fort follows a fixed ridge in the spring haze. |
+
+Batch the arcades and road wear by distance and bake shadow into recesses. Use shared actor geometry, a bounded pool of powder puffs and a single race clock. Release the pool, its materials and any generated textures on exit. Match Caribana’s fixed skyline and animate only where the rider can see the result. Compare six HUD-visible views at matched distances. Measure submitted frames, p95, worst interval, peak calls and advancing distance on the opening and the busiest market stretch after nine seconds of warm-up.

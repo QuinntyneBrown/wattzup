@@ -1,3 +1,4 @@
+import jaipurElevation from './jaipur-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3585,6 +3586,54 @@ export const itenCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 60, 24, 110),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const jaipurCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'holi-in-jaipur',
+  name: 'Holi in Jaipur',
+  routeName: 'Johari Bazaar',
+  place: 'Jaipur, Rajasthan',
+  world: 'jaipur',
+  distanceKm: 8.625,
+  climbingM: 57,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: jaipurElevation,
+  },
+  thumbnailUrl: 'maps/holi-in-jaipur.jpg',
+  photoUrl: 'maps/holi-in-jaipur-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 16, 85),
+      seg('recover', 60, 13, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 45, 10, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 45, 10, 80),
+      seg('work', 15, 24, 100),
+      seg('recover', 45, 10, 80),
+      seg('work', 120, 18, 85),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 120, 18, 85),
+      seg('work', 45, 24, 100),
+      seg('recover', 15, 10, 80),
+      seg('work', 45, 24, 100),
+      seg('recover', 15, 10, 80),
+      seg('work', 45, 24, 100),
+      seg('recover', 105, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 120, 10, 80),
     ],
   },
 };
