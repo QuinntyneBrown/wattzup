@@ -1624,3 +1624,18 @@ The existing class already rides a wet boulevard, with Atlantic surf on the left
 | Brickell across the bay, 8.06 km | Real 07–08 and 12. Games 01, 03 and 05. | The boulevard opens toward illuminated Brickell and downtown tower silhouettes. Royal palms and streetlight halos frame the rider against the bay. |
 
 Use the Colony’s central blade, Breakwater’s steps and the Carlyle’s curved corner as the foreground equivalents of Caribana’s recognisable skyline. Put separate rows of umbrellas, palm trunks, beach furniture and surf between the rider and the horizon. Tie the wet streaks to their hotel signs and break them up with asphalt grain. Batch static detail into roadside sections, with fixed buildings and bounded moving car, surf and steam geometry. Release all owned geometry, materials and textures on leaving. Measure the submitted frames through Colony and Breakwater after warm-up. Credits are in docs/worlds/miami/SOURCES.md. The Miami title search returned #2164.
+
+## Moab Slickrock (#2165)
+
+The legacy scene supplies fierce sunlight and a winding road. The race catalogue lacks the native map and the six fixed views. Assemble a class-length interpretation of the Highway 128 and Arches landscapes. Keep the original Hurt Locker intervals and bend rhythm. Load the course from the maps API through the native world loader at race entry.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Highway 128 river canyon, 0.08 km | Real 01–02, 04–06 and 10. Games 01 and 03. | The double yellow line follows the Colorado River between dark Wingate walls. A gap in the canyon opens onto the snow-dusted La Sal Mountains. |
+| Slickrock trailhead, 2.18 km | Real 03, 10–11 and 13. Games 02 and 05. | Two mountain bikers roll over a rounded Navajo sandstone dome off the tarmac. Twisted juniper, sagebrush and dark soil crust mark the trailhead. |
+| Balanced Rock and fins, 4.32 km | Real 08–09 and 13. Games 01 and 03. | Balanced Rock’s large rounded cap meets a narrow pedestal beside the layered Organ fins. Recesses stay dark against the orange sunlit walls. |
+| The Windows, 6.52 km | Real 03, 13–15. Games 02, 04 and 05. | The North Window opens through a thick sandstone fin, framing a second pinnacle. Pale cross-bedded rock and a dark arch underside reveal its depth. |
+| Delicate Arch bowl, 9.24 km | Real 07, 12 and 14. Games 03–04. | A freestanding asymmetrical arch rises from the curved slickrock bowl. Its broad foot and slender opposite leg frame the sky, with the La Sals behind it. |
+| La Sal overlook, 12.28 km | Real 01, 06–08 and 10–12. Games 01, 04 and 05. | The final bends pass low sage and glowing red-orange benches. Snow on distant La Sal summits catches the remaining light beyond the desert. |
+
+Anchor the rock formations in course coordinates and the La Sal skyline in the distance. Give each arch genuine open space under its lintel and asymmetric supports. Separate the bedding and vertical joints in Wingate walls from wind-carved Navajo domes. Bake recess shade into the geometry and use bounded trail riders, river ripples and dust on the race clock. Release all scene resources when the rider leaves. Compare the opening and the busiest landmark against Caribana’s submitted-frame benchmark. Commit a3b75bcdf restored all 15 real photographs, five game views and the credits in docs/worlds/moab/SOURCES.md. The Moab title search returned #2165.

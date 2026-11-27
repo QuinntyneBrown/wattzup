@@ -171,6 +171,7 @@ import type { StCharlesParade } from './st-charles-parade';
 import type { MaunaKeaSummit } from './mauna-kea-summit';
 import type { MerceFestival } from './merce-festival';
 import type { OceanDrive } from './ocean-drive';
+import type { MoabTrail } from './moab-trail';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -397,6 +398,7 @@ export class CourseRenderer implements WorldRenderer {
   private maunaKeaSummit: MaunaKeaSummit | null = null;
   private merceFestival: MerceFestival | null = null;
   private oceanDrive: OceanDrive | null = null;
+  private moabTrail: MoabTrail | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1260,6 +1262,21 @@ export class CourseRenderer implements WorldRenderer {
         this.oceanDrive = drive;
         this.scene.add(drive.root);
         this.disposables.push(drive);
+      }
+      if (this.course.file.id === 'moab') {
+        const { MoabTrail } = await import('./moab-trail');
+        if (this.disposed) return false;
+        const trail = await MoabTrail.load(this.course, body);
+        if (this.disposed) {
+          trail.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.moabTrail = trail;
+        this.scene.add(trail.root);
+        this.disposables.push(trail);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -2212,6 +2229,9 @@ export class CourseRenderer implements WorldRenderer {
       const summit = this.course?.file.id === 'maunakea';
       const sunsetStart = summit ? 20_000 : bay ? 19_500 : 14_300;
       const sunsetLength = summit ? 5_300 : bay ? 7900 : 5050;
+      const desert = this.course?.file.id === 'moab';
+      const sunsetStart = desert ? 7700 : bay ? 19_500 : 14_300;
+      const sunsetLength = desert ? 5850 : bay ? 7900 : 5050;
       const progress = Math.max(0, Math.min(1, (metres - sunsetStart) / sunsetLength));
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
@@ -2246,6 +2266,7 @@ export class CourseRenderer implements WorldRenderer {
     this.maunaKeaSummit?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.merceFestival?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.oceanDrive?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.moabTrail?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2429,6 +2450,7 @@ export class CourseRenderer implements WorldRenderer {
     this.maunaKeaSummit = null;
     this.merceFestival = null;
     this.oceanDrive = null;
+    this.moabTrail = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2525,7 +2547,7 @@ export class CourseRenderer implements WorldRenderer {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
-    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea')
+    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab')
       this.evening = eveningUniform();
     const clearValley = this.course!.file.id === 'engadin';
     const fogRange = this.dam
@@ -2701,6 +2723,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.maunaKeaSummit) Object.assign(materials, this.maunaKeaSummit.materials);
     if (this.merceFestival) Object.assign(materials, this.merceFestival.materials);
     if (this.oceanDrive) Object.assign(materials, this.oceanDrive.materials);
+    if (this.moabTrail) Object.assign(materials, this.moabTrail.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3298,6 +3321,7 @@ export class CourseRenderer implements WorldRenderer {
     this.maunaKeaSummit?.sightline(metres, this.camera.position, ahead);
     this.merceFestival?.sightline(metres, this.camera.position, ahead);
     this.oceanDrive?.sightline(metres, this.camera.position, ahead);
+    this.moabTrail?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -3852,6 +3876,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.maunaKeaSummit) Object.assign(drawn, this.maunaKeaSummit.report());
     if (this.merceFestival) Object.assign(drawn, this.merceFestival.report());
     if (this.oceanDrive) Object.assign(drawn, this.oceanDrive.report());
+    if (this.moabTrail) Object.assign(drawn, this.moabTrail.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

@@ -1660,3 +1660,8 @@ import miami as _miami
 
 THEMES['miami'] = _miami.THEME
 SCENERY['miami'] = _miami.scenery
+
+import moab as _moab
+
+THEMES['moab'] = _moab.THEME
+SCENERY['moab'] = _moab.scenery

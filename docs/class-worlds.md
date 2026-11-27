@@ -107,6 +107,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Mauna Kea (`maunakea`) | 60 Minutes of Brutal Power (GCN Training, 60:00) | 25.825 km | 2037 m | `public/courses/maunakea.glb` ([ride views](screenshots/mauna-kea/README.md)) | Built and ridden; open from the start on the map catalogue |
 | La Mercè, Barcelona (`merce`) | 90 On 30 Off Intervals (GCN Training, 29:55) | 12.817 km | 21 m | `public/courses/merce.glb` ([ride views](screenshots/la-merce-barcelona/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Miami Neon Nights (`miami`) | Ride to the Beat (GCN Training, 20:00) | 8.398 km | 9 m | `public/courses/miami.glb` ([ride views](screenshots/miami-neon-nights/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Moab Slickrock (`moab`) | The Hurt Locker (GCN Training, 30:00) | 12.900 km | 261 m | `public/courses/moab.glb` ([ride views](screenshots/moab-slickrock/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
