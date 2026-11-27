@@ -157,6 +157,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Stanley Park Seawall (`stanleypark`) | 15 Minute Beginner Session (GCN Training, 15:00) | 6.200 km | 31 m | `public/courses/stanleypark.glb` ([ride views](screenshots/stanley-park-seawall/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Great St Bernard Pass (`stbernard`) | Climb Time: Boost Your Climbing Power (GCN Training, 40:00) | 17.413 km | 871 m | `public/courses/stbernard.glb` ([ride views](screenshots/great-st-bernard-pass/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Stelvio Pass (`stelvio`) | Conquer the Climb (GCN Training, 20:00) | 8.175 km | 630 m | `public/courses/stelvio.glb` ([ride views](screenshots/stelvio-pass/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Mongolian Steppe (`steppe`) | Un-Paced Efforts (GCN Training, 45:00) | 19.150 km | 131 m | `public/courses/steppe.glb` ([ride views](screenshots/mongolian-steppe/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

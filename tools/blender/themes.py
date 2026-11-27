@@ -1905,3 +1905,8 @@ import stelvio as _stelvio
 
 THEMES['stelvio'] = _stelvio.THEME
 SCENERY['stelvio'] = _stelvio.scenery
+
+import steppe as _steppe
+
+THEMES['steppe'] = _steppe.THEME
+SCENERY['steppe'] = _steppe.scenery

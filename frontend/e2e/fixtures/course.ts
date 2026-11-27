@@ -71,6 +71,7 @@ import stampedeElevation from './stampede-elevation.json';
 import stanleyparkElevation from './stanleypark-elevation.json';
 import stbernardElevation from './stbernard-elevation.json';
 import stelvioElevation from './stelvio-elevation.json';
+import steppeElevation from './steppe-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6618,6 +6619,47 @@ export const stelvioCourseMap = {
       seg('work', 30, 22, 90),
       seg('recover', 60, 18, 80),
       seg('cool-down', 60, 10, 80),
+    ],
+  },
+};
+
+export const steppeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mongolian-steppe',
+  name: 'Mongolian Steppe',
+  routeName: 'The steppe track',
+  place: 'Khentii, Mongolia',
+  world: 'steppe',
+  distanceKm: 19.15,
+  climbingM: 131,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: steppeElevation,
+  },
+  thumbnailUrl: 'maps/mongolian-steppe.jpg',
+  photoUrl: 'maps/mongolian-steppe-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 360, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 180, 16, 85),
+      seg('work', 30, 21, 90),
+      seg('work', 30, 10, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 180, 16, 85),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 18, 85),
+      seg('work', 180, 24, 100),
+      seg('recover', 240, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 240, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 120, 13, 80),
+      seg('recover', 120, 18, 85),
+      seg('cool-down', 120, 10, 80),
     ],
   },
 };

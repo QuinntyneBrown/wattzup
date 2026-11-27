@@ -2421,3 +2421,18 @@ The original scene paints the wall of hairpins and fixes its horizon as the ride
 | Passo dello Stelvio summit, 8.05 km | Real 10, 11 and 14. Games 01 and 05. | The last numbered tornante opens below the pale yellow summit hotel, sausage stand and souvenir shops. The 2,757 m sign and snowfields remain visible past the finish. |
 
 Set the station and number of each physical turn from the same course geometry used by its sign. Fit the ground between adjacent traverses. Keep the Ortler massif fixed and use distance-limited sections for wall stones, larches, lettering and stalls. Animate the fellow rider, motorbike and camper on ride time. Dispose their meshes and shared material maps on exit. Retain the historical captures alongside six matched rider views, with one-minute measurements in the forest and at the upper wall. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Mongolian Steppe (#2218)
+
+Use the original eighteen class stages to place the rises and hollows of the grass track. The distant rolling ridge stays fixed in world space while nearby wheel ruts split and rejoin. The five game references guide the size of nearby objects and the space above the rider; the credited photos guide the landscape and architecture.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Branching double-track, 0.12 km | Real 01–04. Games 01 and 03. | Twin strips of pale gravel cut across the grass. An older pair branches off and rejoins over the rise. The broad horizon stays open between the rider and the blue hills. |
+| Ger camp, 3.16 km | Real 05, 06 and 14. Games 02 and 05. | A cluster of round white felt gers sits below a ridge. Roof poles, low chimneys, dark binding ropes and orange timber doors read against the grass. |
+| Running horses, 6.55 km | Real 09, 10 and 15. Games 01 and 03. | Stocky dun and brown horses with short upright manes run beside the rider. Their legs lift in staggered groups, then the herd crosses the far track. |
+| Ovoo cairn, 9.74 km | Real 07, 08 and 13. Games 01 and 04. | Irregular stone piles rise beside the crest. Blue khadag scarves flutter on the poles; far below, tracks diverge across a treeless river valley. |
+| Herders and livestock, 13.42 km | Real 09–13. Games 02 and 05. | A mounted herder in a deel collects sheep, goats and shaggy yaks off the track. Small wildflowers and gravel pick out the near verge. |
+| Evening grassland, 18.74 km | Real 03, 05, 13–15. Games 01 and 05. | Low warm light stretches the horse and ger shadows across the grass. The silhouettes of the hills remain fixed below the clouds. |
+
+Use the same grade for the track, ger platforms and mounted actors. Keep felt roofs, rope bands and the stone cairn in distance-limited geometry. Bound the galloping herd, grazing flock and moving scarves; tie movement and cloud shadow to ride time. Release their buffers, geometry and textures on exit. Compare six matched captures and measure submitted frames in the opening and beside the moving horses. See ADRs 0021, 0023, 0030, 0034 and 0035.
