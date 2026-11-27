@@ -2376,3 +2376,18 @@ Keep the thirteen-stage GCN class and use its resistance changes for the grade. 
 | Stampede Park midway, 12.65 km | Real 10–13 and 15. Games 01 and 04. | A Ferris wheel turns over striped food booths and flags. The high prairie sun casts short shadows across the closing straight. |
 
 Batch distant hats, railings and canopy supports; keep the four articulated horses and their wagon near the rider. Advance their legs, the float axle and the wheel on ride time. Bake dirt ruts, storefront wear and recessed shadows into the low-tier surfaces. Release section buffers, atlas textures and moving assemblies on exit. Compare six matching rider captures and measure one minute at each tablet station. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Stanley Park Seawall (#2215)
+
+Preserve the earlier graded pavement lettering, sea to the right and sequence of landmarks from feedback #910. Use the 15-minute class to define the 6.2 km ride and its changes of grade. Keep the North Shore, offshore rocks and bridge fixed in world space.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Seawall cycle path, 0.10 km | Real 01, 03 and 14. Games 01 and 04. | A white line and bicycle markings follow the camber of the narrow path above coursed stone. The footpath and dark tidal rocks face open water on the right, with cedars inland. |
+| Brockton Point poles, 1.09 km | Real 07 and 08. Games 01 and 04. | A break in the cedar wall reveals tall painted wooden poles of different heights in the clearing. Visitors gather on the path below the broad wings. |
+| Brockton Point light, 2.04 km | Real 01, 02 and 10. Games 01 and 05. | The squat white lighthouse has a broad red band and lantern on its headland. A sailor trims the boom on a boat just off the seawall. |
+| Burrard Inlet, 3.22 km | Real 04–06, 10 and 11. Games 02 and 03. | A freighter moves across cool blue water in front of successive forested North Shore ridges. Kelp, tide pools and wet stones mark the waterline. |
+| Siwash Rock, 4.48 km | Real 03, 09, 12 and 14. Games 01 and 05. | A solitary tree leans over a weathered sea stack with a narrow base amid surf and boulders. Waves rise and fall below the basalt cliff on the other side of the path. |
+| Lions Gate Bridge, 5.91 km | Real 02, 04–06, 10, 11, 13 and 15. Games 02, 03 and 05. | The green lattice suspension towers, stiffening truss and vertical hangers grow over the rider on the closing sprint; mountains show through the open steelwork. |
+
+Give the suspension deck depth, carry its cable down to the anchored ends and brace both tower legs. Use paired crossed cutouts for the red cedars and original cliff surface artwork. Batch rocks and rough stone coping in culled road sections. Update the boom, ship and tidal wash from ride time and release all textures, meshes and animation state on exit. Retain the existing bend comparison alongside six matched views. See ADRs 0021, 0023, 0030, 0034 and 0035.

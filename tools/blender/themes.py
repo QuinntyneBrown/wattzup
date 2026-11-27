@@ -1890,3 +1890,8 @@ import stampede as _stampede
 
 THEMES['stampede'] = _stampede.THEME
 SCENERY['stampede'] = _stampede.scenery
+
+import stanleypark as _stanleypark
+
+THEMES['stanleypark'] = _stanleypark.THEME
+SCENERY['stanleypark'] = _stanleypark.scenery

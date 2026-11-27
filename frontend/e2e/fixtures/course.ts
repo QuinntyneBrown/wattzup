@@ -68,6 +68,7 @@ import skyeElevation from './skye-elevation.json';
 import songkranElevation from './songkran-elevation.json';
 import southbeachElevation from './southbeach-elevation.json';
 import stampedeElevation from './stampede-elevation.json';
+import stanleyparkElevation from './stanleypark-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6492,6 +6493,41 @@ export const stampedeCourseMap = {
       seg('work', 300, 24, 100),
       seg('recover', 60, 10, 80),
       seg('cool-down', 60, 13, 80),
+    ],
+  },
+};
+
+export const stanleyparkCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'stanley-park-seawall',
+  name: 'Stanley Park Seawall',
+  routeName: 'Stanley Park Seawall',
+  place: 'Vancouver, British Columbia',
+  world: 'stanleypark',
+  distanceKm: 6.2,
+  climbingM: 31,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: stanleyparkElevation,
+  },
+  thumbnailUrl: 'maps/stanley-park-seawall.jpg',
+  photoUrl: 'maps/stanley-park-seawall-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 10, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 16, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 16, 85),
+      seg('work', 120, 18, 85),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 16, 85),
+      seg('cool-down', 60, 10, 80),
     ],
   },
 };
