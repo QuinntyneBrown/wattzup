@@ -142,6 +142,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Route 66 Desert (`route66`) | High Power Tempo With Short Sprints (GCN Training, 20:00) | 8.000 km | 115 m | `public/courses/route66.glb` ([ride views](screenshots/route-66-desert/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Saguaro Desert (`saguaro`) | Burn Fat Fast (GCN, 24:40) | 10.748 km | 203 m | `public/courses/saguaro.glb` ([ride views](screenshots/saguaro-desert/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Rio Sambadrome (`sambadrome`) | 15-Minute Smash Fest (GCN Training, 15:00) | 6.300 km | 9 m | `public/courses/sambadrome.glb` ([ride views](screenshots/rio-sambadrome/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Santa Monica Pier (`santamonica`) | 20 Minute Cardio: Lose Weight Fast (GCN Training, 20:00) | 8.850 km | 4 m | `public/courses/santamonica.glb` ([ride views](screenshots/santa-monica-pier/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

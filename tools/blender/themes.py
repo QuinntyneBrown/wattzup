@@ -1836,3 +1836,7 @@ import sambadrome as _sambadrome
 
 THEMES['sambadrome'] = _sambadrome.THEME
 SCENERY['sambadrome'] = _sambadrome.scenery
+
+import santamonica as _santamonica
+THEMES['santamonica']=_santamonica.THEME
+SCENERY['santamonica']=_santamonica.scenery

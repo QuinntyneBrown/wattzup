@@ -1,0 +1,103 @@
+{
+  "id": "santamonica",
+  "name": "Santa Monica Pier",
+  "world": "santamonica",
+  "theme": "santamonica",
+  "seed": 2202,
+  "layout": 0,
+  "class": {
+    "id": "20-minute-cardio-lose-weight-fast",
+    "title": "20 Minute Cardio: Lose Weight Fast",
+    "channel": "GCN Training",
+    "videoId": "IZ8gAXI9pwM",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      }
+    ]
+  }
+}

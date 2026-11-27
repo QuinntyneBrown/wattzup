@@ -64,6 +64,11 @@ export interface CourseFile {
       readonly shore: readonly (readonly [number, number])[];
     }[];
   };
+  readonly pacificPark?: {
+    readonly wheelCentre: readonly [number, number, number];
+    readonly wheelRadius: number;
+    readonly track: readonly (readonly [number, number, number])[];
+  };
   readonly headland?: {
     readonly lookouts: readonly number[];
     readonly surf: readonly (readonly [number, number, number])[];

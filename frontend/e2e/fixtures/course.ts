@@ -55,6 +55,7 @@ import romeElevation from './rome-elevation.json';
 import route66Elevation from './route66-elevation.json';
 import saguaroElevation from './saguaro-elevation.json';
 import sambadromeElevation from './sambadrome-elevation.json';
+import santamonicaElevation from './santamonica-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5996,6 +5997,43 @@ export const sambadromeCourseMap = {
       seg('work', 30, 21, 70),
       seg('recover', 30, 18, 90),
       seg('cool-down', 120, 11, 90),
+    ],
+  },
+};
+
+export const santamonicaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'santa-monica-pier',
+  name: 'Santa Monica Pier',
+  routeName: 'the beach path',
+  place: 'Santa Monica, California',
+  world: 'santamonica',
+  distanceKm: 8.85,
+  climbingM: 4,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: santamonicaElevation,
+  },
+  thumbnailUrl: 'maps/santa-monica-pier.jpg',
+  photoUrl: 'maps/santa-monica-pier-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 180, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('work', 120, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('work', 120, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 24, 100),
     ],
   },
 };
