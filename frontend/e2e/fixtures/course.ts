@@ -45,6 +45,7 @@ import penllechElevation from './penllech-elevation.json';
 import pikeplaceElevation from './pikeplace-elevation.json';
 import playgroundElevation from './playground-elevation.json';
 import pragueElevation from './prague-elevation.json';
+import poggioElevation from './poggio-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5527,6 +5528,44 @@ export const pragueCourseMap = {
       seg('work', 120, 21, 90),
       seg('recover', 60, 24, 100),
       seg('cool-down', 180, 12, 80),
+    ],
+  },
+};
+
+export const poggioCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'the-poggio',
+  name: 'The Poggio',
+  routeName: 'The coast road to San Remo',
+  place: 'Sanremo, Italy',
+  world: 'poggio',
+  distanceKm: 11.55,
+  climbingM: 179,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: poggioElevation,
+  },
+  thumbnailUrl: 'maps/the-poggio.jpg',
+  photoUrl: 'maps/the-poggio-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 16, 80),
+      seg('work', 180, 19, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 19, 80),
+      seg('recover', 180, 16, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 22, 80),
+      seg('recover', 180, 18, 80),
+      seg('work', 30, 22, 100),
+      seg('cool-down', 300, 12, 80),
     ],
   },
 };

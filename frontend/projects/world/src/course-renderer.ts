@@ -197,6 +197,7 @@ import type { HarlechWeather } from './harlech-weather';
 import type { ElliottMarket } from './elliott-market';
 import type { ParkActivity } from './park-activity';
 import type { VltavaVisitors } from './vltava-visitors';
+import type { RivieraRace } from './riviera-race';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -449,6 +450,7 @@ export class CourseRenderer implements WorldRenderer {
   private elliottMarket: ElliottMarket | null = null;
   private parkActivity: ParkActivity | null = null;
   private vltavaVisitors: VltavaVisitors | null = null;
+  private rivieraRace: RivieraRace | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1700,6 +1702,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(visitors.root);
         this.disposables.push(visitors);
       }
+      if (this.course.file.id === 'poggio') {
+        const { RivieraRace } = await import('./riviera-race');
+        if (this.disposed) return false;
+        const riviera = await RivieraRace.load(this.course);
+        if (this.disposed) {
+          riviera.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.rivieraRace = riviera;
+        this.scene.add(riviera.root);
+        this.disposables.push(riviera);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2726,6 +2743,7 @@ export class CourseRenderer implements WorldRenderer {
     this.elliottMarket?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.parkActivity?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.vltavaVisitors?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.rivieraRace?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2935,6 +2953,7 @@ export class CourseRenderer implements WorldRenderer {
     this.elliottMarket = null;
     this.parkActivity = null;
     this.vltavaVisitors = null;
+    this.rivieraRace = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -3233,6 +3252,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.elliottMarket) Object.assign(materials, this.elliottMarket.materials);
     if (this.parkActivity) Object.assign(materials, this.parkActivity.materials);
     if (this.vltavaVisitors) Object.assign(materials, this.vltavaVisitors.materials);
+    if (this.rivieraRace) Object.assign(materials, this.rivieraRace.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3859,6 +3879,7 @@ export class CourseRenderer implements WorldRenderer {
     this.elliottMarket?.sightline(metres, this.camera.position, ahead);
     this.parkActivity?.sightline(metres, this.camera.position, ahead);
     this.vltavaVisitors?.sightline(metres, this.camera.position, ahead);
+    this.rivieraRace?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4439,6 +4460,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.elliottMarket) Object.assign(drawn, this.elliottMarket.report());
     if (this.parkActivity) Object.assign(drawn, this.parkActivity.report());
     if (this.vltavaVisitors) Object.assign(drawn, this.vltavaVisitors.report());
+    if (this.rivieraRace) Object.assign(drawn, this.rivieraRace.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

@@ -2014,3 +2014,18 @@ The Royal Way follows an extended sequence of central Prague streets for the his
 | Hradčany overlook, 21.18 km | Real 09–12, 14 and 15. Games 02, 04 and 05. | The St Vitus spires and a long palace wing stand above a terrace. Red tile roofs, a verdigris dome and the river remain visible below the final ramp. |
 
 Use a fan-shaped granite sett pattern scaled to the lane and a finer mosaic on each pavement. Keep open arches under the deck, stone plinths between pedestrians and the parapet, and let the rider see the river on both sides. The cathedral is a fixed group of spires and nave, with palace wings and smaller roof rows below. Use ride time for the excursion boat, swan and drifting bubbles. Reuse materials and release all resources on leaving the course. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/prague/SOURCES.md.
+
+## The Poggio (#2190)
+
+Along the opening Aurelia the Ligurian Sea is on the rider’s left. Climb away from it through glasshouses on terraces, crest beside the church, then lose the elevation on a physically winding descent toward the Via Roma straight.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| SS1 Aurelia, 0.08 km | Real 03, 04, 08, 10 and 15. Games 02 and 05. | The coast road runs between green-shuttered Riviera houses and a stone seawall. Canary palms and a palm-shadowed zebra crossing break up the seafront. |
+| Capo headlands, 1.84 km | Real 05–07, 11 and 14. Games 04 and 05. | The capes overlap over the Ligurian Sea. An arched road tunnel pierces the nearest rocky spur, with moving whitewash at its foot. |
+| Flower terraces, 4.82 km | Real 01, 02, 06 and 12. Games 01 and 03. | A blue sign points to Poggio on the narrow climbing road. Switchbacks turn between retaining walls, glasshouses and terraces of carnations. |
+| Summit church, 7.15 km | Real 02, 09, 12 and 13. Games 01 and 02. | Pastel walls frame the church front, campanile and clock. Tifosi lean over temporary rails and wave Italian flags at the summit. |
+| Walled descent, 8.38 km | Real 01, 05, 11, 12 and 14. Games 03 and 05. | A tight descending bend passes a rough stone wall. Behind the outside rail three coastal ridges fall away toward the water. |
+| Via Roma sprint, 11.41 km | Real 03, 08–10 and 15. Games 02–04. | The final straight narrows between barriers and shuttered shops. Dense spectators and flags line the finish gantry, with painted finish markings under the arch. |
+
+Keep the headlands fixed in world space and show gaps between ridges. Break up the glasshouse roofs with repeated ribs and rows of flowers. Use a local mesh for the campanile and individual rows of shops on Via Roma. Animate whitewash, a summit tricolore and finish pennants on the ride clock. Share materials and release the course resources on exit. Compare both sampling locations with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/poggio/SOURCES.md.

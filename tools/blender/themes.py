@@ -1781,3 +1781,8 @@ import prague as _prague
 
 THEMES['prague'] = _prague.THEME
 SCENERY['prague'] = _prague.scenery
+
+import poggio as _poggio
+
+THEMES['poggio'] = _poggio.THEME
+SCENERY['poggio'] = _poggio.scenery
