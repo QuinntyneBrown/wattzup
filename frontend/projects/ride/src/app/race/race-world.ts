@@ -74,7 +74,7 @@ export class RaceWorld {
     void import('@telo/world').then(({ WorldScene, WorldMusicPlayer }) => {
       if (destroyed) return;
       if (['bluemountains', 'ghent', 'velodrome'].includes(this.map().world)) {
-        if (['bluemountains', 'ghent', 'valais'].includes(this.map().world)), doc);
+        if (['bluemountains', 'ghent', 'valais'].includes(['bluemountains', 'ghent', 'yosemite'].includes(this.map().world)), doc);
         doc.addEventListener('visibilitychange', onVisibility);
         music.set(new WorldMusicPlayer(() => doc.createElement('audio'), doc));
       }
@@ -107,6 +107,20 @@ export class RaceWorld {
         return;
       }
       const metres = this.raceMetres();
+      if (this.map().world === 'yosemite') {
+        const proximity = Math.max(
+          0,
+          1 - Math.abs(metres - 9670) / 310,
+          0.56 * (1 - Math.abs(metres - 4850) / 190),
+        );
+        const audible = proximity > 0 && this.settings().worldMusic && this.running() && visible();
+        if (audible) {
+          player.load('yosemite', 'music/yosemite-falls.ogg');
+          player.setVolume(0.64 * proximity);
+        }
+        player.sync(audible);
+        return;
+      }
       const pasture = this.map().world === 'valais';
       const distance = pasture
         ? Math.min(Math.abs(metres - 205), Math.abs(metres - 6730))

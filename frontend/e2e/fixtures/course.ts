@@ -105,6 +105,7 @@ import westminsterElevation from './westminster-elevation.json';
 import winnatsElevation from './winnats-elevation.json';
 import wicklowElevation from './wicklow-elevation.json';
 import zoncolanElevation from './zoncolan-elevation.json';
+import yosemiteElevation from './yosemite-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -8053,6 +8054,47 @@ export const zoncolanOvaroCourseMap = {
       seg('recover', 120, 11, 80),
       seg('work', 15, 21, 100),
       seg('cool-down', 135, 12, 80),
+    ],
+  },
+};
+
+export const yosemiteValleyCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'yosemite-valley',
+  name: 'Yosemite Valley',
+  routeName: 'Northside Drive',
+  place: 'California, United States',
+  world: 'yosemite',
+  distanceKm: 13.15,
+  climbingM: 18,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: yosemiteElevation,
+  },
+  thumbnailUrl: 'maps/yosemite-valley.jpg',
+  photoUrl: 'maps/yosemite-valley-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 18, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 24, 90),
+      seg('recover', 120, 11, 90),
+      seg('work', 120, 24, 90),
+      seg('recover', 120, 11, 90),
+      seg('work', 120, 24, 90),
+      seg('recover', 120, 11, 90),
+      seg('work', 120, 24, 90),
+      seg('recover', 120, 11, 90),
+      seg('work', 120, 24, 90),
+      seg('recover', 120, 11, 90),
+      seg('work', 120, 24, 90),
+      seg('cool-down', 120, 11, 80),
     ],
   },
 };

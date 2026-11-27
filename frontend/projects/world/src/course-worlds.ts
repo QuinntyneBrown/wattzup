@@ -90,6 +90,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   winnats: 'courses/winnats',
   wicklow: 'courses/wicklow',
   zoncolan: 'courses/zoncolan',
+  yosemite: 'courses/yosemite',
   iten: 'courses/iten',
   jaipur: 'courses/jaipur',
   joshuatree: 'courses/joshuatree',

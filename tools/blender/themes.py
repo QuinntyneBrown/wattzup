@@ -2075,3 +2075,8 @@ import zoncolan as _zoncolan
 
 THEMES['zoncolan'] = _zoncolan.THEME
 SCENERY['zoncolan'] = _zoncolan.scenery
+
+import yosemite as _yosemite
+
+THEMES['yosemite'] = _yosemite.THEME
+SCENERY['yosemite'] = _yosemite.scenery

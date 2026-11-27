@@ -2911,3 +2911,16 @@ Trace the normal Race entry to its catalogue profile and lazily loaded GLB. Mode
 | Painted galleries, 9.70 km | Real 01, 03–06 and games 02, 03 | Three short galleries interrupt the road. Light falls across original cycling murals and the open exits. |
 | Carnic high pasture, 10.91 km | Real 03–07, 13, 14 and games 01, 04 | Cows graze above a guardrail. Switchbacks cut across grassy pasture under the jagged Carnic skyline. |
 | Summit race crowd, 12.18 km | Real 01–04, 13–15 and games 03, 05 | Fans and flags fill grassy banks around tents at the finish, leaving the racing line clear. |
+
+### Yosemite Valley (#2252)
+
+Place the granite landmarks as separate, grounded masses rather than a single picture. El Capitan needs a tall near-vertical face and buttress, Half Dome a rounded crown cut by a sheer vertical plane. Shape both from their distinctive silhouettes. Place Bridalveil on the opposite wall, with a thin windblown ribbon, and Yosemite Falls in two drops separated by a shelf. Share the ride clock between their moving water, river, shuttle and local waterfall sound. Keep pine and cedar foregrounds at road scale and clear the approaches to the named views. References 01–02 are Southside Drive photographs used for roadside character. Use the normal Race catalogue, route asset and low-tier renderer, with bounded motion and teardown on exit.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Northside Drive, 0.14 km | Real 01–04, 12 and games 02, 04 | The one-way road runs through ponderosa and incense cedar, with a park shuttle beside a signed pullout. |
+| El Capitan Meadow, 2.90 km | Real 04–06, 11, 12 and games 02, 03 | Split rails bound an open meadow under El Capitan’s sheer pale wall. Climbers appear as tiny flecks. |
+| Bridalveil Fall, 4.82 km | Real 06, 08, 11 and games 01, 04 | Across the valley a thin white fall bends from its lip toward the trees. |
+| Merced and Swinging Bridge, 6.91 km | Real 06, 10, 13, 14 and games 03, 05 | Green water and pale sand flank the bridge, below the high granite walls. |
+| Yosemite Falls, 9.64 km | Real 07, 12, 13 and games 01, 05 | Upper and lower falls are separated by a rock shelf. Spray hangs at their feet. |
+| Half Dome outlook, 12.74 km | Real 03, 09, 11, 15 and games 02, 03 | The sliced face and curved crown of Half Dome glow above a meadow and shady pine foreground. |

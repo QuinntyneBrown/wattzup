@@ -258,6 +258,7 @@ import type { WestminsterTraffic } from './westminster-traffic';
 import type { WinnatsGorge } from './winnats-gorge';
 import type { WicklowWeather } from './wicklow-weather';
 import type { CarnicAscent } from './carnic-ascent';
+import type { YosemiteFalls } from './yosemite-falls';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -638,6 +639,7 @@ export class CourseRenderer implements WorldRenderer {
   private winnats: WinnatsGorge | null = null;
   private wicklow: WicklowWeather | null = null;
   private zoncolan: CarnicAscent | null = null;
+  private yosemite: YosemiteFalls | null = null;
   private mountain: ManxMountain | null = null;
   private rush: JunkanooRush | null = null;
   private vents: KilaueaVents | null = null;
@@ -2781,6 +2783,20 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(valley.root);
         this.disposables.push(valley);
       }
+      if (this.course.file.id === 'yosemite') {
+        const { YosemiteFalls } = await import('./yosemite-falls');
+        if (this.disposed) return false;
+        const valley = await YosemiteFalls.load(this.course, this.tier === 0);
+        if (this.disposed) {
+          valley.dispose();
+          return false;
+        }
+        this.yosemite = valley;
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(valley.root);
+        this.disposables.push(valley);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -3876,6 +3892,7 @@ export class CourseRenderer implements WorldRenderer {
     this.winnats?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.wicklow?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.zoncolan?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.yosemite?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -4088,6 +4105,7 @@ export class CourseRenderer implements WorldRenderer {
     this.winnats = null;
     this.wicklow = null;
     this.zoncolan = null;
+    this.yosemite = null;
     this.mountain = null;
     this.rush = null;
     this.vents = null;
@@ -4244,7 +4262,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal' || this.northShoreSurf || this.buenosAiresTraffic || this.wiesnParade || this.lasseterRoadTrain || this.course!.file.id === 'songkran')
       this.evening = eveningUniform();
-    const clearValley = ['engadin', 'tempelhof'].includes(['engadin', 'teotihuacan'].includes(['engadin', 'timessquare'].includes(['engadin', 'toronto'].includes(['engadin', 'tremola'].includes(['engadin', 'tourmalet'].includes(['engadin', 'trollstigen'].includes(['engadin', 'tulips'].includes(['engadin', 'utrecht'].includes(['engadin', 'valais'].includes(['engadin', 'valparaiso'].includes(['engadin', 'vegas'].includes(['engadin', 'veleta'].includes(['engadin', 'velodrome'].includes(['engadin', 'venice'].includes(['engadin', 'ventoux'].includes(['engadin', 'verona'].includes(['engadin', 'victoria'].includes(['engadin', 'vienna'].includes(['engadin', 'westminster'].includes(['engadin', 'winnats'].includes(['engadin', 'wicklow'].includes(['engadin', 'zoncolan'].includes(this.course!.file.id) || this.course!.file.id === 'teide' || this.course!.file.id === 'tamalpais';
+    const clearValley = ['engadin', 'tempelhof'].includes(['engadin', 'teotihuacan'].includes(['engadin', 'timessquare'].includes(['engadin', 'toronto'].includes(['engadin', 'tremola'].includes(['engadin', 'tourmalet'].includes(['engadin', 'trollstigen'].includes(['engadin', 'tulips'].includes(['engadin', 'utrecht'].includes(['engadin', 'valais'].includes(['engadin', 'valparaiso'].includes(['engadin', 'vegas'].includes(['engadin', 'veleta'].includes(['engadin', 'velodrome'].includes(['engadin', 'venice'].includes(['engadin', 'ventoux'].includes(['engadin', 'verona'].includes(['engadin', 'victoria'].includes(['engadin', 'vienna'].includes(['engadin', 'westminster'].includes(['engadin', 'winnats'].includes(['engadin', 'wicklow'].includes(['engadin', 'zoncolan'].includes(['engadin', 'yosemite'].includes(this.course!.file.id) || this.course!.file.id === 'teide' || this.course!.file.id === 'tamalpais';
     const fogRange = this.dam
       ? ([450, 4200] as const)
       : this.course!.file.id === 'calobra'
@@ -4438,6 +4456,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.winnats) Object.assign(materials, this.winnats.materials);
     if (this.wicklow) Object.assign(materials, this.wicklow.materials);
     if (this.zoncolan) Object.assign(materials, this.zoncolan.materials);
+    if (this.yosemite) Object.assign(materials, this.yosemite.materials);
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
     if (this.rush) Object.assign(materials, this.rush.materials);
     if (this.caldera) Object.assign(materials, this.caldera.materials);
@@ -4583,8 +4602,8 @@ export class CourseRenderer implements WorldRenderer {
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
       if ((((((((((((((((((
-        (((((((((((((((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) || this.surfers) || this.sydneyharbour) || this.teide) || this.tamalpais) || this.tahoe) || this.telaviv) || this.tempelhof) || this.teotihuacan) || this.timessquare) &&
-        (group === 'Sun' || (this.timessquare || this.toronto) || this.tremola) || this.tourmalet) || this.trollstigen) || this.tulips) || this.utrecht) || this.valais) || this.valparaiso) || this.vegas) || this.veleta) || this.velodrome) || this.venice) || this.ventoux) || this.verona) || this.victoria) || this.vienna) || this.westminster) || this.winnats) || this.wicklow) || this.zoncolan) && group === 'Moon'))
+        ((((((((((((((((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) || this.surfers) || this.sydneyharbour) || this.teide) || this.tamalpais) || this.tahoe) || this.telaviv) || this.tempelhof) || this.teotihuacan) || this.timessquare) &&
+        (group === 'Sun' || (this.timessquare || this.toronto) || this.tremola) || this.tourmalet) || this.trollstigen) || this.tulips) || this.utrecht) || this.valais) || this.valparaiso) || this.vegas) || this.veleta) || this.velodrome) || this.venice) || this.ventoux) || this.verona) || this.victoria) || this.vienna) || this.westminster) || this.winnats) || this.wicklow) || this.zoncolan) || this.yosemite) && group === 'Moon'))
       )
         mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
@@ -5137,6 +5156,7 @@ export class CourseRenderer implements WorldRenderer {
     this.winnats?.frameView(metres, this.camera.position, ahead);
     this.wicklow?.frameView(metres, this.camera.position, ahead);
     this.zoncolan?.frameView(metres, this.camera.position, ahead);
+    this.yosemite?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -5780,6 +5800,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.winnats) Object.assign(drawn, this.winnats.report());
     if (this.wicklow) Object.assign(drawn, this.wicklow.report());
     if (this.zoncolan) Object.assign(drawn, this.zoncolan.report());
+    if (this.yosemite) Object.assign(drawn, this.yosemite.report());
     if (this.mountain) Object.assign(drawn, this.mountain.report());
     if (this.rush) Object.assign(drawn, this.rush.report());
     if (this.vents) Object.assign(drawn, this.vents.report());
