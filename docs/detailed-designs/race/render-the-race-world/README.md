@@ -1714,3 +1714,18 @@ The class supplies the original workout, 45-degree bends and resistance-driven c
 | Sherman Adams summit, 12.31 km | Real 01–02 and 08–10. Games 02–05. | Spectators ring cowbells at the final steep wall below the visitor centre. The cylindrical observatory tower and low stone Tip-Top House stand above the boulder field. |
 
 Anchor the Presidential Range behind a steep Great Gulf. Keep the road free of guardrails, weather the shoulder, step from deciduous canopies to spruce to krummholz and end with low talus. Align the cog locomotive, coach and trestle to the same inclined track. Shape the Sherman Adams building, instrument tower and Tip-Top House separately. Bound steam, cloud and spectator motion by visibility and drive it with race time. Section static detail and release course resources on exit. Compare the forest and summit to Caribana. Credits are in docs/worlds/mountwashington/SOURCES.md. The title search returned #2170.
+
+## Día de Muertos Parade (#2171)
+
+The class supplies the original plan and a straight, gently rolling boulevard. Its shared scene lacks the landmark and parade. Place a fixed winged Ángel, Reforma’s towers and layered trees behind the moving foreground. Preserve the original four-degree bends over 300 metres, keeping an open racing lane between the floats and the crowd.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Paseo de la Reforma, 0.08 km | Real 01–02, 12 and 14. Games 01–03. | A broad racing lane runs between marigold beds, mature trees, glass towers and lamps. The gilded Ángel glows above the boulevard. |
+| Giant catrinas, 1.44 km | Real 04–09. Games 02–03 and 05. | Tall papier-mâché skeleton puppets in vivid dresses sway above the rail. A painted-face crowd gathers beneath the brim of the Catrina’s hat. |
+| Monarch dancers, 2.68 km | Real 03–04, 08 and 13. Games 03–04. | Monarch dancers lift their veined orange wings over the marigold median. The road remains open between fans and performers. |
+| Ángel de la Independencia, 3.96 km | Real 01–02, 12 and 14. Games 01, 03 and 05. | A winged gold figure crowns the fluted stone column beyond the flower-filled roundabout. Bronze statuary and the lit steps give its base scale. |
+| Alebrije float and lowriders, 5.52 km | Real 06–07, 09–11 and 15. Games 02–04. | An illuminated alebrije floats above a rolling platform, followed by a lowrider. Spectators in calavera make-up fill the pavement. |
+| Papel picado at night, 7.47 km | Real 02, 05, 10–11, 13 and 15. Games 01–03. | Cut-paper flags arc across the avenue above lamps and warm float lights. Lit towers stand beyond the darker street trees. |
+
+Use the photographs for costume silhouettes, float proportions, boulevard width and night lighting. Keep the marigold beds and stands tied to the terrain. Advance puppet sway, monarch wings and rolling floats from the race clock. Give the papel picado real cut-outs, share flower and crowd geometry, cull street sections and release all loaded art on exit. Compare the opening and alebrije procession to Caribana. Credits are in docs/worlds/muertos/SOURCES.md. The title search returned #2171.

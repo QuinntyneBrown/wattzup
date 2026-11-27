@@ -26,6 +26,7 @@ import montmartreElevation from './montmartre-elevation.json';
 import montrealElevation from './montreal-elevation.json';
 import montroyalElevation from './montroyal-elevation.json';
 import mountwashingtonElevation from './mountwashington-elevation.json';
+import muertosElevation from './muertos-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4744,6 +4745,44 @@ export const mountWashingtonCourseMap = {
       seg('work', 180, 18, 85),
       seg('recover', 180, 21, 90),
       seg('cool-down', 180, 11, 80),
+    ],
+  },
+};
+
+export const muertosCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'dia-de-muertos-parade',
+  name: 'Día de Muertos Parade',
+  routeName: 'Paseo de la Reforma',
+  place: 'Ciudad de México, México',
+  world: 'muertos',
+  distanceKm: 8,
+  climbingM: 23,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: muertosElevation,
+  },
+  thumbnailUrl: 'maps/dia-de-muertos-parade.jpg',
+  photoUrl: 'maps/dia-de-muertos-parade-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 90, 21, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 90, 21, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 22, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 60, 21, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 120, 21, 80),
+      seg('cool-down', 90, 11, 80),
     ],
   },
 };

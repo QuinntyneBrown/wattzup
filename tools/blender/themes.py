@@ -1690,3 +1690,8 @@ import mountwashington as _mountwashington
 
 THEMES['mountwashington'] = _mountwashington.THEME
 SCENERY['mountwashington'] = _mountwashington.scenery
+
+import muertos as _muertos
+
+THEMES['muertos'] = _muertos.THEME
+SCENERY['muertos'] = _muertos.scenery

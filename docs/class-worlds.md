@@ -113,6 +113,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Montreal Jazz Fest (`montreal`) | High Intensity, Short Rest (GCN Training, 22:03) | 9.695 km | 17 m | `public/courses/montreal.glb` ([ride views](screenshots/montreal-jazz-fest/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Mont Royal (`montroyal`) | Progressive Intervals: Steps to Glory (GCN Training, 60:00) | 25.490 km | 571 m | `public/courses/montroyal.glb` ([ride views](screenshots/mont-royal/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Mount Washington Auto Road (`mountwashington`) | The Climb (GCN Training, 30:00) | 12.725 km | 1453 m | `public/courses/mountwashington.glb` ([ride views](screenshots/mount-washington-auto-road/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Día de Muertos Parade (`muertos`) | Spicy Maximum Minute Efforts (GCN Training, 20:00) | 8.000 km | 23 m | `public/courses/muertos.glb` ([ride views](screenshots/dia-de-muertos-parade/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
