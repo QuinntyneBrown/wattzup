@@ -2807,3 +2807,16 @@ Keep the pier rooted in the coast and the bike path independent of the wider ped
 | Venice Art Walls, 3.81 km | Real 08–09, 12 and games 01, 04 | Original painted concrete walls step down to the sand. Buskers play beside benches and strolling spectators. |
 | Lifeguard tower, 5.11 km | Real 02, 10, 14–15 and game 02 | A raised blue lifeguard tower faces breaking Pacific surf beyond broad sand. The mountains recede into summer haze. |
 | Santa Monica Pier, 6.77 km | Real 13–15 and games 02, 04 | The Pacific Park wheel turns above the timber pier, with the coaster rails and the wooden piles visible along the waterline. |
+
+### Mont Ventoux (#2244)
+
+Fit the climb from the forest below Chalet Reynard to the 1,910 m crest to the class's 8.395 km. Weight the successive gradients by the stage resistance and retain 615 m of total climbing. Root the observatory and mast at the summit and keep their silhouette visible across lower switchbacks. Model the Chalet terrace, memorial steps, stone wall and yellow-capped bornes. Use original rock and panorama artwork, merge roadside forms in track sections, animate the cyclists, cloth and fans on the ride clock and dispose of their resources on leaving the race.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Lower cedar road, 0.14 km | Real 07–09 and games 01, 03 | A pair of amateur cyclists climb between cedar and pine. The shade ends sharply above the junction. |
+| Chalet Reynard, 1.72 km | Real 01, 09, 11–12 and game 01 | The broad wooden restaurant and its terrace stand at the fork. The striped summit mast rises beyond the treeline. |
+| Limestone scree, 3.32 km | Real 01–05, 11 and games 02, 05 | The white D974 edges curve across pale broken limestone. Painted encouragement remains visible on the tarmac. |
+| Mistral shelter, 4.94 km | Real 04, 10, 13, 15 and games 02–03 | A flag snaps behind a low wall. Beyond the winding road, Provence fields, the Vaucluse hills and distant Alps fill the view. |
+| Tom Simpson memorial, 6.83 km | Real 03, 06, 14 and games 01, 04 | The granite stele rises above its stone steps with a portrait plaque, bottles and caps at the foot. Passing riders stand on their pedals. |
+| Summit observatory, 8.22 km | Real 01–02, 05, 10–12, 15 and games 04–05 | The cream weather station and red-white mast stand on the ridge behind the summit sign. Supporters applaud the final turn. |

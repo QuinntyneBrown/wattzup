@@ -1,0 +1,73 @@
+{
+  "id": "ventoux",
+  "name": "Mont Ventoux",
+  "world": "ventoux",
+  "theme": "ventoux",
+  "seed": 2244,
+  "layout": 0,
+  "class": {
+    "id": "in-and-out-of-the-saddle-hill-climb-reps",
+    "title": "In & Out of the Saddle Hill Climb Reps",
+    "channel": "GCN Training",
+    "videoId": "-ujldbw4rYY",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 93
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

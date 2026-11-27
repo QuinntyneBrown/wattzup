@@ -183,6 +183,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Pico Veleta (`veleta`) | 55 Minute FTP Threshold Intervals (GCN, 56:00) | 25.250 km | 1258 m | `public/courses/veleta.glb` ([ride views](screenshots/pico-veleta/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Lee Valley Velodrome (`velodrome`) | Spin to Win Cadence Session (GCN Training, 20:00) | 8.725 km | 0 m | `public/courses/velodrome.glb` ([ride views](screenshots/lee-valley-velodrome/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Venice Beach Boardwalk (`venice`) | 10 On 20 Off Max Sprints (GCN Training, 17:00) | 6.950 km | 4 m | `public/courses/venice.glb` ([ride views](screenshots/venice-beach-boardwalk/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Mont Ventoux (`ventoux`) | In & Out of the Saddle Hill Climb Reps (GCN Training, 20:00) | 8.395 km | 615 m | `public/courses/ventoux.glb` ([ride views](screenshots/mont-ventoux/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

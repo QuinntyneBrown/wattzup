@@ -2035,3 +2035,8 @@ import venice as _venice
 
 THEMES['venice'] = _venice.THEME
 SCENERY['venice'] = _venice.scenery
+
+import ventoux as _ventoux
+
+THEMES['ventoux'] = _ventoux.THEME
+SCENERY['ventoux'] = _ventoux.scenery

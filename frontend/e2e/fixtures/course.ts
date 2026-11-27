@@ -97,6 +97,7 @@ import vegasElevation from './vegas-elevation.json';
 import veletaElevation from './veleta-elevation.json';
 import velodromeElevation from './velodrome-elevation.json';
 import veniceElevation from './venice-elevation.json';
+import ventouxElevation from './ventoux-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7736,6 +7737,38 @@ export const veniceBeachCourseMap = {
       seg('recover', 20, 10, 80),
       seg('work', 10, 24, 90),
       seg('cool-down', 140, 10, 80),
+    ],
+  },
+};
+
+export const ventouxCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mont-ventoux',
+  name: 'Mont Ventoux',
+  routeName: 'Chalet Reynard',
+  place: 'Vaucluse, France',
+  world: 'ventoux',
+  distanceKm: 8.395,
+  climbingM: 615,
+  rating: 'Brutal',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: ventouxElevation,
+  },
+  thumbnailUrl: 'maps/mont-ventoux.jpg',
+  photoUrl: 'maps/mont-ventoux-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 120, 16, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 120, 21, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 120, 21, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 180, 21, 93),
+      seg('cool-down', 180, 10, 80),
     ],
   },
 };
