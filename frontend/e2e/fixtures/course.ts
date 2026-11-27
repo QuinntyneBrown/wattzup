@@ -81,6 +81,7 @@ import sydneyharbourElevation from './sydneyharbour-elevation.json';
 import teideElevation from './teide-elevation.json';
 import tamalpaisElevation from './tamalpais-elevation.json';
 import tahoeElevation from './tahoe-elevation.json';
+import telavivElevation from './telaviv-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7039,6 +7040,42 @@ export const tahoeCourseMap = {
       seg('work', 120, 19, 90),
       seg('work', 30, 24, 100),
       seg('cool-down', 240, 10, 80),
+    ],
+  },
+};
+
+export const telAvivCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'tel-aviv-promenade',
+  name: 'Tel Aviv Promenade',
+  routeName: 'The Tayelet',
+  place: 'Tel Aviv, Israel',
+  world: 'telaviv',
+  distanceKm: 10.7,
+  climbingM: 2,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: telavivElevation,
+  },
+  thumbnailUrl: 'maps/tel-aviv-promenade.jpg',
+  photoUrl: 'maps/tel-aviv-promenade-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 90),
+      seg('work', 30, 24, 110),
+      seg('recover', 180, 13, 90),
+      seg('work', 30, 24, 110),
+      seg('recover', 180, 13, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 13, 90),
+      seg('work', 30, 24, 90),
+      seg('recover', 180, 13, 90),
+      seg('work', 30, 24, 80),
+      seg('recover', 180, 13, 90),
+      seg('work', 30, 24, 70),
+      seg('cool-down', 180, 13, 80),
     ],
   },
 };

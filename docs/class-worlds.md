@@ -167,6 +167,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Mount Teide (`teide`) | Build Your FTP & Increase Muscle Mass (GCN Training, 30:00) | 13.500 km | 375 m | `public/courses/teide.glb` ([ride views](screenshots/mount-teide/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Mount Tamalpais (`tamalpais`) | 30 Minute Hill Climb Training (GCN, 30:13) | 12.149 km | 634 m | `public/courses/tamalpais.glb` ([ride views](screenshots/mount-tamalpais/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Lake Tahoe (`tahoe`) | Sandwich Max Efforts (GCN Training, 45:00) | 19.750 km | 128 m | `public/courses/tahoe.glb` ([ride views](screenshots/lake-tahoe/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Tel Aviv Promenade (`telaviv`) | 30 Second Sprint Intervals (GCN Training, 24:00) | 10.700 km | 2 m | `public/courses/telaviv.glb` ([ride views](screenshots/tel-aviv-promenade/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

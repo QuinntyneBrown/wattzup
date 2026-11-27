@@ -1955,3 +1955,8 @@ import tahoe as _tahoe
 
 THEMES['tahoe'] = _tahoe.THEME
 SCENERY['tahoe'] = _tahoe.scenery
+
+import telaviv as _telaviv
+
+THEMES['telaviv'] = _telaviv.THEME
+SCENERY['telaviv'] = _telaviv.scenery

@@ -2571,3 +2571,18 @@ The original TahoeStreet repeats 360 m of shoreline. Retain its clear summer lig
 | East Shore pines, 19.38 km | Real 01, 02, 06 and 15. Games 01, 03 and 04. | Tall Jeffrey and sugar pines shade a needle-covered shoulder. A yellow curve sign stands against the forest and the lake opens between branches. |
 
 Use the Caribana skyline technique for the fixed Sierra rim. Place dimensional boulders at the waterline and vary pine trunks and crowns along the road. Grade the water from clear shallow sand to deep blue according to distance from the shore. Batch the static roadside objects, keep the paddle, water and hull animations bounded and release the assets on exit. Compare six rider views, then measure submitted frames for sixty seconds on low/WebGL2 at the highway and marina. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Tel Aviv Promenade (#2228)
+
+The existing seafront preset supplies the warm light. The Race catalogue resolves tel-aviv-promenade to telaviv and loads the 10.70 km authored course from the world library. Place the pool and sailboats near the northern start, the courts and cafés on distinct beaches, and the Jaffa headland at the southern end.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Herbert Samuel promenade, 0.12 km | Real 01–05 and 07. Games 01 and 03. | The red bike lane passes circles of cream and brown stone. Date palms cast long shadows between the path and the white hotel balconies. |
+| Gordon Pool and marina, 2.08 km | Real 04, 07, 12 and 15. Games 01 and 02. | Lane ropes stripe an open-air swimming pool. Masts and bobbing sailboats rise beyond its fence inside the rock breakwater. |
+| Frishman Beach courts, 4.25 km | Real 06, 08 and 09. Games 02 and 04. | A volleyball crosses a net on the sand while a pair plays matkot nearer the water. Ochre lifeguard huts and tall lamps overlook the courts. |
+| Beachfront cafés, 6.47 km | Real 01, 03, 09, 10 and 14. Games 01, 03 and 05. | Timber shade pergolas, parasols, sunbeds and café tables face the sea. White apartment and hotel towers rise behind the palms. |
+| Banana Beach, 8.36 km | Real 09–14. Games 03 and 04. | Turquoise surf breaks over warm sand as the setting sun reflects on the Mediterranean. The stone Jaffa headland marks the southern end of the coast. |
+| Old Jaffa, 10.41 km | Real 10–13. Games 02 and 05. | The clock tower, St Peter’s bell tower and stepped sandstone buildings stand above the beach ahead, behind benches and promenade lamps. |
+
+Keep Caribana’s fixed skyline and animate a small group in the near field. Tile the stone circles at walking scale, keep the shore and breakwaters continuous and layer the coastal town behind the beach. Group the hotel elevations, palms and shade shelters by course section. Share the court, sailboat and foam materials, animate from ride time and release every course resource on exit. Compare six reference positions. Count submitted frames and advancing distance in both sixty-second benchmarks. See ADRs 0021, 0023, 0030, 0034 and 0035.
