@@ -1715,3 +1715,8 @@ import northshore as _northshore
 
 THEMES['northshore'] = _northshore.THEME
 SCENERY['northshore'] = _northshore.scenery
+
+import nottinghill as _nottinghill
+
+THEMES['nottinghill'] = _nottinghill.THEME
+SCENERY['nottinghill'] = _nottinghill.scenery

@@ -1789,3 +1789,18 @@ Rider feedback in #912 asks to preserve the existing look and feel. Compare six 
 | Kahuku shrimp trucks, 8.49 km | Real 02, 03, 07 and 12. Games 03 and 05. | Shrimp trucks face a gravel pullout. Written signatures surround the serving hatch, customers queue and picnic benches sit in palm shade. |
 
 Keep the crest of Waimea’s swell below the highway and give Pipeline a curling lip that moves sideways along the breaker. Build the food truck serving opening, palms, picnic tables and shoreline rock at rider scale. Compare the opening street and queue with Caribana. Share roadside materials and release all animated geometry on exit. Reference credits are in docs/worlds/northshore/SOURCES.md.
+
+## Notting Hill Carnival (#2176)
+
+Place the London streetscape around the original ten-degree bends over 150 metres. The avenue’s street trees, stucco bays, railings and concrete flyover establish London before the carnival artists and floats enter view. Preserve the complete GCN Quick HIIT Workout.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Ladbroke Grove, 0.08 km | Real 01, 04, 13 and 15. Games 01, 03 and 04. | Plane trees frame a broad curve between London terraces. Kerbside crowds leave an open riding line through the August street party. |
+| Feathered mas band, 1.04 km | Real 02, 05–09. Games 02 and 04. | Red and gold plumes turn beside turquoise and magenta wings. Riders pass between the edge of the band and the crowd barriers. |
+| Corner sound system, 2.13 km | Real 01–04, 09 and 10. Games 02 and 05. | A stack of bass bins and horns faces Ladbroke Grove from the corner. Caribbean flags hang from the balconies and spectators film from the kerb. |
+| Steel pan float, 3.09 km | Real 03, 09–11. Games 02 and 03. | A flatbed carries polished steel pans on racks, players and overhead bunting through pastel terraces. Confetti and powder mark the road below. |
+| Westway flyover, 4.37 km | Real 01, 04, 13 and 15. Games 01 and 05. | The broad concrete deck crosses above the road on paired supports. The riders move from August sun into its shade and back out to the procession. |
+| Jerk grills and food stalls, 5.61 km | Real 04, 10–12 and 14. Games 01 and 03. | Thin smoke curls up from a split drum grill. Caribbean flags brighten the stall awnings and whistle-blowing spectators stand beside the serving tables. |
+
+Model the open speaker mouths, band headdresses, steel pan bowls and the underside of the flyover. Reuse crowd geometry and animate the nearest performers, float and grill smoke from elapsed race time. Release scene-owned assets on exit. Compare the opening and pan float with Caribana. The reference credits are in docs/worlds/nottinghill/SOURCES.md.

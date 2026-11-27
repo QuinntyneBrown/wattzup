@@ -31,6 +31,7 @@ import mulhollandElevation from './mulholland-elevation.json';
 import murdehuyElevation from './murdehuy-elevation.json';
 import napaElevation from './napa-elevation.json';
 import northshoreElevation from './northshore-elevation.json';
+import nottinghillElevation from './nottinghill-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4962,6 +4963,50 @@ export const northShoreCourseMap = {
       seg('recover', 30, 10, 85),
       seg('work', 30, 24, 100),
       seg('cool-down', 212, 11, 80),
+    ],
+  },
+};
+
+export const nottingHillCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'notting-hill-carnival',
+  name: 'Notting Hill Carnival',
+  routeName: 'Notting Hill Carnival',
+  place: 'London, England',
+  world: 'nottinghill',
+  distanceKm: 5.933,
+  climbingM: 87,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: nottinghillElevation,
+  },
+  thumbnailUrl: 'maps/notting-hill-carnival.jpg',
+  photoUrl: 'maps/notting-hill-carnival-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 40, 19, 80),
+      seg('recover', 20, 11, 80),
+      seg('work', 40, 19, 80),
+      seg('recover', 20, 11, 80),
+      seg('work', 40, 21, 90),
+      seg('recover', 20, 11, 80),
+      seg('work', 40, 21, 90),
+      seg('recover', 20, 11, 80),
+      seg('work', 40, 21, 90),
+      seg('recover', 20, 11, 80),
+      seg('work', 40, 22, 95),
+      seg('recover', 20, 11, 80),
+      seg('work', 40, 22, 95),
+      seg('recover', 20, 11, 80),
+      seg('work', 40, 22, 100),
+      seg('recover', 20, 11, 80),
+      seg('work', 40, 22, 100),
+      seg('recover', 20, 11, 80),
+      seg('work', 60, 24, 100),
+      seg('cool-down', 105, 11, 80),
     ],
   },
 };
