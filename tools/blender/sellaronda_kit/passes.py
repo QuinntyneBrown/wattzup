@@ -28,6 +28,17 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["gold"].box(kit.P(idx, 7.15, -(kit.kerb + 2.38), 2.38), (0.34, 0.06, 0.34), yaw)
         # Pitched larch shingle weather-hood cap over the summit board
         kit.gable(B["larch-aged"], kit.P(idx, 6.0, -(kit.kerb + 2.5), 3.03), 3.55, 0.68, 0.38, yaw)
+        # Approach-facing pass board on a pair of roadside posts. The original col marker
+        # and its memorial stay in place at the photo pull-out.
+        from iten_landmarks import picture
+        lateral = -(kit.kerb + 2.7)
+        for offset in (-1.42, 1.42):
+            B["larch-aged"].box(kit.P(idx, -12, lateral + offset, -0.4), (0.15,0.16,3.9), yaw)
+        B["larch-warm"].box(kit.P(idx,-12,lateral,1.45), (0.12,3.7,1.85), yaw)
+        corners = [kit.P(idx,-12.08,lateral + offset,h) for offset,h in
+                   ((1.83,1.47),(-1.83,1.47),(-1.83,3.28),(1.83,3.28))]
+        u, v = (p_idx % 2)*0.5, 0.5 - (p_idx // 2)*0.5
+        picture(B["RondaPassPlates"],corners,((u,v),(u+0.5,v),(u+0.5,v+0.5),(u,v+0.5)))
         # Opposite-side secondary direction & altitude fingerpost
         B["steel"].box(kit.P(idx, -4.0, kit.kerb + 2.1, 0.0), (0.11, 0.11, 2.75), yaw)
         B["ladin-blue"].box(kit.P(idx, -4.0, kit.kerb + 2.1, 2.35), (1.65, 0.08, 0.34), yaw + 0.35)

@@ -42,6 +42,7 @@ import type { chichenPlaza } from './chichen-plaza';
 import type { PacificPark } from './pacific-park';
 import type { SeaPointPromenade } from './sea-point-promenade';
 import type { SellaClimb } from './sella-climb';
+import type { SellaRondaRide } from './sella-ronda-ride';
 import type { ConeyBoardwalk } from './coney-boardwalk';
 import type { copacabanaPromenade } from './copacabana-promenade';
 import type { CopacabanaBeach } from './copacabana-beach';
@@ -284,6 +285,11 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   SellaForest: 970,
   SellaRifugi: 1050,
   PassSigns: 440,
+  RondaLarches: 1150,
+  RondaRoad: 810,
+  RondaMeadow: 2300,
+  RondaInns: 610,
+  RondaPassPlates: 470,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -426,6 +432,7 @@ export class CourseRenderer implements WorldRenderer {
   private pacificPark: PacificPark | null = null;
   private seaPoint: SeaPointPromenade | null = null;
   private sellaClimb: SellaClimb | null = null;
+  private sellaRonda: SellaRondaRide | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -1950,6 +1957,18 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(detail.root);
         this.disposables.push(detail);
       }
+      if (this.course.file.id === 'sellaronda') {
+        const { SellaRondaRide } = await import('./sella-ronda-ride');
+        if (this.disposed) return false;
+        const detail = await SellaRondaRide.load(this.course);
+        if (this.disposed) {
+          detail.dispose();
+          return false;
+        }
+        this.sellaRonda = detail;
+        this.scene.add(detail.root);
+        this.disposables.push(detail);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2898,6 +2917,7 @@ export class CourseRenderer implements WorldRenderer {
     this.pacificPark?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.seaPoint?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.sellaClimb?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.sellaRonda?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
       const bay = this.course?.file.id === 'bayofislands';
@@ -3103,6 +3123,7 @@ export class CourseRenderer implements WorldRenderer {
       if (mesh.isMesh) mesh.geometry.dispose();
     });
     this.boardwalk?.group.removeFromParent();
+    this.sellaRonda = null;
     this.boardwalk = null;
     this.pacificPark = null;
     this.seaPoint = null;
@@ -3525,6 +3546,7 @@ export class CourseRenderer implements WorldRenderer {
     Object.assign(materials, this.pacificPark?.materials);
     Object.assign(materials, this.seaPoint?.materials);
     Object.assign(materials, this.sellaClimb?.materials);
+    Object.assign(materials, this.sellaRonda?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -4109,6 +4131,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.stCharlesParade?.sightline(metres, this.camera.position, ahead);
     this.marktSquare?.furniture.sightline(metres, this.camera.position, ahead);
+    this.sellaRonda?.frameView(metres, this.camera.position, ahead);
     this.mountain?.frameView(metres, this.camera.position, ahead);
     this.rush?.sightline(metres, this.camera.position, ahead);
     this.vents?.sightline(metres, this.camera.position, ahead);
@@ -4656,6 +4679,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.torchAngle = this.fringe?.torchAngle ?? null;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    if (this.sellaRonda) Object.assign(drawn, this.sellaRonda.report());
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
     if (this.pacificPark) Object.assign(drawn, this.pacificPark.report());
     if (this.seaPoint) Object.assign(drawn, this.seaPoint.report());

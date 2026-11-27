@@ -69,6 +69,12 @@ export interface CourseFile {
     readonly wheelRadius: number;
     readonly track: readonly (readonly [number, number, number])[];
   };
+  readonly rifugioFlags?: readonly {
+    readonly station: number;
+    readonly position: readonly [number, number, number];
+    readonly yaw: number;
+    readonly pattern: number;
+  }[];
   readonly headland?: {
     readonly lookouts: readonly number[];
     readonly surf: readonly (readonly [number, number, number])[];

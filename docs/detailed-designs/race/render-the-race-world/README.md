@@ -2226,3 +2226,18 @@ The catalogue selects the single Passo Sella climb, 11.6375 km, independently of
 | Passo Sella summit, 11.58 km | Real 05–07 and 14. Games 01 and 02. | A summit sign reads Passo Sella / Sellajoch 2244 m beside the rifugio. Timber balconies, the gravel forecourt and white road edge remain visible against the mountains. |
 
 Reference signs show 2240 m and several historical names. Use the issue’s required bilingual 2244 m label with the proportions and painted finish of real-05 and real-06. Real-03 and real-09 inform regional road and stone character. Sample the same centre-line elevation in the HUD. Merge fixed scenery by distance, keep distant cliffs visible on Low and advance nearby road traffic and grazing poses on the ride clock. Release scene assets on exit. Measure opening and upper samples as specified in meet-performance-budgets. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Sella Ronda (#2205)
+
+The existing native Sella Ronda is the baseline. Retain its class, sampled centre line, four distinct cols, sculpted limestone massif, regional villages, cableways and paraglider orbits. The API currently describes 11.7 km and 357 m, while the native course measures 11.65 km and 364 m. Align catalogue and HUD elevation to the measured course.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Corvara approach, 0.20 km | Real 03, 11 and 13. Games 02 and 05. | The road approaches Corvara’s church and timber balconies beneath the massif. A group of cyclists leaves the village ahead of the rider. |
+| Passo Campolongo, 2.06 km | Real 03, 04, 06 and 07. Games 02 and 03. | The first col has a signed roadside refuge, a mown pasture and a ski-lift line rising clear of the roofs. |
+| Arabba valley, 3.08 km | Real 03, 13 and 15. Games 02 and 05. | The plunge into Arabba ends at village windows and a church tower. The next ribbon of climbing tarmac can be traced against the meadow. |
+| Passo Pordoi, 4.90 km | Real 09, 10, 12 and 15. Games 01 and 04. | The numbered Pordoi switchbacks climb to the pass refuge. Sass Pordoi and the snow streaks of Marmolada rise on opposite horizons. |
+| Passo Sella approach, 7.44 km | Real 01, 06, 08, 11 and 12. Games 02 and 04. | Sassolungo rises ahead on the open approach. The road then bends past the touring motorbike and the summit sign at the col. |
+| Passo Gardena, 10.10 km | Real 05–09 and 14. Games 03 and 05. | The last refuge and signed col lie among summer meadows above Selva. A banner moves in the wind beside the chapel and a chairlift traverses the slope. |
+
+Preserve the geometry in sellaronda_kit, including the fixed central rock faces. Add local road wear and stone detail, readable pass faces, articulated cyclists and a banking motorcycle moving along the sampled road. Run the cloth and riders on the same clock as the lifts, with bounded batches and owned geometry disposal. Use real-02 only for hairpin sightlines because its source identifies Mallorca. Maintain the existing best-time ghost, class timing, controls and finish. Measure foreground bunch and high-pass traffic independently on the simulated tablet. See ADRs 0021, 0023, 0030, 0034 and 0035.
