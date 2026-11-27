@@ -342,7 +342,6 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   LongWater: 1950,
   ParkTarmac: 740,
   ParkPavilion: 830,
-  ParkVisitors: 195,
   ChalkScarps: 4300,
   ChannelWater: 5500,
   CuckmereRiver: 1400,
@@ -362,7 +361,6 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Tokyo109: 480,
   TokyoWetRoad: 470,
   PaddockAtlas: 900,
-  CircuitBoards: 420,
   CircuitAsphalt: 580,
   SkyeRoad: 680,
   SkyeHeather: 165,
@@ -432,14 +430,6 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   TelAvivHotels: 1800,
   BerlinHorizon: 62000,
   TerminalBays: 1800,
-  BerlinHorizon: 62000,
-  TerminalBays: 1800,
-  BerlinHorizon: 62000,
-  TerminalBays: 1800,
-  BerlinHorizon: 62000,
-  TerminalBays: 1800,
-  BerlinHorizon: 62000,
-  TerminalBays: 1800,
   RaumaPeaks: 62000,
   Stigfossen: 1800,
   NorthFace: 5200,
@@ -501,6 +491,13 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Beams: 460,
   Leaves: 210,
   Confetti: 300,
+};
+
+/** A distance one course alone asks for, where another course draws a group of the same name. */
+const COURSE_DRAW_DISTANCE: Readonly<Record<string, Readonly<Record<string, number>>>> = {
+  southbeach: { OceanDrive: 330 },
+  serpentine: { ParkVisitors: 195 },
+  silverstone: { CircuitBoards: 420 },
 };
 /** The start lights are drawn until the rider is this many metres up the road. */
 const START_LIGHTS = 150;
@@ -3705,7 +3702,17 @@ export class CourseRenderer implements WorldRenderer {
     this.gardena?.at(frame.reducedMotion ? 0 : frame.time, metres);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
-    const standing = this.ride(you, metres, this.lasseterRoadTrain ? -1.45 : this.sevenMileChannel ? 2.65 : this.palouseHarvest ? 1.48 : 0);
+    const standing = this.ride(
+      you,
+      metres,
+      this.lasseterRoadTrain
+        ? -1.45
+        : this.sevenMileChannel
+          ? 2.65
+          : this.palouseHarvest
+            ? 1.48
+            : 0,
+    );
     // Every wheel on the road turns with the rider's: the riders keep much the same pace.
     this.kit?.roll(metres);
     this.marinaBoats?.follow(metres);
@@ -3773,31 +3780,24 @@ export class CourseRenderer implements WorldRenderer {
     this.skye?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boardwalk?.place(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.evening) {
-      const bay = this.course?.file.id === 'bayofislands';
-      const summit = this.course?.file.id === 'maunakea';
-      const sunsetStart = summit ? 20_000 : bay ? 19_500 : 14_300;
-      const sunsetLength = summit ? 5_300 : bay ? 7900 : 5050;
-      const desert = this.course?.file.id === 'moab';
-      const sunsetStart = desert ? 7700 : bay ? 19_500 : 14_300;
-      const sunsetLength = desert ? 5850 : bay ? 7900 : 5050;
-      const desert = this.course?.file.id === 'montroyal';
-      const sunsetStart = desert ? 7700 : bay ? 19_500 : 14_300;
-      const sunsetLength = desert ? 5850 : bay ? 7900 : 5050;
-      const [sunsetStart, sunsetLength] = this.northShoreSurf
-        ? [4400, 3300]
-        : bay
-          ? [19500, 7900]
-          : [14300, 5050];
-      const onset = this.wiesnParade ? 3900 : bay ? 19_500 : 14_300;
-      const span = this.wiesnParade ? 5900 : bay ? 7900 : 5050;
-      const start = this.lasseterRoadTrain ? 5600 : bay ? 19_500 : 14_300;
-      const span = this.lasseterRoadTrain ? 4200 : bay ? 7900 : 5050;
-      const progress = Math.max(0, Math.min(
-          1,
-          this.khaoSan
-            ? (metres - 5000) / 3900
-            : (metres - sunsetStart) / sunsetLength),
-        );
+      const id = this.course?.file.id;
+      const [sunsetStart, sunsetLength] =
+        id === 'maunakea'
+          ? [20_000, 5_300]
+          : id === 'moab' || id === 'montroyal'
+            ? [7700, 5850]
+            : this.northShoreSurf
+              ? [4400, 3300]
+              : this.wiesnParade
+                ? [3900, 5900]
+                : this.lasseterRoadTrain
+                  ? [5600, 4200]
+                  : this.khaoSan
+                    ? [5000, 3900]
+                    : id === 'bayofislands'
+                      ? [19_500, 7900]
+                      : [14_300, 5050];
+      const progress = Math.max(0, Math.min(1, (metres - sunsetStart) / sunsetLength));
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
       this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
@@ -4278,9 +4278,48 @@ export class CourseRenderer implements WorldRenderer {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
-    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal' || this.northShoreSurf || this.buenosAiresTraffic || this.wiesnParade || this.lasseterRoadTrain || this.course!.file.id === 'songkran')
+    if (
+      this.course!.file.id === 'beachroad' ||
+      this.course!.file.id === 'maunakea' ||
+      this.course!.file.id === 'moab' ||
+      this.course!.file.id === 'montroyal' ||
+      this.northShoreSurf ||
+      this.buenosAiresTraffic ||
+      this.wiesnParade ||
+      this.lasseterRoadTrain ||
+      this.course!.file.id === 'songkran'
+    )
       this.evening = eveningUniform();
-    const clearValley = ['engadin', 'tempelhof'].includes(['engadin', 'teotihuacan'].includes(['engadin', 'timessquare'].includes(['engadin', 'toronto'].includes(['engadin', 'tremola'].includes(['engadin', 'tourmalet'].includes(['engadin', 'trollstigen'].includes(['engadin', 'tulips'].includes(['engadin', 'utrecht'].includes(['engadin', 'valais'].includes(['engadin', 'valparaiso'].includes(['engadin', 'vegas'].includes(['engadin', 'veleta'].includes(['engadin', 'velodrome'].includes(['engadin', 'venice'].includes(['engadin', 'ventoux'].includes(['engadin', 'verona'].includes(['engadin', 'victoria'].includes(['engadin', 'vienna'].includes(['engadin', 'westminster'].includes(['engadin', 'winnats'].includes(['engadin', 'wicklow'].includes(['engadin', 'zoncolan'].includes(['engadin', 'yosemite'].includes(['engadin', 'winterlude'].includes(this.course!.file.id) || this.course!.file.id === 'teide' || this.course!.file.id === 'tamalpais';
+    const clearValley = [
+      'engadin',
+      'tempelhof',
+      'teotihuacan',
+      'timessquare',
+      'toronto',
+      'tremola',
+      'tourmalet',
+      'trollstigen',
+      'tulips',
+      'utrecht',
+      'valais',
+      'valparaiso',
+      'vegas',
+      'veleta',
+      'velodrome',
+      'venice',
+      'ventoux',
+      'verona',
+      'victoria',
+      'vienna',
+      'westminster',
+      'winnats',
+      'wicklow',
+      'zoncolan',
+      'yosemite',
+      'winterlude',
+      'teide',
+      'tamalpais',
+    ].includes(this.course!.file.id);
     const fogRange = this.dam
       ? ([450, 4200] as const)
       : this.course!.file.id === 'calobra'
@@ -4620,10 +4659,50 @@ export class CourseRenderer implements WorldRenderer {
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
-      if ((((((((((((((((((
-        (((((((((((((((((((((((this.mountain || this.caldera) || this.southBeachDrive) || this.hospiceRoad) || this.stelvio) || this.steppe) || this.dublin) || this.strade) || this.strasbourg) || this.maple) || this.surfers) || this.sydneyharbour) || this.teide) || this.tamalpais) || this.tahoe) || this.telaviv) || this.tempelhof) || this.teotihuacan) || this.timessquare) &&
-        (group === 'Sun' || (this.timessquare || this.toronto) || this.tremola) || this.tourmalet) || this.trollstigen) || this.tulips) || this.utrecht) || this.valais) || this.valparaiso) || this.vegas) || this.veleta) || this.velodrome) || this.venice) || this.ventoux) || this.verona) || this.victoria) || this.vienna) || this.westminster) || this.winnats) || this.wicklow) || this.zoncolan) || this.yosemite) || this.winterlude) && group === 'Moon'))
-      )
+      const ownSky = [
+        this.mountain,
+        this.caldera,
+        this.southBeachDrive,
+        this.hospiceRoad,
+        this.stelvio,
+        this.steppe,
+        this.dublin,
+        this.strade,
+        this.strasbourg,
+        this.maple,
+        this.surfers,
+        this.sydneyharbour,
+        this.teide,
+        this.tamalpais,
+        this.tahoe,
+        this.telaviv,
+        this.tempelhof,
+        this.teotihuacan,
+        this.timessquare,
+        this.toronto,
+        this.tremola,
+        this.tourmalet,
+        this.trollstigen,
+        this.tulips,
+        this.utrecht,
+        this.valais,
+        this.valparaiso,
+        this.vegas,
+        this.veleta,
+        this.velodrome,
+        this.venice,
+        this.ventoux,
+        this.verona,
+        this.victoria,
+        this.vienna,
+        this.westminster,
+        this.winnats,
+        this.wicklow,
+        this.zoncolan,
+        this.yosemite,
+        this.winterlude,
+      ].some(Boolean);
+      if ((ownSky && group === 'Sun') || (this.timessquare && group === 'Moon'))
         mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
@@ -4708,7 +4787,7 @@ export class CourseRenderer implements WorldRenderer {
             y: middle.y,
             z: middle.z,
             reach:
-              ((group === 'OceanDrive' && this.southBeachDrive ? 330 : DRAW_DISTANCE[group]) ?? 700) +
+              (COURSE_DRAW_DISTANCE[this.course!.file.id]?.[group] ?? DRAW_DISTANCE[group] ?? 700) +
               sphere.radius * mesh.matrixWorld.getMaxScaleOnAxis(),
           });
         }

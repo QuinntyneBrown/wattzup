@@ -24,6 +24,6 @@ describe('coursePath (L2-166 AC1)', () => {
   });
 
   it("leaves a world no map rides to main's scenes", () => {
-    expect(coursePath('pamplona')).toBeNull();
+    expect(coursePath('caribana')).toBeNull();
   });
 });

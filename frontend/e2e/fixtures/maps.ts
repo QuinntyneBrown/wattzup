@@ -164,6 +164,6 @@ export const worldRideMap = {
   ...maps[1]!,
   id: 'parade-criterium',
   name: 'Parade Criterium',
-  world: 'pamplona',
+  world: 'caribana',
   realPlace: null,
 };

@@ -73,8 +73,11 @@ export class RaceWorld {
     });
     void import('@telo/world').then(({ WorldScene, WorldMusicPlayer }) => {
       if (destroyed) return;
-      if (['bluemountains', 'ghent', 'velodrome'].includes(this.map().world)) {
-        if (['bluemountains', 'ghent', 'valais'].includes(['bluemountains', 'ghent', 'yosemite'].includes(this.map().world)), doc);
+      if (
+        ['bluemountains', 'ghent', 'valais', 'velodrome', 'yosemite'].includes(this.map().world)
+      ) {
+        if (this.map().world === 'velodrome')
+          lapBell = new WorldMusicPlayer(() => doc.createElement('audio'), doc);
         doc.addEventListener('visibilitychange', onVisibility);
         music.set(new WorldMusicPlayer(() => doc.createElement('audio'), doc));
       }
