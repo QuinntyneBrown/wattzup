@@ -109,6 +109,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Miami Neon Nights (`miami`) | Ride to the Beat (GCN Training, 20:00) | 8.398 km | 9 m | `public/courses/miami.glb` ([ride views](screenshots/miami-neon-nights/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Moab Slickrock (`moab`) | The Hurt Locker (GCN Training, 30:00) | 12.900 km | 261 m | `public/courses/moab.glb` ([ride views](screenshots/moab-slickrock/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Monaco Street Circuit (`monaco`) | Non-Stop Sprinting (GCN Training, 22:15) | 9.845 km | 43 m | `public/courses/monaco.glb` ([ride views](screenshots/monaco-street-circuit/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Montmartre (`montmartre`) | Short, Sharp & Hard Efforts (GCN Training, 20:00) | 8.400 km | 552 m | `public/courses/montmartre.glb` ([ride views](screenshots/montmartre/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

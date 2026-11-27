@@ -173,6 +173,7 @@ import type { MerceFestival } from './merce-festival';
 import type { OceanDrive } from './ocean-drive';
 import type { MoabTrail } from './moab-trail';
 import type { MonacoHarbour } from './monaco-harbour';
+import type { MontmartreSquare } from './montmartre-square';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -401,6 +402,7 @@ export class CourseRenderer implements WorldRenderer {
   private oceanDrive: OceanDrive | null = null;
   private moabTrail: MoabTrail | null = null;
   private monacoHarbour: MonacoHarbour | null = null;
+  private montmartreSquare: MontmartreSquare | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1294,6 +1296,21 @@ export class CourseRenderer implements WorldRenderer {
         this.monacoHarbour = harbour;
         this.scene.add(harbour.root);
         this.disposables.push(harbour);
+      }
+      if (this.course.file.id === 'montmartre') {
+        const { MontmartreSquare } = await import('./montmartre-square');
+        if (this.disposed) return false;
+        const square = await MontmartreSquare.load(this.course);
+        if (this.disposed) {
+          square.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.montmartreSquare = square;
+        this.scene.add(square.root);
+        this.disposables.push(square);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -2285,6 +2302,7 @@ export class CourseRenderer implements WorldRenderer {
     this.oceanDrive?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.moabTrail?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.monacoHarbour?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.montmartreSquare?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2470,6 +2488,7 @@ export class CourseRenderer implements WorldRenderer {
     this.oceanDrive = null;
     this.moabTrail = null;
     this.monacoHarbour = null;
+    this.montmartreSquare = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2744,6 +2763,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.oceanDrive) Object.assign(materials, this.oceanDrive.materials);
     if (this.moabTrail) Object.assign(materials, this.moabTrail.materials);
     if (this.monacoHarbour) Object.assign(materials, this.monacoHarbour.materials);
+    if (this.montmartreSquare) Object.assign(materials, this.montmartreSquare.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3343,6 +3363,7 @@ export class CourseRenderer implements WorldRenderer {
     this.oceanDrive?.sightline(metres, this.camera.position, ahead);
     this.moabTrail?.sightline(metres, this.camera.position, ahead);
     this.monacoHarbour?.sightline(metres, this.camera.position, ahead);
+    this.montmartreSquare?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -3899,6 +3920,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.oceanDrive) Object.assign(drawn, this.oceanDrive.report());
     if (this.moabTrail) Object.assign(drawn, this.moabTrail.report());
     if (this.monacoHarbour) Object.assign(drawn, this.monacoHarbour.report());
+    if (this.montmartreSquare) Object.assign(drawn, this.montmartreSquare.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

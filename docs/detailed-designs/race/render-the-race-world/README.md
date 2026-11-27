@@ -1654,3 +1654,18 @@ The class scene already has a race-weekend harbour and grade-aligned paint, as c
 | Monaco-Ville and the Palace, 9.32 km | Real 07, 09–10 and 15. Games 03–05. | The final waterfront bends open a sightline to the Prince’s Palace on the rock. Stern terraces and palm crowns frame the pastel town across the harbour. |
 
 Keep the rock, the pastel hillside and the casino fixed beyond the close racing line. Give the yachts stepped deckhouses, transoms and masts, and give the tunnel true interior space and a visible exit. Use sectioned Armco, batched seating, baked shadow and bounded ride-clock motion for the waterline, fountain and safety car. Release the course resources when the rider leaves. Use the submitted frames at the opening and the pits for the Caribana performance comparison. Credits are in docs/worlds/monaco/SOURCES.md. The Monaco title search returned #2166.
+
+## Montmartre (#2167)
+
+Rider feedback in #917 asks that the existing golden-afternoon look and feel be kept. Iteration 026 corrected paint that sank below the cobbles on steep ramps. The class already has café terraces, easels and domes. Give the race catalogue the same class-length route, carry the paint over the actual road triangles, and model the individual corners from their credited photographs.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Le Consulat corner, 0.08 km | Real 01–02, 08. Games 02–03. | Red café awnings follow the narrow wedge of Le Consulat. Bistro tables, woven chairs and green lamps frame a glimpse of the domes above the cobbles. |
+| La Maison Rose, 1.58 km | Real 03–04, 09–10, 13. Games 03 and 05. | Pink stucco, deep green shutters and the sloping rue de l’Abreuvoir identify La Maison Rose. A stone gutter and short bollards turn with the lane. |
+| Clos Montmartre and Au Lapin Agile, 2.91 km | Real 05, 09–10, 12. Games 03 and 05. | Terraced vines and ivy rise above the garden wall opposite the cabaret’s green paling and ochre sign. Golden light catches the upper leaves. |
+| Place du Tertre, 4.38 km | Real 07–08, 14. Games 01 and 03. | Painters lift their brushes beside tilted canvases and parasols. Red and green terrace awnings lead back into the lane beyond the square. |
+| Rue Foyatier, 6.02 km | Real 03, 10–11, 15. Games 02 and 05. | Stone steps and twin iron rails climb beside the steep street. WATTZUP and VAS-Y follow the pavés, with a Wallace fountain and a green Métro entrance at street level. |
+| Sacré-Cœur, 7.91 km | Real 01, 06 and 15. Games 01–02 and 04. | The tall central dome and smaller white domes of Sacré-Cœur rise beyond the rooftops. The nearest stone courses and cornices stay warm in the low sun. |
+
+Keep the basilica fixed on the hill with layered drums, domes and lanterns. Model the steps and iron rails against the road grade, and batch granite gutters, vine rows and garden walls in visible sections. Share café furniture and painter geometry. Advance the painters’ brushes, terrace movement and Wallace fountain on the bounded ride clock. Release loaded materials and actor geometry on exit. Compare the lower lanes and the painters’ square to Caribana’s submitted frames. Photo and game credits are in docs/worlds/montmartre/SOURCES.md.

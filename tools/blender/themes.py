@@ -1670,3 +1670,8 @@ import monaco as _monaco
 
 THEMES['monaco'] = _monaco.THEME
 SCENERY['monaco'] = _monaco.scenery
+
+import montmartre as _montmartre
+
+THEMES['montmartre'] = _montmartre.THEME
+SCENERY['montmartre'] = _montmartre.scenery

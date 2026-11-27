@@ -22,6 +22,7 @@ import merceElevation from './merce-elevation.json';
 import miamiElevation from './miami-elevation.json';
 import moabElevation from './moab-elevation.json';
 import monacoElevation from './monaco-elevation.json';
+import montmartreElevation from './montmartre-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4567,6 +4568,45 @@ export const monacoCourseMap = {
       seg('work', 30, 16, 85),
       seg('recover', 15, 24, 100),
       seg('cool-down', 180, 13, 80),
+    ],
+  },
+};
+
+export const montmartreCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'montmartre',
+  name: 'Montmartre',
+  routeName: 'the lanes of the butte',
+  place: 'Montmartre, Paris',
+  world: 'montmartre',
+  distanceKm: 8.4,
+  climbingM: 552,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: montmartreElevation,
+  },
+  thumbnailUrl: 'maps/montmartre.jpg',
+  photoUrl: 'maps/montmartre-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 12, 80),
+      seg('work', 120, 16, 80),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 19, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 21, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 11, 80),
+      seg('work', 120, 16, 80),
+      seg('work', 120, 18, 80),
+      seg('work', 120, 22, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 180, 19, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 10, 80),
     ],
   },
 };
