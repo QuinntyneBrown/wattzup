@@ -53,6 +53,7 @@ import quebecElevation from './quebec-elevation.json';
 import redouteElevation from './redoute-elevation.json';
 import romeElevation from './rome-elevation.json';
 import route66Elevation from './route66-elevation.json';
+import saguaroElevation from './saguaro-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5890,6 +5891,71 @@ export const route66CourseMap = {
       seg('work', 60, 13, 80),
       seg('recover', 120, 19, 80),
       seg('cool-down', 90, 11, 80),
+    ],
+  },
+};
+
+export const saguaroCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'saguaro-desert',
+  name: 'Saguaro Desert',
+  routeName: 'the cactus forest loop',
+  place: 'Tucson, Arizona',
+  world: 'saguaro',
+  distanceKm: 10.748,
+  climbingM: 203,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: saguaroElevation,
+  },
+  thumbnailUrl: 'maps/saguaro-desert.jpg',
+  photoUrl: 'maps/saguaro-desert-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 210, 13, 80),
+      seg('work', 15, 22, 100),
+      seg('recover', 15, 13, 80),
+      seg('work', 15, 22, 100),
+      seg('recover', 15, 13, 80),
+      seg('work', 15, 22, 100),
+      seg('recover', 15, 13, 80),
+      seg('work', 15, 22, 100),
+      seg('recover', 15, 13, 80),
+      seg('work', 15, 22, 100),
+      seg('recover', 15, 13, 80),
+      seg('work', 15, 22, 100),
+      seg('recover', 15, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 45, 13, 80),
+      seg('work', 45, 22, 95),
+      seg('recover', 45, 13, 80),
+      seg('work', 45, 22, 95),
+      seg('recover', 45, 13, 80),
+      seg('work', 45, 22, 95),
+      seg('recover', 45, 13, 80),
+      seg('work', 45, 22, 95),
+      seg('recover', 45, 13, 80),
+      seg('work', 45, 22, 95),
+      seg('recover', 45, 13, 80),
+      seg('work', 45, 22, 95),
+      seg('recover', 30, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 30, 13, 80),
+      seg('work', 30, 22, 100),
+      seg('work', 15, 24, 105),
+      seg('recover', 15, 13, 80),
+      seg('work', 15, 24, 105),
+      seg('recover', 15, 13, 80),
+      seg('work', 15, 24, 105),
+      seg('cool-down', 145, 11, 80),
     ],
   },
 };

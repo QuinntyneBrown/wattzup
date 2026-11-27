@@ -2151,3 +2151,18 @@ Set the Arizona towns in east-to-west order on a condensed 8 km course. The Pain
 | Oatman and Sitgreaves Pass, 7.26 km | Real 03, 05 and 13–15. Games 02, 03 and 05. | A burro walks beside timber boardwalks and rough wooden storefronts below the broken skyline of the Black Mountains. The climbing road turns towards Sitgreaves Pass. |
 
 Keep mesas fixed in world space. Use physical ledges and sediment bands, baked sun and shade, fine cracked asphalt and dusty shoulders. Model the white motel cones, cars, pump globes, diner counter and false-front boardwalks. Batch roadside plants in sections and move the car, tumbleweed and burro on ride time. Release their owned resources on exit. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.
+
+## Saguaro Desert (#2200)
+
+Set Cactus Forest Drive on a closed physical route under the full historical workout. Keep the park sign, roadrunner, distant hot-air balloon, many-armed saguaros and ocotillo from the existing ride. Use the same continuous elevation for the road, rider and HUD.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Cactus Forest Drive entrance, 0.08 km | Real 01–03 and 06. Games 01–03. | A brown park sign marks the entrance to the narrow one-way loop. Ribbed saguaros stand above loose red gravel with the Rincon ridgeline beyond. |
+| Dawn cactus stand, 1.21 km | Real 07–09, 11 and 14–15. Games 03 and 04. | Several differently branched saguaros break the orange-pink horizon. Long shadows cross the pavement, a hawk perches on one arm and a balloon drifts beyond the ridge. |
+| Sandy wash crossing, 2.68 km | Real 01, 03–05 and 13. Games 02 and 05. | The undulating drive descends into a sandy arroyo. A dip warning and low masonry culvert announce the crossing; a roadrunner moves near the shoulder. |
+| Cactus forest rollers, 4.81 km | Real 03, 10–13 and 15. Games 02–05. | Tall green saguaros with crooked arms and deep ribs surround the bend. Prickly pear pads, cholla and red-tipped ocotillo grow under palo verde between rocky rollers. |
+| Stone picnic ramada, 7.32 km | Real 02, 04–05, 10 and 13. Games 01 and 05. | At the bollarded gravel pullout a low stone ramada shelters a picnic table. A pair of quail walks across the foreground beneath the palo verde canopy. |
+| Rincon overlook, 9.74 km | Real 03–05, 08–10 and 14–15. Games 02–04. | A sweeping descent turns towards successive blue-grey ridges. Side-lit saguaros and ocotillo frame the valley from the pullout before the return to the entrance. |
+
+Separate the near ribbed trunks and crooked arms from the distant silhouette belt. Shape continuous sandy arroyo banks below the culvert, bake long morning shadows onto the rocky ground and keep the roadway clear. Grade the sky from warm horizon to clear blue and place fixed rugged mountain ridges on both sides of the basin. Batch local vegetation, animate the birds on ride time and dispose of owned resources when leaving the course. See ADRs 0021, 0023, 0030, 0034 and 0035 and the performance-budget design.
