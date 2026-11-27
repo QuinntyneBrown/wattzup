@@ -62,6 +62,7 @@ import sellaRondaElevation from './sellaronda-elevation.json';
 import serpentineElevation from './serpentine-elevation.json';
 import sevensistersElevation from './sevensisters-elevation.json';
 import sfhillsElevation from './sfhills-elevation.json';
+import shibuyaElevation from './shibuya-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6245,6 +6246,52 @@ export const sfhillsCourseMap = {
       seg('work', 180, 24, 100),
       seg('recover', 120, 19, 80),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const shibuyaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'shibuya-crossing',
+  name: 'Shibuya Crossing',
+  routeName: 'Dogenzaka',
+  place: 'Shibuya, Tokyo',
+  world: 'shibuya',
+  distanceKm: 8.15,
+  climbingM: 48,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: shibuyaElevation,
+  },
+  thumbnailUrl: 'maps/shibuya-crossing.jpg',
+  photoUrl: 'maps/shibuya-crossing-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 150, 12, 80),
+      seg('work', 60, 18, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 30, 22, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 30, 22, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 22, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 30, 22, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 22, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 30, 22, 80),
+      seg('recover', 30, 16, 80),
+      seg('work', 30, 22, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 120, 22, 80),
+      seg('cool-down', 120, 11, 80),
     ],
   },
 };

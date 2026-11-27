@@ -1,0 +1,157 @@
+{
+  "id": "shibuya",
+  "name": "Shibuya Crossing",
+  "world": "shibuya",
+  "theme": "shibuya",
+  "seed": 2209,
+  "layout": 0,
+  "class": {
+    "id": "super-high-cadence-sprints",
+    "title": "Super High Cadence Sprints",
+    "channel": "GCN Training",
+    "videoId": "DtDmBV412Qc",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 150,
+        "level": 12,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

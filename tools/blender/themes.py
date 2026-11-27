@@ -1860,3 +1860,8 @@ SCENERY['sevensisters']=_sevensisters.scenery
 import sfhills as _sfhills
 THEMES['sfhills']=_sfhills.THEME
 SCENERY['sfhills']=_sfhills.scenery
+
+import shibuya as _shibuya
+
+THEMES['shibuya'] = _shibuya.THEME
+SCENERY['shibuya'] = _shibuya.scenery
