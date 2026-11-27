@@ -1970,3 +1970,8 @@ import teotihuacan as _teotihuacan
 
 THEMES['teotihuacan'] = _teotihuacan.THEME
 SCENERY['teotihuacan'] = _teotihuacan.scenery
+
+import timessquare as _timessquare
+
+THEMES['timessquare'] = _timessquare.THEME
+SCENERY['timessquare'] = _timessquare.scenery

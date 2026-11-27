@@ -84,6 +84,7 @@ import tahoeElevation from './tahoe-elevation.json';
 import telavivElevation from './telaviv-elevation.json';
 import tempelhofElevation from './tempelhof-elevation.json';
 import teotihuacanElevation from './teotihuacan-elevation.json';
+import timessquareElevation from './timessquare-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7183,6 +7184,48 @@ export const teotihuacanCourseMap = {
       seg('recover', 360, 10, 80),
       seg('work', 30, 24, 100),
       seg('cool-down', 90, 10, 80),
+    ],
+  },
+};
+
+export const timessquareCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'times-square-new-years-eve',
+  name: "Times Square New Year's Eve",
+  routeName: 'Broadway',
+  place: 'New York City, USA',
+  world: 'timessquare',
+  distanceKm: 8.7,
+  climbingM: 3,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: timessquareElevation,
+  },
+  thumbnailUrl: 'maps/times-square-new-years-eve.jpg',
+  photoUrl: 'maps/times-square-new-years-eve-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 12, 80),
+      seg('work', 60, 14, 80),
+      seg('recover', 60, 18, 85),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 19, 90),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 19, 90),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 22, 100),
+      seg('cool-down', 60, 10, 80),
     ],
   },
 };

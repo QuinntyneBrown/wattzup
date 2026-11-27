@@ -120,6 +120,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   telaviv: 'courses/telaviv',
   tempelhof: 'courses/tempelhof',
   teotihuacan: 'courses/teotihuacan',
+  timessquare: 'courses/timessquare',
   alpe: 'courses/alpe',
   dubai: 'courses/dubai',
   edinburgh: 'courses/edinburgh',

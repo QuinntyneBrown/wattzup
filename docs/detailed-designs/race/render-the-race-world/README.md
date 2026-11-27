@@ -2616,3 +2616,18 @@ Use the historic Threshold Pyramid plan to space out the ceremonial axis over 22
 | Plaza de la Luna, 22.05 km | Real 01, 05, 12, 14–15 and games 01 and 05 | The spreading staircase and nested platforms of the Moon pyramid close the avenue below Cerro Gordo. |
 
 As in Caribana, separate the fixed distant ridge, middle-distance landmark geometry and close moving figures. Model the terraces, central stairs and serpent relief in depth. Share textured walls and baked masonry shadows across all levels. Merge low platforms by course section, keep landmark silhouettes at distance and release all actor geometry and materials on exit. Compare six riding positions and measure the southern enclosure and Sun pyramid over separate sixty-second windows. See ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Times Square New Year's Eve (#2231)
+
+Stretch the Broadway approach and crowd pens to fit Give Me One Minute’s 8.70 km course. Build the physical bow tie where Seventh Avenue crosses Broadway. Keep the One Times Square wedge, rooftop mast and crystal ball fixed in world space. The catalogue resolves the map to the authored course and Race loads the nighttime scenery on entry.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Broadway approach, 0.12 km | Real 02, 04, 11–13 and games 03 and 05 | The dark road and yellow lane stripes run between illuminated shop windows, theatre marquees and deep rows of office windows. |
+| The billboard canyon, 1.74 km | Real 02–05, 11–12 and games 01, 03 and 05 | Wraparound LED panels alternate red, blue and gold artwork on different buildings. Broken bands of colour reflect from the asphalt. |
+| Duffy Square, 3.38 km | Real 03–05, 11, 14 and games 02 and 04 | The TKTS red steps rise across the Broadway and Seventh Avenue bow tie. Crossing stripes frame the narrow end of the wedge. |
+| The crowd pens, 5.19 km | Real 01, 06–08, 13–15 and games 02 and 03 | Blue police barricades, officers and camera crews line the cleared lane. Winter coats, party hats and condensed breath fill the spectator pens. |
+| One Times Square, 7.22 km | Real 02, 06–07, 09–10 and games 01 and 05 | A live countdown ticks beneath the illuminated faceted ball. The ball slides along the rooftop mast as spectators look up. |
+| Midnight on Broadway, 8.52 km | Real 01, 06–10, 14–15 and games 01 and 04 | The 2027 sign shines above the clearing. Coloured paper flutters into the light and gathers on the marked road by the barriers. |
+
+Use the Caribana crowd and skyline depth arrangement to separate shoulder-height barricades, crowd pens and towers. Chunk the street fronts and repeat original LED artwork over distinct planes. Bake reflection colour and lettering into the low-tier surfaces, share crowd cutouts, and bound the number of moving confetti sheets and breath sprites. Derive the countdown, ball drop and moving effects from the race clock so pause holds every element. Compare six rider views and sample sixty seconds at each tablet position. See ADRs 0021, 0023, 0030, 0034 and 0035.
