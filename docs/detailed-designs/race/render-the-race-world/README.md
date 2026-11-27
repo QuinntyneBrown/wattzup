@@ -1440,3 +1440,20 @@ Use the normal catalogue and solo race entry. The eleven original stages of GCN 
 | Ginkaku-ji approach, 10.04 km | Real 04, 10–11 and 13–15 and games 03–05 | Hedges and tiled timber buildings lead toward the Ginkaku-ji entrance, with green Higashiyama ridges beyond the last bridge. |
 
 Real 12 is the Philosopher’s Walk at Tatsuno in Hyōgo and supplies the stone-marker convention only. Real 13–15 establish Nanzen-ji’s gates. The northern gate is an original interpretation of the Ginkaku-ji approach. Use the daytime photographs for spring light and game 02 for contrast between petals and the riding line. Adapt Caribana’s physical separation of near participants and far skyline to visitors, bridges and green mountain ridges. Batch walkers and small drifting petals, keep the visible canal section bounded, and dispose the course-owned textures, batches and materials on exit. The issue title search found only #2152.
+
+## Chicago Lakefront Trail (#2153)
+
+Use the normal catalogue, race setup and native course renderer. GCN’s 25 Minute Sprint Intervals has sixteen original stages over 25:30 and a three-second video offset. Keep the grades small on the 10.525 km trail. The centre line, lane markings, beach edges, revetment and camera use the same physical coordinates.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Lincoln Park, 0.08 km | Real 01, 05–07 and games 01–02 | Mature park trees cast shade on a wide striped trail. Riders, runners and skaters approach between the inland lawn and the lake. |
+| Harbour, 1.78 km | Real 03, 06–07, 10 and games 01 and 03 | Rows of masts and mooring fingers follow the harbour curve, with sailboats moving on the sheltered water. |
+| North Avenue Beach, 3.54 km | Real 02, 11 and 13–15 and games 02–03 | The blue and white ship-shaped beach house rises beside umbrellas and a tall lifeguard chair, with lake and sand behind it. |
+| Concrete revetment, 5.68 km | Real 02, 08–09, 12 and games 01 and 04 | Low waves break against staggered concrete steps. Lake fog stays low over the water while the paved line stays legible. |
+| Oak Street Beach, 7.84 km | Real 02, 07–08 and 12–13 and games 03–05 | People sit on steps and gather around parasols. Blue Divvy bikes, runners and inline skaters pass in marked lanes. |
+| Skyline overlook, 9.94 km | Real 01, 07–08, 10–11 and 15 and games 03 and 05 | The dark braced Hancock tower and bundled Willis Tower stand above the shoreline cluster across turquoise water. |
+
+Real 04 depicts a trail at Geneva, New York and informs path scale only. Real 14 shows a smaller North Avenue beach building. Use the ship-shaped main beach house from the issue brief, with the shore and skyline proportions established by real 11 and 15. Caribana’s fixed skyline and detailed moving foreground translate to Chicago’s distinctive towers and the active path users. Batch the masts, beach furniture and wheeled traffic, keep secondary motion on race time and release each course-owned resource on exit. The world-specific feedback title search found only #2153.
+
+Model the North Avenue Beach House with a streamlined blue-and-white hull, portholes and an open upper deck. Its current concrete structure was designed by Wheeler Kearns Architects and opened in 2000. [Chicago Park District, North Avenue Beach](https://www.chicagoparkdistrict.com/parks-facilities/north-avenue-beach)

@@ -1600,3 +1600,8 @@ import kyoto
 
 THEMES['kyoto'] = kyoto.THEME
 SCENERY['kyoto'] = kyoto.scenery
+
+import lakefront
+
+THEMES['lakefront'] = lakefront.THEME
+SCENERY['lakefront'] = lakefront.scenery

@@ -8,6 +8,7 @@ import konaElevation from './kona-elevation.json';
 import koppenbergElevation from './koppenberg-elevation.json';
 import kwaremontElevation from './kwaremont-elevation.json';
 import kyotoElevation from './kyoto-elevation.json';
+import lakefrontElevation from './lakefront-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3965,6 +3966,45 @@ export const kyotoCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 60, 21, 100),
       seg('cool-down', 60, 11, 80),
+    ],
+  },
+};
+
+export const lakefrontCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'chicago-lakefront-trail',
+  name: 'Chicago Lakefront Trail',
+  routeName: 'the Lakefront Trail',
+  place: 'Chicago, Illinois, United States',
+  world: 'lakefront',
+  distanceKm: 10.525,
+  climbingM: 8,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: lakefrontElevation,
+  },
+  thumbnailUrl: 'maps/chicago-lakefront-trail.jpg',
+  photoUrl: 'maps/chicago-lakefront-trail-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 60, 16, 85),
+      seg('recover', 60, 13, 80),
+      seg('work', 60, 21, 90),
+      seg('work', 60, 13, 80),
+      seg('recover', 45, 14, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 180, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 255, 11, 80),
     ],
   },
 };
