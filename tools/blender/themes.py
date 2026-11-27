@@ -1796,3 +1796,8 @@ import route_nine as _route_nine
 
 THEMES['prairie'].update(lay=_route_nine.route,road_builder=_route_nine.road,land_builder=_route_nine.land)
 SCENERY['prairie'] = _route_nine.scenery
+
+import provence as _provence
+
+THEMES['provence'] = _provence.THEME
+SCENERY['provence'] = _provence.scenery

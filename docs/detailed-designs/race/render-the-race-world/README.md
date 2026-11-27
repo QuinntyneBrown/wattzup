@@ -2061,3 +2061,18 @@ The starter catalogue entry already loads courses/prairie.glb. Keep the measured
 | Last prairie crest, 17.96 km | Real 04–10 and 15. Games 01, 04 and 05. | A shallow crest reveals turbines behind a second ridge. Cumulus and high cirrus fill the amber sky above fence and field shadows. |
 
 Stage turbine rows at distinct distances along both ridges. Taper each tower and blade. Use one shared rotor geometry, a bounded near-verge cluster and far clouds driven by the ride clock. Bake field rows and the shadow beneath every farm building. Give the roadside elevator a trackside loading wing and grain hoppers. Release geometry, materials and textures on route exit. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035 and docs/worlds/prairie/SOURCES.md.
+
+## Provence Lavender (#2194)
+
+Map Select restores the historical GCN class. Race Setup passes the same course to the lazy renderer and the HUD. Set the public Blender road on the rolling Valensole plateau, with an open view along the rows from the very first turn.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| D8 plateau road, 0.08 km | Real 01–04, 10 and 11. Games 02 and 05. | The narrow patched road runs between gold wheat and violet lavandin. Pale dirt separates the rounded rows. Distant Alpine ridges remain fixed as the rider moves. |
+| Stone mas and almond tree, 3.31 km | Real 04–08 and 14. Games 01 and 03. | Blue shutters and a terracotta roof distinguish the pale limestone farmhouse. An isolated broad almond tree breaks the skyline, and a dry stone borie stands by the track. |
+| Apiary among the rows, 6.44 km | Real 02, 06, 14 and 15. Games 03 and 05. | Coloured wooden hive boxes, honey supers and flying bees are visible at shoulder height. Bent lavender stems and poppies give the sandy verge a different scale from the planted rows. |
+| Mechanical harvest, 9.63 km | Real 02, 12–14. Games 02 and 03. | A yellow tractor tows the blue lavender harvester. The reel turns at the row ends beside cut swaths, a trailer and round straw bales. |
+| Valensole market square, 13.72 km | Real 04, 08, 09 and 11. Games 01, 03 and 04. | Overlapping tiled roofs lead to the church tower. Plane trees shade a lavender stall, visitors and a distillery sign beside the road. |
+| Puimoisson ridge, 17.96 km | Real 03–07 and 09–11. Games 02, 04 and 05. | Sunflowers and wheat border the final ranks of purple. Puimoisson’s village roofs and steeple sit on the near ridge with blue-grey mountains behind. |
+
+Use raised rounded rows and warm gaps of bare soil close to the rider. Merge them into larger planted blocks over distance. Keep the Verdon edge and Alpine backdrop fixed behind village roofs and isolated tree silhouettes. Instance verge flowers, bees and harvest reel parts, animate them on ride time, and dispose of textures and geometry on exit. Verify the submitted frames on the plateau and through the busiest market approach. See ADRs 0021, 0023, 0030, 0034 and 0035, the performance-budget design and docs/worlds/provence/SOURCES.md.
