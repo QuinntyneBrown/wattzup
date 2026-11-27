@@ -158,6 +158,7 @@ import type { BroadwayRace } from './broadway-race';
 import type { KonaTriathlon } from './kona-triathlon';
 import type { KoppenbergBanks } from './koppenberg-banks';
 import type { KwaremontVillage } from './kwaremont-village';
+import type { KyotoHanami } from './kyoto-hanami';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -371,6 +372,7 @@ export class CourseRenderer implements WorldRenderer {
   private queenK: KonaTriathlon | null = null;
   private cobbledBanks: KoppenbergBanks | null = null;
   private kwaremontVillage: KwaremontVillage | null = null;
+  private hanami: KyotoHanami | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1040,6 +1042,20 @@ export class CourseRenderer implements WorldRenderer {
         this.kwaremontVillage = village;
         this.scene.add(village.root);
         this.disposables.push(village);
+      }
+      if (this.course.file.id === 'kyoto') {
+        const { KyotoHanami } = await import('./kyoto-hanami');
+        if (this.disposed) return false;
+        const walk = await KyotoHanami.load(this.course);
+        if (this.disposed) {
+          walk.dispose();
+          return false;
+        }
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.hanami = walk;
+        this.scene.add(walk.root);
+        this.disposables.push(walk);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -2013,6 +2029,7 @@ export class CourseRenderer implements WorldRenderer {
     this.queenK?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.cobbledBanks?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.kwaremontVillage?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.hanami?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2183,6 +2200,7 @@ export class CourseRenderer implements WorldRenderer {
     this.queenK = null;
     this.cobbledBanks = null;
     this.kwaremontVillage = null;
+    this.hanami = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2441,6 +2459,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.queenK) Object.assign(materials, this.queenK.materials);
     if (this.cobbledBanks) Object.assign(materials, this.cobbledBanks.materials);
     if (this.kwaremontVillage) Object.assign(materials, this.kwaremontVillage.materials);
+    if (this.hanami) Object.assign(materials, this.hanami.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3024,6 +3043,7 @@ export class CourseRenderer implements WorldRenderer {
     this.queenK?.sightline(metres, this.camera.position, ahead);
     this.cobbledBanks?.sightline(metres, this.camera.position, ahead);
     this.kwaremontVillage?.sightline(metres, this.camera.position, ahead);
+    this.hanami?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -3565,6 +3585,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.queenK) Object.assign(drawn, this.queenK.report());
     if (this.cobbledBanks) Object.assign(drawn, this.cobbledBanks.report());
     if (this.kwaremontVillage) Object.assign(drawn, this.kwaremontVillage.report());
+    if (this.hanami) Object.assign(drawn, this.hanami.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

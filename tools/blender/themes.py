@@ -1595,3 +1595,8 @@ import kwaremont
 
 THEMES['kwaremont'] = kwaremont.THEME
 SCENERY['kwaremont'] = kwaremont.scenery
+
+import kyoto
+
+THEMES['kyoto'] = kyoto.THEME
+SCENERY['kyoto'] = kyoto.scenery

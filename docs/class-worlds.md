@@ -94,6 +94,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Kona Ironman (`kona`) | High Intensity Race Day Effort (GCN, 25:05) | 9.868 km | 97 m | `public/courses/kona.glb` ([ride views](screenshots/kona-ironman/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Koppenberg Cobbles (`koppenberg`) | Low Cadence Strength Builder (GCN Training, 16:00) | 5.640 km | 111 m | `public/courses/koppenberg.glb` ([ride views](screenshots/koppenberg-cobbles/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Oude Kwaremont (`kwaremont`) | Cobbled Mayhem (GCN Training, 40:00) | 16.200 km | 231 m | `public/courses/kwaremont.glb` ([ride views](screenshots/oude-kwaremont/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Kyoto Hanami (`kyoto`) | Cadence Training to Improve Pedalling (GCN Training, 25:00) | 10.400 km | 35 m | `public/courses/kyoto.glb` ([ride views](screenshots/kyoto-hanami/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

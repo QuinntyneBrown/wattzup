@@ -1,0 +1,85 @@
+{
+  "id": "kyoto",
+  "name": "Kyoto Hanami",
+  "world": "kyoto",
+  "theme": "kyoto",
+  "seed": 2152,
+  "layout": 0,
+  "class": {
+    "id": "cadence-training-to-improve-pedalling",
+    "title": "Cadence Training to Improve Pedalling",
+    "channel": "GCN Training",
+    "videoId": "4YHC0MVCg0c",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 12,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 19,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 19,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 19,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 60,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

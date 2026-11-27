@@ -1425,3 +1425,18 @@ Map Select opens the class-backed solo race. GCN Training’s Cobbled Mayhem has
 | Melden and Kluisbergen fields, 15.28 km | Real 07–09, 14–15 and games 03–05 | The crowds thin at the end of the cobbles, revealing muddy field edges, clipped hedges and the village roofs under low April cloud. |
 
 The reference photographs distinguish the deep temporary VIP structures in real 07–08 from the permanent village façades in real 02 and 10. The gate in real 14 belongs to a Kluisbergen farm. Use original lettering and race banners. Adapt Caribana’s close animated participants, middle-distance structures and stable far skyline to the fans, village and fields. Instance animated figures and flags, batch buildings and barriers, and release course-owned textures and geometry at race exit. Rider feedback search found only #2151.
+
+## Kyoto Hanami (#2152)
+
+Use the normal catalogue and solo race entry. The eleven original stages of GCN Training’s Cadence Training to Improve Pedalling run for 25:00 from the beginning of the video. Extend the distinct sections of the Philosopher’s Path to the class-derived 10.400 km course. Keep the canal alongside the path, place bridge abutments on opposite walls and sample the physical grade for the map and HUD.
+
+| Rider view | Real and game references | What the rider sees on Low |
+| --- | --- | --- |
+| Nanzen-ji, 0.08 km | Real 13–15 and games 03–04 | The approach passes the timber temple gate, broad tiled eaves and flanking white walls before joining the canal. |
+| Lake Biwa canal, 1.54 km | Real 01–04, 10–11 and games 01 and 03 | The water runs below the narrow path between inclined walls of fitted stone. Pale gravel and rectangular edging separate the rider from the canal. |
+| Granite bridge, 3.28 km | Real 02–03, 05 and 08–11 and games 01 and 05 | A low granite span crosses the canal to the opposite bank. The shaded opening and its reflection stay visible under the parapet. |
+| Hanami walk, 5.42 km | Real 01–03, 06–09 and games 01–03 | Strollers and photographers gather under the pale pink canopy. Clusters of petals drift by and smaller petals float downstream. |
+| Tea shops, 7.46 km | Real 03–05, 09–11 and games 04–05 | Low timber shop fronts, lattice screens, indigo curtains and the carved 哲学の道 path marker frame the near bank. |
+| Ginkaku-ji approach, 10.04 km | Real 04, 10–11 and 13–15 and games 03–05 | Hedges and tiled timber buildings lead toward the Ginkaku-ji entrance, with green Higashiyama ridges beyond the last bridge. |
+
+Real 12 is the Philosopher’s Walk at Tatsuno in Hyōgo and supplies the stone-marker convention only. Real 13–15 establish Nanzen-ji’s gates. The northern gate is an original interpretation of the Ginkaku-ji approach. Use the daytime photographs for spring light and game 02 for contrast between petals and the riding line. Adapt Caribana’s physical separation of near participants and far skyline to visitors, bridges and green mountain ridges. Batch walkers and small drifting petals, keep the visible canal section bounded, and dispose the course-owned textures, batches and materials on exit. The issue title search found only #2152.
