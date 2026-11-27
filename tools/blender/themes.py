@@ -2080,3 +2080,8 @@ import yosemite as _yosemite
 
 THEMES['yosemite'] = _yosemite.THEME
 SCENERY['yosemite'] = _yosemite.scenery
+
+import winterlude as _winterlude
+
+THEMES['winterlude'] = _winterlude.THEME
+SCENERY['winterlude'] = _winterlude.scenery

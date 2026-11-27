@@ -2924,3 +2924,16 @@ Place the granite landmarks as separate, grounded masses rather than a single pi
 | Merced and Swinging Bridge, 6.91 km | Real 06, 10, 13, 14 and games 03, 05 | Green water and pale sand flank the bridge, below the high granite walls. |
 | Yosemite Falls, 9.64 km | Real 07, 12, 13 and games 01, 05 | Upper and lower falls are separated by a rock shelf. Spray hangs at their feet. |
 | Half Dome outlook, 12.74 km | Real 03, 09, 11, 15 and games 02, 03 | The sliced face and curved crown of Half Dome glow above a meadow and shady pine foreground. |
+
+### Winterlude, Ottawa (#2251)
+
+Model one winding, level canal corridor with two racing directions and smooth connecting turns. The class covers 17.35 km, returning through the same landmarks. Build the walls, snowbanks, stairs, bridge supports and warming huts once. A scratched ice material receives cold reflected light. Use original bare tree, skyline and sculpture textures. Anchor the snow and ice artworks to separate modeled plinths, with the ice gallery shaded under a canopy. Animate the skaters’ pushes, the festival flags and light colour using the ride clock. Batch repeated trees and canal sections, reduce detail on low, and release all scene resources on exit. Pair the six views at matching chainage and stage. Record 60-second moving submitted-frame samples after warm-up.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Downtown skateway, 0.14 km | Real 01, 06, 08 and games 01, 02 | Château Laurier and the Parliament towers rise beyond bare branches and a crowd on groomed ice. |
+| Pretoria Bridge, 2.26 km | Real 02–05 and game 03 | The stone lift towers, dark steel deck and truss underside span the groomed canal. |
+| Warming huts, 4.12 km | Real 06–09, 13, 14 and games 02, 04 | The ice widens by timber warming huts, a BeaverTails stand and festival tents, with families gliding past. |
+| Snow carving terrace, 6.32 km | Real 10, 11, 13 and games 01, 04 | A large snow bear and owl stand on white plinths above steps and the canal wall. |
+| Dows Lake turn, 7.74 km | Real 06–09 and games 01, 02 | The track turns at the lake in clean winter sun. Skate scratches, snowbanks and bare maples lead into the returning lane. |
+| Illuminated ice gallery, 11.34 km | Real 11, 12, 15 and games 04, 05 | Blue and violet lights pick out transparent ice carvings in a shaded festival pavilion. |

@@ -192,6 +192,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Wicklow Gap (`wicklow`) | Conor's Racing Bonanza (GCN Training, 35:00) | 15.893 km | 335 m | `public/courses/wicklow.glb` ([ride views](screenshots/wicklow-gap/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Monte Zoncolan (`zoncolan`) | Strength Builder & Quad Burner (GCN Training, 30:00) | 12.375 km | 1290 m | `public/courses/zoncolan.glb` ([ride views](screenshots/monte-zoncolan/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Yosemite Valley (`yosemite`) | Full Effort VO2 Max Intervals (GCN Training, 30:00) | 13.150 km | 18 m | `public/courses/yosemite.glb` ([ride views](screenshots/yosemite-valley/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Winterlude, Ottawa (`winterlude`) | Aerobic Efforts With Max Sprints (GCN Training, 40:00) | 17.350 km | 0 m | `public/courses/winterlude.glb` ([ride views](screenshots/winterlude-ottawa/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
