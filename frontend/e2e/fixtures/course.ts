@@ -101,6 +101,7 @@ import ventouxElevation from './ventoux-elevation.json';
 import veronaElevation from './verona-elevation.json';
 import victoriaElevation from './victoria-elevation.json';
 import viennaElevation from './vienna-elevation.json';
+import westminsterElevation from './westminster-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7884,6 +7885,48 @@ export const viennaRingCourseMap = {
       seg('recover', 120, 10, 80),
       seg('work', 300, 19, 80),
       seg('cool-down', 180, 11, 80),
+    ],
+  },
+};
+
+export const westminsterRushCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'westminster-rush-hour',
+  name: 'Westminster Rush Hour',
+  routeName: 'Westminster Bridge',
+  place: 'London, England',
+  world: 'westminster',
+  distanceKm: 6.45,
+  climbingM: 17,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: westminsterElevation,
+  },
+  thumbnailUrl: 'maps/westminster-rush-hour.jpg',
+  photoUrl: 'maps/westminster-rush-hour-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 80),
+      seg('work', 60, 16, 85),
+      seg('work', 60, 21, 90),
+      seg('recover', 30, 14, 80),
+      seg('work', 10, 21, 90),
+      seg('recover', 10, 10, 80),
+      seg('work', 20, 21, 90),
+      seg('recover', 20, 10, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 40, 21, 90),
+      seg('recover', 40, 10, 80),
+      seg('work', 50, 21, 90),
+      seg('recover', 50, 10, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 120, 21, 90),
+      seg('work', 60, 24, 100),
+      seg('cool-down', 120, 10, 80),
     ],
   },
 };

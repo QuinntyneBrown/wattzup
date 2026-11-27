@@ -2055,3 +2055,8 @@ import vienna as _vienna
 
 THEMES['vienna'] = _vienna.THEME
 SCENERY['vienna'] = _vienna.scenery
+
+import westminster as _westminster
+
+THEMES['westminster'] = _westminster.THEME
+SCENERY['westminster'] = _westminster.scenery

@@ -2859,3 +2859,16 @@ Lay a single 5.3 km closed ring with cumulative distance for the 14 km class. Sh
 | Rathaus and Burgtheater, 2.55 km | Real 02, 09, 10 and games 01, 05 | The pointed Rathaus tower and smaller pinnacles face the projecting Burgtheater facade across the Ring. |
 | Votivkirche approach, 3.12 km | Real 03, 05, 09, 10 and games 01, 04 | Two narrow openwork spires rise beyond the trees and overhead tram wires. |
 | Stadtpark boulevard, 4.71 km | Real 03-07 and games 03, 05 | The path follows mature trees and the park fence. A commuter rolls past as trams continue around the Ring. |
+
+### Westminster Rush Hour (#2248)
+
+Keep the rider on the left. Place the bus lane, approach zigzags and parapet lamps on the deck profile and drop the Thames below the pier foundations. Anchor Elizabeth Tower and Parliament to the west bank and the Eye and County Hall to the opposite bank. Use fixed geometry for the clock and its layered crowns, the bridge arches, statues and wheel supports. Give each vehicle a three-dimensional body, wheels, lights and original painted flanks. Sample the road independently under each vehicle. Rotate the Eye on its fixed axle, keeping the capsules upright. Share meshes and materials and release all owned GPU resources when the race ends.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Bridge lamps, 0.14 km | Real 04–06, 15 and games 01, 04 | Triple lanterns and green pierced parapets frame the wet bridge deck. Elizabeth Tower rises at the west landing. |
+| Elizabeth Tower, 0.43 km | Real 01–04, 09, 10, 14 and games 01, 05 | The illuminated four-faced clock and gilded details rise above the red buses. |
+| Parliament Square, 1.22 km | Real 09, 10, 13 and games 02, 03 | The route bends beside statues and the square lawn. A taxi crosses the junction beyond the signal. |
+| Whitehall, 2.38 km | Real 02, 09, 10, 13 and games 02, 03 | Black cabs and red buses pass lit stone buildings, phone boxes and a zebra crossing. |
+| County Hall and London Eye, 4.62 km | Real 07, 08, 11, 12 and game 04 | The Eye rotates above the South Bank and County Hall reflects its blue-hour light in the Thames. |
+| Westminster riverside, 6.12 km | Real 03–06, 10, 15 and games 01, 05 | The Houses of Parliament extend along the river. The green bridge arches stand out against the lit stone. |
