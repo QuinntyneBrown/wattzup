@@ -30,6 +30,7 @@ import muertosElevation from './muertos-elevation.json';
 import mulhollandElevation from './mulholland-elevation.json';
 import murdehuyElevation from './murdehuy-elevation.json';
 import napaElevation from './napa-elevation.json';
+import northshoreElevation from './northshore-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4917,6 +4918,50 @@ export const napaCourseMap = {
       seg('work', 30, 16, 100),
       seg('work', 120, 18, 80),
       seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const northShoreCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'north-shore-oahu',
+  name: 'North Shore, Oahu',
+  routeName: 'North Shore, Oahu',
+  place: 'Oahu, Hawaii',
+  world: 'northshore',
+  distanceKm: 8.914,
+  climbingM: 42,
+  rating: 'Easy',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: northshoreElevation,
+  },
+  thumbnailUrl: 'maps/north-shore-oahu.jpg',
+  photoUrl: 'maps/north-shore-oahu-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 205, 13, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 85),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 85),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 85),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 85),
+      seg('work', 30, 24, 100),
+      seg('recover', 273, 11, 85),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 85),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 85),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 85),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 10, 85),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 212, 11, 80),
     ],
   },
 };

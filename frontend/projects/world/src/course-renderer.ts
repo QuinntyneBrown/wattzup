@@ -181,6 +181,7 @@ import type { MuertosParade } from './muertos-parade';
 import type { MulhollandOverlook } from './mulholland-overlook';
 import type { HuyClimb } from './huy-climb';
 import type { SilveradoTrail } from './silverado-trail';
+import type { NorthShoreSurf } from './north-shore-surf';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -417,6 +418,7 @@ export class CourseRenderer implements WorldRenderer {
   private mulhollandOverlook: MulhollandOverlook | null = null;
   private huyClimb: HuyClimb | null = null;
   private silveradoTrail: SilveradoTrail | null = null;
+  private northShoreSurf: NorthShoreSurf | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1431,6 +1433,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(trail.root);
         this.disposables.push(trail);
       }
+      if (this.course.file.id === 'northshore') {
+        const { NorthShoreSurf } = await import('./north-shore-surf');
+        if (this.disposed) return false;
+        const surf = await NorthShoreSurf.load(this.course);
+        if (this.disposed) {
+          surf.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.northShoreSurf = surf;
+        this.scene.add(surf.root);
+        this.disposables.push(surf);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2388,6 +2405,11 @@ export class CourseRenderer implements WorldRenderer {
       const desert = this.course?.file.id === 'montroyal';
       const sunsetStart = desert ? 7700 : bay ? 19_500 : 14_300;
       const sunsetLength = desert ? 5850 : bay ? 7900 : 5050;
+      const [sunsetStart, sunsetLength] = this.northShoreSurf
+        ? [4400, 3300]
+        : bay
+          ? [19500, 7900]
+          : [14300, 5050];
       const progress = Math.max(0, Math.min(1, (metres - sunsetStart) / sunsetLength));
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
@@ -2432,6 +2454,7 @@ export class CourseRenderer implements WorldRenderer {
     this.mulhollandOverlook?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.huyClimb?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.silveradoTrail?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.northShoreSurf?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2625,6 +2648,7 @@ export class CourseRenderer implements WorldRenderer {
     this.mulhollandOverlook = null;
     this.huyClimb = null;
     this.silveradoTrail = null;
+    this.northShoreSurf = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -2721,7 +2745,7 @@ export class CourseRenderer implements WorldRenderer {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
-    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal')
+    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal' || this.northShoreSurf)
       this.evening = eveningUniform();
     const clearValley = this.course!.file.id === 'engadin';
     const fogRange = this.dam
@@ -2907,6 +2931,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.mulhollandOverlook) Object.assign(materials, this.mulhollandOverlook.materials);
     if (this.huyClimb) Object.assign(materials, this.huyClimb.materials);
     if (this.silveradoTrail) Object.assign(materials, this.silveradoTrail.materials);
+    if (this.northShoreSurf) Object.assign(materials, this.northShoreSurf.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3515,6 +3540,7 @@ export class CourseRenderer implements WorldRenderer {
     this.mulhollandOverlook?.sightline(metres, this.camera.position, ahead);
     this.huyClimb?.sightline(metres, this.camera.position, ahead);
     this.silveradoTrail?.sightline(metres, this.camera.position, ahead);
+    this.northShoreSurf?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4079,6 +4105,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.mulhollandOverlook) Object.assign(drawn, this.mulhollandOverlook.report());
     if (this.huyClimb) Object.assign(drawn, this.huyClimb.report());
     if (this.silveradoTrail) Object.assign(drawn, this.silveradoTrail.report());
+    if (this.northShoreSurf) Object.assign(drawn, this.northShoreSurf.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

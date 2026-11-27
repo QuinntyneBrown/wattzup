@@ -1710,3 +1710,8 @@ import napa as _napa
 
 THEMES['napa'] = _napa.THEME
 SCENERY['napa'] = _napa.scenery
+
+import northshore as _northshore
+
+THEMES['northshore'] = _northshore.THEME
+SCENERY['northshore'] = _northshore.scenery
