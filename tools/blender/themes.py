@@ -2065,3 +2065,8 @@ import winnats as _winnats
 
 THEMES['winnats'] = _winnats.THEME
 SCENERY['winnats'] = _winnats.scenery
+
+import wicklow as _wicklow
+
+THEMES['wicklow'] = _wicklow.THEME
+SCENERY['wicklow'] = _wicklow.scenery

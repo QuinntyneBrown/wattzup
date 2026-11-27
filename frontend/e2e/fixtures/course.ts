@@ -103,6 +103,7 @@ import victoriaElevation from './victoria-elevation.json';
 import viennaElevation from './vienna-elevation.json';
 import westminsterElevation from './westminster-elevation.json';
 import winnatsElevation from './winnats-elevation.json';
+import wicklowElevation from './wicklow-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -7967,6 +7968,52 @@ export const winnatsPassCourseMap = {
       seg('recover', 15, 13, 80),
       seg('work', 100, 22, 70),
       seg('cool-down', 348, 11, 80),
+    ],
+  },
+};
+
+export const wicklowGapCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'wicklow-gap',
+  name: 'Wicklow Gap',
+  routeName: 'The Wicklow Gap road',
+  place: 'County Wicklow, Ireland',
+  world: 'wicklow',
+  distanceKm: 15.89,
+  climbingM: 335,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: wicklowElevation,
+  },
+  thumbnailUrl: 'maps/wicklow-gap.jpg',
+  photoUrl: 'maps/wicklow-gap-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 12, 90),
+      seg('work', 60, 18, 90),
+      seg('recover', 180, 13, 90),
+      seg('work', 120, 18, 90),
+      seg('recover', 60, 11, 90),
+      seg('work', 180, 19, 90),
+      seg('recover', 120, 13, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 240, 20, 91),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 11, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 30, 11, 90),
+      seg('work', 90, 22, 93),
+      seg('recover', 120, 13, 90),
+      seg('work', 120, 22, 90),
+      seg('recover', 60, 13, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 90),
+      seg('work', 60, 22, 90),
+      seg('recover', 120, 13, 90),
+      seg('work', 30, 24, 90),
+      seg('cool-down', 120, 10, 90),
     ],
   },
 };

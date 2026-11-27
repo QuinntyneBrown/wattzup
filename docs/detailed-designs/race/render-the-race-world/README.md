@@ -2885,3 +2885,16 @@ Follow the existing race catalogue into a Blender-built course and its own lazil
 | Twenty-percent ramp, 7.06 km | Real 01, 04, 07, 10 and games 03, 04 | The road tilts sharply between walkers and climbing cyclists, with sheep on the grassy bank. |
 | Mam Tor shoulder, 9.86 km | Real 07, 11, 12, 14 and game 04 | The broken face of Mam Tor stands above a long, exposed green ridge under shifting cloud. |
 | Hope Valley overlook, 12.98 km | Real 02, 09, 13–15 and games 02, 05 | Past a low stone wall, the view opens back over Castleton and the small fields of Hope Valley. |
+
+### Wicklow Gap (#2249)
+
+The older street module establishes the race chalk, granite, tricolour, flowers and marshals at the opening. The Race map needs fixed valleys and a true descent through the Glendalough lake district. Use original repeatable ground material at metre scale. Model the bog pools, granite outcrops, reservoir wall and tower as fixed terrain features. Place cutout vegetation in road sections, keeping the crest open. Middle-distance spruce blocks follow the lower hillside. Draw the sheep’s black heads and legs separately from their fleece so their grazing and steps remain legible beside the road. Move a near flag and low cloud on ride time. Share geometry and materials on low and release all resources with the course. Reference 01 and 06–07 show Lough Tay and inform the treatment of water and terrain. Use 08–09 for Glendalough’s actual valley and tower.
+
+| Rider view | References | What the rider sees |
+| --- | --- | --- |
+| Hollywood approach, 0.14 km | Real 01, 02 and game 02 | Gorse, low granite walls and a dashed centre line lead the R756 past a dark Sitka plantation. |
+| Blanket bog pools, 3.06 km | Real 03–05, 12, 13 and games 01, 03 | Tussocks break the black water of peat cuttings below round brown-purple slopes. |
+| Blackface sheep bend, 6.24 km | Real 04, 10–12 and games 01, 05 | Blackface sheep graze beside a low stone wall, one stepping down toward the verge. |
+| Turlough Hill turn, 8.68 km | Real 02, 05, 10–12 and games 01, 04 | A service road climbs away from the saddle to the stone embankment and pumped-storage reservoir. |
+| Tonelagee and Camaderry, 10.15 km | Real 02, 10, 11, 14 and games 01, 03 | Low cloud drifts across rounded summits while a roadside tricolour strains in the wind. |
+| Glendalough descent, 14.87 km | Real 06–09, 13–15 and games 04, 05 | The road drops through spruce toward the upper lake, with the round monastic tower below. |
