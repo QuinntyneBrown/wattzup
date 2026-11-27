@@ -218,6 +218,7 @@ import type { RioParade } from './rio-parade';
 import type { ShibuyaCrossing } from './shibuya-crossing';
 import type { SilverstoneTrack } from './silverstone-track';
 import type { SkyeGlen } from './skye-glen';
+import type { KhaoSanRoad } from './khao-san-road';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -331,6 +332,12 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   FairyPools: 520,
   SeaLochs: 4200,
   PassingPlaces: 320,
+  KhaoSanShops: 360,
+  FestivalCrowds: 120,
+  BangkokCarts: 220,
+  ThaiTemple: 520,
+  KhaoSanSigns: 290,
+  SongkranRoad: 260,
   NorthFace: 5200,
   SouthernOcean: 4400,
   PortLimestone: 2300,
@@ -480,6 +487,7 @@ export class CourseRenderer implements WorldRenderer {
   private tokyo: ShibuyaCrossing | null = null;
   private silverstone: SilverstoneTrack | null = null;
   private skye: SkyeGlen | null = null;
+  private khaoSan: KhaoSanRoad | null = null;
   private boardwalk: ConeyBoardwalk | null = null;
   private copacabanaPromenade: Awaited<ReturnType<typeof copacabanaPromenade>> | null = null;
   private copacabana: CopacabanaBeach | null = null;
@@ -2088,6 +2096,18 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(glen.root);
         this.disposables.push(glen);
       }
+      if (this.course.file.id === 'songkran') {
+        const { KhaoSanRoad } = await import('./khao-san-road');
+        if (this.disposed) return false;
+        const street = await KhaoSanRoad.load(this.course);
+        if (this.disposed) {
+          street.dispose();
+          return false;
+        }
+        this.khaoSan = street;
+        this.scene.add(street.root);
+        this.disposables.push(street);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -3064,13 +3084,19 @@ export class CourseRenderer implements WorldRenderer {
       const span = this.wiesnParade ? 5900 : bay ? 7900 : 5050;
       const start = this.lasseterRoadTrain ? 5600 : bay ? 19_500 : 14_300;
       const span = this.lasseterRoadTrain ? 4200 : bay ? 7900 : 5050;
-      const progress = Math.max(0, Math.min(1, (metres - sunsetStart) / sunsetLength));
+      const progress = Math.max(0, Math.min(
+          1,
+          this.khaoSan
+            ? (metres - 5000) / 3900
+            : (metres - sunsetStart) / sunsetLength),
+        );
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
       this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
       if (this.scene.fog instanceof Fog)
         this.scene.fog.color.setRGB(0.402 + 0.43 * t, 0.604 - 0.27 * t, 0.658 - 0.43 * t);
     }
+    this.khaoSan?.update(metres, frame.reducedMotion ? 0 : frame.time, this.evening?.value ?? 0);
     this.aim(metres, frame.reducedMotion);
     this.mountain?.update(
       metres,
@@ -3255,6 +3281,7 @@ export class CourseRenderer implements WorldRenderer {
     this.tokyo = null;
     this.silverstone = null;
     this.skye = null;
+    this.khaoSan = null;
     this.boardwalk = null;
     this.pacificPark = null;
     this.seaPoint = null;
@@ -3461,7 +3488,7 @@ export class CourseRenderer implements WorldRenderer {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
-    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal' || this.northShoreSurf || this.buenosAiresTraffic || this.wiesnParade || this.lasseterRoadTrain)
+    if (this.course!.file.id === 'beachroad' || this.course!.file.id === 'maunakea' || this.course!.file.id === 'moab' || this.course!.file.id === 'montroyal' || this.northShoreSurf || this.buenosAiresTraffic || this.wiesnParade || this.lasseterRoadTrain || this.course!.file.id === 'songkran')
       this.evening = eveningUniform();
     const clearValley = this.course!.file.id === 'engadin';
     const fogRange = this.dam
@@ -3684,6 +3711,7 @@ export class CourseRenderer implements WorldRenderer {
     Object.assign(materials, this.tokyo?.materials);
     Object.assign(materials, this.silverstone?.materials);
     Object.assign(materials, this.skye?.materials);
+    Object.assign(materials, this.khaoSan?.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -4330,6 +4358,7 @@ export class CourseRenderer implements WorldRenderer {
     this.tokyo?.frameView(metres, this.camera.position, ahead);
     this.silverstone?.frameView(metres, this.camera.position, ahead);
     this.skye?.frameView(metres, this.camera.position, ahead);
+    this.khaoSan?.frameView(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4934,6 +4963,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.tokyo) Object.assign(drawn, this.tokyo.report());
     if (this.silverstone) Object.assign(drawn, this.silverstone.report());
     if (this.skye) Object.assign(drawn, this.skye.report());
+    if (this.khaoSan) Object.assign(drawn, this.khaoSan.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

@@ -1875,3 +1875,8 @@ import skye as _skye
 
 THEMES['skye'] = _skye.THEME
 SCENERY['skye'] = _skye.scenery
+
+import songkran as _songkran
+
+THEMES['songkran'] = _songkran.THEME
+SCENERY['songkran'] = _songkran.scenery

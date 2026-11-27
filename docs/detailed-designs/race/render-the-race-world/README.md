@@ -2331,3 +2331,18 @@ Retain the muted light and moist single-track road of the existing world palette
 | Glen Brittle shore, 12.14 km | Real 01, 04, 10 and 11. Games 01 and 05. | The glen opens onto grey sea water below the crofts. A shaft of light touches the last grassy shoulder; the dark ridge stays fixed on the horizon. |
 
 The ridge is fixed beyond the travelling bike. Place low moving fog in the glen between rider and peaks, keeping nearby signs and the HUD clear. A separate water surface carries the falls over the lip of the rock cut. Keep the two lochs in their own valleys. Batch bracken, stones and roadside clumps, use one reusable rig for grazing cattle, and release the glen materials and moving groups on exit. Use the budgets and backends in ADRs 0021, 0023, 0030, 0034 and 0035.
+
+## Songkran, Bangkok (#2212)
+
+The four-lap race uses one original 2.9375 km district loop to cover the full 11.75 km GCN class. Retain the original street palette and soaked surface. The catalogue and course registry load the scene only on entering the race. The existing credited photographs and game plates are complete in docs/worlds/songkran on the default branch. Silom crowd photos establish density and Chiang Mai photos inform the bucket and water-toy poses. The Thai temple photograph informs roof materials and decoration.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Khao San shopfronts, 0.10 km | Real 05, 07, 08 and 10. Games 01 and 05. | Hostel balconies, projecting guesthouse signs and awnings squeeze the view down the wet street. The rider has a clear lane between the two lines of revellers. |
+| Songkran water fight, 0.48 km | Real 01–04, 06, 11 and 13. Games 01 and 04. | Festivalgoers in floral shirts lean from the kerbs. A bucket tips, a hose arcs and bright water toys send streams into the wet street. Chalk paste is visible on cheeks. |
+| Pad thai and fruit carts, 0.96 km | Real 07–10 and 14. Games 02 and 03. | Stainless carts with woks, fruit trays, umbrella shades and warm bulbs stand against the shopfronts. Puddle reflections break around tyre marks. |
+| Tuk-tuk rank, 1.42 km | Real 02, 08, 10 and 14. Games 03 and 05. | A three-wheel taxi with a curved blue canopy and chrome passenger rails noses forward from the kerb. Parked tuk-tuks and overhead shop signs mark the rank. |
+| Wat Chana Songkhram approach, 2.34 km | Real 07–10 and 15. Games 02 and 04. | Layered red temple roofs with golden chofa finials rise past a pale gate at the end of the street. The surrounding shophouses stay below the roofline. |
+| Evening on Khao San, 9.31 km | Real 05, 06, 09, 11–13. Games 01 and 05. | On the final lap, neon Thai signs and warm stall lamps reflect on the tarmac. Overhead bulbs trace the narrow street above the water fight. |
+
+Use original daylit shophouse fronts and transparent festival portraits alongside fixed roof and cart geometry. Keep riders clear of the kerb activities. One clock drives the falling water and tuk-tuk. The evening transition uses course progression to strengthen emissive signs and reflections. Batch repeating facades and people by street block. Dispose the course materials, vehicles and water meshes on exit, following ADRs 0021, 0023, 0030, 0034 and 0035.

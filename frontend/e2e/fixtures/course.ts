@@ -65,6 +65,7 @@ import sfhillsElevation from './sfhills-elevation.json';
 import shibuyaElevation from './shibuya-elevation.json';
 import silverstoneElevation from './silverstone-elevation.json';
 import skyeElevation from './skye-elevation.json';
+import songkranElevation from './songkran-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -6379,6 +6380,42 @@ export const skyeCourseMap = {
       seg('recover', 30, 10, 80),
       seg('work', 120, 18, 85),
       seg('cool-down', 180, 10, 80),
+    ],
+  },
+};
+
+export const songkranCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'songkran-bangkok',
+  name: 'Songkran, Bangkok',
+  routeName: 'Khao San Road',
+  place: 'Bangkok, Thailand',
+  world: 'songkran',
+  distanceKm: 11.75,
+  climbingM: 12,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: songkranElevation,
+  },
+  thumbnailUrl: 'maps/songkran-bangkok.jpg',
+  photoUrl: 'maps/songkran-bangkok-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 300, 13, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('work', 120, 19, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('work', 120, 19, 90),
+      seg('recover', 120, 10, 80),
+      seg('work', 120, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 120, 19, 90),
+      seg('cool-down', 300, 10, 80),
     ],
   },
 };

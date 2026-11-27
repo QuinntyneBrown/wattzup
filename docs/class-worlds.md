@@ -151,6 +151,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Shibuya Crossing (`shibuya`) | Super High Cadence Sprints (GCN Training, 20:00) | 8.150 km | 48 m | `public/courses/shibuya.glb` ([ride views](screenshots/shibuya-crossing/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Silverstone Track Day (`silverstone`) | Flat Out Efforts (GCN Training, 25:30) | 11.088 km | 26 m | `public/courses/silverstone.glb` ([ride views](screenshots/silverstone-track-day/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Isle of Skye Fog (`skye`) | Into the Unknown (GCN Training, 30:00) | 12.725 km | 172 m | `public/courses/skye.glb` ([ride views](screenshots/isle-of-skye-fog/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Songkran, Bangkok (`songkran`) | 30 Second Sprints HIIT Sandwich (GCN Training, 27:30) | 11.750 km | 12 m | `public/courses/songkran.glb` ([ride views](screenshots/songkran-bangkok/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
