@@ -39,6 +39,7 @@ import oregonElevation from './oregon-elevation.json';
 import outbackElevation from './outback-elevation.json';
 import overseasElevation from './overseas-elevation.json';
 import paineElevation from './paine-elevation.json';
+import palouseElevation from './palouse-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5282,6 +5283,52 @@ export const paineCourseMap = {
       seg('recover', 120, 10, 80),
       seg('work', 120, 22, 100),
       seg('cool-down', 240, 10, 80),
+    ],
+  },
+};
+
+export const palouseCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'the-palouse',
+  name: 'The Palouse',
+  routeName: 'The wheat-hill road',
+  place: 'Washington, United States',
+  world: 'palouse',
+  distanceKm: 18.1525,
+  climbingM: 293,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: palouseElevation,
+  },
+  thumbnailUrl: 'maps/the-palouse.jpg',
+  photoUrl: 'maps/the-palouse-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 80),
+      seg('work', 60, 18, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 180, 18, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 180, 18, 80),
+      seg('work', 60, 21, 80),
+      seg('recover', 30, 24, 100),
+      seg('work', 60, 21, 80),
+      seg('recover', 180, 11, 80),
+      seg('work', 180, 18, 80),
+      seg('recover', 120, 21, 80),
+      seg('work', 180, 18, 80),
+      seg('recover', 90, 23, 87),
+      seg('work', 60, 21, 80),
+      seg('recover', 180, 11, 80),
+      seg('work', 180, 18, 80),
+      seg('recover', 120, 21, 80),
+      seg('work', 180, 18, 80),
+      seg('recover', 60, 22, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 21, 80),
+      seg('cool-down', 150, 11, 80),
     ],
   },
 };

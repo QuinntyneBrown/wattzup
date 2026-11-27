@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Downtown Titans” Route Details (Watopia)](https://zwiftinsider.com/route/downtown-titans/) (g0035) | © Zwift |
 | game-04.jpg | Zwift: [“Yorkshire Double Loop” Route Details (Yorkshire)](https://zwiftinsider.com/route/yorkshire-double-loop/) (g0189) | © Zwift |
 | game-05.jpg | Zwift: [“Beach Island Loop” Route Details (Watopia)](https://zwiftinsider.com/route/beach-island-loop/) (g0005) | © Zwift |
+
+The wheat, barley and poplar atlas, red barn elevations, rusty combine, grain truck and evening cloud are original generated artwork. Real 02–03 and 07–09 inform the crops and windbreaks, real 10 the barn, and real 03 and 12 the machinery. The loess relief, contoured fields, Steptoe Butte, silos and rail siding are original geometry.
+
+The Steptoe summit and distant harvest folds use original generated artwork wrapped around curved terrain. Real 01, 06 and 15 guide the butte profile. Real 04, 11 and 14 guide the overlook’s contour swaths and late light.

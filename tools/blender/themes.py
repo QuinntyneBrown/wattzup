@@ -1751,3 +1751,8 @@ import paine as _paine
 
 THEMES['paine'] = _paine.THEME
 SCENERY['paine'] = _paine.scenery
+
+import palouse as _palouse
+
+THEMES['palouse'] = _palouse.THEME
+SCENERY['palouse'] = _palouse.scenery
