@@ -194,6 +194,7 @@ import type { PehoeWind } from './pehoe-wind';
 import type { PalouseHarvest } from './palouse-harvest';
 import type { EstafetaFestival } from './estafeta-festival';
 import type { HarlechWeather } from './harlech-weather';
+import type { ElliottMarket } from './elliott-market';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -443,6 +444,7 @@ export class CourseRenderer implements WorldRenderer {
   private palouseHarvest: PalouseHarvest | null = null;
   private estafetaFestival: EstafetaFestival | null = null;
   private harlechWeather: HarlechWeather | null = null;
+  private elliottMarket: ElliottMarket | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -1649,6 +1651,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(weather.root);
         this.disposables.push(weather);
       }
+      if (this.course.file.id === 'pikeplace') {
+        const { ElliottMarket } = await import('./elliott-market');
+        if (this.disposed) return false;
+        const market = await ElliottMarket.load(this.course);
+        if (this.disposed) {
+          market.dispose();
+          return false;
+        }
+        this.camera.far = 19000;
+        this.camera.setViewOffset(1, 1, 0, 0.036, 1, 1);
+        this.camera.updateProjectionMatrix();
+        this.elliottMarket = market;
+        this.scene.add(market.root);
+        this.disposables.push(market);
+      }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
         if (this.disposed) return false;
@@ -2672,6 +2689,7 @@ export class CourseRenderer implements WorldRenderer {
     this.palouseHarvest?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.estafetaFestival?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.harlechWeather?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.elliottMarket?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trainingHighlands?.update(metres, frame.reducedMotion ? 0 : frame.time);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
     this.mirage?.update(
@@ -2878,6 +2896,7 @@ export class CourseRenderer implements WorldRenderer {
     this.palouseHarvest = null;
     this.estafetaFestival = null;
     this.harlechWeather = null;
+    this.elliottMarket = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.holi = null;
@@ -3173,6 +3192,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.palouseHarvest) Object.assign(materials, this.palouseHarvest.materials);
     if (this.estafetaFestival) Object.assign(materials, this.estafetaFestival.materials);
     if (this.harlechWeather) Object.assign(materials, this.harlechWeather.materials);
+    if (this.elliottMarket) Object.assign(materials, this.elliottMarket.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3796,6 +3816,7 @@ export class CourseRenderer implements WorldRenderer {
     this.palouseHarvest?.sightline(metres, this.camera.position, ahead);
     this.estafetaFestival?.sightline(metres, this.camera.position, ahead);
     this.harlechWeather?.sightline(metres, this.camera.position, ahead);
+    this.elliottMarket?.sightline(metres, this.camera.position, ahead);
     this.trainingHighlands?.sightline(metres, this.camera.position, ahead);
     if (this.holi && Math.abs(metres - 2920) < 100) {
       const palace = Math.max(0, 1 - Math.abs(metres - 2920) / 100);
@@ -4373,6 +4394,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.palouseHarvest) Object.assign(drawn, this.palouseHarvest.report());
     if (this.estafetaFestival) Object.assign(drawn, this.estafetaFestival.report());
     if (this.harlechWeather) Object.assign(drawn, this.harlechWeather.report());
+    if (this.elliottMarket) Object.assign(drawn, this.elliottMarket.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

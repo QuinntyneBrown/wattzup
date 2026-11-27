@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [how-it-works](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/03/how-it-works.jpg) (g0858) | © MyWhoosh |
 | game-04.jpg | MyWhoosh: [Crit_race_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/07/Crit_race_optimized.png) (g0702) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Double Espresso” Route Details (Paris)](https://zwiftinsider.com/route/double-espresso/) (g0031) | © Zwift |
+
+The shopfront, fish counter, flower and produce stall, shoppers and Olympic panorama are original generated artwork. Real 01–09 inform the market proportions and green trim, real 13 and 15 the counters, and real 10–12 the waterfront light. The steel frame, clock face, neon lettering, signs, brick paving and waterfront structures are original artwork and geometry.

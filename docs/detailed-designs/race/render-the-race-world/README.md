@@ -1969,3 +1969,18 @@ Keep the famous street short within the longer historical class. Approach across
 | Castle and bay overlook, 13.68 km | Real 11–15. Games 01, 04 and 05. | Round towers and curtain walls rise out of the castle rock. Beyond them the coastal fields, Morfa dunes, Tremadog Bay and the mountains recede under broken grey cloud. |
 
 Model the castle gatehouse and towers on a fixed rock and shade the far mountains independently of rain over the lane. Use damp asphalt, mossy drystone and slate throughout the upper streets. Limit drizzle particles and animate the near spectator and flag on ride time. Dispose of those assets on exit. Compare the opening and the sustained climb with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/penllech/SOURCES.md.
+
+## Pike Place at Dawn (#2188)
+
+Map Select and Race Setup load the historical workout into the local authored-course renderer. Extend the market street and waterfront approach to the workout distance. The clock, steel sign frame, low stall roofs, downhill sightline and ferries give the rider distinct near, middle and distant landmarks. Retain the actual market sign wording and model its steel supports.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Public Market Center clock, 0.08 km | Real 01, 04, 06–08 and 12. Games 01 and 03. | The red Public Market Center letters and round clock rise on a steel frame above the brick intersection. A crosswalk, parked delivery truck and morning shoppers establish scale. |
+| Fish counter, 1.79 km | Real 02, 09 and 13. Games 02 and 04. | Warm pendant lamps light silver salmon on crushed ice, crab and handwritten price cards. A vendor tosses a salmon above the counter. |
+| Farmers Market arcade, 3.38 km | Real 01, 05, 07–08 and 15. Games 01 and 03. | Green columns and a striped awning frame produce pyramids and bouquets. Meet the Producer lettering runs above the stalls opposite the Corner Market. |
+| Post Alley entrance, 5.22 km | Real 03, 08 and 14. Games 02, 04 and 05. | A narrow brick side lane recedes under the Post Alley sign. Dawn catches steam above the café and vent at the opening. |
+| Elliott Bay descent, 7.69 km | Real 03, 10–12. Games 01 and 05. | The downhill street opens onto a white-and-green ferry crossing Elliott Bay. The Great Wheel, piers and Olympic skyline stand beyond the lower market roofs. |
+| Downtown dawn, 10.13 km | Real 03, 05 and 10–12. Games 03–05. | An open view frames downtown glass towers, the Space Needle and warm reflections on Elliott Bay. Brick paving and a final arc of market spectators bring the route home. |
+
+Use brick courses and crosswalk paint aligned with the physical road. Open the Post Alley gap between brick buildings. The Seattle skyline, wheel and Olympic ridgeline are fixed in world space, while a bounded fish toss, coffee steam and ferry read the shared ride clock. Merge repeated stalls and curb detail by section. Release textures, geometry and materials on exit. Compare the submitted frames at the clock and the produce arcade with Caribana. See the performance-budget design, ADRs 0021, 0023, 0030, 0034 and 0035, and docs/worlds/pikeplace/SOURCES.md.

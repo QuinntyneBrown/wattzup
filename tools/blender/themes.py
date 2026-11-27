@@ -1766,3 +1766,8 @@ import penllech as _penllech
 
 THEMES['penllech'] = _penllech.THEME
 SCENERY['penllech'] = _penllech.scenery
+
+import pikeplace as _pikeplace
+
+THEMES['pikeplace'] = _pikeplace.THEME
+SCENERY['pikeplace'] = _pikeplace.scenery

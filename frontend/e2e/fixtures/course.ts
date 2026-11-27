@@ -42,6 +42,7 @@ import paineElevation from './paine-elevation.json';
 import palouseElevation from './palouse-elevation.json';
 import pamplonaElevation from './pamplona-elevation.json';
 import penllechElevation from './penllech-elevation.json';
+import pikeplaceElevation from './pikeplace-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -5407,6 +5408,46 @@ export const penllechCourseMap = {
       seg('warm-up', 240, 13, 80),
       seg('work', 2400, 19, 60),
       seg('cool-down', 100, 11, 80),
+    ],
+  },
+};
+
+export const pikeplaceCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'pike-place-at-dawn',
+  name: 'Pike Place at Dawn',
+  routeName: 'The market street',
+  place: 'Seattle, United States',
+  world: 'pikeplace',
+  distanceKm: 10.4375,
+  climbingM: 65,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: pikeplaceElevation,
+  },
+  thumbnailUrl: 'maps/pike-place-at-dawn.jpg',
+  photoUrl: 'maps/pike-place-at-dawn-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 10, 80),
+      seg('work', 90, 13, 80),
+      seg('recover', 30, 10, 80),
+      seg('work', 180, 18, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 18, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 120, 18, 85),
+      seg('work', 120, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 180, 18, 85),
+      seg('recover', 60, 10, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 30, 10, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 30, 18, 85),
+      seg('cool-down', 120, 10, 80),
     ],
   },
 };
