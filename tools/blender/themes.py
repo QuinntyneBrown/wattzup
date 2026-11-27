@@ -1695,3 +1695,8 @@ import muertos as _muertos
 
 THEMES['muertos'] = _muertos.THEME
 SCENERY['muertos'] = _muertos.scenery
+
+import mulholland as _mulholland
+
+THEMES['mulholland'] = _mulholland.THEME
+SCENERY['mulholland'] = _mulholland.scenery

@@ -1729,3 +1729,18 @@ The class supplies the original plan and a straight, gently rolling boulevard. I
 | Papel picado at night, 7.47 km | Real 02, 05, 10–11, 13 and 15. Games 01–03. | Cut-paper flags arc across the avenue above lamps and warm float lights. Lit towers stand beyond the darker street trees. |
 
 Use the photographs for costume silhouettes, float proportions, boulevard width and night lighting. Keep the marigold beds and stands tied to the terrain. Advance puppet sway, monarch wings and rolling floats from the race clock. Give the papel picado real cut-outs, share flower and crowd geometry, cull street sections and release all loaded art on exit. Compare the opening and alebrije procession to Caribana. Credits are in docs/worlds/muertos/SOURCES.md. The title search returned #2171.
+
+## Mulholland Drive (#2172)
+
+The original class supplies the resistance and cadence intervals and its rolling 35-degree bends over 70 metres. Its shared street scene does not distinguish the basin from the Valley. Build a physical ridge with houses anchored on its slopes, a fixed skyline on the Los Angeles side and a separate low grid backed by mountains on the Valley side.
+
+| Rider view | References | Design |
+| --- | --- | --- |
+| Ridge road and chaparral, 0.08 km | Real 01–04 and 10. Games 01, 03 and 05. | Double yellow lines turn around a dry chaparral bank, past chevrons, a timber power pole and the first open view of the ridge. |
+| Los Angeles basin, 2.63 km | Real 03, 05, 07 and 13. Games 02–04. | A pull-out opens over the folded Hollywood Hills to the distant downtown towers. Sage and a galvanized rail frame the near edge. |
+| Modernist hillside houses, 5.19 km | Real 08–10 and 14. Games 02–04. | White modernist volumes, shaded glass and decks on stilts step down the hillside above gated driveways. Eucalyptus and palms stand on the bends. |
+| Hollywood Sign on Mount Lee, 8.27 km | Real 01, 06, 12 and 15. Games 01, 03 and 05. | Separate white letters read HOLLYWOOD across the brush-covered flank of Mount Lee. A slender broadcast mast rises above the sign. |
+| San Fernando Valley, 12.06 km | Real 03–05, 07 and 11. Games 02–05. | The northern shoulder opens onto the valley’s straight street grid below the foothills. Golden grass gives way to distant blue-grey mountains. |
+| Scenic overlook, 16.42 km | Real 05–07, 10 and 12–14. Games 01–04. | Visitors use a viewing scope beside curved rails on a paved turnout. Palms and poles silhouette against sunset haze over Los Angeles. |
+
+Align the yellow lines, driveways, guardrails and viewing platforms with the changing grade. The Hollywood letters stand separately on Mount Lee below the mast. Use low sun, pale haze and distinct oak, palm and eucalyptus silhouettes. Give a passing roadster, an overlook visitor and a small group of wind-blown plants bounded motion on race time. Share roadside meshes, section the terrain and release loaded art on exit. Compare the ridge opening and the scenic overlook to Caribana. Credits are in docs/worlds/mulholland/SOURCES.md. The title search returned #2172.

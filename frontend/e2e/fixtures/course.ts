@@ -27,6 +27,7 @@ import montrealElevation from './montreal-elevation.json';
 import montroyalElevation from './montroyal-elevation.json';
 import mountwashingtonElevation from './mountwashington-elevation.json';
 import muertosElevation from './muertos-elevation.json';
+import mulhollandElevation from './mulholland-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -4783,6 +4784,46 @@ export const muertosCourseMap = {
       seg('recover', 30, 16, 80),
       seg('work', 120, 21, 80),
       seg('cool-down', 90, 11, 80),
+    ],
+  },
+};
+
+export const mulhollandCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'mulholland-drive',
+  name: 'Mulholland Drive',
+  routeName: 'Mulholland Drive',
+  place: 'Los Angeles, California',
+  world: 'mulholland',
+  distanceKm: 17.1,
+  climbingM: 347,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: mulhollandElevation,
+  },
+  thumbnailUrl: 'maps/mulholland-drive.jpg',
+  photoUrl: 'maps/mulholland-drive-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 60, 19, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 16, 80),
+      seg('work', 120, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 180, 10, 80),
+      seg('work', 240, 16, 80),
+      seg('work', 120, 24, 100),
+      seg('recover', 120, 10, 80),
+      seg('work', 180, 24, 100),
+      seg('recover', 180, 10, 80),
+      seg('work', 240, 16, 80),
+      seg('work', 120, 19, 80),
+      seg('work', 60, 24, 100),
+      seg('cool-down', 120, 10, 80),
     ],
   },
 };
